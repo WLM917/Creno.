@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "description": "Loueurs de voitures à double commande. Informations publiques à vérifier directement auprès de chaque loueur (tarifs, assurance, disponibilités).",
+    "mis_a_jour": "2026-10-29"
+  },
+  "loueurs": [
+    { "nom": "Permis Malin", "ville": "Bourg-la-Reine", "dep": "92", "site": "https://www.permis-malin.com" },
+    { "nom": "Just Permis", "ville": "Serris", "dep": "77", "site": "http://justpermis.com/" }
+  ]
+}

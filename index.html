@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Permiscope</title>
+  <meta name="description" content="Compare les auto-écoles d'Île-de-France sur leur taux de réussite et le coût réel du permis, ou passe ton permis en candidat libre.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Overpass:wght@500;700;800;900&display=swap">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="logo" href="#accueil" aria-label="Permiscope, accueil">
+        <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="1" y="1" width="30" height="30" rx="5" fill="var(--signal)"/>
+          <rect x="3.5" y="3.5" width="25" height="25" rx="3" fill="none" stroke="var(--signal-ink)" stroke-width="1.6"/>
+          <path d="M11 25 L13.5 7 M21 25 L18.5 7" stroke="var(--signal-ink)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M16 23.5 V20.5 M16 16.5 V13.5 M16 9.8 V8" stroke="var(--chantier)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-word">permiscope</span>
+      </a>
+      <nav class="site-nav" aria-label="Sections">
+        <a href="#classement" data-nav="classement">Classement</a>
+        <a href="#candidat-libre" data-nav="candidat-libre">Candidat libre</a>
+        <a href="#examen" data-nav="examen">Jour de l'examen</a>
+        <a href="#methode" data-nav="methode">Méthode</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ACCUEIL -->
+    <section data-view="accueil">
+      <div class="road">
+        <div class="wrap road-inner">
+          <h1 class="hero-title">Ton permis, au prix que tu vas vraiment payer.</h1>
+          <p class="hero-sub">Compare les auto-écoles près de chez toi sur leur taux de réussite officiel et sur le coût réel du permis, heures en plus comprises. Ou passe-le en candidat libre, sans forfait.</p>
+
+          <nav class="gantry" aria-label="Choisir un chemin">
+            <a class="sign" href="#classement">
+              <svg class="sign-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M30 30 L11 11 M11 11 H25 M11 11 V25" /></svg>
+              <span class="sign-dest">Choisir mon auto-école</span>
+              <span class="sign-sub">Classement au coût réel</span>
+            </a>
+            <a class="sign" href="#candidat-libre">
+              <svg class="sign-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34 V7 M20 7 L10 17 M20 7 L30 17" /></svg>
+              <span class="sign-dest">Passer en candidat libre</span>
+              <span class="sign-sub">Voiture double commande, date d'examen</span>
+            </a>
+            <a class="sign" href="#examen">
+              <svg class="sign-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M10 30 L29 11 M29 11 H15 M29 11 V25" /></svg>
+              <span class="sign-dest">Préparer le jour J</span>
+              <span class="sign-sub">Checklist et règles à connaître</span>
+            </a>
+          </nav>
+        </div>
+        <div class="lane" aria-hidden="true"></div>
+      </div>
+
+      <div class="wrap stack-lg page-pad">
+        <section class="block" aria-labelledby="top-title">
+          <div class="block-head">
+            <h2 id="top-title">Les mieux classées <span data-zone-label>en Essonne</span></h2>
+            <a class="link-strong" href="#classement">Voir tout le classement</a>
+          </div>
+          <p class="demo-note" data-demo-note hidden>Version de démonstration : ces auto-écoles sont fictives.</p>
+          <ol class="ranking ranking-compact" id="home-ranking" aria-live="polite"></ol>
+        </section>
+
+        <section class="block" aria-labelledby="paths-title">
+          <h2 id="paths-title">Auto-école ou candidat libre ?</h2>
+          <p class="lede">Les deux mènent au même examen. Ce qui change, c'est qui s'occupe de quoi, et combien tu paies.</p>
+          <div class="table-scroll">
+            <table class="compare">
+              <thead>
+                <tr><th scope="col"><span class="visually-hidden">Question</span></th><th scope="col">Avec une auto-école</th><th scope="col">En candidat libre</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Qui réserve la date d'examen</th><td data-label="Auto-école">L'auto-école, avec ton accord</td><td data-label="Candidat libre">Toi, sur RdvPermis, avec ton numéro NEPH</td></tr>
+                <tr><th scope="row">La voiture</th><td data-label="Auto-école">Celle de l'auto-école</td><td data-label="Candidat libre">Une voiture à double commande que tu loues</td></tr>
+                <tr><th scope="row">Le jour de l'examen</th><td data-label="Auto-école">Organisé par l'auto-école</td><td data-label="Candidat libre">Un proche qui a le permis depuis au moins 5 ans t'accompagne</td></tr>
+                <tr><th scope="row">Ce que tu paies</th><td data-label="Auto-école">Un forfait, puis les heures en plus</td><td data-label="Candidat libre">La location de la voiture, à l'heure</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="block note-block" aria-labelledby="trust-title">
+          <h2 id="trust-title">Personne ne paie pour être en haut</h2>
+          <p>Le classement mélange le taux de réussite officiel et le coût réel déclaré par les élèves. La formule est publique, et une auto-école ne peut pas acheter sa place.</p>
+          <a class="link-strong" href="#methode">Lire la méthode de calcul</a>
+        </section>
+      </div>
+    </section>
+
+    <!-- CLASSEMENT -->
+    <section data-view="classement" hidden>
+      <div class="wrap stack-lg page-pad">
+        <header class="view-head">
+          <h1>Classement des auto-écoles</h1>
+          <p class="lede">Classées selon leur taux de réussite officiel et ce que le permis coûte vraiment, une fois les heures en plus comptées.</p>
+          <p class="demo-banner" data-demo-note hidden><strong>Version de démonstration.</strong> Les auto-écoles affichées sont fictives. Les vrais taux arriveront avec l'import des données publiques de la Sécurité routière.</p>
+        </header>
+
+        <form class="filters" id="filters" onsubmit="return false">
+          <div class="field">
+            <label for="f-zone">Zone</label>
+            <select id="f-zone"></select>
+          </div>
+          <div class="field">
+            <label for="f-search">Ville ou nom</label>
+            <input id="f-search" type="search" placeholder="Ex. Massy, 91300" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="f-budget">Budget maximum : <output id="f-budget-out" for="f-budget">pas de limite</output></label>
+            <input id="f-budget" type="range" min="800" max="3000" step="50" value="3000">
+          </div>
+          <div class="field">
+            <label for="f-sort">Trier par</label>
+            <select id="f-sort">
+              <option value="indice">Indice Permiscope</option>
+              <option value="taux">Taux de réussite</option>
+              <option value="cout">Coût réel le plus bas</option>
+            </select>
+          </div>
+          <label class="check-inline" for="f-unknown">
+            <input id="f-unknown" type="checkbox" checked>
+            Garder les auto-écoles dont le prix n'est pas encore déclaré
+          </label>
+        </form>
+
+        <p class="zone-summary" id="zone-summary" aria-live="polite"></p>
+        <ol class="ranking" id="ranking"></ol>
+        <p class="empty" id="ranking-empty" hidden>Aucune auto-école ne correspond. Monte ton budget ou choisis une autre zone.</p>
+
+        <section class="block calc" aria-labelledby="calc-title">
+          <h2 id="calc-title">Calcule le coût réel d'un devis</h2>
+          <p class="lede">Le prix affiché couvre rarement tout. Entre le devis d'une auto-école et le nombre d'heures dont tu penses avoir besoin.</p>
+          <div class="calc-grid">
+            <form class="calc-form" id="calc" onsubmit="return false">
+              <div class="field"><label for="calc-forfait">Prix du forfait (€)</label><input id="calc-forfait" type="number" inputmode="numeric" min="0" step="10" value="1390"></div>
+              <div class="field"><label for="calc-incluses">Heures de conduite incluses</label><input id="calc-incluses" type="number" inputmode="numeric" min="0" step="1" value="20"></div>
+              <div class="field"><label for="calc-prix">Prix d'une heure en plus (€)</label><input id="calc-prix" type="number" inputmode="numeric" min="0" step="1" value="52"></div>
+              <div class="field"><label for="calc-besoin">Heures dont tu penses avoir besoin</label><input id="calc-besoin" type="number" inputmode="numeric" min="0" step="1" value="30"></div>
+              <div class="field"><label for="calc-frais">Frais de présentation à l'examen (€)</label><input id="calc-frais" type="number" inputmode="numeric" min="0" step="5" value="60"></div>
+              <div class="field"><label for="calc-budget">Ton budget (€)</label><input id="calc-budget" type="number" inputmode="numeric" min="0" step="50" value="1800"></div>
+            </form>
+            <div class="calc-result" aria-live="polite">
+              <p class="calc-label">Coût réel estimé</p>
+              <p class="calc-total" id="calc-total">—</p>
+              <dl class="calc-lines" id="calc-lines"></dl>
+              <p class="calc-verdict" id="calc-verdict"></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" aria-labelledby="contrib-title">
+          <h2 id="contrib-title">Tu as passé ton permis récemment ?</h2>
+          <p class="lede">Dis combien tu as vraiment payé. Chaque réponse rend le classement plus juste pour les suivants. Ta réponse est anonyme.</p>
+          <form class="form-grid" id="contrib-form" data-form-type="experience">
+            <div class="field"><label for="contrib-ecole">Nom de l'auto-école</label><input id="contrib-ecole" name="ecole" required autocomplete="off"></div>
+            <div class="field"><label for="contrib-ville">Ville</label><input id="contrib-ville" name="ville" required autocomplete="address-level2"></div>
+            <div class="field"><label for="contrib-forfait">Prix du forfait (€)</label><input id="contrib-forfait" name="forfait" type="number" inputmode="numeric" min="0" required></div>
+            <div class="field"><label for="contrib-incluses">Heures incluses</label><input id="contrib-incluses" name="heures_incluses" type="number" inputmode="numeric" min="0" required></div>
+            <div class="field"><label for="contrib-prix">Prix d'une heure en plus (€)</label><input id="contrib-prix" name="prix_heure" type="number" inputmode="numeric" min="0" required></div>
+            <div class="field"><label for="contrib-heures">Heures faites au total</label><input id="contrib-heures" name="heures_total" type="number" inputmode="numeric" min="0" required></div>
+            <div class="field field-wide">
+              <label for="contrib-resultat">Ton résultat</label>
+              <select id="contrib-resultat" name="resultat" required>
+                <option value="">Choisis une réponse</option>
+                <option>Réussi du premier coup</option>
+                <option>Réussi au deuxième passage</option>
+                <option>Réussi après trois passages ou plus</option>
+                <option>Pas encore réussi</option>
+              </select>
+            </div>
+            <div class="form-actions field-wide">
+              <button class="btn" type="submit">Envoyer ma réponse</button>
+              <p class="form-status" role="status"></p>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
+
+    <!-- CANDIDAT LIBRE -->
+    <section data-view="candidat-libre" hidden>
+      <div class="wrap stack-lg page-pad">
+        <header class="view-head">
+          <h1>Passer le permis en candidat libre</h1>
+          <p class="lede">Tu t'entraînes avec un proche, tu réserves toi-même ta date d'examen et tu loues une voiture à double commande pour le jour J. Moins cher qu'un forfait, mais c'est toi qui organises tout.</p>
+        </header>
+
+        <section class="block" aria-labelledby="steps-title">
+          <h2 id="steps-title">Les étapes</h2>
+          <ol class="steps">
+            <li>
+              <h3>Avoir ton code et ton numéro NEPH</h3>
+              <p>Le NEPH est le numéro de ton dossier de permis. Garde aussi ton attestation d'inscription : tu en as besoin pour créer ton compte.</p>
+            </li>
+            <li>
+              <h3>Créer ton compte RdvPermis et déclarer ton accompagnateur</h3>
+              <p>Ton accompagnateur est un proche qui a le permis depuis au moins 5 ans. Tu le déclares en ligne, sur ton compte.</p>
+            </li>
+            <li>
+              <h3>Réserver ta date d'examen</h3>
+              <p>Tu choisis un centre, une date et un créneau. La confirmation arrive par e-mail.</p>
+            </li>
+            <li>
+              <h3>Louer une voiture à double commande pour le jour J</h3>
+              <p>Elle doit être assurée, avec double frein, double embrayage et des rétroviseurs pour l'inspecteur.</p>
+            </li>
+          </ol>
+          <a class="btn btn-signal" href="https://candidat.permisdeconduire.gouv.fr" target="_blank" rel="noopener">Ouvrir RdvPermis, le site officiel</a>
+        </section>
+
+        <section class="block" aria-labelledby="rent-title">
+          <h2 id="rent-title">Louer une voiture à double commande</h2>
+          <p class="lede">L'annuaire démarre. Vérifie toujours le tarif, l'assurance et la conformité pour l'examen directement avec le loueur.</p>
+          <ul class="renters" id="renters"></ul>
+          <details class="disclose">
+            <summary>Tu loues des voitures à double commande ? Ajoute ton agence</summary>
+            <form class="form-grid" id="renter-form" data-form-type="loueur">
+              <div class="field"><label for="renter-nom">Nom de l'agence</label><input id="renter-nom" name="nom" required autocomplete="organization"></div>
+              <div class="field"><label for="renter-ville">Ville</label><input id="renter-ville" name="ville" required autocomplete="address-level2"></div>
+              <div class="field"><label for="renter-site">Site web ou téléphone</label><input id="renter-site" name="contact" required></div>
+              <div class="field"><label for="renter-prix">Prix de l'heure (€)</label><input id="renter-prix" name="prix_heure" type="number" inputmode="numeric" min="0"></div>
+              <div class="form-actions field-wide">
+                <button class="btn" type="submit">Proposer mon agence</button>
+                <p class="form-status" role="status"></p>
+              </div>
+            </form>
+          </details>
+        </section>
+
+        <section class="block" aria-labelledby="date-title">
+          <h2 id="date-title">Trouver une date plus vite</h2>
+          <ul class="tips">
+            <li>Garde ton dossier prêt, NEPH et accompagnateur déclarés, pour réserver dès qu'une place apparaît.</li>
+            <li>Regarde aussi les centres d'examen des départements voisins.</li>
+            <li>Des places se libèrent quand d'autres candidats annulent. Reviens vérifier à différents moments de la journée.</li>
+            <li>Si tu ne peux pas venir, annule le plus tôt possible pour éviter d'attendre avant de réserver à nouveau.</li>
+          </ul>
+
+          <div class="rules">
+            <h3>Les délais si tu annules</h3>
+            <dl>
+              <div><dt>Plus de 6 jours avant</dt><dd>Tu peux réserver à nouveau tout de suite</dd></div>
+              <div><dt>Moins de 6 jours avant</dt><dd>30 jours d'attente</dd></div>
+              <div><dt>Absence sans motif sérieux</dt><dd>40 jours d'attente</dd></div>
+            </dl>
+            <p class="small">Vérifie les règles à jour sur RdvPermis avant d'annuler.</p>
+          </div>
+
+          <p class="pledge">Permiscope ne réserve jamais de place à ta place et n'utilise aucun robot sur RdvPermis.</p>
+
+          <div class="soon">
+            <h3>Bientôt : les alertes entre candidats</h3>
+            <p>Quand un candidat voit des places apparaître dans un département, tout le monde est prévenu. Laisse ton e-mail pour être averti du lancement.</p>
+            <form class="inline-form" id="alert-form" data-form-type="alerte">
+              <div class="field"><label for="alert-email">E-mail</label><input id="alert-email" name="email" type="email" required autocomplete="email"></div>
+              <div class="field"><label for="alert-dep">Département</label><select id="alert-dep" name="departement" required></select></div>
+              <div class="form-actions">
+                <button class="btn" type="submit">Me prévenir</button>
+                <p class="form-status" role="status"></p>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- EXAMEN -->
+    <section data-view="examen" hidden>
+      <div class="wrap stack-lg page-pad">
+        <header class="view-head">
+          <h1>Préparer le jour de l'examen</h1>
+          <p class="lede">La checklist du candidat libre. Coche au fur et à mesure : elle reste enregistrée sur ton téléphone.</p>
+        </header>
+
+        <section class="block checklist-block" aria-labelledby="check-title">
+          <div class="block-head">
+            <h2 id="check-title">À avoir avec toi</h2>
+            <p class="progress" id="check-progress" aria-live="polite"></p>
+          </div>
+          <ul class="checklist" id="checklist">
+            <li><input type="checkbox" id="check-convocation"><label for="check-convocation">Ta convocation, reçue par e-mail</label></li>
+            <li><input type="checkbox" id="check-identite"><label for="check-identite">Ta pièce d'identité</label></li>
+            <li><input type="checkbox" id="check-voiture"><label for="check-voiture">La voiture à double commande, assurée, avec double frein, double embrayage et rétroviseurs pour l'inspecteur</label></li>
+            <li><input type="checkbox" id="check-accompagnateur"><label for="check-accompagnateur">Ton accompagnateur, celui que tu as déclaré, avec le permis depuis au moins 5 ans</label></li>
+            <li><input type="checkbox" id="check-trajet"><label for="check-trajet">Le trajet jusqu'au centre d'examen, prévu avec de l'avance</label></li>
+          </ul>
+          <p class="small">Ta convocation indique ce qu'il faut apporter. Relis-la la veille.</p>
+        </section>
+
+        <div class="two-col">
+          <section class="block" aria-labelledby="result-title">
+            <h2 id="result-title">Ton résultat</h2>
+            <p>Il est disponible sous 48 heures, hors week-ends et jours fériés, sur RdvPermis.</p>
+          </section>
+          <section class="block" aria-labelledby="fail-title">
+            <h2 id="fail-title">Si c'est un échec</h2>
+            <p>Le délai avant de pouvoir repasser dépend de ta note : plus elle est basse, plus il est long. Utilise ce temps pour reprendre quelques heures sur les points qui ont coincé.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- METHODE -->
+    <section data-view="methode" hidden>
+      <div class="wrap stack-lg page-pad prose">
+        <header class="view-head">
+          <h1>Comment on calcule le classement</h1>
+          <p class="lede">Un classement n'est utile que si tu sais comment il est fait. Voici la formule complète.</p>
+        </header>
+
+        <section class="block" aria-labelledby="m-index">
+          <h2 id="m-index">L'indice Permiscope, sur 100</h2>
+          <p class="formula">Indice = 60 % réussite + 40 % coût réel</p>
+          <p>Chaque auto-école est comparée aux autres auto-écoles de la zone que tu as choisie. La meilleure de la zone sur un critère obtient 100, la moins bonne obtient 0.</p>
+        </section>
+
+        <section class="block" aria-labelledby="m-taux">
+          <h2 id="m-taux">La réussite</h2>
+          <p>On part du taux de réussite officiel à l'examen pratique du permis B, publié par la Sécurité routière.</p>
+          <p>Une auto-école qui a présenté 20 élèves peut afficher 80 % un peu par chance. Tant qu'elle a peu d'élèves présentés, on rapproche son taux de la moyenne de la zone :</p>
+          <p class="formula">Taux ajusté = (taux × présentés + moyenne de la zone × 40) ÷ (présentés + 40)</p>
+          <p>Plus une auto-école présente d'élèves, plus son taux ajusté est proche de son vrai taux.</p>
+        </section>
+
+        <section class="block" aria-labelledby="m-cout">
+          <h2 id="m-cout">Le coût réel</h2>
+          <p class="formula">Coût réel = forfait + heures en plus × prix de l'heure + frais de présentation à l'examen</p>
+          <p>Les heures en plus, c'est la différence entre le nombre d'heures que font vraiment les élèves et les heures incluses dans le forfait. Ces chiffres viennent des déclarations des élèves.</p>
+          <p>Quand aucun élève n'a encore déclaré de prix pour une auto-école, elle reçoit une note de prix neutre de 50 sur 100, en attendant.</p>
+        </section>
+
+        <section class="block note-block" aria-labelledby="m-pay">
+          <h2 id="m-pay">Qui paie quoi</h2>
+          <p>Aucune auto-école ne paie pour apparaître ou monter dans ce classement. Si un jour des auto-écoles paient pour être mises en avant, ce sera écrit clairement à côté de leur nom, et ça ne changera pas leur indice.</p>
+        </section>
+
+        <section class="block" aria-labelledby="m-src">
+          <h2 id="m-src">Les sources</h2>
+          <ul class="tips">
+            <li>Taux de réussite : carte officielle des auto-écoles de la Sécurité routière, mise à jour chaque trimestre, et données publiques sur data.gouv.fr.</li>
+            <li>Prix et heures : déclarations des élèves sur Permiscope.</li>
+          </ul>
+          <p class="small" id="data-status"></p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-row">
+      <p>Permiscope est un projet indépendant. Il n'est lié ni à l'administration, ni à RdvPermis.</p>
+      <nav aria-label="Pied de page">
+        <a href="#classement">Classement</a>
+        <a href="#candidat-libre">Candidat libre</a>
+        <a href="#examen">Jour de l'examen</a>
+        <a href="#methode">Méthode</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="assets/config.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

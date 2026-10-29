@@ -59,7 +59,7 @@
 {"id":"E0900235970","nom":"Auto-Moto-École Origny","adresse":"37 rue Pasteur","cp":"02390","ville":"Origny-Sainte-Benoite","labels":["aac"]},
 {"id":"E1600200050","nom":"Auto-École Panico","adresse":"151 Rue Pasteur","cp":"02390","ville":"Origny-Sainte-Benoite","taux":0.5278,"presentes":36,"taux_tous":0.59,"examens_tous":61,"labels":["cs"]},
 {"id":"E0900235980","nom":"Auto-Moto-École Ribemont","adresse":"17 Rue des Anciens Combattants de Flandres","cp":"02240","ville":"Ribemont","taux":0.25,"presentes":4,"taux_tous":0.36,"examens_tous":11,"labels":["aac","cs"]},
-{"id":"E1400200040","nom":"Auto École de la Serre","adresse":"20 Place de l'Hã–tel de Ville","cp":"02120","ville":"Sains-Richaumont"},
+{"id":"E1400200040","nom":"Auto École de la Serre","adresse":"20 Place de l'Hötel de Ville","cp":"02120","ville":"Sains-Richaumont"},
 {"id":"E2200200020","nom":"Auto École du Conservatoire","adresse":"57 rue de d'isle","cp":"02100","ville":"Saint Quentin","taux":0.4531,"presentes":64,"taux_tous":0.49,"examens_tous":156,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1600200040","nom":"Auto-École Panico","adresse":"167 Bis RUE DU GENERAL LECLERC","cp":"02100","ville":"Saint Quentin"},
 {"id":"E1300200010","nom":"Bersez Conduite","adresse":"3 Rue des Glacis","cp":"02100","ville":"Saint Quentin","taux":0.6429,"presentes":56,"taux_tous":0.68,"examens_tous":95,"labels":["cs"]},

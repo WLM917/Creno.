@@ -41,7 +41,7 @@
 {"id":"E2106100040","nom":"Auto École Marie-Line","adresse":"9 Rue de l'Arche, le Theil Sur Huisne","cp":"61260","ville":"La Rouge"},
 {"id":"E1106128900","nom":"Auto-Ecole DULGER","adresse":"Le Pont Feron","cp":"61100","ville":"La Selle-la-Forge","taux":0.6789,"presentes":109,"taux_tous":0.71,"examens_tous":169,"labels":["cs"]},
 {"id":"E2506100040","nom":"Stop ! Auto-École","adresse":"47 Grande Rue","cp":"61170","ville":"Le Mele-sur-Sarthe","labels":["qualite","permis1euro"]},
-{"id":"E2006100010","nom":"Auto-École Macha Balle","adresse":"22 Place de l'hÃ´tel de ville","cp":"61290","ville":"Longny-au-Perche","taux":0.75,"presentes":60,"taux_tous":0.7,"examens_tous":91,"labels":["cs"]},
+{"id":"E2006100010","nom":"Auto-École Macha Balle","adresse":"22 Place de l'hôtel de ville","cp":"61290","ville":"Longny-au-Perche","taux":0.75,"presentes":60,"taux_tous":0.7,"examens_tous":91,"labels":["cs"]},
 {"id":"E0206102450","nom":"Auto École du Quartier des Halles","adresse":"6 Rue des Halles","cp":"61400","ville":"Mortagne-au-Perche","taux":0.8871,"presentes":62,"taux_tous":0.9,"examens_tous":69,"labels":["aac"]},
 {"id":"E1206128940","nom":"Car'IN Conduite","adresse":"25 place de la rEpublique","cp":"61400","ville":"Mortagne-au-Perche","taux":0.6863,"presentes":102,"taux_tous":0.65,"examens_tous":158,"labels":["permis1euro","aac"]},
 {"id":"I1206100040","nom":"Ufcv","adresse":"1 rue montcacune","cp":"61400","ville":"Mortagne-au-Perche","taux":0.3333,"presentes":12,"taux_tous":0.26,"examens_tous":23,"labels":["associative"]},

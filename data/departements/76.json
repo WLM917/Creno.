@@ -197,7 +197,7 @@
 {"id":"E1407600020","nom":"Auto-École Autop Garibaldi","adresse":"162 Rue Garibaldi","cp":"76300","ville":"Sotteville-les-Rouen","taux":0.7833,"presentes":60,"taux_tous":0.81,"examens_tous":78,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1807600020","nom":"PPC Normandie Rouen 2","adresse":"48 Rue Leon Salva","cp":"76300","ville":"Sotteville-les-Rouen","taux":0.6185,"presentes":173,"taux_tous":0.57,"examens_tous":282,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2406900270_76","nom":"Lepermislibre","adresse":"45 Rue de la République","cp":"69170","ville":"Tarare","taux":0.4194,"presentes":31,"taux_tous":0.53,"examens_tous":87,"labels":["enligne","cs"]},
-{"id":"E2307600110","nom":"ELO'ED Ã€ Conduire","adresse":"31 Rue des Jonquilles","cp":"76890","ville":"Totes","taux":0.5233,"presentes":86,"taux_tous":0.53,"examens_tous":161,"labels":["qualite","permis1euro","cs"]},
+{"id":"E2307600110","nom":"ELO'ED À Conduire","adresse":"31 Rue des Jonquilles","cp":"76890","ville":"Totes","taux":0.5233,"presentes":86,"taux_tous":0.53,"examens_tous":161,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2307600120","nom":"SAS du Double C","adresse":"26 Rue GUY de Maupassant","cp":"76890","ville":"Totes"},
 {"id":"E2307600130","nom":"SAS du Double C","adresse":"Residence des Peupliers","cp":"76890","ville":"Val-de-Saane"},
 {"id":"E2007600120","nom":"Blond Formation","adresse":"19 Rue Jules Crochemore","cp":"76540","ville":"Valmont","labels":["qualite","permis1euro"]},

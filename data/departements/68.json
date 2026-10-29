@@ -69,7 +69,7 @@
 {"id":"E1906800020","nom":"DW Lamm","adresse":"51 Rue des Martyrs","cp":"68200","ville":"Mulhouse","taux":0.7229,"presentes":166,"taux_tous":0.71,"examens_tous":281,"labels":["cs"]},
 {"id":"E2306800010","nom":"Drive CK","adresse":"47 rue d ILLZACH","cp":"68100","ville":"Mulhouse","taux":0.6113,"presentes":265,"taux_tous":0.61,"examens_tous":432,"labels":["cs"]},
 {"id":"E2306800020","nom":"Drive CK","adresse":"3 Rue Sebastien Bourtz","cp":"68200","ville":"Mulhouse"},
-{"id":"E1506800040","nom":"Eurl AE","adresse":"18 rue FranÃ§ois Spoerry","cp":"68100","ville":"Mulhouse","taux":0.5407,"presentes":209,"taux_tous":0.55,"examens_tous":374,"labels":["qualite","permis1euro","cs"]},
+{"id":"E1506800040","nom":"Eurl AE","adresse":"18 rue François Spoerry","cp":"68100","ville":"Mulhouse","taux":0.5407,"presentes":209,"taux_tous":0.55,"examens_tous":374,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1106805720","nom":"Eurl AE","adresse":"6 Rue de Metz","cp":"68100","ville":"Mulhouse","labels":["qualite","permis1euro","aac"]},
 {"id":"I2306800010","nom":"HOP Auto","adresse":"11 Rue des Abeilles","cp":"68200","ville":"Mulhouse","taux":0.4167,"presentes":84,"taux_tous":0.42,"examens_tous":189,"labels":["associative","cs"]},
 {"id":"E1906800030","nom":"Ici Stages","adresse":"39 Avenue d'Altkirch","cp":"68200","ville":"Mulhouse","taux":0.6355,"presentes":107,"taux_tous":0.66,"examens_tous":183,"labels":["cs"]},

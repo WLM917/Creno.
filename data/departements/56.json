@@ -116,7 +116,7 @@
 {"id":"E1705600210","nom":"GT Conduite","adresse":"22 rue Saint Ivy","cp":"56300","ville":"Pontivy","taux":0.6207,"presentes":29,"taux_tous":0.6,"examens_tous":47,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1405600040","nom":"Karine Conduite","adresse":"45 rue du fil","cp":"56300","ville":"Pontivy","labels":["qualite","permis1euro"]},
 {"id":"E2005600040","nom":"LDG","adresse":"9 rue d'Austerlitz","cp":"56300","ville":"Pontivy","taux":0.6618,"presentes":136,"taux_tous":0.65,"examens_tous":217,"labels":["cs"]},
-{"id":"E1805600150","nom":"Le Nagard","adresse":"20 rue caÃ¯nin","cp":"56300","ville":"Pontivy","taux":0.6806,"presentes":216,"taux_tous":0.67,"examens_tous":349,"labels":["qualite","permis1euro","cs"]},
+{"id":"E1805600150","nom":"Le Nagard","adresse":"20 rue caïnin","cp":"56300","ville":"Pontivy","taux":0.6806,"presentes":216,"taux_tous":0.67,"examens_tous":349,"labels":["qualite","permis1euro","cs"]},
 {"id":"I1105600010","nom":"adalea","adresse":"13 bis rue Saint Jory","cp":"56300","ville":"Pontivy","taux":0.5,"presentes":4,"taux_tous":0.57,"examens_tous":7,"labels":["associative","aac"]},
 {"id":"E0205604810","nom":"Auto Ecole LE CLAIR","adresse":"10 boulevard Pasteur","cp":"56230","ville":"Questembert","taux":0.7183,"presentes":142,"taux_tous":0.71,"examens_tous":203,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1305600110","nom":"École de Conduite Christine","adresse":"3 Rue du Novembre 1918","cp":"56230","ville":"Questembert","taux":0.6731,"presentes":156,"taux_tous":0.68,"examens_tous":227,"labels":["cs"]},

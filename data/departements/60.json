@@ -128,7 +128,7 @@
 {"id":"E1906000080","nom":"LLJ Formations","adresse":"Rue de Beauvais","cp":"60130","ville":"Saint-Just-en-Chaussee"},
 {"id":"E2206000150","nom":"RL Formations","adresse":"10 Rue Foch","cp":"60130","ville":"Saint-Just-en-Chaussee"},
 {"id":"E2506000020","nom":"SF Auto École","adresse":"2 rue Christine","cp":"60340","ville":"Saint-Leu-d'Esserent","taux":0.7368,"presentes":19,"taux_tous":0.75,"examens_tous":24,"labels":["qualite","permis1euro","cs"]},
-{"id":"E1606000110","nom":"Sud Oise Conduite Saint-Maximin","adresse":"rue Louis Saint Just ZAC du bois de fenÃªtres","cp":"60740","ville":"Saint-Maximin","taux":0.6229,"presentes":236,"taux_tous":0.63,"examens_tous":392,"labels":["cs"]},
+{"id":"E1606000110","nom":"Sud Oise Conduite Saint-Maximin","adresse":"rue Louis Saint Just ZAC du bois de fenêtres","cp":"60740","ville":"Saint-Maximin","taux":0.6229,"presentes":236,"taux_tous":0.63,"examens_tous":392,"labels":["cs"]},
 {"id":"E2206000010","nom":"BS Auto École Sainte Genevieve","adresse":"101 route Nationale","cp":"60730","ville":"Sainte-Genevieve","taux":0.525,"presentes":80,"taux_tous":0.54,"examens_tous":104,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2106000060","nom":"Eirl Himpe","adresse":"43 rue de la REpublique","cp":"60300","ville":"Senlis","taux":0.545,"presentes":200,"taux_tous":0.59,"examens_tous":302,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2306000120","nom":"Eurl Dral","adresse":"6 Avenue de Mont l'Eveque","cp":"60300","ville":"Senlis","taux":0.7099,"presentes":131,"taux_tous":0.7,"examens_tous":178,"labels":["cs"]},

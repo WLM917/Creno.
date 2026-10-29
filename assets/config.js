@@ -1,15 +1,18 @@
 /*
-  Réglages de Créno.
+  Réglages de Créno côté navigateur.
 
-  Les formulaires (déclaration d'expérience, ajout d'un loueur, alertes de dates)
-  envoient leurs réponses à l'adresse indiquée ci-dessous, au format JSON (POST).
-  Exemples de services gratuits qui fournissent une adresse : Formspree, Getform,
-  ou une table Supabase. Voir le README.
+  Supabase : colle ici l'adresse du projet (Project URL) et la clé publique
+  (anon public key), visibles dans Supabase > Project Settings > API.
+  N'y mets JAMAIS la clé service_role : elle est secrète.
+  La clé publique est faite pour être visible : les tables sont protégées
+  (le site peut seulement ajouter des réponses, jamais les lire).
+  Voir supabase/migrations/ pour la création des tables.
 
-  Tant que l'adresse est vide, le site fonctionne en mode démo : les réponses
-  restent sur l'appareil de la personne et ne sont envoyées nulle part.
+  Sans Supabase, formEndpoint peut recevoir les réponses (Formspree, Getform...).
+  Si les deux sont vides, les réponses restent sur l'appareil de la personne.
 */
 window.CRENO_CONFIG = {
-  formEndpoint: "",
-  departementParDefaut: "91"
+  supabaseUrl: "",
+  supabaseAnonKey: "",
+  formEndpoint: ""
 };

@@ -193,7 +193,7 @@
 {"id":"E1206216020","nom":"Auto École Patricia","adresse":"4 place jules leriche","cp":"62380","ville":"Lumbres","taux":0.6538,"presentes":312,"taux_tous":0.66,"examens_tous":448,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E0306212660","nom":"Auto-École Christelle","adresse":"1116 rue principale","cp":"62120","ville":"Mametz","taux":0.6556,"presentes":180,"taux_tous":0.68,"examens_tous":293,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E0306214430","nom":"Auto École B. Francois","adresse":"365 Avenue de l'Aeroport","cp":"62730","ville":"Marck","labels":["permis1euro","aac"]},
-{"id":"E0706215340","nom":"Auto École Brunet Delattre","adresse":"145 avenue FranÃ§ois Mitterrand","cp":"62730","ville":"Marck","taux":0.6364,"presentes":121,"taux_tous":0.61,"examens_tous":218,"labels":["aac","cs"]},
+{"id":"E0706215340","nom":"Auto École Brunet Delattre","adresse":"145 avenue François Mitterrand","cp":"62730","ville":"Marck","taux":0.6364,"presentes":121,"taux_tous":0.61,"examens_tous":218,"labels":["aac","cs"]},
 {"id":"E0806215480","nom":"Auto École Darre","adresse":"450 av de calais","cp":"62730","ville":"Marck","taux":0.8148,"presentes":27,"taux_tous":0.79,"examens_tous":34,"labels":["aac","cs"]},
 {"id":"E1506200230","nom":"Marles École de Conduite","adresse":"139 Boulevard Gambetta","cp":"62540","ville":"Marles-les-Mines","taux":0.7667,"presentes":90,"taux_tous":0.7,"examens_tous":132,"labels":["permis1euro","cs"]},
 {"id":"E2206200220","nom":"Auto École Contact","adresse":"1 Rue de Louez","cp":"62161","ville":"Maroeuil"},

@@ -9,7 +9,7 @@
 {"id":"E0305501400","nom":"Auto École Marc","adresse":"9 Rue de la Halle","cp":"55200","ville":"Commercy","site":"https://www.autoecolemarc.fr","taux":0.5759,"presentes":158,"taux_tous":0.59,"examens_tous":269,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E2405500010","nom":"Auto École Meliss'a","adresse":"1 Rue de Lattre de Tassigny","cp":"55200","ville":"Commercy","taux":0.5276,"presentes":127,"taux_tous":0.53,"examens_tous":249,"labels":["cs"]},
 {"id":"E1405500010","nom":"Auto École Helvetia","adresse":"2,rue de la Victoire","cp":"55320","ville":"Dieue-sur-Meuse"},
-{"id":"E2105500030","nom":"École de Conduite du Val Dunois","adresse":"31 rue de l'hÃ´tel de ville","cp":"55110","ville":"Dun-sur-Meuse","taux":0.6538,"presentes":78,"taux_tous":0.66,"examens_tous":120,"labels":["qualite","permis1euro","cs"]},
+{"id":"E2105500030","nom":"École de Conduite du Val Dunois","adresse":"31 rue de l'hôtel de ville","cp":"55110","ville":"Dun-sur-Meuse","taux":0.6538,"presentes":78,"taux_tous":0.66,"examens_tous":120,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2405500020","nom":"Omega Permis","adresse":"11 Rue de la Martinique","cp":"55400","ville":"Etain","taux":0.4561,"presentes":57,"taux_tous":0.52,"examens_tous":105,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1305500010","nom":"Auto École Helvetia","adresse":"8, rue des Eparges","cp":"55160","ville":"Fresnes-en-Woevre"},
 {"id":"E1905500020","nom":"Auto École Vicherat","adresse":"22, Rue de Strasbourg","cp":"55500","ville":"Ligny-en-Barrois","labels":["qualite","permis1euro"]},

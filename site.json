@@ -1,0 +1,9 @@
+{
+  "_aide": "Réglages du générateur de pages (scripts/build_site.py). Après une modification, relance : python3 scripts/build_site.py",
+  "adresse_du_site": "https://wlm917.github.io/Creno",
+  "departement_par_defaut": "91",
+  "email_contact": "",
+  "min_declarations_prix": 3,
+  "pages_ville_min_auto_ecoles": 2,
+  "google_site_verification": ""
+}

@@ -18,7 +18,7 @@
 {"id":"E0805801330","nom":"Holidays (Pougues les Eaux)","adresse":"2235 avenue de Paris","cp":"58320","ville":"Germigny-sur-Loire","labels":["qualite","permis1euro","aac"]},
 {"id":"E1705800030","nom":"BURTIN La CharitE","adresse":"3 Avenue de la Gare","cp":"58400","ville":"La Charite-sur-Loire","taux":0.4677,"presentes":62,"taux_tous":0.52,"examens_tous":132,"labels":["cs"]},
 {"id":"E1505800010","nom":"Excel","adresse":"16 Grande rue","cp":"58400","ville":"La Charite-sur-Loire","taux":0.5526,"presentes":38,"taux_tous":0.54,"examens_tous":68,"labels":["cs"]},
-{"id":"E2205800010","nom":"Independance","adresse":"11 Grande Rue FranÃ§ois Mitterand","cp":"58400","ville":"La Charite-sur-Loire","taux":0.4286,"presentes":35,"taux_tous":0.47,"examens_tous":66,"labels":["cs"]},
+{"id":"E2205800010","nom":"Independance","adresse":"11 Grande Rue François Mitterand","cp":"58400","ville":"La Charite-sur-Loire","taux":0.4286,"presentes":35,"taux_tous":0.47,"examens_tous":66,"labels":["cs"]},
 {"id":"E2205800020","nom":"Angle Max","adresse":"61 route d'Avallon","cp":"58140","ville":"Lormes","taux":0.8333,"presentes":42,"taux_tous":0.78,"examens_tous":68,"labels":["cs"]},
 {"id":"E0805802000","nom":"Trajectoire Luzy","adresse":"10 Place du 8 MAI 1945","cp":"58170","ville":"Luzy","taux":0.7419,"presentes":31,"taux_tous":0.67,"examens_tous":51,"labels":["aac","cs"]},
 {"id":"E1604400090_58","nom":"Marianne Formation","adresse":"12 rue Charles BrunelliEre","cp":"44100","ville":"Nantes","taux":0.3,"presentes":20,"taux_tous":0.49,"examens_tous":37,"labels":["enligne","cs"]},

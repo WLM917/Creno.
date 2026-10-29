@@ -30,7 +30,7 @@
 {"id":"E1207304880","nom":"ENT Ballay Olivier","adresse":"19 Rue de la Gare","cp":"73000","ville":"Chambery","taux":0.4138,"presentes":58,"taux_tous":0.52,"examens_tous":102,"labels":["permis1euro","aac","cs"]},
 {"id":"E1507300130","nom":"Les Portiques","adresse":"591 Faubourg Montmelian","cp":"73000","ville":"Chambery","taux":0.5645,"presentes":287,"taux_tous":0.55,"examens_tous":503,"labels":["permis1euro","cs"]},
 {"id":"E0207304220","nom":"RAMBAUD Philippe","adresse":"95 Avenue des Bernardines","cp":"73000","ville":"Chambery","labels":["aac"]},
-{"id":"E1607300040","nom":"SAS Auto-École Online","adresse":"28 rue Saint FranÃ§ois de Sales","cp":"73000","ville":"Chambery","taux":0.4951,"presentes":103,"taux_tous":0.47,"examens_tous":245,"labels":["permis1euro","cs"]},
+{"id":"E1607300040","nom":"SAS Auto-École Online","adresse":"28 rue Saint François de Sales","cp":"73000","ville":"Chambery","taux":0.4951,"presentes":103,"taux_tous":0.47,"examens_tous":245,"labels":["permis1euro","cs"]},
 {"id":"E1907300050","nom":"Sage Conduite des Alpes","adresse":"248 Rue Nicolas Parent","cp":"73000","ville":"Chambery","taux":0.6322,"presentes":261,"taux_tous":0.64,"examens_tous":363,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1807300030","nom":"Anglade Peggy","adresse":"241 Route d'AIX","cp":"73310","ville":"Chindrieux","site":"https://autoecoledulac.bourget@orange.fr"},
 {"id":"E1807300020","nom":"Super Conduite","adresse":"79 Chemin du Cores","cp":"73420","ville":"Drumettaz-Clarafond","taux":0.8182,"presentes":99,"taux_tous":0.79,"examens_tous":137,"labels":["cs"]},

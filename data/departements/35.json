@@ -1,7 +1,7 @@
 {"code": "35", "nom": "Ille-et-Vilaine", "moyenne": 0.6714, "ecoles": [
 {"id":"E1903500130","nom":"France Auto Moto École","adresse":"13 BIS RUE JUDITH D'ACIGNE - 3 rue du Fort de la M","cp":"35690","ville":"Acigne","labels":["qualite","permis1euro"]},
 {"id":"E0303506410","nom":"Bretagne Conduite","adresse":"8 rue des sports","cp":"35370","ville":"Argentre-du-Plessis","site":"https://www.bretagne-conduite.fr/","taux":0.7167,"presentes":360,"taux_tous":0.71,"examens_tous":485,"labels":["qualite","permis1euro","aac","cs"]},
-{"id":"E1203507930","nom":"Armoricaine Bain","adresse":"8 Rue de l' HÃ´tel de Ville","cp":"35470","ville":"Bain-de-Bretagne","taux":0.5871,"presentes":201,"taux_tous":0.61,"examens_tous":309,"labels":["qualite","permis1euro","cs"]},
+{"id":"E1203507930","nom":"Armoricaine Bain","adresse":"8 Rue de l' Hôtel de Ville","cp":"35470","ville":"Bain-de-Bretagne","taux":0.5871,"presentes":201,"taux_tous":0.61,"examens_tous":309,"labels":["qualite","permis1euro","cs"]},
 {"id":"E0203504800","nom":"Bainaise Bain","adresse":"3 place de la republique","cp":"35470","ville":"Bain-de-Bretagne","taux":0.7358,"presentes":530,"taux_tous":0.73,"examens_tous":681,"labels":["permis1euro","aac","cs"]},
 {"id":"E2103500020","nom":"École de Conduite Menard","adresse":"3 Rue du DR Lebreton","cp":"35680","ville":"Bais"},
 {"id":"E0203506220","nom":"Top Conduite Bazouge","adresse":"RUE DU LAVOIR Rue Lavoir","cp":"35560","ville":"Bazouges-la-Perouse","site":"https://www.top.conduite.com","labels":["aac"]},
@@ -42,7 +42,7 @@
 {"id":"E0203503400","nom":"Potier","adresse":"11 bd Deminiac","cp":"35120","ville":"Dol-de-Bretagne","site":"https://auto-ecole.codesrousseau.fr/annuaire-auto-ecoles/dol-de-bretagne/ecole-de-conduite-potier/30492","taux":0.7329,"presentes":161,"taux_tous":0.73,"examens_tous":225,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E0203504970","nom":"Triskel","adresse":"21 Rue Yves Esteve","cp":"35120","ville":"Dol-de-Bretagne","taux":0.7571,"presentes":140,"taux_tous":0.77,"examens_tous":188,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1903500090","nom":"La Blanche Hermine","adresse":"18 bis, rue Normand d'Etrelles","cp":"35370","ville":"Etrelles","site":"https://www.autoecole-lablahehermine.fr/","taux":0.7955,"presentes":88,"taux_tous":0.78,"examens_tous":111,"labels":["qualite","permis1euro","cs"]},
-{"id":"E1303500090","nom":"Boulay Auto École","adresse":"32 Avenue FranÃ§ois Mitterrand","cp":"35300","ville":"Fougeres","taux":0.6762,"presentes":244,"taux_tous":0.69,"examens_tous":301,"labels":["qualite","permis1euro","cs"]},
+{"id":"E1303500090","nom":"Boulay Auto École","adresse":"32 Avenue François Mitterrand","cp":"35300","ville":"Fougeres","taux":0.6762,"presentes":244,"taux_tous":0.69,"examens_tous":301,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1703500040","nom":"Conduit'S Cool","adresse":"9 boulevard saint germain","cp":"35300","ville":"Fougeres"},
 {"id":"E1303500040","nom":"Evasion","adresse":"21 Bd Jean JaurEs","cp":"35300","ville":"Fougeres","taux":0.8588,"presentes":85,"taux_tous":0.86,"examens_tous":96,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2403500080","nom":"Karine Leroux","adresse":"40 rue des feuteries","cp":"35300","ville":"Fougeres","taux":0.7793,"presentes":145,"taux_tous":0.76,"examens_tous":191,"labels":["permis1euro","cs"]},

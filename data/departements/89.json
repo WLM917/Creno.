@@ -51,6 +51,6 @@
 {"id":"E0308901580","nom":"Faule Toucy","adresse":"16 rue Arrault","cp":"89130","ville":"Toucy","taux":0.5849,"presentes":53,"taux_tous":0.58,"examens_tous":86,"labels":["cs"]},
 {"id":"E2208900040","nom":"Jbmf Toucy","adresse":"39 BLD Pierre Larousse","cp":"89130","ville":"Toucy","taux":0.5286,"presentes":70,"taux_tous":0.52,"examens_tous":115,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1208917080","nom":"SVP","adresse":"1 Rue du BRU","cp":"89600","ville":"Vergigny","taux":0.6458,"presentes":48,"taux_tous":0.65,"examens_tous":78,"labels":["cs"]},
-{"id":"E2508900030","nom":"Babc","adresse":"9 rue de l'HÃ´tel de Ville","cp":"89340","ville":"Villeneuve-la-Guyard","taux":0.5,"presentes":44,"taux_tous":0.44,"examens_tous":86,"labels":["cs"]},
+{"id":"E2508900030","nom":"Babc","adresse":"9 rue de l'Hôtel de Ville","cp":"89340","ville":"Villeneuve-la-Guyard","taux":0.5,"presentes":44,"taux_tous":0.44,"examens_tous":86,"labels":["cs"]},
 {"id":"E2508900010","nom":"VsY CONDUITE","adresse":"35 Rue Carnot","cp":"89500","ville":"Villeneuve-sur-Yonne","taux":0.3684,"presentes":19,"taux_tous":0.5,"examens_tous":36,"labels":["cs"]}
 ]}

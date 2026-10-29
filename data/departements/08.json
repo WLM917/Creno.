@@ -39,7 +39,7 @@
 {"id":"E2406900270_8","nom":"Lepermislibre","adresse":"45 Rue de la République","cp":"69170","ville":"Tarare","taux":0.4615,"presentes":13,"taux_tous":0.59,"examens_tous":27,"labels":["enligne","cs"]},
 {"id":"E1100803140","nom":"Auto Ecole DUBOIS CRANCE","adresse":"10 Bis r Ferdinand Buisson","cp":"08000","ville":"Villers-Semeuse","labels":["aac"]},
 {"id":"E2100800040","nom":"Auto École de la Vallee","adresse":"60-61 avenue roger posty","cp":"08320","ville":"Vireux-Wallerand"},
-{"id":"E0200802070","nom":"Auto École Fantini","adresse":"1, rue Jean LurÃ§at","cp":"08440","ville":"Vivier-au-Court"},
+{"id":"E0200802070","nom":"Auto École Fantini","adresse":"1, rue Jean Lurçat","cp":"08440","ville":"Vivier-au-Court"},
 {"id":"I2100800010","nom":"Assim-IL","adresse":"15 rue du champs de foire","cp":"08400","ville":"Vouziers","labels":["associative"]},
 {"id":"E1100803150","nom":"Auto-Ecole MONTLHERY","adresse":"1 rue Gambetta","cp":"08400","ville":"Vouziers","site":"https://www.auto-ecole-montlhery.fr","labels":["qualite","aac"]},
 {"id":"E1400800010","nom":"Auto-École Christelle","adresse":"9 bis rue du Chemin SalE","cp":"08400","ville":"Vouziers","taux":0.7,"presentes":130,"taux_tous":0.71,"examens_tous":190,"labels":["qualite","permis1euro","cs"]},

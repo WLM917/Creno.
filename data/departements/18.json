@@ -23,7 +23,7 @@
 {"id":"E1501800050","nom":"École de Conduite M&M","adresse":"34 Avenue Pierre Beregovoy","cp":"18000","ville":"Bourges","taux":0.7628,"presentes":156,"taux_tous":0.75,"examens_tous":229,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1101802070","nom":"L Espace Conduite","adresse":"6 Route de Jouet","cp":"18320","ville":"Cours-les-Barres","site":"https://www.espace-conduite-18.fr/","taux":0.6122,"presentes":98,"taux_tous":0.58,"examens_tous":191,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E0501801770","nom":"Stop Auto-École Blasquez","adresse":"66 a Rue de l Ermitage","cp":"18130","ville":"Dun-sur-Auron","labels":["aac"]},
-{"id":"E2201800020","nom":"Auto-École de Graã‡ay","adresse":"3 Rue Saint Martin","cp":"18310","ville":"Gracay","taux":0.8276,"presentes":29,"taux_tous":0.77,"examens_tous":44,"labels":["cs"]},
+{"id":"E2201800020","nom":"Auto-École de Graçay","adresse":"3 Rue Saint Martin","cp":"18310","ville":"Gracay","taux":0.8276,"presentes":29,"taux_tous":0.77,"examens_tous":44,"labels":["cs"]},
 {"id":"E1301800030","nom":"Noyat Geraldine Auto École","adresse":"11B Place Henri IV","cp":"18250","ville":"Henrichemont","site":"https://www.auto-ecole-noyat-henrichemont.fr","taux":0.6538,"presentes":52,"taux_tous":0.63,"examens_tous":96,"labels":["permis1euro","cs"]},
 {"id":"E1801800040","nom":"CER la Chapelle","adresse":"5 Bis Route de Marmagne","cp":"18570","ville":"La Chapelle-Saint-Ursin","site":"https://www.cer-juranville.fr","labels":["qualite","permis1euro"]},
 {"id":"E1501800030","nom":"Auto École Milliard","adresse":"32 Grande Rue","cp":"18240","ville":"Lere"},

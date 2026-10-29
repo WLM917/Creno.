@@ -114,7 +114,7 @@
 {"id":"E2207500190_75","nom":"EVS Auto- École","adresse":"44 rue des Dames","cp":"75017","ville":"Paris 17e","taux":0.4828,"presentes":2181,"taux_tous":0.51,"examens_tous":3730,"labels":["enligne","cs"]},
 {"id":"E2507500300","nom":"Ecole de conduite Champerret","adresse":"25 boulevard de la Somme","cp":"75017","ville":"Paris 17e"},
 {"id":"E2507500110","nom":"Excellence Conduite","adresse":"21 Rue Alexandre Charpentier","cp":"75017","ville":"Paris 17e","taux":0.625,"presentes":16,"taux_tous":0.48,"examens_tous":48},
-{"id":"E0107524100","nom":"FranÃ§ois Auto-Ecole","adresse":"72 Rue Truffaut","cp":"75017","ville":"Paris 17e","taux":0.125,"presentes":8,"taux_tous":0.27,"examens_tous":11,"labels":["aac"]},
+{"id":"E0107524100","nom":"François Auto-Ecole","adresse":"72 Rue Truffaut","cp":"75017","ville":"Paris 17e","taux":0.125,"presentes":8,"taux_tous":0.27,"examens_tous":11,"labels":["aac"]},
 {"id":"E1707500140","nom":"JCK Concept","adresse":"113 rue de Tocqueville","cp":"75017","ville":"Paris 17e","taux":0.5333,"presentes":45,"taux_tous":0.46,"examens_tous":178,"labels":["cs"]},
 {"id":"E2407500110","nom":"La Navette","adresse":"14, boulevard de courcelles","cp":"75017","ville":"Paris 17e"},
 {"id":"E2407500060","nom":"Mercure Formation","adresse":"37 Rue Brunetiere","cp":"75017","ville":"Paris 17e","taux":0.5455,"presentes":11,"taux_tous":0.55,"examens_tous":29},

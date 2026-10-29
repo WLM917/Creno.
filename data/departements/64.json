@@ -80,7 +80,7 @@
 {"id":"I2406400020","nom":"Auto-École Associative Pour Vous C'Est Permis","adresse":"46 boulevard Alsace Lorraine","cp":"64000","ville":"Pau","taux":0.2778,"presentes":18,"taux_tous":0.38,"examens_tous":45,"labels":["qualite","permis1euro","associative"]},
 {"id":"E1206409200","nom":"Bleriot Conduite","adresse":"6 rue Louis BlEriot","cp":"64000","ville":"Pau","taux":0.5658,"presentes":228,"taux_tous":0.61,"examens_tous":369,"labels":["permis1euro","cs"]},
 {"id":"E1206409170","nom":"Espace Conduite 37","adresse":"48 avenue Jean Mermoz","cp":"64000","ville":"Pau","taux":0.5765,"presentes":85,"taux_tous":0.65,"examens_tous":146,"labels":["qualite","cs"]},
-{"id":"E2106400090","nom":"Opcf","adresse":"REsidence Villa de la LaÃ¼ 01 Rue des Jardins de la LaÃ¼","cp":"64000","ville":"Pau","taux":0.4138,"presentes":87,"taux_tous":0.4,"examens_tous":166,"labels":["permis1euro","cs"]},
+{"id":"E2106400090","nom":"Opcf","adresse":"REsidence Villa de la Laü 01 Rue des Jardins de la Laü","cp":"64000","ville":"Pau","taux":0.4138,"presentes":87,"taux_tous":0.4,"examens_tous":166,"labels":["permis1euro","cs"]},
 {"id":"E2106400030","nom":"Ossau","adresse":"09 Rue LEon Daran","cp":"64000","ville":"Pau","taux":0.6313,"presentes":198,"taux_tous":0.64,"examens_tous":309,"labels":["qualite","permis1euro","cs"]},
 {"id":"I2406400010","nom":"Sesips","adresse":"76 avenue de Montardon Lotissement nouste Soureilh","cp":"64000","ville":"Pau","labels":["associative"]},
 {"id":"E1306400050","nom":"Start 2000","adresse":"46 rue Carnot","cp":"64000","ville":"Pau","taux":0.6474,"presentes":312,"taux_tous":0.59,"examens_tous":488,"labels":["qualite","permis1euro","cs"]},

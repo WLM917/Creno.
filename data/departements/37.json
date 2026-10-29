@@ -1,7 +1,7 @@
 {"code": "37", "nom": "Indre-et-Loire", "moyenne": 0.6527, "ecoles": [
 {"id":"E1603700100","nom":"Auto École Besnard","adresse":"5 avenue LEonard de Vinci","cp":"37400","ville":"Amboise","taux":0.6667,"presentes":57,"taux_tous":0.67,"examens_tous":87,"labels":["cs"]},
 {"id":"E1503700010","nom":"Auto École XY","adresse":"21BIS Avenue de Tours","cp":"37400","ville":"Amboise","taux":0.6703,"presentes":91,"taux_tous":0.64,"examens_tous":128,"labels":["cs"]},
-{"id":"E0503731410","nom":"Auto-École Franã‡ois","adresse":"43 rue jules ferry","cp":"37400","ville":"Amboise","taux":0.622,"presentes":209,"taux_tous":0.63,"examens_tous":303,"labels":["qualite","permis1euro","aac","cs"]},
+{"id":"E0503731410","nom":"Auto-École François","adresse":"43 rue jules ferry","cp":"37400","ville":"Amboise","taux":0.622,"presentes":209,"taux_tous":0.63,"examens_tous":303,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E1903700040","nom":"Ecole de conduite DES LYCEES","adresse":"57 Rue Mosny","cp":"37400","ville":"Amboise","taux":0.708,"presentes":113,"taux_tous":0.69,"examens_tous":156,"labels":["cs"]},
 {"id":"E1003731820","nom":"Auto École Opigez","adresse":"20 rue Marcel Vignaud","cp":"37420","ville":"Avoine","taux":0.9,"presentes":40,"taux_tous":0.87,"examens_tous":45,"labels":["aac","cs"]},
 {"id":"E1303700050","nom":"Espace Conduite 37 Azay","adresse":"11 Rue Adelaide Riche","cp":"37190","ville":"Azay-le-Rideau","taux":0.6746,"presentes":126,"taux_tous":0.68,"examens_tous":185,"labels":["cs"]},
@@ -46,7 +46,7 @@
 {"id":"E2403700040","nom":"Auto-Ecole C'PERMIS MONNAIE","adresse":"26 rue Nationale","cp":"37380","ville":"Monnaie","taux":0.7209,"presentes":86,"taux_tous":0.72,"examens_tous":109,"labels":["qualite","cs"]},
 {"id":"E1703700070","nom":"Auto École Montbazon","adresse":"43/45 Rue Nationale","cp":"37250","ville":"Montbazon"},
 {"id":"E2403700020","nom":"Festoc Conduite","adresse":"1 bis rue de la GEnEserie","cp":"37270","ville":"Montlouis-sur-Loire","taux":0.6849,"presentes":73,"taux_tous":0.69,"examens_tous":117,"labels":["cs"]},
-{"id":"E0503731450","nom":"Montlouis Auto-École","adresse":"3 AllEe des RalluEres centre commercial les cÃ´teaux","cp":"37270","ville":"Montlouis-sur-Loire","taux":0.6194,"presentes":155,"taux_tous":0.64,"examens_tous":222,"labels":["aac","cs"]},
+{"id":"E0503731450","nom":"Montlouis Auto-École","adresse":"3 AllEe des RalluEres centre commercial les côteaux","cp":"37270","ville":"Montlouis-sur-Loire","taux":0.6194,"presentes":155,"taux_tous":0.64,"examens_tous":222,"labels":["aac","cs"]},
 {"id":"E1303700090","nom":"École de Conduite Montoise","adresse":"77A Rue du Val de l Indre","cp":"37260","ville":"Monts","taux":0.7179,"presentes":156,"taux_tous":0.72,"examens_tous":206,"labels":["cs"]},
 {"id":"E1604400090_37","nom":"Marianne Formation","adresse":"12 rue Charles BrunelliEre","cp":"44100","ville":"Nantes","taux":0.5634,"presentes":355,"taux_tous":0.59,"examens_tous":516,"labels":["enligne","cs"]},
 {"id":"E1803700060","nom":"Auto École Neuille","adresse":"1BIS Avenue de la Deliberation","cp":"37360","ville":"Neuille-Pont-Pierre","taux":0.746,"presentes":63,"taux_tous":0.76,"examens_tous":82,"labels":["qualite","permis1euro","cs"]},

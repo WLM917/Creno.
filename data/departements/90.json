@@ -1,5 +1,5 @@
 {"code": "90", "nom": "Territoire de Belfort", "moyenne": 0.5979, "ecoles": [
-{"id":"E1209009300","nom":"MJ Auto École Bavilliers","adresse":"47 grande rue franÃ§ois mitterrand","cp":"90800","ville":"Bavilliers","taux":0.5408,"presentes":294,"taux_tous":0.56,"examens_tous":466,"labels":["qualite","permis1euro","aac","cs"]},
+{"id":"E1209009300","nom":"MJ Auto École Bavilliers","adresse":"47 grande rue françois mitterrand","cp":"90800","ville":"Bavilliers","taux":0.5408,"presentes":294,"taux_tous":0.56,"examens_tous":466,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E0209008620","nom":"Talon Beaucourt","adresse":"4, rue Charles de Gaulle","cp":"90500","ville":"Beaucourt","labels":["qualite","permis1euro","aac"]},
 {"id":"E2409000010","nom":"Educavision 1ERE Armee","adresse":"3, Rue de la Premiere Armee","cp":"90000","ville":"Belfort","labels":["permis1euro"]},
 {"id":"E2409000020","nom":"Educavision Aristide Briand","adresse":"17 Rue Aristide Briand","cp":"90000","ville":"Belfort","taux":0.6173,"presentes":196,"taux_tous":0.61,"examens_tous":297,"labels":["cs"]},
@@ -13,7 +13,7 @@
 {"id":"E1609000010","nom":"Sence Chatenois","adresse":"78 Rue du Général de Gaulle","cp":"90700","ville":"Chatenois-les-Forges","taux":0.6667,"presentes":42,"taux_tous":0.69,"examens_tous":55,"labels":["cs"]},
 {"id":"E0209006620","nom":"Eisen Chevremont","adresse":"Chemin du Circuit","cp":"90340","ville":"Chevremont","labels":["qualite","aac"]},
 {"id":"E1809000040","nom":"MC Permis Delle","adresse":"26 Rue Saint Nicolas","cp":"90100","ville":"Delle","taux":0.6667,"presentes":123,"taux_tous":0.67,"examens_tous":171,"labels":["cs"]},
-{"id":"E0209008600","nom":"Talon Delle","adresse":"1, Impasse de l'HÃ´pital","cp":"90100","ville":"Delle","taux":0.798,"presentes":203,"taux_tous":0.8,"examens_tous":278,"labels":["qualite","permis1euro","aac","cs"]},
+{"id":"E0209008600","nom":"Talon Delle","adresse":"1, Impasse de l'Hôpital","cp":"90100","ville":"Delle","taux":0.798,"presentes":203,"taux_tous":0.8,"examens_tous":278,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E2109000030","nom":"Berthier Giromagny","adresse":"4 Place des Mineurs","cp":"90200","ville":"Giromagny"},
 {"id":"E1309000010","nom":"MJ Auto-École Giromagny","adresse":"8 Faubourg de Belfort","cp":"90200","ville":"Giromagny","labels":["qualite","permis1euro"]},
 {"id":"E2109000010","nom":"Talon Montreux","adresse":"1 Rue du Banne","cp":"90130","ville":"Montreux-Chateau","labels":["qualite","permis1euro"]},

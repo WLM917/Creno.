@@ -103,7 +103,7 @@
 {"id":"E1705900140","nom":"Auto Moto École Cesr","adresse":"24 Rue de la Cunette","cp":"59140","ville":"Dunkerque","taux":0.5747,"presentes":308,"taux_tous":0.58,"examens_tous":507,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1405900010","nom":"Auto Moto École Cesr","adresse":"8 Rue Paul Machy","cp":"59240","ville":"Dunkerque","labels":["qualite","permis1euro"]},
 {"id":"E0905920370","nom":"Auto École Flipo","adresse":"2 Rue de la Porte d EAU","cp":"59140","ville":"Dunkerque","labels":["aac"]},
-{"id":"E2405900240","nom":"Bonnieâ§clyde Drive'S School","adresse":"40 Boulevard Sainte Barbe","cp":"59140","ville":"Dunkerque","taux":0.4595,"presentes":74,"taux_tous":0.47,"examens_tous":125,"labels":["cs"]},
+{"id":"E2405900240","nom":"Bonnie§clyde Drive'S School","adresse":"40 Boulevard Sainte Barbe","cp":"59140","ville":"Dunkerque","taux":0.4595,"presentes":74,"taux_tous":0.47,"examens_tous":125,"labels":["cs"]},
 {"id":"E0305912260","nom":"Brunet Christophe","adresse":"147 Avenue de la Mer","cp":"59240","ville":"Dunkerque","taux":0.6078,"presentes":51,"taux_tous":0.63,"examens_tous":86,"labels":["aac"]},
 {"id":"E1905900330","nom":"Caron","adresse":"9 Rue du President Poincare","cp":"59140","ville":"Dunkerque","taux":0.5032,"presentes":316,"taux_tous":0.52,"examens_tous":573,"labels":["permis1euro","cs"]},
 {"id":"E1905900360","nom":"Caron","adresse":"40 Rue Paul Bert","cp":"59240","ville":"Dunkerque","labels":["permis1euro"]},

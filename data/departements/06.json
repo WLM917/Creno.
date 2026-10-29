@@ -106,7 +106,7 @@
 {"id":"E0200600550","nom":"J","adresse":"14 Rue Dante","cp":"06000","ville":"Nice","taux":0.5435,"presentes":92,"taux_tous":0.59,"examens_tous":165,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E1400600040","nom":"Lava Artero","adresse":"52 Ave Cyrille Besset","cp":"06100","ville":"Nice","site":"https://romain.artero@cer-reseau.com","taux":0.6,"presentes":160,"taux_tous":0.6,"examens_tous":249,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2000600010","nom":"Martin Gagne","adresse":"7 9 Avenue de Fabron les Grands Cedres BT d","cp":"06200","ville":"Nice","taux":0.6525,"presentes":118,"taux_tous":0.7,"examens_tous":159,"labels":["qualite","permis1euro"]},
-{"id":"E2300600030","nom":"Mcjs","adresse":"81 boulevard FranÃ§ois Grosse","cp":"06000","ville":"Nice","taux":0.6549,"presentes":142,"taux_tous":0.67,"examens_tous":206,"labels":["cs"]},
+{"id":"E2300600030","nom":"Mcjs","adresse":"81 boulevard François Grosse","cp":"06000","ville":"Nice","taux":0.6549,"presentes":142,"taux_tous":0.67,"examens_tous":206,"labels":["cs"]},
 {"id":"E2500600030","nom":"Midi 12","adresse":"48 Rue Vernier","cp":"06000","ville":"Nice","taux":0.3077,"presentes":39,"taux_tous":0.42,"examens_tous":72,"labels":["qualite","permis1euro","cs"]},
 {"id":"I2300600010","nom":"Mobilis 06 Nice","adresse":"10 Avenue Pierre Isnard Espace Icardo","cp":"06200","ville":"Nice","labels":["associative"]},
 {"id":"E1700600010","nom":"SAS Krystal","adresse":"07 Rue Michelet","cp":"06100","ville":"Nice","site":"https://classpermis.com/","taux":0.4961,"presentes":254,"taux_tous":0.52,"examens_tous":479,"labels":["qualite","permis1euro","cs"]},
@@ -143,7 +143,7 @@
 {"id":"E2300600150","nom":"Auto-École l'Elite","adresse":"34 Rue Hoche","cp":"06220","ville":"Vallauris","taux":0.4615,"presentes":26,"taux_tous":0.46,"examens_tous":50},
 {"id":"E1900600070","nom":"Kcjs","adresse":"70 Avenue de la Liberté Resd l Empereur","cp":"06220","ville":"Vallauris","taux":0.6607,"presentes":168,"taux_tous":0.68,"examens_tous":233,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2400600080","nom":"Auto-École Pegase","adresse":"Avenue Emile Hugues Le PrEsident II","cp":"06140","ville":"Vence","taux":0.6105,"presentes":190,"taux_tous":0.64,"examens_tous":328,"labels":["qualite","permis1euro","cs"]},
-{"id":"E1800600080","nom":"CH'TI Conduite","adresse":"L' Athena Bã‚t B 61 Avenue Rhinet Danube","cp":"06140","ville":"Vence","taux":0.6516,"presentes":155,"taux_tous":0.6,"examens_tous":256,"labels":["cs"]},
+{"id":"E1800600080","nom":"CH'TI Conduite","adresse":"L' Athena BÂT B 61 Avenue Rhinet Danube","cp":"06140","ville":"Vence","taux":0.6516,"presentes":155,"taux_tous":0.6,"examens_tous":256,"labels":["cs"]},
 {"id":"E0200601180","nom":"Genia","adresse":"134 avenue Emile Hugues","cp":"06140","ville":"Vence","taux":0.5957,"presentes":47,"taux_tous":0.61,"examens_tous":72,"labels":["aac"]},
 {"id":"E2300600060","nom":"Bessieres","adresse":"10 Avenue Foch","cp":"06230","ville":"Villefranche-sur-Mer","taux":0.6,"presentes":45,"taux_tous":0.56,"examens_tous":85},
 {"id":"E2400600110","nom":"Milan","adresse":"8 Avenue de la Liberté","cp":"06270","ville":"Villeneuve-Loubet","taux":0.6667,"presentes":3,"taux_tous":0.67,"examens_tous":3,"labels":["qualite","permis1euro"]}

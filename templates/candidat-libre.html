@@ -1,0 +1,98 @@
+<div class="wrap stack-lg page-pad">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Passer le permis en candidat libre</h1>
+    <p class="lede">Tu t'entraînes avec un proche, tu réserves toi-même ta date d'examen et tu loues une voiture à double commande pour le jour J. Moins cher qu'un forfait, mais c'est toi qui organises tout.</p>
+  </header>
+
+  <section class="block" aria-labelledby="steps-title">
+    <h2 id="steps-title">Les étapes</h2>
+    <ol class="steps">
+      <li>
+        <h3>Avoir ton code et ton numéro NEPH</h3>
+        <p>Le NEPH est le numéro de ton dossier de permis. Garde aussi ton attestation d'inscription : tu en as besoin pour créer ton compte.</p>
+      </li>
+      <li>
+        <h3>Créer ton compte RdvPermis et déclarer ton accompagnateur</h3>
+        <p>Ton accompagnateur est un proche qui a le permis depuis au moins 5 ans. Tu le déclares en ligne, sur ton compte.</p>
+      </li>
+      <li>
+        <h3>Réserver ta date d'examen</h3>
+        <p>Tu choisis un centre, une date et un créneau. La confirmation arrive par e-mail.</p>
+      </li>
+      <li>
+        <h3>Louer une voiture à double commande pour le jour J</h3>
+        <p>Elle doit être assurée, avec double frein, double embrayage et des rétroviseurs pour l'inspecteur.</p>
+      </li>
+    </ol>
+    <a class="btn btn-signal" href="https://candidat.permisdeconduire.gouv.fr" target="_blank" rel="noopener">Ouvrir RdvPermis, le site officiel</a>
+  </section>
+
+  <section class="block" aria-labelledby="rent-title">
+    <h2 id="rent-title">Louer une voiture à double commande</h2>
+    <p class="lede">L'annuaire démarre. Vérifie toujours le tarif, l'assurance et la conformité pour l'examen directement avec le loueur.</p>
+    <ul class="renters">
+      {{loueurs}}
+    </ul>
+    <details class="disclose">
+      <summary>Tu loues des voitures à double commande ? Ajoute ton agence</summary>
+      <form class="form-grid" id="renter-form" data-form-type="loueur">
+        <div class="field"><label for="renter-nom">Nom de l'agence</label><input id="renter-nom" name="nom" required autocomplete="organization" maxlength="120"></div>
+        <div class="field"><label for="renter-ville">Ville</label><input id="renter-ville" name="ville" required autocomplete="address-level2" maxlength="80"></div>
+        <div class="field"><label for="renter-site">Site web ou téléphone</label><input id="renter-site" name="contact" required maxlength="200"></div>
+        <div class="field"><label for="renter-prix">Prix de l'heure (€)</label><input id="renter-prix" name="prix_heure" type="number" inputmode="numeric" min="0" max="500"></div>
+        <div class="form-actions field-wide">
+          <button class="btn" type="submit">Proposer mon agence</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </details>
+  </section>
+
+  <section class="block" aria-labelledby="date-title">
+    <h2 id="date-title">Trouver une date plus vite</h2>
+    <ul class="tips">
+      <li>Garde ton dossier prêt, NEPH et accompagnateur déclarés, pour réserver dès qu'une place apparaît.</li>
+      <li>Regarde aussi les centres d'examen des départements voisins.</li>
+      <li>Des places se libèrent quand d'autres candidats annulent. Reviens vérifier à différents moments de la journée.</li>
+      <li>Si tu ne peux pas venir, annule le plus tôt possible pour éviter d'attendre avant de réserver à nouveau.</li>
+    </ul>
+
+    <div class="rules">
+      <h3>Les délais si tu annules</h3>
+      <dl>
+        <div><dt>Plus de 6 jours avant</dt><dd>Tu peux réserver à nouveau tout de suite</dd></div>
+        <div><dt>Moins de 6 jours avant</dt><dd>30 jours d'attente</dd></div>
+        <div><dt>Absence sans motif sérieux</dt><dd>40 jours d'attente</dd></div>
+      </dl>
+      <p class="small">Vérifie les règles à jour sur RdvPermis avant d'annuler.</p>
+    </div>
+
+    <p class="pledge">Créno ne réserve jamais de place à ta place et n'utilise aucun robot sur RdvPermis.</p>
+
+    <div class="soon">
+      <h3>Bientôt : les alertes entre candidats</h3>
+      <p>Quand un candidat voit des places apparaître dans un département, tout le monde est prévenu. Laisse ton e-mail pour être averti du lancement.</p>
+      <form class="inline-form" id="alert-form" data-form-type="alerte">
+        <div class="field"><label for="alert-email">E-mail</label><input id="alert-email" name="email" type="email" required autocomplete="email" maxlength="200"></div>
+        <div class="field"><label for="alert-dep">Département</label>
+          <select id="alert-dep" name="departement" required>
+            <option value="">Choisis</option>
+            {{options_departements}}
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="submit">Me prévenir</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+      <p class="small">Ton e-mail sert uniquement à te prévenir du lancement des alertes. <a href="{{root}}confidentialite/">Confidentialité</a></p>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="ae-title">
+    <h2 id="ae-title">Tu préfères une auto-école ?</h2>
+    <p>Compare les auto-écoles de ton département sur leur taux de réussite officiel.</p>
+    <a class="link-strong" href="{{root}}auto-ecoles/">Voir le classement des auto-écoles</a>
+  </section>
+</div>

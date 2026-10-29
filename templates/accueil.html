@@ -1,0 +1,77 @@
+<div class="road">
+  <div class="wrap road-inner">
+    <div class="hero-grid">
+      <div class="hero-main">
+        <h1 class="hero-title">Ton permis, au prix que tu vas vraiment payer.</h1>
+        <p class="hero-sub">Compare les {{nb_classees}} auto-écoles de France qui ont un taux de réussite officiel, et vois ce que le permis coûte vraiment, heures en plus comprises. Ou passe-le en candidat libre.</p>
+        {{recherche}}
+      </div>
+      {{poteau}}
+    </div>
+
+    <nav class="gantry" aria-label="Choisir un chemin">
+      <a class="sign" href="{{root}}auto-ecoles/">
+        <svg class="sign-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M30 30 L11 11 M11 11 H25 M11 11 V25" /></svg>
+        <span class="sign-dest">Choisir mon auto-école</span>
+        <span class="sign-sub">Classement par département</span>
+      </a>
+      <a class="sign" href="{{root}}candidat-libre/">
+        <svg class="sign-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34 V7 M20 7 L10 17 M20 7 L30 17" /></svg>
+        <span class="sign-dest">Passer en candidat libre</span>
+        <span class="sign-sub">Voiture double commande, date d'examen</span>
+      </a>
+      <a class="sign" href="{{root}}cout-du-permis/">
+        <svg class="sign-arrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M10 30 L29 11 M29 11 H15 M29 11 V25" /></svg>
+        <span class="sign-dest">Calculer le coût réel</span>
+        <span class="sign-sub">Forfait, heures en plus, examen</span>
+      </a>
+    </nav>
+  </div>
+  <div class="lane" aria-hidden="true"></div>
+</div>
+
+<div class="wrap stack-lg page-pad">
+  <section class="block" aria-labelledby="top-title">
+    <div class="block-head">
+      <h2 id="top-title">Les mieux classées en {{dep_defaut_nom}}</h2>
+      <a class="link-strong" href="{{root}}{{dep_defaut_url}}">Voir les {{dep_defaut_nb}} auto-écoles</a>
+    </div>
+    <p class="zone-summary">Réussite moyenne au 1er passage : {{dep_defaut_moyenne}} en {{dep_defaut_nom}}, {{moyenne_nationale}} en France.</p>
+    <ol class="ranking ranking-compact">
+      {{top_defaut}}
+    </ol>
+  </section>
+
+  <section class="block" aria-labelledby="idf-title">
+    <h2 id="idf-title">Parcourir l'Île-de-France</h2>
+    <ul class="dep-grid">
+      {{deps_idf}}
+    </ul>
+    <a class="link-strong" href="{{root}}auto-ecoles/">Tous les départements</a>
+  </section>
+
+  <section class="block" aria-labelledby="paths-title">
+    <h2 id="paths-title">Auto-école ou candidat libre ?</h2>
+    <p class="lede">Les deux mènent au même examen. Ce qui change, c'est qui s'occupe de quoi, et combien tu paies.</p>
+    <div class="table-scroll">
+      <table class="compare">
+        <thead>
+          <tr><th scope="col"><span class="visually-hidden">Question</span></th><th scope="col">Avec une auto-école</th><th scope="col">En candidat libre</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Qui réserve la date d'examen</th><td data-label="Auto-école">L'auto-école, avec ton accord</td><td data-label="Candidat libre">Toi, sur RdvPermis, avec ton numéro NEPH</td></tr>
+          <tr><th scope="row">La voiture</th><td data-label="Auto-école">Celle de l'auto-école</td><td data-label="Candidat libre">Une voiture à double commande que tu loues</td></tr>
+          <tr><th scope="row">Le jour de l'examen</th><td data-label="Auto-école">Organisé par l'auto-école</td><td data-label="Candidat libre">Un proche qui a le permis depuis au moins 5 ans t'accompagne</td></tr>
+          <tr><th scope="row">Ce que tu paies</th><td data-label="Auto-école">Un forfait, puis les heures en plus</td><td data-label="Candidat libre">La location de la voiture, à l'heure</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <a class="link-strong" href="{{root}}candidat-libre/">Tout savoir sur le candidat libre</a>
+  </section>
+
+  <section class="block note-block" aria-labelledby="trust-title">
+    <h2 id="trust-title">Personne ne paie pour être en haut</h2>
+    <p>Le classement part des taux de réussite publiés par la Sécurité routière, puis ajoute le coût réel déclaré par les élèves. La formule est publique, et une auto-école ne peut pas acheter sa place.</p>
+    <a class="link-strong" href="{{root}}methode/">Lire la méthode de calcul</a>
+  </section>
+</div>

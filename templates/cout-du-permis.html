@@ -1,0 +1,41 @@
+<div class="wrap stack-lg page-pad">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Combien coûte vraiment le permis de conduire ?</h1>
+    <p class="lede">Le prix affiché par une auto-école couvre rarement tout. Entre son devis et le nombre d'heures dont tu penses avoir besoin : le calcul se fait tout seul.</p>
+  </header>
+
+  <section class="block calc" aria-labelledby="calc-title">
+    <h2 id="calc-title">Calcule le coût réel d'un devis</h2>
+    <div class="calc-grid">
+      <form class="calc-form" id="calc" onsubmit="return false">
+        <div class="field"><label for="calc-forfait">Prix du forfait (€)</label><input id="calc-forfait" type="number" inputmode="numeric" min="0" step="10" value="1390"></div>
+        <div class="field"><label for="calc-incluses">Heures de conduite incluses</label><input id="calc-incluses" type="number" inputmode="numeric" min="0" step="1" value="20"></div>
+        <div class="field"><label for="calc-prix">Prix d'une heure en plus (€)</label><input id="calc-prix" type="number" inputmode="numeric" min="0" step="1" value="52"></div>
+        <div class="field"><label for="calc-besoin">Heures dont tu penses avoir besoin</label><input id="calc-besoin" type="number" inputmode="numeric" min="0" step="1" value="30"></div>
+        <div class="field"><label for="calc-frais">Frais de présentation à l'examen (€)</label><input id="calc-frais" type="number" inputmode="numeric" min="0" step="5" value="60"></div>
+        <div class="field"><label for="calc-budget">Ton budget (€)</label><input id="calc-budget" type="number" inputmode="numeric" min="0" step="50" value="1800"></div>
+      </form>
+      <div class="calc-result" aria-live="polite">
+        <p class="calc-label">Coût réel estimé</p>
+        <p class="calc-total" id="calc-total">—</p>
+        <dl class="calc-lines" id="calc-lines"></dl>
+        <p class="calc-verdict" id="calc-verdict"></p>
+      </div>
+    </div>
+    <p class="small">Les valeurs de départ sont un exemple. Remplace-les par celles de ton devis.</p>
+  </section>
+
+  <section class="block" aria-labelledby="hours-title">
+    <h2 id="hours-title">Pourquoi le prix dépasse souvent le forfait</h2>
+    <ul class="tips">
+      <li>Un forfait contient un nombre d'heures fixe. Beaucoup d'élèves en font davantage avant d'être prêts, et chaque heure en plus se paie à part.</li>
+      <li>Certaines auto-écoles facturent aussi la présentation à l'examen.</li>
+      <li>Demande toujours un devis écrit avec le prix d'une heure en plus et les frais d'examen.</li>
+      <li>Un taux de réussite élevé compte aussi : repasser l'examen coûte du temps et des heures.</li>
+    </ul>
+    <a class="link-strong" href="{{root}}auto-ecoles/">Comparer les taux de réussite dans ton département</a>
+  </section>
+
+  {{formulaire_prix}}
+</div>

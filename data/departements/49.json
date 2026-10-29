@@ -118,7 +118,7 @@
 {"id":"E1704900120","nom":"Nord 44","adresse":"6 Avenue du Général de Gaulle","cp":"49420","ville":"Pouance","labels":["qualite","permis1euro"]},
 {"id":"E1204909810","nom":"Easy les Banchais","adresse":"36, boulevard de la Romanerie","cp":"49124","ville":"Saint-Barthelemy-d'Anjou","taux":0.715,"presentes":200,"taux_tous":0.7,"examens_tous":277,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E1904900220","nom":"Saint Barthelemy Auto-École","adresse":"31 B Route de Beaufort","cp":"49124","ville":"Saint-Barthelemy-d'Anjou","taux":0.6944,"presentes":108,"taux_tous":0.72,"examens_tous":179,"labels":["qualite","permis1euro","cs"]},
-{"id":"E1104909600","nom":"École de Conduite Blanchet","adresse":"4, rue Jean LurÃ§at","cp":"49124","ville":"Saint-Barthelemy-d'Anjou","labels":["aac"]},
+{"id":"E1104909600","nom":"École de Conduite Blanchet","adresse":"4, rue Jean Lurçat","cp":"49124","ville":"Saint-Barthelemy-d'Anjou","labels":["aac"]},
 {"id":"E1704900070","nom":"Sarl Auto École des Peupliers","adresse":"58 Rue Pasteur","cp":"49280","ville":"Saint-Christophe-du-Bois"},
 {"id":"E0204908490","nom":"École de Conduite Vincent","adresse":"Centre cial La BelliEre-25 rue de la belliEre MAUGES-SUR-LOIRE","cp":"49410","ville":"Saint-Florent-le-Vieil","labels":["qualite","permis1euro","aac"]},
 {"id":"E0204907670","nom":"Auto-École Berthelot","adresse":"2 Rue Saint Augustin","cp":"49170","ville":"Saint-Georges-sur-Loire","taux":0.7612,"presentes":67,"taux_tous":0.69,"examens_tous":97,"labels":["aac","cs"]},

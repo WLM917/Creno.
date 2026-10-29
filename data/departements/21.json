@@ -59,7 +59,7 @@
 {"id":"E1604400090_21","nom":"Marianne Formation","adresse":"12 rue Charles BrunelliEre","cp":"44100","ville":"Nantes","taux":0.4884,"presentes":258,"taux_tous":0.52,"examens_tous":418,"labels":["enligne","cs"]},
 {"id":"E2502100040","nom":"Auto-École Saint Nicolas ( Aesn) / les Chilenes","adresse":"1 Avenue Lazare Carnot","cp":"21340","ville":"Nolay","labels":["qualite","permis1euro"]},
 {"id":"E1602100060","nom":"Les Chilenes Nolay","adresse":"43 Rue de la République","cp":"21340","ville":"Nolay","labels":["qualite","permis1euro"]},
-{"id":"E0302103190","nom":"SARL Ecole de Conduite de la CÃ´te","adresse":"22 grande rue","cp":"21700","ville":"Nuits-Saint-Georges","taux":0.726,"presentes":73,"taux_tous":0.72,"examens_tous":104,"labels":["qualite","permis1euro","aac","cs"]},
+{"id":"E0302103190","nom":"SARL Ecole de Conduite de la Côte","adresse":"22 grande rue","cp":"21700","ville":"Nuits-Saint-Georges","taux":0.726,"presentes":73,"taux_tous":0.72,"examens_tous":104,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E1002104690","nom":"Saint Georges","adresse":"1 Pl. de la REpublique","cp":"21700","ville":"Nuits-Saint-Georges","taux":0.7763,"presentes":76,"taux_tous":0.76,"examens_tous":104,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E2207500190_21","nom":"EVS Auto- École","adresse":"44 rue des Dames","cp":"75017","ville":"Paris 17e","taux":0.5333,"presentes":75,"taux_tous":0.51,"examens_tous":135,"labels":["enligne","cs"]},
 {"id":"E0202104020","nom":"EDEN (Pontailler)","adresse":"56 rue Saint-Jean","cp":"21270","ville":"Pontailler-sur-Saone","labels":["qualite","permis1euro","aac"]},

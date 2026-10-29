@@ -1,0 +1,44 @@
+<div class="wrap stack-lg page-pad prose">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Comment on calcule le classement</h1>
+    <p class="lede">Un classement n'est utile que si tu sais comment il est fait. Voici la formule complète.</p>
+  </header>
+
+  <section class="block" aria-labelledby="m-index">
+    <h2 id="m-index">L'indice Créno, sur 100</h2>
+    <p class="formula">Indice = 60 % réussite + 40 % coût réel</p>
+    <p>Chaque auto-école est comparée aux autres auto-écoles de son département. La meilleure du département sur un critère obtient 100, la moins bonne obtient 0.</p>
+    <p>Tant qu'aucun élève n'a déclaré de prix dans un département, l'indice se base uniquement sur la réussite.</p>
+  </section>
+
+  <section class="block" aria-labelledby="m-taux">
+    <h2 id="m-taux">La réussite</h2>
+    <p>On utilise le taux de réussite officiel à l'examen pratique du permis B, au premier passage, publié par la Sécurité routière. C'est la part des élèves qui ont réussi la première fois qu'ils se sont présentés.</p>
+    <p>Une auto-école qui a présenté 20 élèves peut afficher 80 % un peu par chance. Tant qu'elle a peu d'élèves présentés, on rapproche son taux de la moyenne du département :</p>
+    <p class="formula">Taux ajusté = (taux × présentés + moyenne du département × 40) ÷ (présentés + 40)</p>
+    <p>Plus une auto-école présente d'élèves, plus son taux ajusté est proche de son vrai taux. Le site affiche toujours le vrai taux : le taux ajusté sert seulement à calculer l'indice.</p>
+    <p>Les auto-écoles sans taux publié, souvent récentes ou avec peu d'élèves, sont listées à part et ne sont pas classées.</p>
+  </section>
+
+  <section class="block" aria-labelledby="m-cout">
+    <h2 id="m-cout">Le coût réel</h2>
+    <p class="formula">Coût réel = forfait + heures en plus × prix de l'heure + frais de présentation à l'examen</p>
+    <p>Les heures en plus, c'est la différence entre le nombre d'heures que font vraiment les élèves et les heures incluses dans le forfait. Ces chiffres viennent des déclarations des élèves : on prend la valeur du milieu (la médiane), pour qu'une réponse extrême ne fausse pas tout.</p>
+    <p>Un prix s'affiche à partir de {{min_declarations}} déclarations pour la même auto-école. En attendant, elle reçoit une note de prix neutre de 50 sur 100.</p>
+  </section>
+
+  <section class="block note-block" aria-labelledby="m-pay">
+    <h2 id="m-pay">Qui paie quoi</h2>
+    <p>Aucune auto-école ne paie pour apparaître ou monter dans ce classement. Si un jour des auto-écoles paient pour être mises en avant, ce sera écrit clairement à côté de leur nom, et ça ne changera pas leur indice.</p>
+  </section>
+
+  <section class="block" aria-labelledby="m-src">
+    <h2 id="m-src">Les sources</h2>
+    <ul class="tips">
+      <li>Taux de réussite, adresses et labels : fichier officiel des auto-écoles de la <a href="https://autoecoles.securite-routiere.gouv.fr/" target="_blank" rel="noopener">Sécurité routière</a>, mis à jour chaque trimestre.</li>
+      <li>Prix et heures : déclarations des élèves sur Créno.</li>
+    </ul>
+    <p class="small">Fichier importé le {{date_import}} : {{nb_auto_ecoles}} auto-écoles enseignent le permis B, dont {{nb_classees}} avec un taux de réussite publié. Réussite moyenne au 1er passage en France : {{moyenne_nationale}}.</p>
+  </section>
+</div>

@@ -1,0 +1,39 @@
+<div class="wrap stack-lg page-pad">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Préparer le jour de l'examen du permis</h1>
+    <p class="lede">La checklist du candidat libre. Coche au fur et à mesure : elle reste enregistrée sur ton téléphone.</p>
+  </header>
+
+  <section class="block checklist-block" aria-labelledby="check-title">
+    <div class="block-head">
+      <h2 id="check-title">À avoir avec toi</h2>
+      <p class="progress" id="check-progress" aria-live="polite"></p>
+    </div>
+    <ul class="checklist" id="checklist">
+      <li><input type="checkbox" id="check-convocation"><label for="check-convocation">Ta convocation, reçue par e-mail</label></li>
+      <li><input type="checkbox" id="check-identite"><label for="check-identite">Ta pièce d'identité</label></li>
+      <li><input type="checkbox" id="check-voiture"><label for="check-voiture">La voiture à double commande, assurée, avec double frein, double embrayage et rétroviseurs pour l'inspecteur</label></li>
+      <li><input type="checkbox" id="check-accompagnateur"><label for="check-accompagnateur">Ton accompagnateur, celui que tu as déclaré, avec le permis depuis au moins 5 ans</label></li>
+      <li><input type="checkbox" id="check-trajet"><label for="check-trajet">Le trajet jusqu'au centre d'examen, prévu avec de l'avance</label></li>
+    </ul>
+    <p class="small">Ta convocation indique ce qu'il faut apporter. Relis-la la veille.</p>
+  </section>
+
+  <div class="two-col">
+    <section class="block" aria-labelledby="result-title">
+      <h2 id="result-title">Ton résultat</h2>
+      <p>Il est disponible sous 48 heures, hors week-ends et jours fériés, sur RdvPermis.</p>
+    </section>
+    <section class="block" aria-labelledby="fail-title">
+      <h2 id="fail-title">Si c'est un échec</h2>
+      <p>Le délai avant de pouvoir repasser dépend de ta note : plus elle est basse, plus il est long. Utilise ce temps pour reprendre quelques heures sur les points qui ont coincé.</p>
+    </section>
+  </div>
+
+  <section class="block note-block" aria-labelledby="next-title">
+    <h2 id="next-title">Pas encore de voiture pour le jour J ?</h2>
+    <p>En candidat libre, tu dois venir avec une voiture à double commande assurée.</p>
+    <a class="link-strong" href="{{root}}candidat-libre/">Trouver un loueur</a>
+  </section>
+</div>

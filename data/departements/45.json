@@ -95,9 +95,9 @@
 {"id":"E1704500120","nom":"Montagne Saint Jean","adresse":"66 rue Charles Beauhaire","cp":"45140","ville":"Saint-Jean-de-la-Ruelle","taux":0.7158,"presentes":95,"taux_tous":0.68,"examens_tous":136,"labels":["cs"]},
 {"id":"I1004500030","nom":"Respire","adresse":"16 rEsidences les BEnardiEres","cp":"45140","ville":"Saint-Jean-de-la-Ruelle","taux":0.5741,"presentes":54,"taux_tous":0.56,"examens_tous":81,"labels":["qualite","permis1euro","associative","cs"]},
 {"id":"E2304500020","nom":"Saran Conduite","adresse":"585 Ancienne Route de Chartres","cp":"45770","ville":"Saran","site":"https://www.saraonduite.com/","taux":0.641,"presentes":273,"taux_tous":0.66,"examens_tous":380,"labels":["qualite","cs"]},
-{"id":"E1204507700","nom":"Semoy_ae","adresse":"30 Place franÃ§ois Miterrand","cp":"45400","ville":"Semoy","taux":0.6813,"presentes":91,"taux_tous":0.7,"examens_tous":124,"labels":["aac","cs"]},
+{"id":"E1204507700","nom":"Semoy_ae","adresse":"30 Place françois Miterrand","cp":"45400","ville":"Semoy","taux":0.6813,"presentes":91,"taux_tous":0.7,"examens_tous":124,"labels":["aac","cs"]},
 {"id":"E1504500030","nom":"CODA CONDUITE Sully","adresse":"Rue Rene Cassin","cp":"45600","ville":"Sully-sur-Loire","taux":0.8889,"presentes":9,"taux_tous":0.8,"examens_tous":15},
-{"id":"E0904507510","nom":"Fremont AE","adresse":"31 rue du Faubourg St franÃ§ois","cp":"45600","ville":"Sully-sur-Loire","taux":0.697,"presentes":132,"taux_tous":0.71,"examens_tous":185,"labels":["qualite","permis1euro","aac","cs"]},
+{"id":"E0904507510","nom":"Fremont AE","adresse":"31 rue du Faubourg St françois","cp":"45600","ville":"Sully-sur-Loire","taux":0.697,"presentes":132,"taux_tous":0.71,"examens_tous":185,"labels":["qualite","permis1euro","aac","cs"]},
 {"id":"E2406900270_45","nom":"Lepermislibre","adresse":"45 Rue de la République","cp":"69170","ville":"Tarare","taux":0.4909,"presentes":55,"taux_tous":0.43,"examens_tous":111,"labels":["enligne","cs"]},
 {"id":"E1704500150","nom":"Trainou Conduite","adresse":"1 rue du gros baril","cp":"45470","ville":"Trainou","labels":["qualite","permis1euro"]},
 {"id":"E2004500030","nom":"Villemandeur Auto École","adresse":"34 rue alphonse daudet","cp":"45700","ville":"Villemandeur","taux":0.6168,"presentes":107,"taux_tous":0.58,"examens_tous":132,"labels":["cs"]}

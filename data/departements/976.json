@@ -28,7 +28,7 @@
 {"id":"E2497600020","nom":"Mon Choix","adresse":"630 Route Nationale Tsoundzou I","cp":"97600","ville":"Mamoudzou","taux":0.4948,"presentes":97,"taux_tous":0.54,"examens_tous":167},
 {"id":"E2497600030","nom":"Top Conduite","adresse":"14 Rue Maevantana Mtsapere","cp":"97600","ville":"Mamoudzou","taux":0.3871,"presentes":31,"taux_tous":0.37,"examens_tous":65,"labels":["cs"]},
 {"id":"E1209E00020","nom":"École de Conduite Mahoraise","adresse":"18 rue Paski","cp":"97600","ville":"Mamoudzou","taux":0.557,"presentes":228,"taux_tous":0.58,"examens_tous":355,"labels":["cs"]},
-{"id":"I2197600010","nom":"Association Adinm","adresse":"952 Route dEpartementale Ã M'TSAMBORO","cp":"97630","ville":"Mtsamboro","taux":0.2,"presentes":10,"taux_tous":0.33,"examens_tous":15,"labels":["associative"]},
+{"id":"I2197600010","nom":"Association Adinm","adresse":"952 Route dEpartementale à M'TSAMBORO","cp":"97630","ville":"Mtsamboro","taux":0.2,"presentes":10,"taux_tous":0.33,"examens_tous":15,"labels":["associative"]},
 {"id":"E1997600120","nom":"Auto École Mahaba","adresse":"1094 Route Nationale Hamjago","cp":"97630","ville":"Mtsamboro","taux":0.2857,"presentes":7,"taux_tous":0.54,"examens_tous":13},
 {"id":"E2597600040","nom":"Wupuananga Conduite","adresse":"5 Chemin Fatima Bataillon","cp":"97630","ville":"Mtsamboro"},
 {"id":"E1597600080","nom":"Éducation Automobile","adresse":"QUARTIER CAVANI 27 AVENUE DU STADE D'HAMJAGO Hamjago","cp":"97630","ville":"Mtsamboro","taux":0.4714,"presentes":70,"taux_tous":0.53,"examens_tous":121},

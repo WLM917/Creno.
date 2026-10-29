@@ -50,7 +50,7 @@
 {"id":"E2508400040","nom":"Auto École Pyramide","adresse":"602 Avenue de la Canebiere","cp":"84460","ville":"Cheval-Blanc","site":"https://www.conduiteacademy.com/"},
 {"id":"E1808400030","nom":"Scisco Formation","adresse":"10 Rue Jean Bruguiere","cp":"84350","ville":"Courthezon"},
 {"id":"E1608400020","nom":"Auto Ecole Palayer 84","adresse":"105, Avenue du Général de Gaulle","cp":"84320","ville":"Entraigues-sur-la-Sorgue","labels":["permis1euro"]},
-{"id":"E2208400040","nom":"Cã–te Conduite","adresse":"77 avenue de l rEpublique","cp":"84320","ville":"Entraigues-sur-la-Sorgue","labels":["qualite","permis1euro"]},
+{"id":"E2208400040","nom":"Cöte Conduite","adresse":"77 avenue de l rEpublique","cp":"84320","ville":"Entraigues-sur-la-Sorgue","labels":["qualite","permis1euro"]},
 {"id":"I1808400020","nom":"Aile","adresse":"325 route de la maison d'enfants St Antoine","cp":"84800","ville":"Fontaine-de-Vaucluse","labels":["associative"]},
 {"id":"E0208404690","nom":"Auto-École LEO","adresse":"17, Avenue du 08 MAI 1945","cp":"84150","ville":"Jonquieres","labels":["aac"]},
 {"id":"E2408400080","nom":"Auto-Ecole R.A. MERCIER","adresse":"34 Route de Fonatiane de Vaucluse","cp":"84800","ville":"L'Isle-sur-la-Sorgue"},

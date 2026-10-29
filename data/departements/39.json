@@ -24,7 +24,7 @@
 {"id":"E2203900030","nom":"Autopref 39","adresse":"7 bis rue Aristide Briand","cp":"39000","ville":"Lons-le-Saunier","taux":0.6441,"presentes":59,"taux_tous":0.61,"examens_tous":96,"labels":["cs"]},
 {"id":"E1903900020","nom":"CFCR2 CFCR Benoit CHARTON Formation","adresse":"330 rue du levant","cp":"39000","ville":"Lons-le-Saunier"},
 {"id":"E1503900050","nom":"Ecole de conduite LEdonienne","adresse":"16 rue Emile Monot","cp":"39000","ville":"Lons-le-Saunier","taux":0.5693,"presentes":137,"taux_tous":0.64,"examens_tous":228,"labels":["cs"]},
-{"id":"E1903900010","nom":"Ledo Formation","adresse":"175 route de BesanÃ§on","cp":"39000","ville":"Lons-le-Saunier","taux":0.5738,"presentes":237,"taux_tous":0.61,"examens_tous":371,"labels":["cs"]},
+{"id":"E1903900010","nom":"Ledo Formation","adresse":"175 route de Besançon","cp":"39000","ville":"Lons-le-Saunier","taux":0.5738,"presentes":237,"taux_tous":0.61,"examens_tous":371,"labels":["cs"]},
 {"id":"E1303900050","nom":"Traject Auto École","adresse":"15 bis PLACE PERRAUD","cp":"39000","ville":"Lons-le-Saunier","taux":0.7062,"presentes":194,"taux_tous":0.66,"examens_tous":276,"labels":["qualite","cs"]},
 {"id":"E2103900010","nom":"ecole de conduite BOUQUET","adresse":"21 avenue Jean Moulin","cp":"39000","ville":"Lons-le-Saunier","taux":0.7196,"presentes":189,"taux_tous":0.69,"examens_tous":295,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2203900020","nom":"Horizon SASU","adresse":"20 rue Jules Gevry","cp":"39380","ville":"Mont-sous-Vaudrey","labels":["qualite","permis1euro"]},

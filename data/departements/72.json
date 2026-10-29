@@ -1,6 +1,6 @@
 {"code": "72", "nom": "Sarthe", "moyenne": 0.6427, "ecoles": [
 {"id":"E2407200120","nom":"Cenomane","adresse":"Les Hautes Metairies","cp":"72700","ville":"Allonnes","taux":0.7108,"presentes":166,"taux_tous":0.66,"examens_tous":247,"labels":["qualite","permis1euro","cs"]},
-{"id":"E2507200140","nom":"Aftral","adresse":"79 route du ChÃªne","cp":"72230","ville":"Arnage"},
+{"id":"E2507200140","nom":"Aftral","adresse":"79 route du Chêne","cp":"72230","ville":"Arnage"},
 {"id":"E2407200150","nom":"Cenomane","adresse":"74 Route du Chene","cp":"72230","ville":"Arnage","taux":0.5819,"presentes":299,"taux_tous":0.56,"examens_tous":549,"labels":["qualite","permis1euro","cs"]},
 {"id":"E0207201550","nom":"Savare Formation Sasu","adresse":"61 rue Ernest Sylvain BollEe ZIS","cp":"72230","ville":"Arnage","labels":["aac"]},
 {"id":"E1107204570","nom":"École de Conduite Francois","adresse":"138, avenue Nationale","cp":"72230","ville":"Arnage","labels":["qualite","permis1euro","aac"]},

@@ -8,10 +8,12 @@ relancer l'import à chaque nouvelle version du fichier.
 
 Utilisation :
     python3 scripts/import_auto_ecoles.py chemin/vers/auto-ecoles.csv
+    python3 scripts/import_auto_ecoles.py --prix-seulement   (refusionne data/prix.json, sans CSV)
 
 Produit :
     data/index.json                 liste des départements, moyennes, date d'import
     data/departements/<code>.json   auto-écoles du département (permis B uniquement)
+puis régénère toutes les pages du site (scripts/build_site.py).
 
 Les prix déclarés par les élèves se trouvent dans data/prix.json (clé : numéro d'agrément
 de l'auto-école, colonne raf_numero). Ils sont fusionnés à chaque import, donc rien n'est perdu.
@@ -20,6 +22,7 @@ import csv
 import io
 import json
 import re
+import subprocess
 import sys
 from datetime import date
 from pathlib import Path
@@ -83,6 +86,17 @@ ACCENTS = {"ecole": "école", "ecoles": "écoles", "academie": "académie", "sec
            "liberte": "liberté", "generale": "générale", "general": "général", "privee": "privée",
            "prefecture": "préfecture", "republique": "république"}
 TOKEN = re.compile(r"([\s\-'’./()&,+]+)")
+
+
+def demojibake(value):
+    """Répare le texte encodé deux fois dans la source (ex. « FORÃŠT » au lieu de « FORÊT »)."""
+    s = str(value or "")
+    if "Ã" in s or "Â" in s:
+        try:
+            return s.encode("cp1252").decode("utf-8")
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            return s.replace("Ã\u00a0", "à").replace("Ã ", "à ")
+    return s
 
 
 def nice_text(value):
@@ -189,7 +203,45 @@ def read_csv(path):
     return reader.fieldnames or [], list(reader)
 
 
+def write_dep(dep, nom, moyenne, ecoles):
+    head = json.dumps({"code": dep, "nom": nom, "moyenne": moyenne}, ensure_ascii=False)[:-1]
+    body = ",\n".join(json.dumps(e, ensure_ascii=False, separators=(",", ":")) for e in ecoles)
+    (DEP_DIR / f"{dep}.json").write_text(f'{head}, "ecoles": [\n{body}\n]}}\n', encoding="utf-8")
+
+
+def load_prix():
+    if not PRIX.exists():
+        return {}
+    return (json.loads(PRIX.read_text(encoding="utf-8")) or {}).get("ecoles", {})
+
+
+def fusion_prix_seulement():
+    """Remet à jour les prix dans data/departements/ sans relire le fichier officiel."""
+    prix = load_prix()
+    for f in sorted(DEP_DIR.glob("*.json")):
+        dep = json.loads(f.read_text(encoding="utf-8"))
+        for e in dep["ecoles"]:
+            for k in PRICE_FIELDS:
+                e.pop(k, None)
+                v = (prix.get(e["id"]) or {}).get(k)
+                if v is not None:
+                    e[k] = v
+        write_dep(dep["code"], dep["nom"], dep["moyenne"], dep["ecoles"])
+    index = json.loads((DATA / "index.json").read_text(encoding="utf-8"))
+    index["meta"]["nb_avec_prix"] = sum(1 for v in prix.values() if v.get("forfait") is not None)
+    (DATA / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(f"Prix fusionnés : {index['meta']['nb_avec_prix']} auto-écoles avec des prix.")
+
+
+def build_site():
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "build_site.py")], check=True)
+
+
 def main():
+    if len(sys.argv) == 2 and sys.argv[1] == "--prix-seulement":
+        fusion_prix_seulement()
+        build_site()
+        return
     if len(sys.argv) != 2 or sys.argv[1] in ("-h", "--help"):
         print(__doc__)
         sys.exit(0 if len(sys.argv) == 2 else 1)
@@ -200,9 +252,7 @@ def main():
         sys.exit("Ce fichier n'a pas le format attendu (fichier officiel des auto-écoles).\n"
                  f"Colonnes manquantes : {', '.join(missing)}")
 
-    prix = {}
-    if PRIX.exists():
-        prix = (json.loads(PRIX.read_text(encoding="utf-8")) or {}).get("ecoles", {})
+    prix = load_prix()
 
     par_dep = {}
     nb_b = 0
@@ -216,10 +266,10 @@ def main():
         n = num(r["B_nombre_1pra"])
         e = {
             "id": r["raf_numero"].strip(),
-            "nom": nice_text(r["aue_raisonsociale"]),
-            "adresse": nice_text(r["aue_adresse"]),
+            "nom": nice_text(demojibake(r["aue_raisonsociale"])),
+            "adresse": nice_text(demojibake(r["aue_adresse"])),
             "cp": cp,
-            "ville": nice_city(r["aue_commune"], cp),
+            "ville": nice_city(demojibake(r["aue_commune"]), cp),
         }
         site = clean_site(r["aue_siteinternet"])
         if site:
@@ -257,9 +307,7 @@ def main():
         moyenne = round(ok / n, 4) if n else None
         tot_n, tot_ok, nb_taux = tot_n + n, tot_ok + ok, nb_taux + len(classees)
         nom = DEPARTEMENTS.get(dep, f"Département {dep}")
-        head = json.dumps({"code": dep, "nom": nom, "moyenne": moyenne}, ensure_ascii=False)[:-1]
-        body = ",\n".join(json.dumps(e, ensure_ascii=False, separators=(",", ":")) for e in ecoles)
-        (DEP_DIR / f"{dep}.json").write_text(f'{head}, "ecoles": [\n{body}\n]}}\n', encoding="utf-8")
+        write_dep(dep, nom, moyenne, ecoles)
         index_deps.append({"code": dep, "nom": nom, "nb": len(ecoles), "nb_taux": len(classees), "moyenne": moyenne})
 
     index = {
@@ -279,6 +327,7 @@ def main():
     print(f"{len(index_deps)} départements écrits dans {DEP_DIR.relative_to(ROOT)}/.")
     if tot_n:
         print(f"Réussite moyenne au 1er passage en France : {tot_ok / tot_n:.1%}")
+    build_site()
 
 
 if __name__ == "__main__":

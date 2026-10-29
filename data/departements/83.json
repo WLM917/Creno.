@@ -134,7 +134,7 @@
 {"id":"E1608300090","nom":"Cisr","adresse":"556 Bd Marechal Joffre","cp":"83100","ville":"Toulon","taux":0.5769,"presentes":52,"taux_tous":0.54,"examens_tous":91},
 {"id":"E2308300160","nom":"ECF-SPS Grand Public Toulon","adresse":"20 Boulevard du MarEchal Leclerc","cp":"83000","ville":"Toulon","taux":0.382,"presentes":89,"taux_tous":0.39,"examens_tous":171,"labels":["qualite","permis1euro","cs"]},
 {"id":"E0308306540","nom":"Flash","adresse":"292 av du General Gouraud","cp":"83200","ville":"Toulon","taux":0.1765,"presentes":17,"taux_tous":0.35,"examens_tous":37,"labels":["aac"]},
-{"id":"E2008300050","nom":"France Azur Toulon","adresse":"1 rue FranÃ§ois Cuzin","cp":"83000","ville":"Toulon","taux":0.4077,"presentes":130,"taux_tous":0.4,"examens_tous":247,"labels":["qualite"]},
+{"id":"E2008300050","nom":"France Azur Toulon","adresse":"1 rue François Cuzin","cp":"83000","ville":"Toulon","taux":0.4077,"presentes":130,"taux_tous":0.4,"examens_tous":247,"labels":["qualite"]},
 {"id":"E0308309360","nom":"Guignabodet","adresse":"281 avenue Franklin Roosevelt","cp":"83000","ville":"Toulon","taux":0.5536,"presentes":224,"taux_tous":0.55,"examens_tous":444,"labels":["permis1euro","aac","cs"]},
 {"id":"E0308307170","nom":"L'Orient","adresse":"68 Quai Marcel Pagnol la Fauvette","cp":"83000","ville":"Toulon","taux":0.3333,"presentes":27,"taux_tous":0.29,"examens_tous":66,"labels":["aac"]},
 {"id":"E1908300100","nom":"La Rouge et Noire Bouzigues","adresse":"19 Place Auguste Bouzigues","cp":"83200","ville":"Toulon","taux":0.4559,"presentes":136,"taux_tous":0.46,"examens_tous":254,"labels":["qualite","cs"]},

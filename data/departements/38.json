@@ -177,5 +177,5 @@
 {"id":"E2203800090","nom":"Auto École Fcsr","adresse":"23 Rue Sermorens","cp":"38500","ville":"Voiron","taux":0.5714,"presentes":91,"taux_tous":0.56,"examens_tous":155,"labels":["qualite","permis1euro","cs"]},
 {"id":"E1503800290","nom":"Auto École Start and Drive","adresse":"6 Rue Soffrey Calignon","cp":"38500","ville":"Voiron","taux":0.7205,"presentes":161,"taux_tous":0.72,"examens_tous":219,"labels":["cs"]},
 {"id":"E0203805450","nom":"Auto École a H Charton","adresse":"24 Avenue Jules Ravat","cp":"38500","ville":"Voiron","taux":0.7101,"presentes":483,"taux_tous":0.7,"examens_tous":665,"labels":["qualite","permis1euro","aac","cs"]},
-{"id":"E0203807290","nom":"Sarl Cesr 38","adresse":"12 avenue FranÃ§ois Mitterrand","cp":"38500","ville":"Voiron","taux":0.6204,"presentes":137,"taux_tous":0.6,"examens_tous":198,"labels":["qualite","permis1euro","aac","cs"]}
+{"id":"E0203807290","nom":"Sarl Cesr 38","adresse":"12 avenue François Mitterrand","cp":"38500","ville":"Voiron","taux":0.6204,"presentes":137,"taux_tous":0.6,"examens_tous":198,"labels":["qualite","permis1euro","aac","cs"]}
 ]}

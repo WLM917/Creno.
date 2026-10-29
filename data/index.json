@@ -1,0 +1,740 @@
+{
+ "meta": {
+  "source": "Fichier officiel des auto-écoles, Sécurité routière (autoecoles.securite-routiere.gouv.fr)",
+  "importe_le": "2026-10-29",
+  "nb_auto_ecoles": 11060,
+  "nb_avec_taux": 8143,
+  "moyenne_nationale": 0.6031,
+  "nb_avec_prix": 0
+ },
+ "departements": [
+  {
+   "code": "01",
+   "nom": "Ain",
+   "nb": 109,
+   "nb_taux": 82,
+   "moyenne": 0.7137
+  },
+  {
+   "code": "02",
+   "nom": "Aisne",
+   "nb": 95,
+   "nb_taux": 74,
+   "moyenne": 0.6529
+  },
+  {
+   "code": "03",
+   "nom": "Allier",
+   "nb": 49,
+   "nb_taux": 33,
+   "moyenne": 0.717
+  },
+  {
+   "code": "04",
+   "nom": "Alpes-de-Haute-Provence",
+   "nb": 25,
+   "nb_taux": 21,
+   "moyenne": 0.6517
+  },
+  {
+   "code": "05",
+   "nom": "Hautes-Alpes",
+   "nb": 21,
+   "nb_taux": 16,
+   "moyenne": 0.7116
+  },
+  {
+   "code": "06",
+   "nom": "Alpes-Maritimes",
+   "nb": 148,
+   "nb_taux": 128,
+   "moyenne": 0.5986
+  },
+  {
+   "code": "07",
+   "nom": "Ardèche",
+   "nb": 53,
+   "nb_taux": 42,
+   "moyenne": 0.6298
+  },
+  {
+   "code": "08",
+   "nom": "Ardennes",
+   "nb": 46,
+   "nb_taux": 35,
+   "moyenne": 0.6419
+  },
+  {
+   "code": "09",
+   "nom": "Ariège",
+   "nb": 21,
+   "nb_taux": 16,
+   "moyenne": 0.5743
+  },
+  {
+   "code": "10",
+   "nom": "Aube",
+   "nb": 55,
+   "nb_taux": 38,
+   "moyenne": 0.5548
+  },
+  {
+   "code": "11",
+   "nom": "Aude",
+   "nb": 45,
+   "nb_taux": 33,
+   "moyenne": 0.5629
+  },
+  {
+   "code": "12",
+   "nom": "Aveyron",
+   "nb": 51,
+   "nb_taux": 28,
+   "moyenne": 0.5948
+  },
+  {
+   "code": "13",
+   "nom": "Bouches-du-Rhône",
+   "nb": 306,
+   "nb_taux": 241,
+   "moyenne": 0.5532
+  },
+  {
+   "code": "14",
+   "nom": "Calvados",
+   "nb": 115,
+   "nb_taux": 85,
+   "moyenne": 0.5514
+  },
+  {
+   "code": "15",
+   "nom": "Cantal",
+   "nb": 23,
+   "nb_taux": 16,
+   "moyenne": 0.6698
+  },
+  {
+   "code": "16",
+   "nom": "Charente",
+   "nb": 69,
+   "nb_taux": 36,
+   "moyenne": 0.6709
+  },
+  {
+   "code": "17",
+   "nom": "Charente-Maritime",
+   "nb": 117,
+   "nb_taux": 85,
+   "moyenne": 0.6407
+  },
+  {
+   "code": "18",
+   "nom": "Cher",
+   "nb": 46,
+   "nb_taux": 28,
+   "moyenne": 0.6485
+  },
+  {
+   "code": "19",
+   "nom": "Corrèze",
+   "nb": 44,
+   "nb_taux": 34,
+   "moyenne": 0.6024
+  },
+  {
+   "code": "2A",
+   "nom": "Corse-du-Sud",
+   "nb": 25,
+   "nb_taux": 14,
+   "moyenne": 0.6274
+  },
+  {
+   "code": "2B",
+   "nom": "Haute-Corse",
+   "nb": 33,
+   "nb_taux": 20,
+   "moyenne": 0.6622
+  },
+  {
+   "code": "21",
+   "nom": "Côte-d'Or",
+   "nb": 81,
+   "nb_taux": 57,
+   "moyenne": 0.6342
+  },
+  {
+   "code": "22",
+   "nom": "Côtes-d'Armor",
+   "nb": 96,
+   "nb_taux": 58,
+   "moyenne": 0.6283
+  },
+  {
+   "code": "23",
+   "nom": "Creuse",
+   "nb": 21,
+   "nb_taux": 14,
+   "moyenne": 0.5957
+  },
+  {
+   "code": "24",
+   "nom": "Dordogne",
+   "nb": 62,
+   "nb_taux": 46,
+   "moyenne": 0.6236
+  },
+  {
+   "code": "25",
+   "nom": "Doubs",
+   "nb": 92,
+   "nb_taux": 63,
+   "moyenne": 0.6703
+  },
+  {
+   "code": "26",
+   "nom": "Drôme",
+   "nb": 82,
+   "nb_taux": 63,
+   "moyenne": 0.6523
+  },
+  {
+   "code": "27",
+   "nom": "Eure",
+   "nb": 102,
+   "nb_taux": 84,
+   "moyenne": 0.6644
+  },
+  {
+   "code": "28",
+   "nom": "Eure-et-Loir",
+   "nb": 77,
+   "nb_taux": 65,
+   "moyenne": 0.6099
+  },
+  {
+   "code": "29",
+   "nom": "Finistère",
+   "nb": 181,
+   "nb_taux": 110,
+   "moyenne": 0.6206
+  },
+  {
+   "code": "30",
+   "nom": "Gard",
+   "nb": 110,
+   "nb_taux": 85,
+   "moyenne": 0.6726
+  },
+  {
+   "code": "31",
+   "nom": "Haute-Garonne",
+   "nb": 174,
+   "nb_taux": 129,
+   "moyenne": 0.5931
+  },
+  {
+   "code": "32",
+   "nom": "Gers",
+   "nb": 36,
+   "nb_taux": 31,
+   "moyenne": 0.7145
+  },
+  {
+   "code": "33",
+   "nom": "Gironde",
+   "nb": 205,
+   "nb_taux": 164,
+   "moyenne": 0.6376
+  },
+  {
+   "code": "34",
+   "nom": "Hérault",
+   "nb": 181,
+   "nb_taux": 147,
+   "moyenne": 0.5555
+  },
+  {
+   "code": "35",
+   "nom": "Ille-et-Vilaine",
+   "nb": 185,
+   "nb_taux": 108,
+   "moyenne": 0.6714
+  },
+  {
+   "code": "36",
+   "nom": "Indre",
+   "nb": 38,
+   "nb_taux": 29,
+   "moyenne": 0.6334
+  },
+  {
+   "code": "37",
+   "nom": "Indre-et-Loire",
+   "nb": 93,
+   "nb_taux": 78,
+   "moyenne": 0.6527
+  },
+  {
+   "code": "38",
+   "nom": "Isère",
+   "nb": 179,
+   "nb_taux": 146,
+   "moyenne": 0.619
+  },
+  {
+   "code": "39",
+   "nom": "Jura",
+   "nb": 46,
+   "nb_taux": 30,
+   "moyenne": 0.6636
+  },
+  {
+   "code": "40",
+   "nom": "Landes",
+   "nb": 76,
+   "nb_taux": 47,
+   "moyenne": 0.6771
+  },
+  {
+   "code": "41",
+   "nom": "Loir-et-Cher",
+   "nb": 64,
+   "nb_taux": 47,
+   "moyenne": 0.6935
+  },
+  {
+   "code": "42",
+   "nom": "Loire",
+   "nb": 147,
+   "nb_taux": 97,
+   "moyenne": 0.6132
+  },
+  {
+   "code": "43",
+   "nom": "Haute-Loire",
+   "nb": 54,
+   "nb_taux": 33,
+   "moyenne": 0.7289
+  },
+  {
+   "code": "44",
+   "nom": "Loire-Atlantique",
+   "nb": 186,
+   "nb_taux": 136,
+   "moyenne": 0.6701
+  },
+  {
+   "code": "45",
+   "nom": "Loiret",
+   "nb": 102,
+   "nb_taux": 78,
+   "moyenne": 0.6361
+  },
+  {
+   "code": "46",
+   "nom": "Lot",
+   "nb": 21,
+   "nb_taux": 17,
+   "moyenne": 0.5598
+  },
+  {
+   "code": "47",
+   "nom": "Lot-et-Garonne",
+   "nb": 56,
+   "nb_taux": 39,
+   "moyenne": 0.6438
+  },
+  {
+   "code": "48",
+   "nom": "Lozère",
+   "nb": 15,
+   "nb_taux": 11,
+   "moyenne": 0.7992
+  },
+  {
+   "code": "49",
+   "nom": "Maine-et-Loire",
+   "nb": 167,
+   "nb_taux": 105,
+   "moyenne": 0.6864
+  },
+  {
+   "code": "50",
+   "nom": "Manche",
+   "nb": 106,
+   "nb_taux": 55,
+   "moyenne": 0.6793
+  },
+  {
+   "code": "51",
+   "nom": "Marne",
+   "nb": 104,
+   "nb_taux": 63,
+   "moyenne": 0.5634
+  },
+  {
+   "code": "52",
+   "nom": "Haute-Marne",
+   "nb": 35,
+   "nb_taux": 25,
+   "moyenne": 0.5584
+  },
+  {
+   "code": "53",
+   "nom": "Mayenne",
+   "nb": 66,
+   "nb_taux": 42,
+   "moyenne": 0.5951
+  },
+  {
+   "code": "54",
+   "nom": "Meurthe-et-Moselle",
+   "nb": 120,
+   "nb_taux": 97,
+   "moyenne": 0.5677
+  },
+  {
+   "code": "55",
+   "nom": "Meuse",
+   "nb": 32,
+   "nb_taux": 25,
+   "moyenne": 0.5795
+  },
+  {
+   "code": "56",
+   "nom": "Morbihan",
+   "nb": 151,
+   "nb_taux": 80,
+   "moyenne": 0.6784
+  },
+  {
+   "code": "57",
+   "nom": "Moselle",
+   "nb": 162,
+   "nb_taux": 104,
+   "moyenne": 0.5898
+  },
+  {
+   "code": "58",
+   "nom": "Nièvre",
+   "nb": 34,
+   "nb_taux": 27,
+   "moyenne": 0.58
+  },
+  {
+   "code": "59",
+   "nom": "Nord",
+   "nb": 412,
+   "nb_taux": 301,
+   "moyenne": 0.5866
+  },
+  {
+   "code": "60",
+   "nom": "Oise",
+   "nb": 139,
+   "nb_taux": 111,
+   "moyenne": 0.5743
+  },
+  {
+   "code": "61",
+   "nom": "Orne",
+   "nb": 58,
+   "nb_taux": 44,
+   "moyenne": 0.6967
+  },
+  {
+   "code": "62",
+   "nom": "Pas-de-Calais",
+   "nb": 269,
+   "nb_taux": 171,
+   "moyenne": 0.5908
+  },
+  {
+   "code": "63",
+   "nom": "Puy-de-Dôme",
+   "nb": 112,
+   "nb_taux": 76,
+   "moyenne": 0.6494
+  },
+  {
+   "code": "64",
+   "nom": "Pyrénées-Atlantiques",
+   "nb": 115,
+   "nb_taux": 81,
+   "moyenne": 0.6511
+  },
+  {
+   "code": "65",
+   "nom": "Hautes-Pyrénées",
+   "nb": 52,
+   "nb_taux": 38,
+   "moyenne": 0.58
+  },
+  {
+   "code": "66",
+   "nom": "Pyrénées-Orientales",
+   "nb": 80,
+   "nb_taux": 57,
+   "moyenne": 0.5787
+  },
+  {
+   "code": "67",
+   "nom": "Bas-Rhin",
+   "nb": 177,
+   "nb_taux": 112,
+   "moyenne": 0.6117
+  },
+  {
+   "code": "68",
+   "nom": "Haut-Rhin",
+   "nb": 136,
+   "nb_taux": 88,
+   "moyenne": 0.6327
+  },
+  {
+   "code": "69",
+   "nom": "Rhône",
+   "nb": 282,
+   "nb_taux": 189,
+   "moyenne": 0.5626
+  },
+  {
+   "code": "70",
+   "nom": "Haute-Saône",
+   "nb": 35,
+   "nb_taux": 28,
+   "moyenne": 0.6153
+  },
+  {
+   "code": "71",
+   "nom": "Saône-et-Loire",
+   "nb": 93,
+   "nb_taux": 53,
+   "moyenne": 0.5577
+  },
+  {
+   "code": "72",
+   "nom": "Sarthe",
+   "nb": 105,
+   "nb_taux": 68,
+   "moyenne": 0.6427
+  },
+  {
+   "code": "73",
+   "nom": "Savoie",
+   "nb": 65,
+   "nb_taux": 57,
+   "moyenne": 0.6265
+  },
+  {
+   "code": "74",
+   "nom": "Haute-Savoie",
+   "nb": 93,
+   "nb_taux": 76,
+   "moyenne": 0.6094
+  },
+  {
+   "code": "75",
+   "nom": "Paris",
+   "nb": 213,
+   "nb_taux": 176,
+   "moyenne": 0.5058
+  },
+  {
+   "code": "76",
+   "nom": "Seine-Maritime",
+   "nb": 208,
+   "nb_taux": 155,
+   "moyenne": 0.6187
+  },
+  {
+   "code": "77",
+   "nom": "Seine-et-Marne",
+   "nb": 276,
+   "nb_taux": 221,
+   "moyenne": 0.6155
+  },
+  {
+   "code": "78",
+   "nom": "Yvelines",
+   "nb": 200,
+   "nb_taux": 167,
+   "moyenne": 0.5614
+  },
+  {
+   "code": "79",
+   "nom": "Deux-Sèvres",
+   "nb": 79,
+   "nb_taux": 50,
+   "moyenne": 0.7272
+  },
+  {
+   "code": "80",
+   "nom": "Somme",
+   "nb": 90,
+   "nb_taux": 67,
+   "moyenne": 0.6084
+  },
+  {
+   "code": "81",
+   "nom": "Tarn",
+   "nb": 71,
+   "nb_taux": 48,
+   "moyenne": 0.618
+  },
+  {
+   "code": "82",
+   "nom": "Tarn-et-Garonne",
+   "nb": 41,
+   "nb_taux": 30,
+   "moyenne": 0.5714
+  },
+  {
+   "code": "83",
+   "nom": "Var",
+   "nb": 159,
+   "nb_taux": 140,
+   "moyenne": 0.6074
+  },
+  {
+   "code": "84",
+   "nom": "Vaucluse",
+   "nb": 104,
+   "nb_taux": 66,
+   "moyenne": 0.5269
+  },
+  {
+   "code": "85",
+   "nom": "Vendée",
+   "nb": 158,
+   "nb_taux": 93,
+   "moyenne": 0.7115
+  },
+  {
+   "code": "86",
+   "nom": "Vienne",
+   "nb": 72,
+   "nb_taux": 56,
+   "moyenne": 0.6153
+  },
+  {
+   "code": "87",
+   "nom": "Haute-Vienne",
+   "nb": 72,
+   "nb_taux": 47,
+   "moyenne": 0.6259
+  },
+  {
+   "code": "88",
+   "nom": "Vosges",
+   "nb": 74,
+   "nb_taux": 49,
+   "moyenne": 0.6149
+  },
+  {
+   "code": "89",
+   "nom": "Yonne",
+   "nb": 54,
+   "nb_taux": 45,
+   "moyenne": 0.5516
+  },
+  {
+   "code": "90",
+   "nom": "Territoire de Belfort",
+   "nb": 24,
+   "nb_taux": 14,
+   "moyenne": 0.5979
+  },
+  {
+   "code": "91",
+   "nom": "Essonne",
+   "nb": 212,
+   "nb_taux": 163,
+   "moyenne": 0.529
+  },
+  {
+   "code": "92",
+   "nom": "Hauts-de-Seine",
+   "nb": 198,
+   "nb_taux": 172,
+   "moyenne": 0.5868
+  },
+  {
+   "code": "93",
+   "nom": "Seine-Saint-Denis",
+   "nb": 310,
+   "nb_taux": 274,
+   "moyenne": 0.5918
+  },
+  {
+   "code": "94",
+   "nom": "Val-de-Marne",
+   "nb": 185,
+   "nb_taux": 168,
+   "moyenne": 0.536
+  },
+  {
+   "code": "95",
+   "nom": "Val-d'Oise",
+   "nb": 222,
+   "nb_taux": 189,
+   "moyenne": 0.5436
+  },
+  {
+   "code": "98",
+   "nom": "Monaco",
+   "nb": 4,
+   "nb_taux": 2,
+   "moyenne": 0.4762
+  },
+  {
+   "code": "971",
+   "nom": "Guadeloupe",
+   "nb": 141,
+   "nb_taux": 121,
+   "moyenne": 0.3616
+  },
+  {
+   "code": "972",
+   "nom": "Martinique",
+   "nb": 97,
+   "nb_taux": 89,
+   "moyenne": 0.4745
+  },
+  {
+   "code": "973",
+   "nom": "Guyane",
+   "nb": 54,
+   "nb_taux": 47,
+   "moyenne": 0.4623
+  },
+  {
+   "code": "974",
+   "nom": "La Réunion",
+   "nb": 233,
+   "nb_taux": 168,
+   "moyenne": 0.521
+  },
+  {
+   "code": "975",
+   "nom": "Saint-Pierre-et-Miquelon",
+   "nb": 3,
+   "nb_taux": 0,
+   "moyenne": null
+  },
+  {
+   "code": "976",
+   "nom": "Mayotte",
+   "nb": 44,
+   "nb_taux": 36,
+   "moyenne": 0.5549
+  },
+  {
+   "code": "977",
+   "nom": "Saint-Barthélemy",
+   "nb": 4,
+   "nb_taux": 0,
+   "moyenne": null
+  }
+ ]
+}

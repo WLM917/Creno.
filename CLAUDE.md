@@ -34,11 +34,19 @@ assets/style.css                styles (tokens de couleur en haut, thème clair 
 assets/app.js                   classement, calculateur, formulaires, checklist
 assets/config.js                réglages : formEndpoint (envoi des formulaires), département par défaut
 assets/favicon.svg              icône
-data/auto-ecoles.json           auto-écoles : DONNÉES FICTIVES pour l'instant (meta.demo = true)
+data/index.json                 départements (code, nom, nb d'auto-écoles, moyenne), date d'import
+data/departements/<code>.json   auto-écoles d'un département, chargé à la demande
+                                (id = numéro d'agrément raf_numero, nom, adresse, cp, ville, site,
+                                taux et presentes = réussite au 1er passage B, labels, prix éventuels)
+data/prix.json                  prix déclarés par les élèves, par numéro d'agrément (vide pour l'instant)
 data/loueurs.json               loueurs de voitures à double commande (2 entrées réelles à vérifier)
-scripts/import_auto_ecoles.py   importe le CSV officiel des taux de réussite dans data/auto-ecoles.json
+scripts/import_auto_ecoles.py   importe le CSV officiel et fusionne data/prix.json
 scripts/build_preview.py        génère une version en un seul fichier HTML (aperçu)
 ```
+
+Données réelles importées le 29 octobre 2026 depuis le fichier officiel de la Sécurité routière :
+11 060 auto-écoles du permis B, dont 8 143 avec un taux publié, réussite moyenne au 1er passage
+en France 60 %, en Essonne 53 %. Les auto-écoles sans taux publié sont listées à part, non classées.
 
 Tester en local : `python3 -m http.server 8000` puis http://localhost:8000
 (ouvrir index.html directement ne marche pas, à cause du chargement des JSON).
@@ -56,11 +64,12 @@ Fonctionnalités en place :
 ## Formule du classement (déjà codée dans assets/app.js)
 
 - Indice sur 100 = 60 % réussite + 40 % coût réel, chaque critère ramené de 0 à 100
-  par rapport aux autres auto-écoles de la zone choisie.
-- Réussite : taux officiel à l'examen pratique B, ajusté pour les petites auto-écoles :
-  `taux ajusté = (taux × présentés + moyenne de la zone × 40) / (présentés + 40)`.
+  par rapport aux autres auto-écoles du même département.
+- Réussite : taux officiel au 1er passage de l'examen pratique B, ajusté pour les petites auto-écoles :
+  `taux ajusté = (taux × présentés + moyenne du département × 40) / (présentés + 40)`.
 - Coût réel : `forfait + max(0, heures moyennes - heures incluses) × prix de l'heure + frais d'examen`.
 - Prix non déclaré : note de prix neutre de 50 en attendant.
+- Aucun prix déclaré dans tout le département : indice = réussite seule, filtre budget désactivé.
 - Si la formule change, mettre à jour la page #methode en même temps.
 
 ## Règles à ne jamais casser
@@ -95,13 +104,14 @@ Garder ce style pour les nouvelles pages.
 
 Par ordre de priorité :
 
-1. **Mettre les vrais taux de réussite** : télécharger le CSV officiel (carte des auto-écoles
-   de la Sécurité routière, mise à jour chaque trimestre, aussi sur data.gouv.fr), lancer
-   `python3 scripts/import_auto_ecoles.py fichier.csv --apercu` puis sans `--apercu`.
+1. ~~Mettre les vrais taux de réussite~~ : fait le 29 octobre 2026. À refaire chaque trimestre
+   avec `python3 scripts/import_auto_ecoles.py fichier.csv` (nouveau CSV de la carte officielle).
 2. **Recevoir et exploiter les déclarations d'élèves** : brancher `formEndpoint`
    (Supabase conseillé, ou Formspree), puis agréger les déclarations par auto-école
-   (médiane du forfait, des heures, du prix de l'heure) dans data/auto-ecoles.json,
-   avec le nombre de déclarations. Prévoir une modération simple contre les faux avis.
+   (médiane du forfait, des heures, du prix de l'heure) dans data/prix.json, avec le nombre
+   de déclarations, puis relancer l'import. Le formulaire devra proposer de choisir l'auto-école
+   dans la liste officielle (pour avoir son numéro d'agrément) au lieu d'un nom tapé à la main.
+   Prévoir une modération simple contre les faux avis.
 3. **Annuaire des loueurs double commande** : recherche par ville, prix de l'heure,
    boîte manuelle/auto, lien de réservation. Modèle économique : commission ou affiliation
    par réservation. Démarcher les loueurs d'Île-de-France.

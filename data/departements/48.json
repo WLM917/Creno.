@@ -1,0 +1,17 @@
+{"code": "48", "nom": "Lozère", "moyenne": 0.7992, "ecoles": [
+{"id":"E2504800030","nom":"Lozen Conduite","adresse":"95 avenue du Lot","cp":"48500","ville":"Banassac","taux_tous":0.3,"examens_tous":10,"labels":["cs"]},
+{"id":"E2404800010","nom":"Cfpr","adresse":"ZAE de Carlac le Monastier","cp":"48100","ville":"Bourgs-sur-Colagne"},
+{"id":"E1704800010","nom":"Seguin","adresse":"88 ter avenue Jean Monestier","cp":"48400","ville":"Florac Trois Rivieres","taux":0.8611,"presentes":72,"taux_tous":0.81,"examens_tous":98,"labels":["permis1euro","cs"]},
+{"id":"E1004829090","nom":"Priorite Permis la Canourgue","adresse":"38 av des gorges du tarn","cp":"48500","ville":"La Canourgue","taux":0.6667,"presentes":24,"taux_tous":0.68,"examens_tous":34,"labels":["aac","cs"]},
+{"id":"E1104829100","nom":"Langogne Lozere Conduite","adresse":"10 Avenue Conturie","cp":"48300","ville":"Langogne","taux":0.8095,"presentes":63,"taux_tous":0.79,"examens_tous":76,"labels":["aac","cs"]},
+{"id":"E0204816700","nom":"Albenque Conduite Sans Frontiere","adresse":"30 Boulebard de Chambrun","cp":"48100","ville":"Marvejols","taux":0.9444,"presentes":90,"taux_tous":0.95,"examens_tous":99,"labels":["permis1euro","aac"]},
+{"id":"E0204802920","nom":"Gaiffier","adresse":"18 Place Henri Cordesse","cp":"48100","ville":"Marvejols","taux":0.8493,"presentes":73,"taux_tous":0.82,"examens_tous":97,"labels":["aac"]},
+{"id":"E2504800020","nom":"My Driving School","adresse":"4 rue Jean Roujon","cp":"48100","ville":"Marvejols","taux":0.3846,"presentes":13,"taux_tous":0.46,"examens_tous":26},
+{"id":"E1804800020","nom":"JPM Auto École","adresse":"12 rue d'Angiran","cp":"48000","ville":"Mende","taux":0.7544,"presentes":114,"taux_tous":0.76,"examens_tous":170,"labels":["qualite","permis1euro","cs"]},
+{"id":"E0904816090","nom":"Top Conduite","adresse":"2 Quai de BerliEre","cp":"48000","ville":"Mende","labels":["aac"]},
+{"id":"E0804811110","nom":"VA la","adresse":"16 rue du soubeyran","cp":"48000","ville":"Mende","taux":0.7352,"presentes":355,"taux_tous":0.75,"examens_tous":494,"labels":["qualite","permis1euro","aac","cs"]},
+{"id":"I1904800010","nom":"Allfs - Cepf Montrodat","adresse":"CEPF Montrodat - Vimenet","cp":"48100","ville":"Montrodat","taux":0.875,"presentes":8,"taux_tous":0.82,"examens_tous":11,"labels":["associative"]},
+{"id":"E1204829110","nom":"Priorite Permis Mende","adresse":"ZA du SEcheron Rouffiac","cp":"48000","ville":"Saint-Bauzile","labels":["aac"]},
+{"id":"E0204816670","nom":"Bres Conduite Sans Frontiere","adresse":"114 Rue Theophile Roussel","cp":"48200","ville":"Saint-Chely-d'Apcher","taux":0.9405,"presentes":84,"taux_tous":0.93,"examens_tous":95,"labels":["permis1euro","aac","cs"]},
+{"id":"E0204822080","nom":"Cuminal","adresse":"14 place du Foirail","cp":"48200","ville":"Saint-Chely-d'Apcher","taux":0.8167,"presentes":120,"taux_tous":0.82,"examens_tous":164,"labels":["qualite","permis1euro","aac","cs"]}
+]}

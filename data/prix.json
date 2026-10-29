@@ -1,0 +1,4 @@
+{
+  "explication": "Prix réels déclarés par les élèves, agrégés par auto-école (médianes). Clé : numéro d'agrément (raf_numero du fichier officiel). Champs : forfait, heures_incluses, prix_heure, heures_moyennes, frais_examen, declarations (nombre de réponses). Fusionné dans data/departements/ par scripts/import_auto_ecoles.py.",
+  "ecoles": {}
+}

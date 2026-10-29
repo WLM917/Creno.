@@ -1,8 +1,8 @@
 # Créno
 
-Le bon créneau pour ton permis. Site pour passer son permis B au meilleur prix en Île-de-France :
+Le bon créneau pour ton permis. Site pour passer son permis B au meilleur prix, en partant de l'Île-de-France :
 
-- **Classement des auto-écoles** par département, selon le taux de réussite officiel et le **coût réel** du permis (forfait + heures en plus + frais d'examen), avec un filtre budget.
+- **Classement des auto-écoles** de toute la France, par département, selon le taux de réussite officiel et le **coût réel** du permis (forfait + heures en plus + frais d'examen). Filtres : ville, budget, permis à 1 € par jour, label qualité, conduite accompagnée.
 - **Calculateur de coût réel** d'un devis d'auto-école.
 - **Candidat libre** : les étapes, un annuaire de loueurs de voitures à double commande, des conseils légaux pour trouver une date d'examen plus vite.
 - **Jour de l'examen** : checklist à cocher, enregistrée sur le téléphone.
@@ -10,10 +10,11 @@ Le bon créneau pour ton permis. Site pour passer son permis B au meilleur prix 
 
 Le site est statique (HTML, CSS, JavaScript, sans framework ni compilation). Il peut être hébergé gratuitement sur GitHub Pages, Vercel ou Netlify.
 
-## État actuel : version de démonstration
+## Données
 
-- `data/auto-ecoles.json` contient des **auto-écoles fictives**, marquées « Exemple » sur le site.
-- Les formulaires fonctionnent en **mode démo** : les réponses restent sur l'appareil tant qu'aucune adresse d'envoi n'est configurée.
+- **Taux de réussite** : fichier officiel des auto-écoles de la Sécurité routière (import du 29 octobre 2026) : 11 060 auto-écoles du permis B, dont 8 143 avec un taux de réussite publié.
+- **Prix** : `data/prix.json`, vide pour l'instant. Il se remplit avec les déclarations des élèves.
+- Les formulaires fonctionnent en **mode local** tant qu'aucune adresse d'envoi n'est configurée : les réponses restent sur l'appareil.
 
 ## Mettre le site en ligne
 
@@ -31,23 +32,20 @@ python3 -m http.server 8000
 
 puis ouvrir http://localhost:8000
 
-## Importer les vrais taux de réussite
+## Mettre à jour les taux de réussite
 
-1. Télécharger le CSV officiel des auto-écoles depuis la carte de la Sécurité routière (https://autoecoles.securite-routiere.gouv.fr/) ou depuis data.gouv.fr : https://www.data.gouv.fr/datasets/liste-des-auto-ecoles-et-taux-de-reussite-au-permis-de-conduire
-2. Vérifier que le script reconnaît bien les colonnes :
+La carte officielle est mise à jour chaque trimestre. À chaque nouvelle version :
 
-   ```bash
-   python3 scripts/import_auto_ecoles.py chemin/vers/auto-ecoles.csv --apercu
-   ```
-
-   Si une colonne est mal détectée, la forcer, par exemple `--col-taux "Taux de réussite B"`.
-3. Lancer l'import (Île-de-France par défaut, `--departements 91` pour l'Essonne seule) :
+1. Télécharger le CSV des auto-écoles sur https://autoecoles.securite-routiere.gouv.fr/
+2. Lancer :
 
    ```bash
    python3 scripts/import_auto_ecoles.py chemin/vers/auto-ecoles.csv
    ```
 
-Le fichier `data/auto-ecoles.json` est remplacé, le bandeau « démonstration » disparaît. Les prix déjà déclarés par les élèves sont conservés lors des imports suivants. La carte officielle est mise à jour chaque trimestre : relancer l'import à chaque fois.
+Le script réécrit `data/index.json` (départements, moyennes, date d'import) et `data/departements/<code>.json` (une liste par département, chargée seulement quand on choisit ce département). Les prix de `data/prix.json` sont fusionnés à chaque import, rien n'est perdu.
+
+Colonnes utilisées du fichier officiel : `raf_numero` (numéro d'agrément, sert d'identifiant), `aue_raisonsociale`, `aue_adresse`, `aue_codepostal`, `aue_commune`, `dpt_id`, `aue_siteinternet`, les drapeaux `aue_*_flag`, `B_flag`, `B_nombre_1pra` (élèves présentés au 1er passage) et `B_taux_1pra` (réussite au 1er passage).
 
 ## Recevoir les réponses des formulaires
 
@@ -57,7 +55,13 @@ Dans `assets/config.js`, renseigner `formEndpoint` avec une adresse qui accepte 
 { "type": "experience | loueur | alerte", "envoye_le": "2026-10-29T12:00:00.000Z", "reponses": { "...": "..." } }
 ```
 
-Les déclarations d'expérience (`type: "experience"`) servent à remplir les champs de prix de `data/auto-ecoles.json` : `forfait`, `heures_incluses`, `prix_heure`, `heures_moyennes`, `frais_examen`, `declarations` (nombre de réponses). Prendre la médiane des réponses pour chaque auto-école.
+Les déclarations d'expérience (`type: "experience"`) servent à remplir `data/prix.json`, une entrée par auto-école, avec la médiane des réponses :
+
+```json
+{ "ecoles": { "E2109100040": { "forfait": 1390, "heures_incluses": 20, "prix_heure": 52, "heures_moyennes": 31, "frais_examen": 60, "declarations": 7 } } }
+```
+
+La clé est le numéro d'agrément (`id` dans `data/departements/*.json`). Relancer ensuite l'import pour que les prix apparaissent dans le classement.
 
 ## Ajouter un loueur de voitures à double commande
 
@@ -79,8 +83,10 @@ index.html                      toutes les pages (navigation par #ancre)
 assets/style.css                styles
 assets/app.js                   classement, calculateur, formulaires, checklist
 assets/config.js                réglages (adresse d'envoi des formulaires, département par défaut)
-data/auto-ecoles.json           auto-écoles (démo pour l'instant)
+data/index.json                 départements, moyennes, date d'import
+data/departements/*.json        auto-écoles de chaque département (taux officiels + prix)
+data/prix.json                  prix déclarés par les élèves, par auto-école
 data/loueurs.json               loueurs de voitures à double commande
-scripts/import_auto_ecoles.py   import des taux officiels
+scripts/import_auto_ecoles.py   import du fichier officiel
 scripts/build_preview.py        génère une version en un seul fichier (aperçu)
 ```

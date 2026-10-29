@@ -1,0 +1,6 @@
+{"code": "98", "nom": "Monaco", "moyenne": 0.4762, "ecoles": [
+{"id":"E2109800020","nom":"Georges","adresse":"45 Rue Grimaldi","cp":"98000","ville":"Monaco","taux":0.4046,"presentes":131,"taux_tous":0.44,"examens_tous":277,"labels":["cs"]},
+{"id":"E2109800010","nom":"Monaco Bonne Conduite","adresse":"7 Rue Princesse Forestine","cp":"98000","ville":"Monaco","taux":0.5949,"presentes":79,"taux_tous":0.59,"examens_tous":133,"labels":["cs"]},
+{"id":"E1709800030","nom":"Monaco École","adresse":"05 Rue de Millo","cp":"98000","ville":"Monaco"},
+{"id":"E2509800010","nom":"École de Conduite du Rocher","adresse":"11 avenue des Moulins","cp":"98000","ville":"Monaco"}
+]}

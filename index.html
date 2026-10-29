@@ -67,10 +67,10 @@
       <div class="wrap stack-lg page-pad">
         <section class="block" aria-labelledby="top-title">
           <div class="block-head">
-            <h2 id="top-title">Les mieux classées <span data-zone-label>en Essonne</span></h2>
+            <h2 id="top-title">Les mieux classées <span data-zone-label>dans le 91</span></h2>
             <a class="link-strong" href="#classement">Voir tout le classement</a>
           </div>
-          <p class="demo-note" data-demo-note hidden>Version de démonstration : ces auto-écoles sont fictives.</p>
+          <p class="zone-summary" id="home-zone"></p>
           <ol class="ranking ranking-compact" id="home-ranking" aria-live="polite"></ol>
         </section>
 
@@ -94,7 +94,7 @@
 
         <section class="block note-block" aria-labelledby="trust-title">
           <h2 id="trust-title">Personne ne paie pour être en haut</h2>
-          <p>Le classement mélange le taux de réussite officiel et le coût réel déclaré par les élèves. La formule est publique, et une auto-école ne peut pas acheter sa place.</p>
+          <p>Le classement part des taux de réussite publiés par la Sécurité routière, puis ajoute le coût réel déclaré par les élèves. La formule est publique, et une auto-école ne peut pas acheter sa place.</p>
           <a class="link-strong" href="#methode">Lire la méthode de calcul</a>
         </section>
       </div>
@@ -105,17 +105,16 @@
       <div class="wrap stack-lg page-pad">
         <header class="view-head">
           <h1>Classement des auto-écoles</h1>
-          <p class="lede">Classées selon leur taux de réussite officiel et ce que le permis coûte vraiment, une fois les heures en plus comptées.</p>
-          <p class="demo-banner" data-demo-note hidden><strong>Version de démonstration.</strong> Les auto-écoles affichées sont fictives. Les vrais taux arriveront avec l'import des données publiques de la Sécurité routière.</p>
+          <p class="lede">Toutes les auto-écoles de France qui enseignent le permis B, classées dans leur département selon leur taux de réussite officiel, et selon ce que le permis coûte vraiment dès que des élèves ont déclaré leurs prix.</p>
         </header>
 
         <form class="filters" id="filters" onsubmit="return false">
           <div class="field">
-            <label for="f-zone">Zone</label>
-            <select id="f-zone"></select>
+            <label for="f-zone">Département</label>
+            <select id="f-zone"><option>Chargement…</option></select>
           </div>
           <div class="field">
-            <label for="f-search">Ville ou nom</label>
+            <label for="f-search">Ville, code postal ou nom</label>
             <input id="f-search" type="search" placeholder="Ex. Massy, 91300" autocomplete="off">
           </div>
           <div class="field">
@@ -130,15 +129,31 @@
               <option value="cout">Coût réel le plus bas</option>
             </select>
           </div>
-          <label class="check-inline" for="f-unknown">
+          <fieldset class="crit">
+            <legend>Seulement les auto-écoles qui proposent</legend>
+            <label class="check-inline" for="f-1euro"><input id="f-1euro" type="checkbox"> Le permis à 1 € par jour</label>
+            <label class="check-inline" for="f-qualite"><input id="f-qualite" type="checkbox"> Le label qualité</label>
+            <label class="check-inline" for="f-aac"><input id="f-aac" type="checkbox"> La conduite accompagnée</label>
+          </fieldset>
+          <label class="check-inline crit-unknown" for="f-unknown">
             <input id="f-unknown" type="checkbox" checked>
             Garder les auto-écoles dont le prix n'est pas encore déclaré
           </label>
         </form>
 
-        <p class="zone-summary" id="zone-summary" aria-live="polite"></p>
+        <div class="summary-block">
+          <p class="zone-summary" id="zone-summary" aria-live="polite"></p>
+          <p class="small" id="price-note"></p>
+        </div>
         <ol class="ranking" id="ranking"></ol>
-        <p class="empty" id="ranking-empty" hidden>Aucune auto-école ne correspond. Monte ton budget ou choisis une autre zone.</p>
+        <p class="empty" id="ranking-empty" hidden>Aucune auto-école ne correspond. Retire un filtre, monte ton budget ou choisis un autre département.</p>
+        <button class="btn btn-ghost" type="button" id="ranking-more" hidden>Afficher plus</button>
+
+        <details class="disclose unranked" id="unranked" hidden>
+          <summary id="unranked-title">Auto-écoles sans taux de réussite publié</summary>
+          <p class="small">Elles enseignent le permis B, mais n'ont pas de taux publié pour l'instant, souvent parce qu'elles sont récentes ou présentent peu d'élèves. Elles ne sont donc pas classées.</p>
+          <ul class="unranked-list" id="unranked-list"></ul>
+        </details>
 
         <section class="block calc" aria-labelledby="calc-title">
           <h2 id="calc-title">Calcule le coût réel d'un devis</h2>
@@ -324,15 +339,17 @@
         <section class="block" aria-labelledby="m-index">
           <h2 id="m-index">L'indice Créno, sur 100</h2>
           <p class="formula">Indice = 60 % réussite + 40 % coût réel</p>
-          <p>Chaque auto-école est comparée aux autres auto-écoles de la zone que tu as choisie. La meilleure de la zone sur un critère obtient 100, la moins bonne obtient 0.</p>
+          <p>Chaque auto-école est comparée aux autres auto-écoles de son département. La meilleure du département sur un critère obtient 100, la moins bonne obtient 0.</p>
+          <p>Tant qu'aucun élève n'a déclaré de prix dans un département, l'indice se base uniquement sur la réussite.</p>
         </section>
 
         <section class="block" aria-labelledby="m-taux">
           <h2 id="m-taux">La réussite</h2>
-          <p>On part du taux de réussite officiel à l'examen pratique du permis B, publié par la Sécurité routière.</p>
-          <p>Une auto-école qui a présenté 20 élèves peut afficher 80 % un peu par chance. Tant qu'elle a peu d'élèves présentés, on rapproche son taux de la moyenne de la zone :</p>
-          <p class="formula">Taux ajusté = (taux × présentés + moyenne de la zone × 40) ÷ (présentés + 40)</p>
-          <p>Plus une auto-école présente d'élèves, plus son taux ajusté est proche de son vrai taux.</p>
+          <p>On utilise le taux de réussite officiel à l'examen pratique du permis B, au premier passage, publié par la Sécurité routière. C'est la part des élèves qui ont réussi la première fois qu'ils se sont présentés.</p>
+          <p>Une auto-école qui a présenté 20 élèves peut afficher 80 % un peu par chance. Tant qu'elle a peu d'élèves présentés, on rapproche son taux de la moyenne du département :</p>
+          <p class="formula">Taux ajusté = (taux × présentés + moyenne du département × 40) ÷ (présentés + 40)</p>
+          <p>Plus une auto-école présente d'élèves, plus son taux ajusté est proche de son vrai taux. Le site affiche toujours le vrai taux : le taux ajusté sert seulement à calculer l'indice.</p>
+          <p>Les auto-écoles sans taux publié, souvent récentes ou avec peu d'élèves, sont listées à part et ne sont pas classées.</p>
         </section>
 
         <section class="block" aria-labelledby="m-cout">
@@ -350,7 +367,7 @@
         <section class="block" aria-labelledby="m-src">
           <h2 id="m-src">Les sources</h2>
           <ul class="tips">
-            <li>Taux de réussite : carte officielle des auto-écoles de la Sécurité routière, mise à jour chaque trimestre, et données publiques sur data.gouv.fr.</li>
+            <li>Taux de réussite, adresses et labels : fichier officiel des auto-écoles de la <a href="https://autoecoles.securite-routiere.gouv.fr/" target="_blank" rel="noopener">Sécurité routière</a>, mis à jour chaque trimestre.</li>
             <li>Prix et heures : déclarations des élèves sur Créno.</li>
           </ul>
           <p class="small" id="data-status"></p>

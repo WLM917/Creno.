@@ -11,18 +11,17 @@
     "examen": "Jour de l'examen | Créno",
     "methode": "Méthode | Créno"
   };
-  var DEP_NAMES = {
-    "75": "Paris", "77": "Seine-et-Marne", "78": "Yvelines", "91": "Essonne",
-    "92": "Hauts-de-Seine", "93": "Seine-Saint-Denis", "94": "Val-de-Marne", "95": "Val-d'Oise"
+  var LABEL_NAMES = {
+    qualite: "Label qualité",
+    permis1euro: "Permis à 1 € par jour",
+    associative: "Associative",
+    enligne: "En ligne"
   };
-  var DEP_IN = {
-    "75": "à Paris", "77": "en Seine-et-Marne", "78": "dans les Yvelines", "91": "en Essonne",
-    "92": "dans les Hauts-de-Seine", "93": "en Seine-Saint-Denis", "94": "dans le Val-de-Marne", "95": "dans le Val-d'Oise",
-    "all": "en Île-de-France"
-  };
-  var SHRINK_K = 40;          // poids de la moyenne de zone pour les petites auto-écoles
+  var SHRINK_K = 40;          // poids de la moyenne du département pour les petites auto-écoles
+  var SMALL_SAMPLE = 50;      // en dessous, on signale que le taux est ajusté
   var W_TAUX = 0.6, W_COUT = 0.4;
   var BUDGET_MAX = 3000;
+  var PAGE = 30;
 
   /* ---------- Outils ---------- */
   var store = {
@@ -35,6 +34,7 @@
     }
   };
   var eurFmt = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+  var intFmt = new Intl.NumberFormat("fr-FR");
   function eur(n) { return n == null || isNaN(n) ? "—" : eurFmt.format(n); }
   function pct(x) { return Math.round(x * 100) + " %"; }
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -45,16 +45,37 @@
     });
   }
   function norm(s) {
-    return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+    return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[-']/g, " ").trim();
   }
-  function depLabel(dep) { return DEP_NAMES[dep] ? DEP_NAMES[dep] + " (" + dep + ")" : "Département " + dep; }
+  function plural(n, one, many) { return intFmt.format(n) + " " + (n > 1 ? many : one); }
 
-  function loadJSON(path, inlineName) {
-    if (window[inlineName]) return Promise.resolve(window[inlineName]);
+  function fetchJSON(path) {
+    // Version en un seul fichier (scripts/build_preview.py) : données intégrées dans la page.
+    var inline = window.CRENO_DATA && window.CRENO_DATA[path];
+    if (inline) return Promise.resolve(inline);
     return fetch(path, { cache: "no-cache" }).then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
     });
+  }
+
+  /* ---------- Données ---------- */
+  var INDEX = null;
+  var depCache = {};
+  function depInfo(code) {
+    if (!INDEX) return null;
+    for (var i = 0; i < INDEX.departements.length; i++) if (INDEX.departements[i].code === code) return INDEX.departements[i];
+    return null;
+  }
+  function depLabel(d) { return d.nom + " (" + d.code + ")"; }
+  function loadDep(code) {
+    if (!depCache[code]) {
+      depCache[code] = fetchJSON("data/departements/" + encodeURIComponent(code) + ".json").catch(function (err) {
+        delete depCache[code];
+        throw err;
+      });
+    }
+    return depCache[code];
   }
 
   /* ---------- Navigation ---------- */
@@ -91,11 +112,11 @@
     return invert ? 100 - s : s;
   }
 
-  // Calcule l'indice de chaque auto-école, comparée aux autres de la même zone.
-  function rankZone(ecoles) {
-    var totalPres = 0, totalReussis = 0;
-    ecoles.forEach(function (e) { totalPres += e.presentes; totalReussis += e.taux * e.presentes; });
-    var moyenne = totalPres ? totalReussis / totalPres : 0;
+  // Classe les auto-écoles d'un département les unes par rapport aux autres.
+  function rankDep(dep) {
+    var ecoles = dep.ecoles.filter(function (e) { return typeof e.taux === "number" && e.presentes > 0; });
+    var sansTaux = dep.ecoles.filter(function (e) { return typeof e.taux !== "number"; });
+    var moyenne = dep.moyenne || 0;
 
     var rows = ecoles.map(function (e) {
       var ajuste = (e.taux * e.presentes + moyenne * SHRINK_K) / (e.presentes + SHRINK_K);
@@ -104,44 +125,56 @@
     var aj = rows.map(function (r) { return r.ajuste; });
     var couts = rows.filter(function (r) { return r.cout != null; }).map(function (r) { return r.cout; });
     var ajMin = Math.min.apply(null, aj), ajMax = Math.max.apply(null, aj);
-    var cMin = couts.length ? Math.min.apply(null, couts) : 0, cMax = couts.length ? Math.max.apply(null, couts) : 0;
+    var cMin = Math.min.apply(null, couts), cMax = Math.max.apply(null, couts);
+    var avecPrix = couts.length > 0;
 
     rows.forEach(function (r) {
       var sTaux = scale(r.ajuste, ajMin, ajMax, false);
+      if (!avecPrix) { r.indice = Math.round(sTaux); return; }
       var sCout = r.cout == null ? 50 : scale(r.cout, cMin, cMax, true);
       r.indice = Math.round(W_TAUX * sTaux + W_COUT * sCout);
     });
-    rows.sort(function (a, b) { return b.indice - a.indice || b.e.taux - a.e.taux; });
+    rows.sort(function (a, b) { return b.indice - a.indice || b.ajuste - a.ajuste; });
     rows.forEach(function (r, i) { r.rang = i + 1; });
-    return { rows: rows, moyenne: moyenne, total: totalPres };
+    return { rows: rows, moyenne: moyenne, avecPrix: avecPrix, nbPrix: couts.length, sansTaux: sansTaux };
   }
 
-  function rowHTML(r, moyenne, isDemo) {
+  function chipsHTML(e) {
+    var html = "";
+    if (e.partenaire) html += '<span class="chip chip-flag">Partenaire payant</span>';
+    (e.labels || []).forEach(function (l) {
+      if (LABEL_NAMES[l]) html += '<span class="chip">' + LABEL_NAMES[l] + '</span>';
+    });
+    return html;
+  }
+
+  function rowHTML(r, moyenne, compact) {
     var e = r.e;
-    var small = e.presentes < 50;
-    var flags = "";
-    if (e.exemple || isDemo) flags += '<span class="chip">Exemple</span>';
-    if (e.partenaire) flags += '<span class="chip chip-flag">Partenaire payant</span>';
     var coutHTML = r.cout == null
       ? '<span class="metric-value is-missing">Prix pas encore déclaré</span>'
       : '<span class="metric-value">' + eur(r.cout) + '</span>';
     var coutNote = r.cout == null
-      ? '<span class="metric-note">Note de prix neutre en attendant</span>'
-      : '<span class="metric-note">' + e.declarations + (e.declarations > 1 ? " déclarations d'élèves" : " déclaration d'élève") + '</span>';
-    var tauxNote = small
-      ? "Seulement " + e.presentes + " élèves présentés, taux ajusté"
-      : e.presentes + " élèves présentés";
+      ? '<span class="metric-note">Aucune déclaration d\'élève pour l\'instant</span>'
+      : '<span class="metric-note">' + plural(e.declarations || 0, "déclaration d'élève", "déclarations d'élèves") + '</span>';
+    var tauxNote = e.presentes < SMALL_SAMPLE
+      ? "Seulement " + plural(e.presentes, "élève", "élèves") + ", taux ajusté"
+      : plural(e.presentes, "élève", "élèves") + " au 1er passage";
+    var place = compact ? esc(e.ville) : esc(e.adresse ? e.adresse + ", " : "") + esc(e.ville);
+    var site = !compact && e.site
+      ? ' <a class="rank-site" href="' + esc(e.site) + '" target="_blank" rel="noopener">Site web<span class="visually-hidden"> de ' + esc(e.nom) + '</span></a>'
+      : "";
     return '' +
       '<li class="rank-row' + (r.rang === 1 ? " is-first" : "") + '">' +
-        '<span class="rank-plate" aria-label="Rang ' + r.rang + '">' + r.rang + '</span>' +
+        '<span class="rank-plate"><span class="visually-hidden">Rang </span>' + r.rang + '</span>' +
         '<div class="rank-main">' +
-          '<h3 class="rank-name">' + esc(e.nom) + flags + '</h3>' +
-          '<p class="rank-place">' + esc(e.ville) + ' (' + esc(e.dep) + ')</p>' +
+          '<h3 class="rank-name">' + esc(e.nom) + '</h3>' +
+          '<p class="rank-place">' + place + site + '</p>' +
+          (compact ? "" : '<p class="rank-chips">' + chipsHTML(e) + '</p>') +
         '</div>' +
         '<div class="metric metric-taux">' +
-          '<span class="metric-label">Taux de réussite officiel</span>' +
+          '<span class="metric-label">Réussite au 1er passage</span>' +
           '<span class="metric-value">' + pct(e.taux) + '</span>' +
-          '<span class="bar" role="img" aria-label="' + pct(e.taux) + ' de réussite, moyenne de la zone ' + pct(moyenne) + '">' +
+          '<span class="bar" role="img" aria-label="' + pct(e.taux) + ' de réussite, moyenne du département ' + pct(moyenne) + '">' +
             '<span class="bar-fill" style="width:' + Math.round(e.taux * 100) + '%"></span>' +
             '<span class="bar-avg" style="left:calc(' + Math.round(moyenne * 100) + '% - 1px)"></span>' +
           '</span>' +
@@ -154,93 +187,168 @@
       '</li>';
   }
 
-  function initRanking(data) {
-    var ecoles = (data.ecoles || []).filter(function (e) { return typeof e.taux === "number" && e.presentes > 0; });
-    var isDemo = !!(data.meta && data.meta.demo);
-    if (isDemo) $all("[data-demo-note]").forEach(function (el) { el.hidden = false; });
+  function loadingHTML(text) { return '<li class="loading">' + esc(text) + '</li>'; }
+  function errorHTML() {
+    return '<li class="empty">Le classement n\'a pas pu se charger. Vérifie ta connexion et recharge la page.</li>';
+  }
 
-    var status = $("#data-status");
-    if (status) {
-      status.textContent = isDemo
-        ? "État des données : version de démonstration, auto-écoles fictives."
-        : "Données mises à jour le " + (data.meta && data.meta.mis_a_jour ? data.meta.mis_a_jour : "—") + ".";
+  function initRanking() {
+    var deps = INDEX.departements.filter(function (d) { return d.nb_taux > 0; });
+    var codes = deps.map(function (d) { return d.code; });
+    var options = deps.map(function (d) { return '<option value="' + esc(d.code) + '">' + esc(depLabel(d)) + '</option>'; }).join("");
+    $("#f-zone").innerHTML = options;
+    var alertDep = $("#alert-dep");
+    if (alertDep) {
+      alertDep.innerHTML = '<option value="">Choisis</option>' +
+        INDEX.departements.map(function (d) { return '<option value="' + esc(d.code) + '">' + esc(depLabel(d)) + '</option>'; }).join("");
     }
 
-    var deps = Array.from(new Set(ecoles.map(function (e) { return e.dep; }))).sort();
-    var zoneSel = $("#f-zone");
-    zoneSel.innerHTML = '<option value="all">Toute l\'Île-de-France</option>' +
-      deps.map(function (d) { return '<option value="' + esc(d) + '">' + esc(depLabel(d)) + '</option>'; }).join("");
-
-    var saved = store.get("creno-filtres", null);
-    var defaultDep = deps.indexOf(String(CONFIG.departementParDefaut)) !== -1 ? String(CONFIG.departementParDefaut) : "all";
+    var saved = store.get("creno-filtres", null) || {};
+    var fallback = codes.indexOf(String(CONFIG.departementParDefaut)) !== -1 ? String(CONFIG.departementParDefaut) : codes[0];
     var state = {
-      zone: saved && (saved.zone === "all" || deps.indexOf(saved.zone) !== -1) ? saved.zone : defaultDep,
+      zone: codes.indexOf(saved.zone) !== -1 ? saved.zone : fallback,
       search: "",
-      budget: saved && saved.budget ? saved.budget : BUDGET_MAX,
-      sort: saved && saved.sort ? saved.sort : "indice",
-      unknown: saved && typeof saved.unknown === "boolean" ? saved.unknown : true
+      budget: saved.budget || BUDGET_MAX,
+      sort: saved.sort || "indice",
+      unknown: typeof saved.unknown === "boolean" ? saved.unknown : true,
+      crit: { permis1euro: !!(saved.crit && saved.crit.permis1euro), qualite: !!(saved.crit && saved.crit.qualite), aac: !!(saved.crit && saved.crit.aac) },
+      limit: PAGE
     };
-    zoneSel.value = state.zone;
+    $("#f-zone").value = state.zone;
     $("#f-budget").value = state.budget;
     $("#f-sort").value = state.sort;
     $("#f-unknown").checked = state.unknown;
+    $("#f-1euro").checked = state.crit.permis1euro;
+    $("#f-qualite").checked = state.crit.qualite;
+    $("#f-aac").checked = state.crit.aac;
 
-    function zoneRows(zone) {
-      var list = zone === "all" ? ecoles : ecoles.filter(function (e) { return e.dep === zone; });
-      return rankZone(list);
+    var ranked = null;
+    var token = 0;
+
+    function save() {
+      store.set("creno-filtres", { zone: state.zone, budget: state.budget, sort: state.sort, unknown: state.unknown, crit: state.crit });
     }
 
-    function renderHome() {
-      var zone = deps.indexOf(String(CONFIG.departementParDefaut)) !== -1 ? String(CONFIG.departementParDefaut) : "all";
-      var res = zoneRows(zone);
-      $("#home-ranking").innerHTML = res.rows.slice(0, 5).map(function (r) { return rowHTML(r, res.moyenne, isDemo); }).join("");
-      var lbl = $("[data-zone-label]");
-      if (lbl) lbl.textContent = DEP_IN[zone] || "";
+    function renderHome(code) {
+      var info = depInfo(code);
+      $all("[data-zone-label]").forEach(function (el) { el.textContent = "dans le " + code; });
+      $("#home-ranking").innerHTML = loadingHTML("Chargement du classement…");
+      loadDep(code).then(function (dep) {
+        var res = rankDep(dep);
+        $("#home-ranking").innerHTML = res.rows.slice(0, 5).map(function (r) { return rowHTML(r, res.moyenne, true); }).join("");
+        $("#home-zone").textContent = info.nom + ". Réussite moyenne au 1er passage : " + pct(res.moyenne) +
+          " (" + pct(INDEX.meta.moyenne_nationale) + " en France).";
+      }).catch(function () { $("#home-ranking").innerHTML = errorHTML(); });
+    }
+
+    function matches(e, q) {
+      if (q && norm(e.nom + " " + e.ville + " " + e.cp + " " + (e.adresse || "")).indexOf(q) === -1) return false;
+      var labels = e.labels || [];
+      if (state.crit.permis1euro && labels.indexOf("permis1euro") === -1) return false;
+      if (state.crit.qualite && labels.indexOf("qualite") === -1) return false;
+      if (state.crit.aac && labels.indexOf("aac") === -1) return false;
+      return true;
     }
 
     function render() {
-      var res = zoneRows(state.zone);
+      if (!ranked) return;
+      var res = ranked;
       var q = norm(state.search);
+      // Sans aucun prix déclaré dans le département, le budget ne peut rien filtrer.
+      $("#f-budget").disabled = !res.avecPrix;
+      $("#f-unknown").disabled = !res.avecPrix;
       var rows = res.rows.filter(function (r) {
-        if (q && norm(r.e.nom + " " + r.e.ville + " " + r.e.cp).indexOf(q) === -1) return false;
-        if (state.budget < BUDGET_MAX) {
-          if (r.cout == null) return state.unknown;
-          return r.cout <= state.budget;
-        }
+        if (!matches(r.e, q)) return false;
+        if (!res.avecPrix) return true;
         if (r.cout == null) return state.unknown;
-        return true;
+        return state.budget >= BUDGET_MAX || r.cout <= state.budget;
       });
       if (state.sort === "taux") rows = rows.slice().sort(function (a, b) { return b.e.taux - a.e.taux; });
       if (state.sort === "cout") rows = rows.slice().sort(function (a, b) {
-        if (a.cout == null) return 1; if (b.cout == null) return -1; return a.cout - b.cout;
+        if (a.cout == null && b.cout == null) return a.rang - b.rang;
+        if (a.cout == null) return 1;
+        if (b.cout == null) return -1;
+        return a.cout - b.cout;
       });
 
-      $("#ranking").innerHTML = rows.map(function (r) { return rowHTML(r, res.moyenne, isDemo); }).join("");
+      $("#ranking").innerHTML = rows.slice(0, state.limit).map(function (r) { return rowHTML(r, res.moyenne, false); }).join("");
       $("#ranking-empty").hidden = rows.length > 0;
+      var more = $("#ranking-more");
+      var left = rows.length - state.limit;
+      more.hidden = left <= 0;
+      more.textContent = "Afficher " + Math.min(PAGE, Math.max(left, 0)) + " de plus (" + intFmt.format(Math.max(left, 0)) + " restantes)";
+
+      var info = depInfo(state.zone);
       var n = res.rows.length;
-      $("#zone-summary").textContent = n
-        ? n + (n > 1 ? " auto-écoles" : " auto-école") + " " + (DEP_IN[state.zone] || "") +
-          ", taux de réussite moyen de la zone : " + pct(res.moyenne) +
-          (rows.length !== n ? ". " + rows.length + " affichée" + (rows.length > 1 ? "s" : "") + " avec tes filtres." : ".")
-        : "Pas encore d'auto-école dans cette zone.";
+      var summary = plural(n, "auto-école classée", "auto-écoles classées") + " dans le " + state.zone + " (" + info.nom + ")" +
+        ", réussite moyenne au 1er passage : " + pct(res.moyenne) + ".";
+      if (rows.length !== n) summary += " " + plural(rows.length, "correspond", "correspondent") + " à tes filtres.";
+      $("#zone-summary").textContent = summary;
+
+      var note = $("#price-note");
+      note.textContent = res.avecPrix
+        ? plural(res.nbPrix, "auto-école a", "auto-écoles ont") + " des prix déclarés par des élèves dans ce département."
+        : "Aucun prix déclaré pour l'instant dans ce département. L'indice se base donc sur la réussite, et le filtre budget comptera dès les premières déclarations d'élèves.";
+
+      var unranked = res.sansTaux.filter(function (e) { return matches(e, q); });
+      $("#unranked").hidden = unranked.length === 0;
+      $("#unranked-title").textContent = plural(unranked.length, "auto-école", "auto-écoles") + " sans taux de réussite publié";
+      $("#unranked-list").innerHTML = unranked.map(function (e) {
+        return '<li><strong>' + esc(e.nom) + '</strong><span>' + esc(e.ville) + '</span></li>';
+      }).join("");
+
       $("#f-budget-out").textContent = state.budget >= BUDGET_MAX ? "pas de limite" : eur(state.budget);
-      store.set("creno-filtres", { zone: state.zone, budget: state.budget, sort: state.sort, unknown: state.unknown });
+      save();
     }
 
-    zoneSel.addEventListener("change", function () { state.zone = zoneSel.value; render(); });
-    $("#f-search").addEventListener("input", function (ev) { state.search = ev.target.value; render(); });
-    $("#f-budget").addEventListener("input", function (ev) { state.budget = Number(ev.target.value); render(); });
-    $("#f-sort").addEventListener("change", function (ev) { state.sort = ev.target.value; render(); });
-    $("#f-unknown").addEventListener("change", function (ev) { state.unknown = ev.target.checked; render(); });
+    function loadZone() {
+      var my = ++token;
+      ranked = null;
+      $("#ranking").innerHTML = loadingHTML("Chargement des auto-écoles du " + state.zone + "…");
+      $("#ranking-more").hidden = true;
+      $("#ranking-empty").hidden = true;
+      loadDep(state.zone).then(function (dep) {
+        if (my !== token) return;
+        ranked = rankDep(dep);
+        render();
+      }).catch(function () {
+        if (my !== token) return;
+        $("#ranking").innerHTML = errorHTML();
+      });
+    }
 
-    renderHome();
-    render();
+    function reset() { state.limit = PAGE; render(); }
+
+    $("#f-zone").addEventListener("change", function (ev) {
+      state.zone = ev.target.value; state.limit = PAGE; save();
+      loadZone(); renderHome(state.zone);
+    });
+    $("#f-search").addEventListener("input", function (ev) { state.search = ev.target.value; reset(); });
+    $("#f-budget").addEventListener("input", function (ev) { state.budget = Number(ev.target.value); reset(); });
+    $("#f-sort").addEventListener("change", function (ev) { state.sort = ev.target.value; reset(); });
+    $("#f-unknown").addEventListener("change", function (ev) { state.unknown = ev.target.checked; reset(); });
+    $("#f-1euro").addEventListener("change", function (ev) { state.crit.permis1euro = ev.target.checked; reset(); });
+    $("#f-qualite").addEventListener("change", function (ev) { state.crit.qualite = ev.target.checked; reset(); });
+    $("#f-aac").addEventListener("change", function (ev) { state.crit.aac = ev.target.checked; reset(); });
+    $("#ranking-more").addEventListener("click", function () { state.limit += PAGE; render(); });
+
+    renderHome(state.zone);
+    loadZone();
   }
 
-  function rankingError() {
-    var msg = '<li class="empty">Le classement n\'a pas pu se charger. Recharge la page. Si tu ouvres le fichier directement sur ton ordinateur, lance plutôt un petit serveur local (voir le README).</li>';
-    $("#ranking").innerHTML = msg;
-    $("#home-ranking").innerHTML = msg;
+  function initDataStatus() {
+    var m = INDEX.meta;
+    var d = new Date(m.importe_le + "T12:00:00");
+    var when = isNaN(d) ? m.importe_le : d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+    $("#data-status").textContent = "Fichier importé le " + when + " : " +
+      intFmt.format(m.nb_auto_ecoles) + " auto-écoles enseignent le permis B, dont " +
+      intFmt.format(m.nb_avec_taux) + " avec un taux de réussite publié. Réussite moyenne au 1er passage en France : " +
+      pct(m.moyenne_nationale) + ".";
+  }
+
+  function indexError() {
+    $("#ranking").innerHTML = errorHTML();
+    $("#home-ranking").innerHTML = errorHTML();
   }
 
   /* ---------- Calculateur ---------- */
@@ -320,7 +428,7 @@
           var pending = store.get("creno-envois", []);
           pending.push(payload);
           store.set("creno-envois", pending);
-          done(true, "Enregistré sur cet appareil. Le site est en mode démo : rien n'est encore envoyé.");
+          done(true, "Enregistré sur cet appareil. L'envoi en ligne n'est pas encore branché.");
         }
       });
     });
@@ -344,21 +452,17 @@
   }
 
   /* ---------- Démarrage ---------- */
-  function initDepSelect() {
-    var alertDep = $("#alert-dep");
-    if (!alertDep) return;
-    alertDep.innerHTML = '<option value="">Choisis</option>' +
-      Object.keys(DEP_NAMES).map(function (d) { return '<option value="' + d + '">' + esc(depLabel(d)) + '</option>'; }).join("");
-  }
-
   function start() {
     showView();
-    initDepSelect();
     initCalc();
     initForms();
     initChecklist();
-    loadJSON("data/auto-ecoles.json", "CRENO_ECOLES").then(initRanking).catch(rankingError);
-    loadJSON("data/loueurs.json", "CRENO_LOUEURS").then(initRenters).catch(function () { initRenters(null); });
+    fetchJSON("data/index.json").then(function (index) {
+      INDEX = index;
+      initDataStatus();
+      initRanking();
+    }).catch(indexError);
+    fetchJSON("data/loueurs.json").then(initRenters).catch(function () { initRenters(null); });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

@@ -1,0 +1,6 @@
+{"code": "977", "nom": "Saint-Barthélemy", "moyenne": null, "ecoles": [
+{"id":"I2597700010","nom":"Association Test 1","adresse":"2 Rue Haute","cp":"97701","ville":"Ville a","labels":["associative"]},
+{"id":"I2597700020","nom":"Association Test 2","adresse":"52 Rue Navarre","cp":"97704","ville":"Ville d","labels":["associative"]},
+{"id":"E2597700010","nom":"Auto École Test 1","adresse":"1 Rue du Fort","cp":"97704","ville":"Ville d"},
+{"id":"E2597700020","nom":"Auto École Test 2","adresse":"25 Mail du Feu","cp":"97704","ville":"Ville d"}
+]}

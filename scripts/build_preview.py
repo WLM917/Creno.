@@ -28,8 +28,12 @@ def main():
     css = read("assets/style.css")
     config = read("assets/config.js")
     app = read("assets/app.js")
-    ecoles = json.loads(read("data/auto-ecoles.json"))
-    loueurs = json.loads(read("data/loueurs.json"))
+    data = {
+        "data/index.json": json.loads(read("data/index.json")),
+        "data/loueurs.json": json.loads(read("data/loueurs.json")),
+    }
+    for f in sorted((ROOT / "data" / "departements").glob("*.json")):
+        data[f"data/departements/{f.name}"] = json.loads(f.read_text(encoding="utf-8"))
 
     head = re.search(r"<head>(.*?)</head>", html, re.S).group(1)
     body = re.search(r"<body>(.*?)</body>", html, re.S).group(1)
@@ -40,10 +44,7 @@ def main():
     body = re.sub(r'\s*<script src="assets/config\.js"></script>', "", body)
     body = re.sub(r'\s*<script src="assets/app\.js"></script>', "", body)
 
-    data_js = (
-        "window.CRENO_ECOLES = " + json.dumps(ecoles, ensure_ascii=False) + ";\n"
-        "window.CRENO_LOUEURS = " + json.dumps(loueurs, ensure_ascii=False) + ";\n"
-    )
+    data_js = "window.CRENO_DATA = " + json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + ";\n"
     scripts = "<script>\n" + config + "\n" + data_js + "\n" + app + "\n</script>\n"
 
     if fragment:

@@ -1,0 +1,5 @@
+{"code": "975", "nom": "Saint-Pierre-et-Miquelon", "moyenne": null, "ecoles": [
+{"id":"I2397500010","nom":"Association Test DSR","adresse":"1 Place de la République","cp":"97500","ville":"Miquelon","labels":["associative"]},
+{"id":"I1797500010","nom":"Association pour la Formation Continue","adresse":"Route de la Pointe Blanche","cp":"97500","ville":"Saint Pierre","labels":["associative"]},
+{"id":"E2297500020","nom":"Association pour la formation continue","adresse":"route de la Pointe Blanche","cp":"97500","ville":"Saint Pierre","labels":["qualite","permis1euro"]}
+]}

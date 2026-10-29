@@ -97,6 +97,7 @@ Les noms de villes de la source n'ont pas d'accents : build_site.py en rétablit
 - Chaque page a un titre, une description, une URL canonique, des balises Open Graph,
   un fil d'Ariane et des données structurées (BreadcrumbList, ItemList de DrivingSchool).
   Ne jamais ajouter de note (aggregateRating) : nos indices ne sont pas des avis clients.
+- Hébergement : Vercel (https://creno-tan.vercel.app), déploiement automatique à chaque push sur main.
 - sitemap.xml et robots.txt utilisent `adresse_du_site` de site.json : à changer si le site
   déménage (domaine perso, Vercel...), puis relancer build_site.py.
 - Google Search Console : coller le code de vérification dans `google_site_verification`

@@ -11,13 +11,11 @@ Le bon créneau pour ton permis. Site pour passer son permis B au meilleur prix 
 
 Site statique : les pages HTML sont générées par `scripts/build_site.py` et peuvent être hébergées gratuitement sur GitHub Pages, Vercel ou Netlify. Détails techniques et règles du projet : voir `CLAUDE.md`.
 
-## Mettre le site en ligne avec GitHub Pages
+## Hébergement
 
-1. Renommer le dépôt en `Creno` (sans point final) : *Settings > General > Repository name*.
-2. *Settings > Pages* : *Source* = *Deploy from a branch*, branche `main`, dossier `/ (root)`, *Save*.
-3. Quelques minutes après, le site est sur https://wlm917.github.io/Creno/
+Le site est en ligne sur https://creno-tan.vercel.app, hébergé par Vercel (projet relié au dépôt GitHub). Chaque push sur `main` met le site à jour automatiquement, sans réglage de build.
 
-Si le site est publié ailleurs (Vercel, domaine perso), changer `adresse_du_site` dans `site.json`, puis relancer `python3 scripts/build_site.py`.
+S'il déménage (domaine perso comme creno.fr), changer `adresse_du_site` dans `site.json`, puis relancer `python3 scripts/build_site.py` et pousser.
 
 ## Apparaître sur Google
 

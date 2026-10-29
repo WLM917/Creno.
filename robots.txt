@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://wlm917.github.io/Creno/sitemap.xml
+Sitemap: https://creno-tan.vercel.app/sitemap.xml

@@ -46,6 +46,42 @@
       return r.json();
     });
   }
+  function supabaseReady() { return !!(CONFIG.supabaseUrl && CONFIG.supabaseAnonKey); }
+  function supaHeaders(extra) {
+    var h = { "apikey": CONFIG.supabaseAnonKey, "Content-Type": "application/json" };
+    if (CONFIG.supabaseAnonKey.indexOf("sb_") !== 0) h.Authorization = "Bearer " + CONFIG.supabaseAnonKey;
+    for (var k in (extra || {})) h[k] = extra[k];
+    return h;
+  }
+  function supaInsert(table, row, keepalive) {
+    return fetch(CONFIG.supabaseUrl.replace(/\/$/, "") + "/rest/v1/" + table, {
+      method: "POST", keepalive: !!keepalive,
+      headers: supaHeaders({ "Prefer": "return=minimal" }),
+      body: JSON.stringify(row)
+    });
+  }
+  // Appelle une fonction serveur Supabase (supabase/functions/<nom>). Renvoie le JSON, ou lève une erreur lisible.
+  function callFn(name, body) {
+    return fetch(CONFIG.supabaseUrl.replace(/\/$/, "") + "/functions/v1/" + name, {
+      method: "POST", headers: supaHeaders(), body: JSON.stringify(body)
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok) throw new Error(j.erreur || "Le service ne répond pas. Réessaie dans quelques minutes.");
+        return j;
+      });
+    }, function () { throw new Error("Pas de connexion. Vérifie ton réseau et réessaie."); });
+  }
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+      var r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16);
+    });
+  }
+  function setStatus(el, ok, text) {
+    el.textContent = text;
+    el.className = "form-status " + (ok ? "is-ok" : "is-error");
+  }
+
   function queryParam(name) {
     var m = new RegExp("[?&]" + name + "=([^&#]*)").exec(location.search);
     return m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : "";
@@ -345,7 +381,10 @@
 
   /* ---------- Formulaires ---------- */
   // Chaque formulaire va dans sa table Supabase (voir supabase/migrations).
-  var TABLES = { declaration: "declarations", loueur: "loueurs_proposes", alerte: "alertes" };
+  var TABLES = {
+    declaration: "declarations", loueur: "loueurs_proposes", alerte: "alertes",
+    demande_pro: "demandes_pros", pro: "pros_proposes", contact_pro: "contacts_pros"
+  };
   var NUMBERS = ["forfait", "heures_incluses", "prix_heure", "heures_total", "frais_examen"];
 
   function initSchoolPicker(form) {
@@ -384,7 +423,8 @@
         var statusEl = $(".form-status", form);
         var button = $("button[type=submit]", form);
         var row = {};
-        $all("input[name], select[name]", form).forEach(function (f) {
+        $all("input[name], select[name], textarea[name]", form).forEach(function (f) {
+          if (f.type === "checkbox") { row[f.name] = f.checked; return; }
           var v = f.value.trim();
           if (NUMBERS.indexOf(f.name) !== -1) row[f.name] = v === "" ? null : Math.round(Number(v));
           else row[f.name] = v === "" ? null : v;
@@ -398,17 +438,8 @@
         }
 
         var req = null;
-        if (CONFIG.supabaseUrl && CONFIG.supabaseAnonKey) {
-          req = fetch(CONFIG.supabaseUrl.replace(/\/$/, "") + "/rest/v1/" + TABLES[type], {
-            method: "POST",
-            headers: {
-              "apikey": CONFIG.supabaseAnonKey,
-              "Authorization": "Bearer " + CONFIG.supabaseAnonKey,
-              "Content-Type": "application/json",
-              "Prefer": "return=minimal"
-            },
-            body: JSON.stringify(row)
-          });
+        if (supabaseReady()) {
+          req = supaInsert(TABLES[type], row);
         } else if (CONFIG.formEndpoint) {
           req = fetch(CONFIG.formEndpoint, {
             method: "POST",
@@ -427,7 +458,12 @@
         }
         req.then(function (r) {
           if (!r.ok) throw new Error("HTTP " + r.status);
-          done(true, type === "declaration" ? "Merci, ta réponse est envoyée." : "Merci, c'est envoyé.");
+          var merci = {
+            declaration: "Merci, ta réponse est envoyée.",
+            demande_pro: "Merci, ta demande est envoyée. Un pro de ton département te recontacte.",
+            pro: "Merci, on vérifie tes informations et on revient vers toi."
+          };
+          done(true, merci[type] || "Merci, c'est envoyé.");
         }).catch(function () {
           done(false, "L'envoi n'a pas marché. Vérifie tes réponses et ta connexion, puis réessaie.");
         });
@@ -453,6 +489,168 @@
     update();
   }
 
+  /* ---------- Alertes partagées ---------- */
+  function initAlertes() {
+    var forms = $all("form[data-alertes]");
+    if (!forms.length) return;
+    if (!supabaseReady()) {
+      $all("[data-alertes-off]").forEach(function (el) { el.hidden = false; });
+      forms.forEach(function (f) { $all("button[type=submit]", f).forEach(function (b) { b.disabled = true; }); });
+      return;
+    }
+    forms.forEach(function (form) {
+      var action = form.getAttribute("data-alertes");
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var statusEl = $(".form-status", form);
+        var button = $("button[type=submit]", form);
+        var body = { action: action };
+        $all("input[name], select[name]", form).forEach(function (f) { body[f.name] = f.value.trim(); });
+        button.disabled = true;
+        statusEl.textContent = "Envoi…";
+        statusEl.className = "form-status";
+        callFn("alertes", body).then(function (j) {
+          if (j.paiement) { location.href = j.paiement; return; }
+          button.disabled = false;
+          if (j.confirmation) {
+            setStatus(statusEl, true, "C'est presque fini : on t'a envoyé un e-mail. Clique sur le lien pour activer tes alertes.");
+            form.reset();
+          } else if (action === "signaler") {
+            setStatus(statusEl, true, j.prevenus
+              ? "Merci ! " + plural(j.prevenus, "candidat a été prévenu", "candidats ont été prévenus") + "."
+              : "Merci, ton signalement est enregistré.");
+            form.reset();
+          }
+        }).catch(function (e) {
+          button.disabled = false;
+          setStatus(statusEl, false, e.message);
+        });
+      });
+    });
+  }
+
+  /* ---------- Pages de confirmation (alertes, accès au pack) ---------- */
+  function initEtat() {
+    var msg = $("#etat-msg");
+    if (!msg) return;
+    var etat = msg.getAttribute("data-etat");
+    function show(ok, text) { msg.textContent = text; msg.classList.toggle("is-error", !ok); }
+    if (!supabaseReady()) { show(false, "Ce service ouvre très bientôt."); return; }
+
+    if (etat === "pack") {
+      var sid = queryParam("session_id") || store.get("creno-pack-session", "");
+      if (!sid) { show(false, "Aucun achat trouvé sur cet appareil. Ouvre le lien reçu après ton paiement, ou écris-nous."); return; }
+      callFn("pack", { session_id: sid }).then(function (j) {
+        store.set("creno-pack-session", sid);
+        show(true, "C'est tout bon, ton pack est prêt.");
+        var a = $("#etat-bouton");
+        a.href = j.url;
+        a.textContent = "Télécharger le Pack candidat libre (PDF)";
+        $("#etat-actions").hidden = false;
+        var note = $("#etat-note");
+        note.textContent = "Le lien de téléchargement marche pendant une heure. Ensuite, reviens sur cette page depuis le même appareil pour en obtenir un nouveau.";
+        note.hidden = false;
+      }).catch(function (e) { show(false, e.message); });
+      return;
+    }
+
+    var params = { confirmer: { action: "confirmer", t: queryParam("t") },
+                   paiement: { action: "paiement", session_id: queryParam("session_id") },
+                   desabonner: { action: "desabonner", t: queryParam("t") } }[etat];
+    if (!params || !(params.t || params.session_id)) { show(false, "Ce lien est incomplet. Ouvre-le directement depuis ton e-mail."); return; }
+    callFn("alertes", params).then(function (j) {
+      if (etat === "desabonner") show(true, "C'est fait : tu ne recevras plus d'alertes pour ce département.");
+      else show(true, "C'est activé : tu recevras les alertes du " + j.departement + " jusqu'au " + j.expire_txt + ".");
+    }).catch(function (e) { show(false, e.message); });
+  }
+
+  /* ---------- Achat du pack ---------- */
+  function initPack() {
+    var form = $("#pack-form");
+    if (!form) return;
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var statusEl = $(".form-status", form);
+      if (!CONFIG.lienPaiementPack) { setStatus(statusEl, false, "Le paiement ouvre très bientôt. Reviens dans quelques jours."); return; }
+      var url = CONFIG.lienPaiementPack + (CONFIG.lienPaiementPack.indexOf("?") === -1 ? "?" : "&") +
+        "client_reference_id=pack-" + uuid();
+      location.href = url;
+    });
+  }
+
+  /* ---------- Badge des auto-écoles (espace pros) ---------- */
+  function initBadge() {
+    var depSel = $("#badge-dep");
+    if (!depSel) return;
+    var input = $("#badge-ecole");
+    var list = $("#badge-ecoles");
+    var result = $("#badge-result");
+    var canonical = ($("link[rel=canonical]") || {}).href || location.href;
+    var base = canonical.replace(/pro\/?(index\.html)?$/, "");
+    var badges = null;
+    var ecoles = [];
+
+    function getBadges() {
+      if (!badges) badges = fetchJSON("data/badges.json");
+      return badges;
+    }
+    depSel.addEventListener("change", function () {
+      input.value = ""; list.innerHTML = ""; result.hidden = true; input.disabled = true;
+      if (!depSel.value) return;
+      fetchJSON("data/departements/" + encodeURIComponent(depSel.value) + ".json").then(function (dep) {
+        ecoles = dep.ecoles;
+        list.innerHTML = ecoles.map(function (e) { return '<option value="' + esc(e.nom + ", " + e.ville) + '"></option>'; }).join("");
+        input.disabled = false;
+        input.focus();
+      });
+    });
+    function show() {
+      var e = null;
+      ecoles.forEach(function (x) { if (x.nom + ", " + x.ville === input.value) e = x; });
+      if (!e) { result.hidden = true; return; }
+      getBadges().then(function (b) {
+        var depUrl = b.deps[depSel.value];
+        var fiche = base + depUrl + "#ae-" + e.id;
+        var top = b.top[e.id];
+        if (!top) {
+          result.innerHTML = '<p>Le badge est réservé aux 10 premières auto-écoles de chaque département. ' +
+            (e.taux == null ? "Ton auto-école n'a pas encore de taux de réussite publié." : "Ta fiche est en ligne :") +
+            ' <a href="' + esc(depUrl ? link(depUrl) + "#ae-" + e.id : "#") + '">Voir ma fiche</a></p>';
+        } else {
+          var rang = top[0] === 1 ? "1re" : top[0] + "e";
+          var code = '<a href="' + fiche + '" title="Classement Créno des auto-écoles"><img src="' + base + 'badges/' + e.id +
+            '.svg" alt="' + esc(e.nom) + ' : ' + rang + ' sur ' + top[1] + ' auto-écoles, classement Créno" width="280" height="88"></a>';
+          result.innerHTML =
+            '<p><strong>Bravo, ' + esc(e.nom) + ' est ' + rang + ' sur ' + top[1] + ' dans le ' + esc(depSel.value) + '.</strong> Voici ton badge :</p>' +
+            '<p><img src="' + ROOT + 'badges/' + esc(e.id) + '.svg" alt="" width="280" height="88"></p>' +
+            '<div class="field"><label for="badge-code">Code à coller sur ton site</label>' +
+            '<textarea id="badge-code" rows="4" readonly>' + esc(code) + '</textarea></div>' +
+            '<button class="btn" type="button" id="badge-copy">Copier le code</button> <span class="form-status" role="status"></span>' +
+            '<p class="small">Le badge se met à jour tout seul à chaque nouveau fichier officiel. S\'il n\'est plus dans le top 10, il indique simplement son rang.</p>';
+          $("#badge-copy").addEventListener("click", function () {
+            var ta = $("#badge-code");
+            var st = $(".form-status", result);
+            var ok = function () { setStatus(st, true, "Copié."); };
+            if (navigator.clipboard) navigator.clipboard.writeText(ta.value).then(ok, function () { ta.select(); });
+            else { ta.select(); }
+          });
+        }
+        result.hidden = false;
+      });
+    }
+    input.addEventListener("change", show);
+    input.addEventListener("input", show);
+  }
+
+  /* ---------- Clics vers les partenaires (preuve des clients envoyés) ---------- */
+  function initClics() {
+    document.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest("[data-clic]");
+      if (!a || !supabaseReady()) return;
+      try { supaInsert("clics", { cible: a.getAttribute("data-clic"), page: location.pathname }, true); } catch (e) { /* sans importance */ }
+    });
+  }
+
   /* ---------- Démarrage ---------- */
   function start() {
     $all("form[data-finder]").forEach(initFinder);
@@ -460,6 +658,11 @@
     initCalc();
     initForms();
     initChecklist();
+    initAlertes();
+    initEtat();
+    initPack();
+    initBadge();
+    initClics();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

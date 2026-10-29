@@ -1,0 +1,70 @@
+<div class="wrap stack-lg page-pad">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Alertes places d'examen</h1>
+    <p class="lede">Des places se libèrent quand des candidats annulent, mais personne ne te prévient. Ici, quand un candidat voit des places sur RdvPermis, il le signale en un clic, et tous ceux qui suivent ce département reçoivent un e-mail.</p>
+  </header>
+
+  <ol class="steps steps-inline">
+    <li><h3>Tu suis ton département</h3><p>Tu laisses ton e-mail et tu choisis le département où tu veux passer l'examen.</p></li>
+    <li><h3>Un candidat voit des places</h3><p>En cherchant sur RdvPermis, il tombe sur des créneaux libres et les signale ici.</p></li>
+    <li><h3>Tu es prévenu tout de suite</h3><p>Tu reçois un e-mail avec le centre et le créneau. À toi de réserver vite sur RdvPermis.</p></li>
+  </ol>
+
+  <p class="notice" data-alertes-off hidden>Les alertes ouvrent très bientôt. Reviens dans quelques jours, ou suis-nous pour être prévenu du lancement.</p>
+
+  <div class="two-col">
+    <section class="block panel" id="suivre" aria-labelledby="suivre-title">
+      <h2 id="suivre-title">Recevoir les alertes</h2>
+      <p class="offer">{{offre_alertes}}</p>
+      <form class="form-stack" id="follow-form" data-alertes="abonner">
+        <div class="field"><label for="follow-email">Ton e-mail</label><input id="follow-email" name="email" type="email" required autocomplete="email" maxlength="200"></div>
+        <div class="field"><label for="follow-dep">Département de l'examen</label>
+          <select id="follow-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select>
+        </div>
+        <label class="check-inline" for="follow-ok"><input id="follow-ok" type="checkbox" required> J'accepte de recevoir des e-mails d'alerte pour ce département. Je peux me désabonner à tout moment.</label>
+        {{case_service_immediat}}
+        <div class="form-actions">
+          <button class="btn btn-signal" type="submit">{{bouton_alertes}}</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </section>
+
+    <section class="block panel" id="signaler" aria-labelledby="signal-title">
+      <h2 id="signal-title">J'ai vu des places</h2>
+      <p>Préviens les autres candidats : c'est gratuit et ça prend dix secondes. Demain, c'est peut-être eux qui te préviendront.</p>
+      <form class="form-stack" id="signal-form" data-alertes="signaler">
+        <div class="field"><label for="signal-dep">Département</label>
+          <select id="signal-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select>
+        </div>
+        <div class="field"><label for="signal-centre">Centre d'examen</label><input id="signal-centre" name="centre" required maxlength="120" placeholder="Le nom affiché sur RdvPermis"></div>
+        <div class="field"><label for="signal-creneau">Créneau vu (si tu l'as)</label><input id="signal-creneau" name="creneau" maxlength="120" placeholder="Ex. mardi 12 novembre, 14 h"></div>
+        <div class="field"><label for="signal-details">Précision (facultatif)</label><input id="signal-details" name="details" maxlength="300" placeholder="Ex. trois créneaux dans la semaine"></div>
+        <div class="form-actions">
+          <button class="btn" type="submit">Prévenir les candidats</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <p class="pledge">Créno ne se connecte jamais à RdvPermis et n'utilise aucun robot. Les alertes viennent uniquement des candidats, alors une place signalée peut déjà être prise quand tu arrives.</p>
+
+  <section class="block" aria-labelledby="faq-alertes">
+    <h2 id="faq-alertes">Questions fréquentes</h2>
+    <div class="faq">
+      <details><summary>Combien d'alertes vais-je recevoir ?</summary><p>Ça dépend du nombre de candidats qui signalent des places dans ton département. Pour ne pas t'inonder, tu reçois au plus une alerte toutes les 10 minutes.</p></details>
+      {{faq_prix}}
+      <details><summary>Comment réserver la place signalée ?</summary><p>Connecte-toi à RdvPermis avec ton compte candidat, comme d'habitude. Garde ton NEPH et ton accompagnateur déjà déclarés : tu gagneras de précieuses minutes.</p></details>
+      <details><summary>Comment arrêter les alertes ?</summary><p>Chaque e-mail contient un lien « Ne plus recevoir d'alertes ». Un clic suffit.</p></details>
+      <details><summary>Que faites-vous de mon e-mail ?</summary><p>Il sert uniquement à t'envoyer les alertes du département choisi. Il n'est ni vendu ni partagé. <a href="{{root}}confidentialite/">Confidentialité</a></p></details>
+    </div>
+  </section>
+
+  <section class="block note-block" aria-labelledby="pack-cta">
+    <h2 id="pack-cta">Pas encore prêt pour l'examen ?</h2>
+    <p>Le Pack candidat libre te guide du dossier jusqu'au jour J, avec un programme d'entraînement pour ton accompagnateur et un examen blanc noté sur 31 points.</p>
+    <a class="link-strong" href="{{root}}pack-candidat-libre/">Découvrir le pack</a>
+  </section>
+</div>

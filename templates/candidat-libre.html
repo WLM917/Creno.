@@ -71,22 +71,27 @@
     <p class="pledge">Créno ne réserve jamais de place à ta place et n'utilise aucun robot sur RdvPermis.</p>
 
     <div class="soon">
-      <h3>Bientôt : les alertes entre candidats</h3>
-      <p>Quand un candidat voit des places apparaître dans un département, tout le monde est prévenu. Laisse ton e-mail pour être averti du lancement.</p>
-      <form class="inline-form" id="alert-form" data-form-type="alerte">
-        <div class="field"><label for="alert-email">E-mail</label><input id="alert-email" name="email" type="email" required autocomplete="email" maxlength="200"></div>
-        <div class="field"><label for="alert-dep">Département</label>
-          <select id="alert-dep" name="departement" required>
-            <option value="">Choisis</option>
-            {{options_departements}}
-          </select>
-        </div>
-        <div class="form-actions">
-          <button class="btn" type="submit">Me prévenir</button>
-          <p class="form-status" role="status"></p>
-        </div>
-      </form>
-      <p class="small">Ton e-mail sert uniquement à te prévenir du lancement des alertes. <a href="{{root}}confidentialite/">Confidentialité</a></p>
+      <h3>Les alertes entre candidats</h3>
+      <p>Quand un candidat voit des places apparaître sur RdvPermis, il le signale sur Créno, et tous ceux qui suivent ce département reçoivent un e-mail.</p>
+      <a class="btn btn-signal" href="{{root}}alertes/">Suivre les places de mon département</a>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="aide-title">
+    <h2 id="aide-title">Pour aller plus loin</h2>
+    <div class="offer-grid">
+      <a class="option option-link" href="{{root}}pack-candidat-libre/">
+        <h3>Le Pack candidat libre</h3>
+        <p>Le parcours complet, un programme en 12 séances pour ton accompagnateur et un examen blanc noté sur 31 points.</p>
+      </a>
+      <a class="option option-link" href="{{root}}moniteurs/">
+        <h3>L'avis d'un moniteur</h3>
+        <p>Un examen blanc avec un pro avant de réserver ta date, dans les règles.</p>
+      </a>
+      <a class="option option-link" href="{{root}}examen/">
+        <h3>La checklist du jour J</h3>
+        <p>Tout ce qu'il faut avoir avec toi le jour de l'examen.</p>
+      </a>
     </div>
   </section>
 

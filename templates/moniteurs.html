@@ -1,0 +1,67 @@
+<div class="wrap stack-lg page-pad">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Être accompagné par un moniteur</h1>
+    <p class="lede">Tu veux l'avis d'un pro avant l'examen, ou passer l'examen avec un moniteur à tes côtés ? C'est possible, mais pas en candidat libre. Voici comment faire dans les règles, sans payer tout un forfait.</p>
+  </header>
+
+  <section class="block note-block" aria-labelledby="regle-title">
+    <h2 id="regle-title">Ce que dit la règle</h2>
+    <ul class="tips">
+      <li>En candidat libre, la personne qui t'accompagne le jour de l'examen est un proche, avec un lien de parenté établi, qui a le permis depuis au moins 5 ans et n'est pas payé. Un professionnel ne peut pas t'accompagner ce jour-là.</li>
+      <li>Un moniteur ne peut donner des cours payants que dans le cadre d'une auto-école agréée. En dehors, c'est un délit.</li>
+    </ul>
+    <p class="small">Sources : préfecture du Morbihan, service-public, ministère de l'Intérieur. Vérifie toujours auprès de ta préfecture.</p>
+  </section>
+
+  <section class="block" aria-labelledby="facons-title">
+    <h2 id="facons-title">Deux façons de faire appel à un pro</h2>
+    <div class="two-col">
+      <div class="option">
+        <h3>Une évaluation ou un examen blanc</h3>
+        <p>Une auto-école agréée te fait conduire avec un moniteur pendant une ou deux heures, et te dit honnêtement où tu en es. Idéal avant de réserver ta date, ou après un échec.</p>
+      </div>
+      <div class="option">
+        <h3>La présentation à l'examen par une auto-école</h3>
+        <p>L'auto-école réserve ta place, te prête sa voiture à double commande et son moniteur t'accompagne le jour J. Tu n'es plus candidat libre, mais certaines auto-écoles le proposent sans tout un forfait.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="annuaire-title">
+    <h2 id="annuaire-title">Les pros qui proposent ces services</h2>
+    {{pros}}
+  </section>
+
+  <section class="block" id="demande" aria-labelledby="demande-title">
+    <h2 id="demande-title">Trouver un pro près de chez toi</h2>
+    <p class="lede">Dis-nous ce dont tu as besoin : on transmet ta demande à un pro vérifié de ton département, qui te recontacte avec son prix.</p>
+    <form class="form-grid" id="demande-form" data-form-type="demande_pro">
+      <div class="field"><label for="dem-besoin">Ce dont tu as besoin</label>
+        <select id="dem-besoin" name="besoin" required>
+          <option value="">Choisis</option>
+          <option value="examen-blanc">Une évaluation ou un examen blanc</option>
+          <option value="presentation-examen">Être présenté à l'examen avec un moniteur</option>
+          <option value="heures">Des heures de conduite avec un moniteur</option>
+        </select>
+      </div>
+      <div class="field"><label for="dem-dep">Département</label>
+        <select id="dem-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select>
+      </div>
+      <div class="field"><label for="dem-ville">Ville</label><input id="dem-ville" name="ville" maxlength="80" autocomplete="address-level2"></div>
+      <div class="field"><label for="dem-dispo">Tes disponibilités</label><input id="dem-dispo" name="disponibilites" maxlength="300" placeholder="Ex. le samedi matin"></div>
+      <div class="field field-wide"><label for="dem-contact">E-mail ou téléphone</label><input id="dem-contact" name="contact" required maxlength="200" autocomplete="email"></div>
+      <label class="check-inline field-wide" for="dem-ok"><input id="dem-ok" name="consentement" type="checkbox" value="true" required> J'accepte que Créno transmette ma demande et mon contact à un pro de mon département.</label>
+      <div class="form-actions field-wide">
+        <button class="btn" type="submit">Envoyer ma demande</button>
+        <p class="form-status" role="status"></p>
+      </div>
+    </form>
+  </section>
+
+  <section class="block" aria-labelledby="propro-title">
+    <h2 id="propro-title">Tu es moniteur ou auto-école ?</h2>
+    <p>Propose tes heures, tes examens blancs ou ta formule de présentation à l'examen, et reçois des demandes d'élèves de ton département.</p>
+    <a class="link-strong" href="{{root}}pro/#proposer">Proposer mes services</a>
+  </section>
+</div>

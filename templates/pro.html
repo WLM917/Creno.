@@ -1,0 +1,121 @@
+<div class="wrap stack-lg page-pad">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Créno pour les pros</h1>
+    <p class="lede">Auto-écoles, moniteurs, loueurs de voitures à double commande : Créno met en avant les pros qui font réussir les élèves, à partir des chiffres officiels. Pendant le lancement, tout est gratuit, et tu ne paieras plus tard que pour les clients qu'on t'envoie.</p>
+  </header>
+
+  <section class="block" aria-labelledby="pourquoi-title">
+    <h2 id="pourquoi-title">Pourquoi faire confiance à Créno</h2>
+    <dl class="facts">
+      <div><dt>{{nb_classees}}</dt><dd>auto-écoles classées à partir des taux de réussite officiels de la Sécurité routière</dd></div>
+      <div><dt>{{nb_pages_villes}}</dt><dd>pages ville et {{nb_pages_deps}} pages département, faites pour être trouvées sur Google</dd></div>
+      <div><dt>{{date_import}}</dt><dd>date du dernier fichier officiel importé. Mise à jour à chaque trimestre</dd></div>
+    </dl>
+    <p>Le classement ne s'achète pas : la formule est publique et une fiche partenaire est toujours marquée « Partenaire payant ». C'est ce qui donne de la valeur à ton rang. <a href="{{root}}methode/">Voir la méthode</a></p>
+  </section>
+
+  <section class="block" aria-labelledby="ae-title">
+    <h2 id="ae-title">Pour les auto-écoles</h2>
+    <div class="offer-grid">
+      <div class="option">
+        <h3>Ta fiche est déjà en ligne</h3>
+        <p>Gratuitement, avec ton taux officiel et ton rang dans le département. Tu peux nous signaler une erreur ou compléter tes informations.</p>
+      </div>
+      <div class="option">
+        <h3>Le badge du top 10</h3>
+        <p>Si tu fais partie des 10 meilleures auto-écoles de ton département, affiche ton rang sur ton site. Il se met à jour tout seul à chaque trimestre.</p>
+        <a class="link-strong" href="#badge">Trouver mon badge</a>
+      </div>
+      <div class="option">
+        <h3>Des demandes d'élèves</h3>
+        <p>Examens blancs, heures à l'unité, présentation à l'examen : reçois les demandes des élèves de ton département.</p>
+      </div>
+      <div class="option option-soon">
+        <h3>Créno Pro, bientôt</h3>
+        <p>Ton rang et son évolution chaque trimestre, ton prix comparé à la médiane du département dès que les élèves déclarent leurs prix, et les demandes reçues.</p>
+        <a class="link-strong" href="#contact">Être parmi les premiers</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="loueurs-title">
+    <h2 id="loueurs-title">Pour les loueurs de voitures à double commande</h2>
+    <div class="offer-grid">
+      <div class="option"><h3>Référencement gratuit</h3><p>Pendant le lancement, ton agence apparaît gratuitement sur la page Candidat libre et sur les pages ville de ton département.</p></div>
+      <div class="option"><h3>Un code Créno pour tes clients</h3><p>Tu choisis la réduction offerte aux élèves. Chaque location avec ce code vient de Créno : tu sais exactement ce qu'on t'apporte.</p></div>
+      <div class="option"><h3>Tu paies seulement les résultats</h3><p>Une commission sur les locations faites avec le code, fixée ensemble. Pas de client, pas de commission.</p></div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="mon-title">
+    <h2 id="mon-title">Pour les moniteurs</h2>
+    <p>Tu es moniteur et tu enseignes dans le cadre d'une auto-école agréée ? Reçois des demandes d'examens blancs et d'heures de conduite. Nous vérifions ton autorisation d'enseigner et ton établissement de rattachement avant de te référencer.</p>
+  </section>
+
+  <section class="block" id="badge" aria-labelledby="badge-title">
+    <h2 id="badge-title">Trouver mon badge</h2>
+    <form class="form-grid" id="badge-form" onsubmit="return false">
+      <div class="field"><label for="badge-dep">Département</label>
+        <select id="badge-dep" required><option value="">Choisis</option>{{options_departements}}</select>
+      </div>
+      <div class="field"><label for="badge-ecole">Ton auto-école</label>
+        <input id="badge-ecole" list="badge-ecoles" autocomplete="off" placeholder="Commence à taper son nom" disabled>
+        <datalist id="badge-ecoles"></datalist>
+      </div>
+    </form>
+    <div class="badge-result" id="badge-result" aria-live="polite" hidden></div>
+  </section>
+
+  <div class="two-col">
+    <section class="block" id="proposer" aria-labelledby="proposer-title">
+      <h2 id="proposer-title">Proposer mes services</h2>
+      <form class="form-stack" id="proposer-form" data-form-type="pro">
+        <div class="field"><label for="pro-type">Tu es</label>
+          <select id="pro-type" name="type" required>
+            <option value="">Choisis</option>
+            <option value="auto-ecole">Une auto-école</option>
+            <option value="moniteur">Un moniteur rattaché à une auto-école</option>
+            <option value="loueur">Un loueur de voitures à double commande</option>
+          </select>
+        </div>
+        <div class="field"><label for="pro-nom">Nom</label><input id="pro-nom" name="nom" required maxlength="120" autocomplete="organization"></div>
+        <div class="field"><label for="pro-etab">Auto-école de rattachement (moniteurs)</label><input id="pro-etab" name="etablissement" maxlength="160"></div>
+        <div class="field"><label for="pro-agrement">N° d'agrément ou d'autorisation d'enseigner</label><input id="pro-agrement" name="numero_agrement" maxlength="40"></div>
+        <div class="field"><label for="pro-ville">Ville</label><input id="pro-ville" name="ville" required maxlength="80" autocomplete="address-level2"></div>
+        <div class="field"><label for="pro-dep">Département</label><select id="pro-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select></div>
+        <div class="field"><label for="pro-offres">Ce que tu proposes</label><input id="pro-offres" name="offres" maxlength="400" placeholder="Ex. examen blanc, heures à l'unité, location à l'heure"></div>
+        <div class="field"><label for="pro-prix">Tes prix</label><input id="pro-prix" name="prix" maxlength="200" placeholder="Ex. 45 € l'heure"></div>
+        <div class="field"><label for="pro-contact">Site web, e-mail ou téléphone</label><input id="pro-contact" name="contact" required maxlength="200"></div>
+        <div class="form-actions">
+          <button class="btn" type="submit">Envoyer ma proposition</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </section>
+
+    <section class="block" id="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">Nous écrire</h2>
+      <p>Une erreur sur ta fiche, une question sur les offres, l'envie d'essayer Créno Pro : on te répond.</p>
+      <form class="form-stack" id="contact-pro-form" data-form-type="contact_pro">
+        <div class="field"><label for="cp-type">Tu es</label>
+          <select id="cp-type" name="type" required>
+            <option value="">Choisis</option>
+            <option value="auto-ecole">Une auto-école</option>
+            <option value="moniteur">Un moniteur</option>
+            <option value="loueur">Un loueur</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="field"><label for="cp-nom">Nom</label><input id="cp-nom" name="nom" required maxlength="160" autocomplete="organization"></div>
+        <div class="field"><label for="cp-ville">Ville</label><input id="cp-ville" name="ville" maxlength="80" autocomplete="address-level2"></div>
+        <div class="field"><label for="cp-contact">E-mail ou téléphone</label><input id="cp-contact" name="contact" required maxlength="200" autocomplete="email"></div>
+        <div class="field"><label for="cp-message">Message</label><textarea id="cp-message" name="message" rows="4" maxlength="1000"></textarea></div>
+        <div class="form-actions">
+          <button class="btn" type="submit">Envoyer</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

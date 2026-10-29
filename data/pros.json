@@ -1,0 +1,4 @@
+{
+  "explication": "Moniteurs et auto-écoles vérifiés, affichés sur la page Moniteurs. N'ajoute un pro qu'après avoir vérifié son agrément (auto-école) ou son autorisation d'enseigner et son auto-école de rattachement (moniteur). Champs : nom, type (auto-ecole ou moniteur), etablissement, ville, dep, offres (liste), prix, site, verifie.",
+  "pros": []
+}

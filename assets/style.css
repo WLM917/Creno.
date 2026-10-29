@@ -1095,3 +1095,212 @@ input[type="checkbox"] { accent-color: var(--signal); width: 1.2rem; height: 1.2
 @media (prefers-reduced-motion: reduce) {
   .post-sign { transition: none; }
 }
+
+/* ---------- Offres, panneaux de formulaires, FAQ ---------- */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sign);
+  padding: 1.25rem;
+}
+.offer { font-weight: 700; }
+.form-stack { display: flex; flex-direction: column; gap: 0.9rem; }
+textarea {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-field);
+  background: var(--paper);
+  resize: vertical;
+  font: inherit;
+  color: inherit;
+}
+textarea:focus-visible { border-color: var(--signal); }
+.notice {
+  border-left: 6px solid var(--chantier);
+  background: var(--surface);
+  padding: 0.75rem 1rem;
+  max-width: 62ch;
+  font-weight: 700;
+}
+.steps-inline {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  max-width: none;
+}
+.faq { display: flex; flex-direction: column; border-top: 2px solid var(--ink); max-width: 50rem; }
+.faq details { border-bottom: 1px solid var(--line); padding-block: 0.8rem; }
+.faq summary { cursor: pointer; font-weight: 700; font-family: var(--font-display); font-size: 1.05rem; }
+.faq details p { margin-top: 0.5rem; color: var(--muted); max-width: 64ch; }
+
+.offer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 0.9rem;
+}
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sign);
+  min-width: 0;
+}
+.option h3 { font-size: 1.12rem; }
+.option p { color: var(--muted); }
+.option-link { color: var(--ink); text-decoration: none; border-width: 2px; border-color: var(--ink); }
+.option-link:hover h3 { text-decoration: underline; text-underline-offset: 0.18em; }
+.option-feature { background: var(--signal); border-color: var(--signal); color: var(--signal-ink); }
+.option-feature p { color: var(--signal-ink); opacity: 0.88; }
+.option-price {
+  margin-top: auto;
+  align-self: flex-start;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.2rem;
+  background: var(--plate);
+  color: var(--plate-ink);
+  border-radius: 6px;
+  padding: 0.15rem 0.6rem;
+}
+.option-soon { border-style: dashed; }
+
+.empty-state {
+  padding: 1rem 1.1rem;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sign);
+  color: var(--muted);
+  max-width: 62ch;
+}
+.promo { font-size: 0.92rem; color: var(--ink); }
+.promo strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  background: var(--target);
+  padding: 0 0.35rem;
+  border-radius: 4px;
+}
+.todo {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--chantier-ink);
+  background: var(--chantier);
+  border-radius: 4px;
+  padding: 0 0.4rem;
+}
+
+/* ---------- Page du pack ---------- */
+.road-slim .road-inner { padding-block: 1.75rem 2.25rem; gap: 1rem; }
+.crumbs-dark ol, .crumbs-dark li + li::before { color: var(--asphalt-ink); opacity: 0.85; }
+.crumbs-dark a { color: var(--asphalt-ink); }
+.pack-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem;
+  align-items: end;
+}
+.price-plate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+  min-width: 15rem;
+  background: var(--plate);
+  color: var(--plate-ink);
+  border-radius: var(--radius-sign);
+  padding: 1rem 1.2rem 1.15rem;
+  box-shadow: inset 0 0 0 4px var(--plate), inset 0 0 0 6.5px var(--plate-ink);
+}
+.price-amount {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.4rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.price-note { font-size: 0.9rem; color: color-mix(in srgb, currentColor 72%, transparent); }
+.btn-plate { background: var(--signal); border-color: var(--signal); color: var(--signal-ink); margin-top: 0.35rem; }
+.btn-plate:hover { background: transparent; color: var(--plate-ink); border-color: var(--plate-ink); }
+.toc {
+  list-style: none;
+  counter-reset: chap;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 2rem;
+  border-top: 2px solid var(--ink);
+}
+.toc li {
+  counter-increment: chap;
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr);
+  grid-template-areas: "num title" "num text";
+  column-gap: 0.75rem;
+  padding-block: 0.8rem;
+  border-bottom: 1px solid var(--line);
+}
+.toc li::before {
+  content: counter(chap);
+  grid-area: num;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--signal);
+  font-variant-numeric: tabular-nums;
+}
+.toc strong { grid-area: title; font-family: var(--font-display); font-weight: 800; }
+.toc span { grid-area: text; color: var(--muted); font-size: 0.95rem; }
+.buy-box {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.5rem 2rem;
+  align-items: start;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sign);
+  padding: 1.25rem;
+  max-width: 52rem;
+}
+.buy-price { display: flex; flex-direction: column; gap: 0.3rem; }
+
+/* ---------- Espace pros ---------- */
+.facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.facts div { border-top: 3px solid var(--signal); padding-top: 0.6rem; }
+.facts dt { font-family: var(--font-display); font-weight: 900; font-size: 1.6rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.facts dd { margin: 0.25rem 0 0; color: var(--muted); }
+.badge-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sign);
+  max-width: 46rem;
+}
+.badge-result img { max-width: 100%; height: auto; }
+.badge-result textarea { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.85rem; }
+
+/* ---------- Pages de confirmation ---------- */
+#etat-msg.is-error { color: var(--stop); font-weight: 700; }
+.etat-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+@media (max-width: 760px) {
+  .steps-inline { grid-template-columns: minmax(0, 1fr); }
+  .pack-hero { grid-template-columns: minmax(0, 1fr); }
+  .price-plate { min-width: 0; }
+  .toc { grid-template-columns: minmax(0, 1fr); }
+  .buy-box { grid-template-columns: minmax(0, 1fr); }
+  .facts { grid-template-columns: minmax(0, 1fr); }
+}

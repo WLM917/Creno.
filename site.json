@@ -1,9 +1,22 @@
 {
-  "_aide": "Réglages du générateur de pages (scripts/build_site.py). Après une modification, relance : python3 scripts/build_site.py",
+  "_aide": "Réglages du générateur de pages (scripts/build_site.py). Après une modification, relance : python3 scripts/build_site.py. alertes_payantes doit correspondre au secret ALERTES_LIEN_STRIPE de Supabase (rempli = payant). editeur et mediateur_consommation : à remplir avant de vendre quoi que ce soit (mentions légales et conditions de vente).",
   "adresse_du_site": "https://creno-tan.vercel.app",
   "departement_par_defaut": "91",
   "email_contact": "",
   "min_declarations_prix": 3,
   "pages_ville_min_auto_ecoles": 2,
-  "google_site_verification": ""
+  "google_site_verification": "",
+  "prix_pack": "14,99 €",
+  "prix_alertes": "2,99 €",
+  "duree_alertes_jours": 30,
+  "alertes_payantes": false,
+  "vercel_analytics": true,
+  "editeur": {
+    "nom": "",
+    "statut": "",
+    "adresse": "",
+    "siren": "",
+    "directeur_publication": ""
+  },
+  "mediateur_consommation": ""
 }

@@ -42,6 +42,14 @@ MIN_DECL = int(CFG.get("min_declarations_prix", 3))
 VILLE_MIN = int(CFG.get("pages_ville_min_auto_ecoles", 2))
 CONTACT = (CFG.get("email_contact") or "").strip()
 GSV = (CFG.get("google_site_verification") or "").strip()
+PRIX_PACK = CFG.get("prix_pack", "14,99 €")
+PRIX_ALERTES = CFG.get("prix_alertes", "2,99 €")
+DUREE_ALERTES = int(CFG.get("duree_alertes_jours", 30))
+ALERTES_PAYANTES = bool(CFG.get("alertes_payantes", False))
+ANALYTICS = bool(CFG.get("vercel_analytics", False))
+EDITEUR = CFG.get("editeur") or {}
+MEDIATEUR = (CFG.get("mediateur_consommation") or "").strip()
+TOP_BADGE = 10
 
 IDF = ["75", "77", "78", "91", "92", "93", "94", "95"]
 SHRINK_K = 40
@@ -57,10 +65,17 @@ LABELS = {
 NAV = [
     ("auto-ecoles/", "Auto-écoles", "auto-ecoles"),
     ("candidat-libre/", "Candidat libre", "candidat-libre"),
-    ("cout-du-permis/", "Coût du permis", "cout-du-permis"),
-    ("examen/", "Jour de l'examen", "examen"),
+    ("alertes/", "Alertes places", "alertes"),
+    ("pack-candidat-libre/", "Le pack", "pack"),
 ]
-GENERATED_DIRS = ["auto-ecoles", "candidat-libre", "examen", "cout-du-permis", "methode", "confidentialite"]
+FOOTER = [
+    ("auto-ecoles/", "Auto-écoles"), ("candidat-libre/", "Candidat libre"), ("alertes/", "Alertes places"),
+    ("pack-candidat-libre/", "Pack candidat libre"), ("moniteurs/", "Moniteurs"), ("cout-du-permis/", "Coût du permis"),
+    ("examen/", "Jour de l'examen"), ("pro/", "Espace pros"), ("methode/", "Méthode"),
+    ("confidentialite/", "Confidentialité"), ("mentions-legales/", "Mentions légales"), ("cgv/", "Conditions de vente"),
+]
+GENERATED_DIRS = ["auto-ecoles", "candidat-libre", "examen", "cout-du-permis", "methode", "confidentialite",
+                  "alertes", "pack-candidat-libre", "moniteurs", "pro", "mentions-legales", "cgv", "badges"]
 
 # Accents absents du fichier officiel, rétablis pour l'affichage des villes les plus courantes.
 ACCENTS = {
@@ -259,7 +274,7 @@ def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True):
     )
 
 
-def fil_ariane(L, items):
+def fil_ariane(L, items, extra_class=""):
     """items : liste de (libellé, chemin ou None pour la page courante)."""
     parts = []
     for label, path in items:
@@ -267,7 +282,8 @@ def fil_ariane(L, items):
             parts.append(f'<li><span aria-current="page">{esc(label)}</span></li>')
         else:
             parts.append(f'<li><a href="{L(path)}">{esc(label)}</a></li>')
-    return f'<nav class="crumbs" aria-label="Fil d\'Ariane"><ol>{"".join(parts)}</ol></nav>'
+    cls = f"crumbs {extra_class}".strip()
+    return f'<nav class="{cls}" aria-label="Fil d\'Ariane"><ol>{"".join(parts)}</ol></nav>'
 
 
 def jsonld_ariane(items):
@@ -376,19 +392,66 @@ def poteau(L, villes, nom_dep):
 
 
 def loueurs_html(L, loueurs, dep=None):
+    """Annuaire des loueurs. Un loueur partenaire peut avoir un code promo Créno ;
+    chaque clic vers son site est compté (data-clic) pour prouver le nombre de clients envoyés."""
     items = [l for l in loueurs if dep is None or l.get("dep") == dep]
     if not items:
         return ""
+    items.sort(key=lambda l: (not l.get("partenaire"), l.get("dep", ""), l.get("nom", "")))
     out = []
     for l in items:
-        site = (f'<a href="{esc(l["site"])}" target="_blank" rel="noopener nofollow">Voir le site'
-                f'<span class="visually-hidden"> de {esc(l["nom"])}</span></a>') if l.get("site") else ""
-        out.append(f'<li><strong>{esc(l["nom"])}</strong><span>{esc(l["ville"])} ({esc(l["dep"])})</span>{site}</li>')
+        cible = slug(l.get("nom", "loueur"))
+        lien = l.get("lien_reservation") or l.get("site")
+        bouton = "Réserver" if l.get("lien_reservation") else "Voir le site"
+        site = (f'<a href="{esc(lien)}" target="_blank" rel="noopener nofollow sponsored" data-clic="loueur-{esc(cible)}">{bouton}'
+                f'<span class="visually-hidden"> chez {esc(l["nom"])}</span></a>') if lien else ""
+        promo = ""
+        if l.get("code_promo"):
+            promo = (f'<span class="promo">Code Créno <strong>{esc(l["code_promo"])}</strong>'
+                     f'{(" : " + esc(l["reduction"])) if l.get("reduction") else ""}</span>')
+        chip = '<span class="chip chip-flag">Partenaire</span>' if l.get("partenaire") else ""
+        prix = f'<span>{esc(l["prix"])}</span>' if l.get("prix") else ""
+        out.append(f'<li><strong>{esc(l["nom"])} {chip}</strong><span>{esc(l["ville"])} ({esc(l["dep"])})</span>{prix}{promo}{site}</li>')
     return "".join(out)
 
 
+def pros_html(L, pros):
+    """Annuaire des moniteurs et auto-écoles vérifiés (data/pros.json)."""
+    items = [p for p in pros if p.get("verifie", True)]
+    if not items:
+        return ('<p class="empty-state">L\'annuaire démarre : aucun pro vérifié pour l\'instant. '
+                'Laisse ta demande ci-dessous, on te met en relation avec un pro de ton département.</p>')
+    items.sort(key=lambda p: (p.get("dep", ""), p.get("ville", ""), p.get("nom", "")))
+    out = []
+    for p in items:
+        offres = "".join(f'<span class="chip">{esc(o)}</span>' for o in p.get("offres", []))
+        lien = (f'<a href="{esc(p["site"])}" target="_blank" rel="noopener nofollow" data-clic="pro-{esc(slug(p["nom"]))}">Contacter'
+                f'<span class="visually-hidden"> {esc(p["nom"])}</span></a>') if p.get("site") else ""
+        prix = f'<span>{esc(p["prix"])}</span>' if p.get("prix") else ""
+        etab = f'<span>{esc(p["etablissement"])}</span>' if p.get("etablissement") else ""
+        out.append(f'<li><strong>{esc(p["nom"])}</strong><span>{esc(p["ville"])} ({esc(p["dep"])})</span>{etab}'
+                   f'<p class="rank-chips">{offres}</p>{prix}{lien}</li>')
+    return f'<ul class="renters">{"".join(out)}</ul>'
+
+
+def badge_svg(e, rang, nb, dep_nom, dep_code):
+    """Badge à afficher sur le site d'une auto-école du top 10 de son département."""
+    ligne1 = f"{rang_txt(rang)} sur {nb} en {dep_nom}"
+    nom = e["nom"] if len(e["nom"]) <= 34 else e["nom"][:32] + "…"
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="280" height="88" viewBox="0 0 280 88" role="img" aria-label="{esc(nom)} : {esc(ligne1)}, classement Créno">
+  <rect x="1" y="1" width="278" height="86" rx="9" fill="#FFFFFF" stroke="#1A1F25" stroke-width="2"/>
+  <rect x="226" y="1" width="53" height="86" rx="9" fill="#0A4F8F"/>
+  <rect x="226" y="1" width="12" height="86" fill="#0A4F8F"/>
+  <text x="252.5" y="52" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{esc(dep_code)}</text>
+  <text x="16" y="27" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#55606B">{esc(nom)}</text>
+  <text x="16" y="52" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#1A1F25">{esc(ligne1)}</text>
+  <text x="16" y="73" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#55606B">Classement Créno, taux de réussite officiels</text>
+</svg>
+'''
+
+
 # ---------------------------------------------------------------- gabarit
-def page(L, path, kind, title, description, body, jsonld=None, section=None, dep_code=None, absolute_root=None):
+def page(L, path, kind, title, description, body, jsonld=None, section=None, dep_code=None, absolute_root=None, noindex=False):
     canonical = f"{SITE_URL}/{path}"
     root_attr = absolute_root if absolute_root is not None else L.root
     current = ' aria-current="page"'
@@ -399,6 +462,10 @@ def page(L, path, kind, title, description, body, jsonld=None, section=None, dep
     for block in (jsonld or []):
         ld += '<script type="application/ld+json">' + json.dumps(block, ensure_ascii=False).replace("</", "<\\/") + "</script>\n"
     verif = f'<meta name="google-site-verification" content="{esc(GSV)}">\n' if GSV else ""
+    if noindex:
+        verif += '<meta name="robots" content="noindex">\n'
+    stats_js = '<script defer src="/_vercel/insights/script.js"></script>\n' if ANALYTICS and not L.explicit else ""
+    footer = "".join(f'<a href="{L(p)}">{esc(label)}</a>' for p, label in FOOTER)
     return f'''<!doctype html>
 <html lang="fr">
 <head>
@@ -444,19 +511,12 @@ def page(L, path, kind, title, description, body, jsonld=None, section=None, dep
 <footer class="site-footer">
   <div class="wrap footer-row">
     <p><strong>Créno, le bon créneau pour ton permis.</strong> Projet indépendant, sans lien avec l'administration ni avec RdvPermis. Taux de réussite : Sécurité routière.</p>
-    <nav aria-label="Pied de page">
-      <a href="{L("auto-ecoles/")}">Auto-écoles</a>
-      <a href="{L("candidat-libre/")}">Candidat libre</a>
-      <a href="{L("cout-du-permis/")}">Coût du permis</a>
-      <a href="{L("examen/")}">Jour de l'examen</a>
-      <a href="{L("methode/")}">Méthode</a>
-      <a href="{L("confidentialite/")}">Confidentialité</a>
-    </nav>
+    <nav aria-label="Pied de page">{footer}</nav>
   </div>
 </footer>
 <script src="{root_attr}assets/config.js"></script>
 <script src="{root_attr}assets/app.js"></script>
-</body>
+{stats_js}</body>
 </html>
 '''
 
@@ -497,15 +557,17 @@ def build(out_dir=ROOT, explicit=False, only=None):
     pages = []          # (chemin, priorité)
     search_deps, search_villes = [], []   # index de recherche
 
-    def write(path, content, priority=0.5):
+    def write(path, content, priority=0.5, sitemap=True):
         target = out_dir / (path + "index.html" if path.endswith("/") or path == "" else path)
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding="utf-8")
-        if path.endswith("/") or path == "":
+        if sitemap and (path.endswith("/") or path == ""):
             pages.append((path, priority))
 
     options_deps = "".join(f'<option value="{esc(d["code"])}">{esc(d["nom"])} ({esc(d["code"])})</option>' for d in deps)
     stats = {"departements": 0, "villes": 0}
+    badges = {"deps": {}, "top": {}}
+    pros = json.loads((DATA / "pros.json").read_text(encoding="utf-8")).get("pros", []) if (DATA / "pros.json").exists() else []
     top_defaut = ""
     poteau_villes = []
 
@@ -525,6 +587,12 @@ def build(out_dir=ROOT, explicit=False, only=None):
         if only is not None and d["code"] not in only:
             continue
         stats["departements"] += 1
+        badges["deps"][d["code"]] = d["url"]
+        (out_dir / "badges").mkdir(exist_ok=True)
+        for r in rows[:TOP_BADGE]:
+            badges["top"][r["e"]["id"]] = [r["rang"], nb]
+            (out_dir / "badges" / f'{r["e"]["id"]}.svg').write_text(
+                badge_svg(r["e"], r["rang"], nb, d["nom"], d["code"]), encoding="utf-8")
         path = d["url"]
         L = Links(depuis(path), explicit)
 
@@ -737,7 +805,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         "dep_defaut_nom": dd["nom"], "dep_defaut_url": dd["url"] + ("index.html" if explicit else ""),
         "dep_defaut_nb": fr_int(dd["nb_taux"]), "dep_defaut_moyenne": pct(dd["moyenne"]),
         "deps_idf": "".join(dep_card(L, deps_by_code[c]) for c in IDF if c in deps_by_code),
-        "poteau": poteau(L, poteau_villes, dd["nom"]),
+        "poteau": poteau(L, poteau_villes, dd["nom"]), "prix_pack": esc(PRIX_PACK),
     })
     if explicit:
         accueil = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', accueil)
@@ -762,20 +830,83 @@ def build(out_dir=ROOT, explicit=False, only=None):
          "Méthode", 0.4),
         ("confidentialite/", "confidentialite.html", None, "Confidentialité | Créno",
          "Ce que Créno garde quand tu remplis un formulaire, et pourquoi.", "Confidentialité", 0.2),
+        ("alertes/", "alertes.html", "alertes", "Alertes places d'examen du permis, partagées par les candidats | Créno",
+         "Sois prévenu par e-mail quand un candidat signale des places d'examen du permis dans ton département. Signale toi aussi les places que tu vois.",
+         "Alertes places", 0.8),
+        ("pack-candidat-libre/", "pack.html", "pack", "Pack candidat libre : le guide complet pour passer le permis sans auto-école | Créno",
+         "Dossier, accompagnateur, voiture double commande, programme en 12 séances, examen blanc sur 31 points, jour J : tout le parcours du candidat libre.",
+         "Pack candidat libre", 0.8),
+        ("moniteurs/", "moniteurs.html", None, "Moniteur pour examen blanc ou présentation à l'examen du permis | Créno",
+         "Faire appel à un moniteur dans les règles : examen blanc, heures à l'unité, présentation à l'examen par une auto-école agréée.",
+         "Moniteurs", 0.6),
+        ("pro/", "pro.html", None, "Créno pour les auto-écoles, moniteurs et loueurs | Créno",
+         "Badge du top 10, demandes d'élèves, référencement des loueurs de voitures à double commande : ce que Créno apporte aux pros.",
+         "Espace pros", 0.5),
+        ("mentions-legales/", "mentions-legales.html", None, "Mentions légales | Créno",
+         "Éditeur, hébergement et sources des données de Créno.", "Mentions légales", 0.1),
+        ("cgv/", "cgv.html", None, "Conditions de vente | Créno",
+         "Conditions de vente du Pack candidat libre et du pass Alertes.", "Conditions de vente", 0.1),
+    ]
+    etats = [
+        ("alertes/confirmer/", "Confirmation de ton alerte", "confirmer", "Confirmation en cours…", "alertes/", "Revenir aux alertes"),
+        ("alertes/merci/", "Merci pour ton paiement", "paiement", "Vérification du paiement…", "alertes/", "Revenir aux alertes"),
+        ("alertes/desabonner/", "Arrêter les alertes", "desabonner", "Désabonnement en cours…", "alertes/", "Revenir aux alertes"),
+        ("pack-candidat-libre/acces/", "Ton Pack candidat libre", "pack", "Vérification de ton achat…", "candidat-libre/", "Revenir au guide candidat libre"),
     ]
     contact_txt = (f'Écris à <a href="mailto:{esc(CONTACT)}">{esc(CONTACT)}</a>.' if CONTACT
                    else "L'adresse de contact sera indiquée ici dès l'ouverture des formulaires.")
+    a_completer = '<span class="todo">à compléter</span>'
+    ed = {k: (EDITEUR.get(k) or "").strip() for k in ("nom", "statut", "adresse", "siren", "directeur_publication")}
+    editeur_html = (
+        f'<p>Nom ou raison sociale : {esc(ed["nom"]) or a_completer}{(", " + esc(ed["statut"])) if ed["statut"] else ""}<br>'
+        f'Adresse : {esc(ed["adresse"]) or a_completer}<br>'
+        f'SIREN : {esc(ed["siren"]) or a_completer}<br>'
+        f'Directeur de la publication : {esc(ed["directeur_publication"] or ed["nom"]) or a_completer}<br>'
+        f'Contact : {(f"<a href=\"mailto:{esc(CONTACT)}\">{esc(CONTACT)}</a>") if CONTACT else a_completer}</p>')
+    mediateur_html = (f"Médiateur de la consommation : {esc(MEDIATEUR)}." if MEDIATEUR
+                      else f"Médiateur de la consommation : {a_completer}.")
+    if ALERTES_PAYANTES:
+        offre_alertes = f"{esc(PRIX_ALERTES)} pour {DUREE_ALERTES} jours, sans abonnement caché ni renouvellement automatique."
+        bouton_alertes = f"Payer {esc(PRIX_ALERTES)} et recevoir les alertes"
+        case_service = ('<label class="check-inline" for="follow-now"><input id="follow-now" type="checkbox" required> '
+                        'Je demande que le service commence dès le paiement et j\'accepte les '
+                        '<a href="{root}cgv/">conditions de vente</a>.</label>')
+        faq_prix = (f'<details><summary>Pourquoi c\'est payant ?</summary><p>Le pass couvre l\'envoi des e-mails et fait vivre le service. '
+                    f'Il dure {DUREE_ALERTES} jours et ne se renouvelle pas tout seul.</p></details>')
+    else:
+        offre_alertes = f"Gratuit pendant le lancement, pour {DUREE_ALERTES} jours. Tu confirmes ton e-mail en un clic."
+        bouton_alertes = "Recevoir les alertes"
+        case_service = ""
+        faq_prix = ('<details><summary>C\'est gratuit ?</summary><p>Oui, pendant le lancement. '
+                    f'Plus tard, le pass coûtera {esc(PRIX_ALERTES)} pour {DUREE_ALERTES} jours.</p></details>')
     for path, tpl, section, title, desc, crumb, prio in fixes:
         L = Links(depuis(path), explicit)
         body = fill((TPL / tpl).read_text(encoding="utf-8"), {
             **common, "root": L.root, "fil_ariane": fil_ariane(L, [("Accueil", ""), (crumb, None)]),
+            "fil_ariane_clair": fil_ariane(L, [("Accueil", ""), (crumb, None)], "crumbs-dark"),
             "loueurs": loueurs_html(L, loueurs) or '<li><span>Aucun loueur pour l\'instant. Ajoute le premier ci-dessous.</span></li>',
             "options_departements": options_deps, "formulaire_prix": formulaire_prix(deps=deps), "contact": contact_txt,
+            "prix_pack": esc(PRIX_PACK), "prix_alertes": esc(PRIX_ALERTES), "duree_alertes": DUREE_ALERTES,
+            "offre_alertes": offre_alertes, "bouton_alertes": bouton_alertes,
+            "case_service_immediat": case_service.replace("{root}", L.root), "faq_prix": faq_prix,
+            "pros": pros_html(L, pros), "editeur": editeur_html, "mediateur": mediateur_html,
+            "nb_pages_villes": fr_int(stats["villes"]), "nb_pages_deps": fr_int(stats["departements"]),
         })
         if explicit:
             body = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', body)
         write(path, page(L, path, section or "autre", title, desc, body,
                          [jsonld_ariane([("Accueil", ""), (crumb, path)])], section), prio)
+
+    # --- pages de confirmation (alertes, accès au pack) : pas dans Google
+    for path, titre, etat, attente, retour, retour_txt in etats:
+        L = Links(depuis(path), explicit)
+        body = fill((TPL / "etat.html").read_text(encoding="utf-8"), {
+            "root": L.root, "titre": esc(titre), "etat": etat, "attente": esc(attente),
+            "retour_url": retour + ("index.html" if explicit else ""), "retour_txt": esc(retour_txt)})
+        write(path, page(L, path, "etat", f"{titre} | Créno", titre, body, noindex=True), sitemap=False)
+
+    (out_dir / "data").mkdir(exist_ok=True)
+    (out_dir / "data" / "badges.json").write_text(json.dumps(badges, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     # --- page 404 (servie à n'importe quelle profondeur : liens absolus)
     base_path = re.sub(r"^https?://[^/]+", "", SITE_URL) + "/"
@@ -789,8 +920,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
   <a class="link-strong" href="{L("")}">Revenir à l'accueil</a>
 </div>'''
     (out_dir / "404.html").write_text(
-        page(L, "404.html", "autre", "Page introuvable | Créno", "Cette page n'existe pas.", body404).replace(
-            '<link rel="canonical"', '<meta name="robots" content="noindex">\n<link rel="canonical"'), encoding="utf-8")
+        page(L, "404.html", "autre", "Page introuvable | Créno", "Cette page n'existe pas.", body404, noindex=True), encoding="utf-8")
 
     # --- index de recherche, sitemap, robots
     search_villes.sort(key=lambda x: (-x[4], x[0]))

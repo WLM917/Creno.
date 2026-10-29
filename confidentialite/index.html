@@ -35,7 +35,7 @@
       </svg>
       <span class="logo-word">créno</span>
     </a>
-    <nav class="site-nav" aria-label="Sections"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../cout-du-permis/">Coût du permis</a><a href="../examen/">Jour de l&#x27;examen</a></nav>
+    <nav class="site-nav" aria-label="Sections"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../alertes/">Alertes places</a><a href="../pack-candidat-libre/">Le pack</a></nav>
   </div>
 </header>
 <main id="main" tabindex="-1">
@@ -43,22 +43,42 @@
   <nav class="crumbs" aria-label="Fil d'Ariane"><ol><li><a href="../">Accueil</a></li><li><span aria-current="page">Confidentialité</span></li></ol></nav>
   <header class="view-head">
     <h1>Confidentialité</h1>
-    <p class="lede">Ce que Créno garde quand tu remplis un formulaire, et pourquoi.</p>
+    <p class="lede">Ce que Créno garde quand tu utilises le site, pourquoi, et combien de temps.</p>
   </header>
 
   <section class="block" aria-labelledby="c-prix">
     <h2 id="c-prix">Quand tu déclares ton prix</h2>
-    <p>On garde l'auto-école, la ville, les prix, les heures et ton résultat. On ne demande ni ton nom ni ton e-mail : ta déclaration est anonyme. Elle sert uniquement à calculer le coût réel affiché dans le classement.</p>
+    <p>On garde l'auto-école, le département, les prix, les heures et ton résultat. On ne demande ni ton nom ni ton e-mail : ta déclaration est anonyme. Elle sert uniquement à calculer le coût réel affiché dans le classement.</p>
   </section>
 
   <section class="block" aria-labelledby="c-alerte">
-    <h2 id="c-alerte">Quand tu demandes à être prévenu</h2>
-    <p>On garde ton e-mail et le département choisi, uniquement pour te prévenir du lancement des alertes. Ton e-mail n'est ni vendu ni partagé.</p>
+    <h2 id="c-alerte">Quand tu suis les alertes</h2>
+    <p>On garde ton e-mail, le département choisi et la date de fin de ton abonnement, uniquement pour t'envoyer les alertes. Ton e-mail n'est ni vendu ni partagé. Chaque e-mail contient un lien pour te désabonner. Les e-mails partent par le service Resend.</p>
+  </section>
+
+  <section class="block" aria-labelledby="c-signal">
+    <h2 id="c-signal">Quand tu signales des places</h2>
+    <p>On garde le département, le centre, le créneau et ta précision. Pour éviter les abus, on garde aussi une empreinte anonyme de ton appareil, calculée à partir de ton adresse IP : l'adresse elle-même n'est jamais enregistrée.</p>
+  </section>
+
+  <section class="block" aria-labelledby="c-pro">
+    <h2 id="c-pro">Quand tu demandes un moniteur</h2>
+    <p>On garde ton besoin, ton département, ta ville, tes disponibilités et ton contact, et on les transmet, avec ton accord, à un pro de ton département pour qu'il te recontacte.</p>
+  </section>
+
+  <section class="block" aria-labelledby="c-achat">
+    <h2 id="c-achat">Quand tu achètes</h2>
+    <p>Le paiement se fait chez Stripe, qui garde ton e-mail et les informations de paiement. Créno ne voit jamais ta carte bancaire. On utilise seulement la confirmation du paiement pour te donner accès au pack ou activer tes alertes.</p>
   </section>
 
   <section class="block" aria-labelledby="c-loueur">
-    <h2 id="c-loueur">Quand tu proposes ton agence</h2>
-    <p>On garde le nom de l'agence, la ville, le contact et le prix indiqués, pour vérifier l'agence avant de l'ajouter à l'annuaire.</p>
+    <h2 id="c-loueur">Quand un pro propose ses services</h2>
+    <p>On garde les informations du formulaire pour vérifier le pro avant de l'ajouter à l'annuaire, et pour lui répondre.</p>
+  </section>
+
+  <section class="block" aria-labelledby="c-stats">
+    <h2 id="c-stats">Statistiques de visite</h2>
+    <p>On compte les visites avec Vercel Web Analytics, sans cookie et sans te suivre d'un site à l'autre. Quand tu cliques vers un loueur partenaire, on compte le clic, sans rien savoir de toi.</p>
   </section>
 
   <section class="block" aria-labelledby="c-local">
@@ -66,9 +86,14 @@
     <p>Tes filtres, ton calcul de coût et ta checklist du jour J restent enregistrés dans ton navigateur. Ils ne sont pas envoyés.</p>
   </section>
 
+  <section class="block" aria-labelledby="c-duree">
+    <h2 id="c-duree">Combien de temps</h2>
+    <p>Les déclarations de prix sont gardées tant qu'elles servent au classement. Les e-mails d'alerte sont supprimés au plus tard un an après la fin de l'abonnement. Les demandes de moniteur, un an après leur envoi.</p>
+  </section>
+
   <section class="block" aria-labelledby="c-droits">
     <h2 id="c-droits">Tes droits</h2>
-    <p>Tu peux demander à voir ou à supprimer les informations qui te concernent. L'adresse de contact sera indiquée ici dès l'ouverture des formulaires.</p>
+    <p>Tu peux demander à voir, corriger ou supprimer les informations qui te concernent. L'adresse de contact sera indiquée ici dès l'ouverture des formulaires. Tu peux aussi saisir la CNIL.</p>
   </section>
 </div>
 
@@ -76,17 +101,11 @@
 <footer class="site-footer">
   <div class="wrap footer-row">
     <p><strong>Créno, le bon créneau pour ton permis.</strong> Projet indépendant, sans lien avec l'administration ni avec RdvPermis. Taux de réussite : Sécurité routière.</p>
-    <nav aria-label="Pied de page">
-      <a href="../auto-ecoles/">Auto-écoles</a>
-      <a href="../candidat-libre/">Candidat libre</a>
-      <a href="../cout-du-permis/">Coût du permis</a>
-      <a href="../examen/">Jour de l'examen</a>
-      <a href="../methode/">Méthode</a>
-      <a href="../confidentialite/">Confidentialité</a>
-    </nav>
+    <nav aria-label="Pied de page"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../alertes/">Alertes places</a><a href="../pack-candidat-libre/">Pack candidat libre</a><a href="../moniteurs/">Moniteurs</a><a href="../cout-du-permis/">Coût du permis</a><a href="../examen/">Jour de l&#x27;examen</a><a href="../pro/">Espace pros</a><a href="../methode/">Méthode</a><a href="../confidentialite/">Confidentialité</a><a href="../mentions-legales/">Mentions légales</a><a href="../cgv/">Conditions de vente</a></nav>
   </div>
 </footer>
 <script src="../assets/config.js"></script>
 <script src="../assets/app.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

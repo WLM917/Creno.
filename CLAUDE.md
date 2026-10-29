@@ -32,32 +32,54 @@ ou le générateur, puis relance `python3 scripts/build_site.py` (Python 3.12 ou
 
 ```
 site.json                         réglages : adresse du site (canonical, sitemap), département par défaut,
-                                  e-mail de contact, nb minimum de déclarations, code Google Search Console
+                                  e-mail de contact, nb minimum de déclarations, code Google Search Console,
+                                  prix du pack et des alertes, alertes_payantes, vercel_analytics,
+                                  editeur (mentions légales) et mediateur_consommation (CGV)
 templates/*.html                  contenu des pages fixes (accueil, candidat-libre, examen, methode,
-                                  cout-du-permis, confidentialite), avec des {{variables}}
-scripts/build_site.py             génère toutes les pages + sitemap.xml, robots.txt, 404.html, data/recherche.json
+                                  cout-du-permis, confidentialite, alertes, pack, moniteurs, pro,
+                                  mentions-legales, cgv, etat = pages de retour), avec des {{variables}}
+scripts/build_site.py             génère toutes les pages + sitemap.xml, robots.txt, 404.html, data/recherche.json,
+                                  badges/<agrément>.svg (top 10 de chaque département) et data/badges.json
 scripts/import_auto_ecoles.py     importe le CSV officiel -> data/, puis lance build_site.py
                                   (--prix-seulement : refusionne data/prix.json sans CSV)
 scripts/sync_prix.py              lit les déclarations dans Supabase, calcule les médianes -> data/prix.json
-supabase/migrations/*.sql         tables des formulaires + sécurité (insertion seule pour le site)
+supabase/migrations/*.sql         tables + sécurité. 1re migration : formulaires (insertion seule pour le site).
+                                  2e : abonnes_alertes et signalements (aucun accès public, seulement les
+                                  fonctions), pros_proposes, demandes_pros, contacts_pros, clics (insertion
+                                  seule), espace de stockage privé « pack »
+supabase/functions/alertes/       fonction serveur (Deno) : abonnement, paiement Stripe, confirmation,
+                                  désabonnement, signalement de places + envoi des e-mails (Resend)
+supabase/functions/pack/          fonction serveur : vérifie le paiement Stripe, renvoie un lien de 1 h vers le PDF
 assets/style.css                  styles (tokens de couleur en haut, thème clair et sombre)
 assets/app.js                     recherche de ville, filtres des pages département, calculateur,
-                                  formulaires (Supabase), checklist
-assets/config.js                  supabaseUrl + supabaseAnonKey (clé publique), formEndpoint de secours
+                                  formulaires (Supabase), checklist, alertes, achat et accès au pack,
+                                  outil badge de l'espace pros, comptage des clics vers les partenaires
+assets/config.js                  supabaseUrl + supabaseAnonKey (clé publique), lienPaiementPack (Stripe),
+                                  formEndpoint de secours
 assets/og.png                     image de partage (réseaux sociaux)
 data/index.json                   départements (code, nom, nb, moyenne), date d'import
 data/departements/<code>.json     auto-écoles d'un département (id = numéro d'agrément raf_numero)
 data/prix.json                    prix déclarés par les élèves, par numéro d'agrément (vide pour l'instant)
-data/loueurs.json                 loueurs de voitures à double commande (2 entrées réelles à vérifier)
+data/loueurs.json                 loueurs de voitures à double commande (2 entrées réelles à vérifier) ;
+                                  champs optionnels partenaire, code_promo, reduction, lien_reservation
+data/pros.json                    annuaire des moniteurs / auto-écoles pour examen blanc (vide, à remplir
+                                  à la main après vérification de chaque pro)
 data/recherche.json               index de recherche des villes (généré)
+.vercelignore                     fichiers du dépôt à ne pas mettre en ligne (scripts, modèles, supabase...)
 
 Pages générées (ne pas éditer) :
 index.html                        accueil (recherche de ville, poteau de direction, top 5 du 91)
 auto-ecoles/                      liste des départements
 auto-ecoles/<nom>-<code>/         une page par département (102) : classement complet + filtres
 auto-ecoles/<nom>-<code>/<ville>/ une page par ville d'au moins 2 auto-écoles (1 777)
-candidat-libre/, cout-du-permis/, examen/, methode/, confidentialite/, 404.html, sitemap.xml, robots.txt
+candidat-libre/, cout-du-permis/, examen/, methode/, confidentialite/, alertes/, pack-candidat-libre/,
+moniteurs/, pro/, mentions-legales/, cgv/, 404.html, sitemap.xml, robots.txt
+alertes/confirmer/, alertes/merci/, alertes/desabonner/, pack-candidat-libre/acces/ : pages de retour
+                                  (noindex, hors sitemap)
 ```
+
+Le PDF du Pack candidat libre n'est PAS dans le dépôt (il serait téléchargeable gratuitement) :
+il est rangé dans le stockage privé Supabase « pack » sous le nom pack-candidat-libre.pdf.
 
 Tester en local : `python3 -m http.server 8000` puis http://localhost:8000
 
@@ -91,6 +113,46 @@ Les noms de villes de la source n'ont pas d'accents : build_site.py en rétablit
 - Modération : passer `valide` à false dans Supabase pour écarter une déclaration.
 - Mise à jour des prix : `SUPABASE_URL=... SUPABASE_SERVICE_KEY=... python3 scripts/sync_prix.py`
   (la clé service_role ne doit JAMAIS être dans le dépôt).
+- Nouvelles clés Supabase (`sb_publishable_...`) : app.js n'envoie alors que l'en-tête apikey,
+  sans « Authorization: Bearer ».
+
+## Services payants (alertes, pack)
+
+- **Alertes places** (/alertes/) : un candidat signale des places vues sur RdvPermis, la fonction
+  `alertes` prévient par e-mail les abonnés du département (Resend). Limites anti-abus :
+  3 signalements par heure et par appareil (empreinte sha256 de l'IP + sel, IP jamais gardée),
+  pas plus d'un e-mail toutes les 10 minutes par abonné.
+- Mode gratuit tant que le secret `ALERTES_LIEN_STRIPE` est vide (double opt-in par e-mail).
+  Mode payant (pass de 30 jours, sans renouvellement automatique) dès qu'il est rempli :
+  passer alors `alertes_payantes` à true dans site.json, relancer build_site.py, pousser.
+  Les deux réglages doivent toujours être d'accord.
+- **Pack candidat libre** (/pack-candidat-libre/) : lien de paiement Stripe dans config.js
+  (`lienPaiementPack`), avec `client_reference_id=pack-<uuid>`. Stripe redirige vers
+  /pack-candidat-libre/acces/?session_id=..., la fonction `pack` vérifie le paiement
+  (statut payé, référence pack-, montant minimum) et renvoie un lien de 1 h vers le PDF.
+- Les fonctions refusent un paiement inférieur au prix attendu (PACK_MONTANT_CENTIMES,
+  ALERTES_MONTANT_CENTIMES) : sinon on pourrait payer 2,99 € avec le lien des alertes
+  et récupérer le pack. Si un prix change, changer site.json, le lien Stripe ET ce secret.
+- Déployer les fonctions sans vérification JWT (`supabase functions deploy alertes --no-verify-jwt`,
+  idem pour `pack`) : le site les appelle avec la clé publique.
+- Toute vente exige les mentions légales et les CGV remplies (site.json `editeur`,
+  `mediateur_consommation`, `email_contact`) : les champs vides s'affichent « à compléter ».
+
+## Moniteurs (/moniteurs/) et espace pros (/pro/)
+
+- **Interdit** : faire payer un moniteur ou un pro pour accompagner un candidat libre le jour
+  de l'examen (la préfecture le refuse), ou donner des cours payants hors d'une auto-école agréée
+  (délit). Le jour J, l'accompagnateur est un proche bénévole : permis B depuis 5 ans, pas
+  d'annulation ni d'invalidation depuis 5 ans, signature de la charte.
+- Ce qu'on propose : un annuaire d'auto-écoles et de moniteurs rattachés à une auto-école agréée
+  pour un **examen blanc**, des heures à l'unité, ou la **présentation à l'examen par une
+  auto-école** (avec sa voiture). Demande d'élève -> table demandes_pros (consentement obligatoire).
+- Un pro n'entre dans data/pros.json qu'après vérification de son agrément.
+- Espace pros : gratuit pendant le lancement, liste d'attente Créno Pro, badges gratuits
+  pour le top 10 de chaque département (lien retour vers Créno = référencement).
+- Loueurs partenaires : `code_promo` et `lien_reservation` dans data/loueurs.json, clics comptés
+  (table clics) pour prouver le trafic envoyé avant de demander une commission.
+- Statistiques de visite : Vercel Web Analytics (sans cookie), à activer dans le projet Vercel.
 
 ## Référencement (Google)
 
@@ -124,6 +186,9 @@ Les noms de villes de la source n'ont pas d'accents : build_site.py en rétablit
    thème clair et sombre, focus clavier visible, `prefers-reduced-motion` respecté.
 7. Données personnelles : on ne demande pas de nom pour les déclarations. Toute nouvelle
    collecte doit être expliquée sur la page Confidentialité.
+8. **Pas d'accompagnement payant le jour de l'examen** pour un candidat libre (voir Moniteurs).
+9. **Aucun secret dans le dépôt** : clé service_role, clé secrète Stripe, clé Resend vont
+   uniquement dans les secrets Supabase ou les variables d'environnement.
 
 ## Design
 
@@ -142,14 +207,15 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
    remplir assets/config.js, puis lancer sync_prix.py régulièrement.
 3. **Annuaire des loueurs double commande** : recherche par ville, prix de l'heure,
    boîte manuelle/auto, lien de réservation. Modèle économique : commission ou affiliation.
-4. **Trouver une date d'examen** : guide, centres d'examen des départements voisins,
-   alertes communautaires. Jamais de bot (règle 1).
-5. ~~Pages par ville et par département pour Google~~ : fait (1 886 pages).
+4. **Trouver une date d'examen** : guide fait, alertes communautaires codées (fonction `alertes`).
+   Reste : déployer la fonction, brancher Resend et un domaine. Jamais de bot (règle 1).
+5. ~~Pages par ville et par département pour Google~~ : fait (1 892 pages).
    Idées suivantes : pages « location voiture double commande <département> »,
    « permis candidat libre <département> ».
 6. **Comptes élèves** (plus tard) : budget, heures, checklist sur plusieurs appareils.
-7. **Monétisation** : commissions loueurs, mise en avant payante clairement signalée,
-   éventuellement offre premium (alertes, accompagnement candidat libre).
+7. **Monétisation** : pack candidat libre (14,99 €) et pass alertes (2,99 € / 30 jours) codés,
+   à brancher sur Stripe. Ensuite : commissions loueurs (codes promo), mise en avant payante
+   clairement signalée, Créno Pro.
 
 ## Concurrents à connaître
 

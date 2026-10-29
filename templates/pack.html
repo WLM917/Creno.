@@ -1,0 +1,81 @@
+<div class="road road-slim">
+  <div class="wrap road-inner">
+    {{fil_ariane_clair}}
+    <div class="pack-hero">
+      <div class="hero-main">
+        <h1 class="hero-title">Le Pack candidat libre</h1>
+        <p class="hero-sub">Tout le parcours pour passer ton permis sans auto-école, du dossier jusqu'au jour J. Avec le programme d'entraînement de ton accompagnateur et un examen blanc noté comme le jour de l'examen.</p>
+      </div>
+      <div class="price-plate" aria-label="Prix">
+        <span class="price-amount">{{prix_pack}}</span>
+        <span class="price-note">Paiement unique, accès immédiat</span>
+        <a class="btn btn-plate" href="#acheter">Obtenir le pack</a>
+      </div>
+    </div>
+  </div>
+  <div class="lane" aria-hidden="true"></div>
+</div>
+
+<div class="wrap stack-lg page-pad">
+  <section class="block" aria-labelledby="dedans-title">
+    <h2 id="dedans-title">Ce qu'il y a dedans</h2>
+    <p class="lede">Un guide en PDF à lire sur ton téléphone ou à imprimer, avec des fiches à remplir. Les chapitres suivent l'ordre de ton parcours.</p>
+    <ol class="toc">
+      <li><strong>Le candidat libre est-il fait pour toi ?</strong><span>Les conditions à vérifier avant de te lancer, et quoi faire si tu n'as pas d'accompagnateur.</span></li>
+      <li><strong>Ton dossier, étape par étape</strong><span>NEPH, code, livret d'apprentissage, compte RdvPermis, déclaration de ton accompagnateur.</span></li>
+      <li><strong>Ton accompagnateur</strong><span>Ses conditions, son rôle, et comment il peut t'aider sans être moniteur.</span></li>
+      <li><strong>La voiture à double commande</strong><span>Les équipements obligatoires, les questions à poser au loueur, ton budget.</span></li>
+      <li><strong>Le programme en 12 séances</strong><span>Une progression construite sur les 4 compétences du programme officiel, séance par séance.</span></li>
+      <li><strong>Les manœuvres et la conduite autonome</strong><span>Le freinage précis, la marche arrière, suivre un itinéraire seul.</span></li>
+      <li><strong>Les 3 questions de l'examen</strong><span>Vérification du véhicule, sécurité routière, premiers secours : comment t'entraîner.</span></li>
+      <li><strong>L'examen blanc sur 31 points</strong><span>La grille à remplir par ton accompagnateur, avec les 10 critères de l'inspecteur.</span></li>
+      <li><strong>Le jour J</strong><span>Ce qu'il faut apporter, comment se passent les 32 minutes, les erreurs qui éliminent.</span></li>
+      <li><strong>Après l'examen</strong><span>Ton résultat, ton permis provisoire, et ton plan de reprise si c'est raté.</span></li>
+    </ol>
+    <p class="small">Plus 3 fiches à imprimer : le suivi de tes séances, la grille de l'examen blanc et ton budget.</p>
+  </section>
+
+  <div class="two-col">
+    <section class="block" aria-labelledby="pourqui-title">
+      <h2 id="pourqui-title">Pour qui ?</h2>
+      <ul class="tips">
+        <li>Tu veux passer le permis en candidat libre et tu ne sais pas par où commencer.</li>
+        <li>Un proche peut t'accompagner, mais il ne sait pas comment t'apprendre.</li>
+        <li>Tu as raté l'examen et tu veux te préparer autrement.</li>
+      </ul>
+    </section>
+    <section class="block" aria-labelledby="pasca-title">
+      <h2 id="pasca-title">Ce que le pack n'est pas</h2>
+      <ul class="tips">
+        <li>Il ne remplace pas les informations officielles : il t'y renvoie à chaque étape.</li>
+        <li>Il ne donne aucun accès privilégié aux places d'examen.</li>
+        <li>Il ne remplace pas un moniteur. Si tu as besoin d'un pro, regarde la page <a href="{{root}}moniteurs/">Moniteurs</a>.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="block buy" id="acheter" aria-labelledby="acheter-title">
+    <h2 id="acheter-title">Obtenir le pack</h2>
+    <div class="buy-box">
+      <div class="buy-price"><span class="price-amount">{{prix_pack}}</span><span class="price-note">Paiement unique et sécurisé par Stripe</span></div>
+      <form class="form-stack" id="pack-form">
+        <label class="check-inline" for="pack-ok"><input id="pack-ok" type="checkbox" required> Je veux accéder au pack tout de suite après le paiement et je renonce à mon droit de rétractation pour ce contenu numérique.</label>
+        <label class="check-inline" for="pack-cgv"><input id="pack-cgv" type="checkbox" required> J'accepte les <a href="{{root}}cgv/">conditions de vente</a>.</label>
+        <div class="form-actions">
+          <button class="btn btn-signal" type="submit">Payer {{prix_pack}}</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </div>
+    <p class="small">Après le paiement, tu arrives sur une page qui te donne le PDF. Garde cette page dans tes favoris : elle marche à nouveau plus tard.</p>
+  </section>
+
+  <section class="block" aria-labelledby="faq-pack">
+    <h2 id="faq-pack">Questions fréquentes</h2>
+    <div class="faq">
+      <details><summary>Sous quelle forme est le pack ?</summary><p>Un PDF que tu télécharges juste après le paiement. Il se lit bien sur téléphone, et les fiches s'impriment en A4.</p></details>
+      <details><summary>Les informations sont-elles à jour ?</summary><p>Le pack s'appuie sur les sources officielles (Sécurité routière, préfectures, service-public) au moment de sa rédaction, et indique chaque fois où vérifier. Les règles peuvent changer : en cas de doute, la source officielle a toujours raison.</p></details>
+      <details><summary>J'ai perdu mon lien de téléchargement</summary><p>Écris-nous avec l'e-mail utilisé pour le paiement, on te le renvoie. {{contact}}</p></details>
+    </div>
+  </section>
+</div>

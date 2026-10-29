@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://creno-tan.vercel.app/</loc><lastmod>2026-10-29</lastmod><priority>1.0</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/</loc><lastmod>2026-10-29</lastmod><priority>0.9</priority></url>
+  <url><loc>https://creno-tan.vercel.app/alertes/</loc><lastmod>2026-10-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/essonne-91/</loc><lastmod>2026-10-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/hauts-de-seine-92/</loc><lastmod>2026-10-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/paris-75/</loc><lastmod>2026-10-29</lastmod><priority>0.8</priority></url>
@@ -12,6 +13,7 @@
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/yvelines-78/</loc><lastmod>2026-10-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://creno-tan.vercel.app/candidat-libre/</loc><lastmod>2026-10-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://creno-tan.vercel.app/cout-du-permis/</loc><lastmod>2026-10-29</lastmod><priority>0.8</priority></url>
+  <url><loc>https://creno-tan.vercel.app/pack-candidat-libre/</loc><lastmod>2026-10-29</lastmod><priority>0.8</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/ain-01/</loc><lastmod>2026-10-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/aisne-02/</loc><lastmod>2026-10-29</lastmod><priority>0.7</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/allier-03/</loc><lastmod>2026-10-29</lastmod><priority>0.7</priority></url>
@@ -411,6 +413,7 @@
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/yvelines-78/viroflay/</loc><lastmod>2026-10-29</lastmod><priority>0.6</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/yvelines-78/voisins-le-bretonneux/</loc><lastmod>2026-10-29</lastmod><priority>0.6</priority></url>
   <url><loc>https://creno-tan.vercel.app/examen/</loc><lastmod>2026-10-29</lastmod><priority>0.6</priority></url>
+  <url><loc>https://creno-tan.vercel.app/moniteurs/</loc><lastmod>2026-10-29</lastmod><priority>0.6</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/ain-01/amberieu-en-bugey/</loc><lastmod>2026-10-29</lastmod><priority>0.5</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/ain-01/bellegarde-sur-valserine/</loc><lastmod>2026-10-29</lastmod><priority>0.5</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/ain-01/belley/</loc><lastmod>2026-10-29</lastmod><priority>0.5</priority></url>
@@ -1884,6 +1887,9 @@
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/yonne-89/sens/</loc><lastmod>2026-10-29</lastmod><priority>0.5</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/yonne-89/tonnerre/</loc><lastmod>2026-10-29</lastmod><priority>0.5</priority></url>
   <url><loc>https://creno-tan.vercel.app/auto-ecoles/yonne-89/toucy/</loc><lastmod>2026-10-29</lastmod><priority>0.5</priority></url>
+  <url><loc>https://creno-tan.vercel.app/pro/</loc><lastmod>2026-10-29</lastmod><priority>0.5</priority></url>
   <url><loc>https://creno-tan.vercel.app/methode/</loc><lastmod>2026-10-29</lastmod><priority>0.4</priority></url>
   <url><loc>https://creno-tan.vercel.app/confidentialite/</loc><lastmod>2026-10-29</lastmod><priority>0.2</priority></url>
+  <url><loc>https://creno-tan.vercel.app/cgv/</loc><lastmod>2026-10-29</lastmod><priority>0.1</priority></url>
+  <url><loc>https://creno-tan.vercel.app/mentions-legales/</loc><lastmod>2026-10-29</lastmod><priority>0.1</priority></url>
 </urlset>

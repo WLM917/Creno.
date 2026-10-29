@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Génère une version de Permiscope en un seul fichier HTML (styles, scripts et données intégrés),
+Génère une version de Créno en un seul fichier HTML (styles, scripts et données intégrés),
 pratique pour un aperçu rapide. Le vrai site reste index.html + assets/ + data/.
 
 Utilisation :
@@ -41,8 +41,8 @@ def main():
     body = re.sub(r'\s*<script src="assets/app\.js"></script>', "", body)
 
     data_js = (
-        "window.PERMISCOPE_ECOLES = " + json.dumps(ecoles, ensure_ascii=False) + ";\n"
-        "window.PERMISCOPE_LOUEURS = " + json.dumps(loueurs, ensure_ascii=False) + ";\n"
+        "window.CRENO_ECOLES = " + json.dumps(ecoles, ensure_ascii=False) + ";\n"
+        "window.CRENO_LOUEURS = " + json.dumps(loueurs, ensure_ascii=False) + ";\n"
     )
     scripts = "<script>\n" + config + "\n" + data_js + "\n" + app + "\n</script>\n"
 

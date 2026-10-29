@@ -1,15 +1,15 @@
-/* Permiscope : navigation, classement, calculateur, formulaires, checklist. */
+/* Créno : navigation, classement, calculateur, formulaires, checklist. */
 (function () {
   "use strict";
 
-  var CONFIG = window.PERMISCOPE_CONFIG || {};
+  var CONFIG = window.CRENO_CONFIG || {};
   var VIEWS = ["accueil", "classement", "candidat-libre", "examen", "methode"];
   var VIEW_TITLES = {
-    "accueil": "Permiscope",
-    "classement": "Classement des auto-écoles | Permiscope",
-    "candidat-libre": "Candidat libre | Permiscope",
-    "examen": "Jour de l'examen | Permiscope",
-    "methode": "Méthode | Permiscope"
+    "accueil": "Créno",
+    "classement": "Classement des auto-écoles | Créno",
+    "candidat-libre": "Candidat libre | Créno",
+    "examen": "Jour de l'examen | Créno",
+    "methode": "Méthode | Créno"
   };
   var DEP_NAMES = {
     "75": "Paris", "77": "Seine-et-Marne", "78": "Yvelines", "91": "Essonne",
@@ -171,7 +171,7 @@
     zoneSel.innerHTML = '<option value="all">Toute l\'Île-de-France</option>' +
       deps.map(function (d) { return '<option value="' + esc(d) + '">' + esc(depLabel(d)) + '</option>'; }).join("");
 
-    var saved = store.get("permiscope-filtres", null);
+    var saved = store.get("creno-filtres", null);
     var defaultDep = deps.indexOf(String(CONFIG.departementParDefaut)) !== -1 ? String(CONFIG.departementParDefaut) : "all";
     var state = {
       zone: saved && (saved.zone === "all" || deps.indexOf(saved.zone) !== -1) ? saved.zone : defaultDep,
@@ -224,7 +224,7 @@
           (rows.length !== n ? ". " + rows.length + " affichée" + (rows.length > 1 ? "s" : "") + " avec tes filtres." : ".")
         : "Pas encore d'auto-école dans cette zone.";
       $("#f-budget-out").textContent = state.budget >= BUDGET_MAX ? "pas de limite" : eur(state.budget);
-      store.set("permiscope-filtres", { zone: state.zone, budget: state.budget, sort: state.sort, unknown: state.unknown });
+      store.set("creno-filtres", { zone: state.zone, budget: state.budget, sort: state.sort, unknown: state.unknown });
     }
 
     zoneSel.addEventListener("change", function () { state.zone = zoneSel.value; render(); });
@@ -246,7 +246,7 @@
   /* ---------- Calculateur ---------- */
   function initCalc() {
     var ids = ["calc-forfait", "calc-incluses", "calc-prix", "calc-besoin", "calc-frais", "calc-budget"];
-    var saved = store.get("permiscope-calc", null);
+    var saved = store.get("creno-calc", null);
     if (saved) ids.forEach(function (id) { if (saved[id] != null && $("#" + id)) $("#" + id).value = saved[id]; });
 
     function val(id) { var n = parseFloat($("#" + id).value); return isNaN(n) ? 0 : n; }
@@ -270,7 +270,7 @@
         verdict.textContent = "";
       }
       var snap = {}; ids.forEach(function (id) { snap[id] = $("#" + id).value; });
-      store.set("permiscope-calc", snap);
+      store.set("creno-calc", snap);
     }
     ids.forEach(function (id) { $("#" + id).addEventListener("input", update); });
     update();
@@ -317,9 +317,9 @@
             done(false, "L'envoi n'a pas marché. Vérifie ta connexion et réessaie.");
           });
         } else {
-          var pending = store.get("permiscope-envois", []);
+          var pending = store.get("creno-envois", []);
           pending.push(payload);
-          store.set("permiscope-envois", pending);
+          store.set("creno-envois", pending);
           done(true, "Enregistré sur cet appareil. Le site est en mode démo : rien n'est encore envoyé.");
         }
       });
@@ -329,7 +329,7 @@
   /* ---------- Checklist ---------- */
   function initChecklist() {
     var boxes = $all("#checklist input[type=checkbox]");
-    var saved = store.get("permiscope-checklist", {});
+    var saved = store.get("creno-checklist", {});
     boxes.forEach(function (b) { b.checked = !!saved[b.id]; });
     function update() {
       var state = {}; var done = 0;
@@ -337,7 +337,7 @@
       var p = $("#check-progress");
       p.textContent = done === boxes.length ? "Tout est prêt" : done + " sur " + boxes.length + " prêts";
       p.classList.toggle("is-done", done === boxes.length);
-      store.set("permiscope-checklist", state);
+      store.set("creno-checklist", state);
     }
     boxes.forEach(function (b) { b.addEventListener("change", update); });
     update();
@@ -357,8 +357,8 @@
     initCalc();
     initForms();
     initChecklist();
-    loadJSON("data/auto-ecoles.json", "PERMISCOPE_ECOLES").then(initRanking).catch(rankingError);
-    loadJSON("data/loueurs.json", "PERMISCOPE_LOUEURS").then(initRenters).catch(function () { initRenters(null); });
+    loadJSON("data/auto-ecoles.json", "CRENO_ECOLES").then(initRanking).catch(rankingError);
+    loadJSON("data/loueurs.json", "CRENO_LOUEURS").then(initRenters).catch(function () { initRenters(null); });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

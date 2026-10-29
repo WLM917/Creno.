@@ -1,6 +1,6 @@
-# Permiscope
+# Créno
 
-Site pour passer son permis B au meilleur prix en Île-de-France :
+Le bon créneau pour ton permis. Site pour passer son permis B au meilleur prix en Île-de-France :
 
 - **Classement des auto-écoles** par département, selon le taux de réussite officiel et le **coût réel** du permis (forfait + heures en plus + frais d'examen), avec un filtre budget.
 - **Calculateur de coût réel** d'un devis d'auto-école.
@@ -17,7 +17,7 @@ Le site est statique (HTML, CSS, JavaScript, sans framework ni compilation). Il 
 
 ## Mettre le site en ligne
 
-**GitHub Pages** : dans le dépôt, *Settings > Pages*, choisir la branche `main` et le dossier `/ (root)`, puis *Save*. Le site sera disponible quelques minutes après à l'adresse `https://<ton-compte>.github.io/permiscope/`.
+**GitHub Pages** : dans le dépôt, *Settings > Pages*, choisir la branche `main` et le dossier `/ (root)`, puis *Save*. Le site sera disponible quelques minutes après à l'adresse `https://<ton-compte>.github.io/<nom-du-dépôt>/`. Évite un point à la fin du nom du dépôt : l'adresse serait bancale.
 
 **Vercel** : *Add New > Project*, importer le dépôt GitHub, laisser les réglages par défaut (aucune commande de build), *Deploy*.
 

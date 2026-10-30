@@ -60,7 +60,7 @@
       <div class="buy-price"><span class="price-amount">{{prix_pack}}</span><span class="price-note">Paiement unique et sécurisé par Stripe</span></div>
       <form class="form-stack" id="pack-form">
         <label class="check-inline" for="pack-ok"><input id="pack-ok" type="checkbox" required> Je veux accéder au pack tout de suite après le paiement et je renonce à mon droit de rétractation pour ce contenu numérique.</label>
-        <label class="check-inline" for="pack-cgv"><input id="pack-cgv" type="checkbox" required> J'accepte les <a href="{{root}}cgv/">conditions de vente</a>.</label>
+        <label class="check-inline" for="pack-cgv"><input id="pack-cgv" type="checkbox" required><span>J'accepte les <a href="{{root}}cgv/">conditions de vente</a>.</span></label>
         <div class="form-actions">
           <button class="btn btn-signal" type="submit">Payer {{prix_pack}}</button>
           <p class="form-status" role="status"></p>

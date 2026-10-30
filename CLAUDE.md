@@ -33,11 +33,12 @@ ou le générateur, puis relance `python3 scripts/build_site.py` (Python 3.12 ou
 ```
 site.json                         réglages : adresse du site (canonical, sitemap), département par défaut,
                                   e-mail de contact, nb minimum de déclarations, code Google Search Console,
-                                  prix du pack et des alertes, alertes_payantes, vercel_analytics,
+                                  prix du pack, prix_alertes (par mois) et essai_alertes_jours, alertes_payantes, vercel_analytics,
                                   editeur (mentions légales) et mediateur_consommation (CGV)
 templates/*.html                  contenu des pages fixes (accueil, candidat-libre, examen, methode,
                                   cout-du-permis, confidentialite, alertes, pack, moniteurs, pro,
-                                  mentions-legales, cgv, etat = pages de retour), avec des {{variables}}
+                                  mentions-legales, cgv, etat = pages de retour, alertes-continuer, admin, rapport),
+                                  avec des {{variables}}
 scripts/build_site.py             génère toutes les pages + sitemap.xml, robots.txt, 404.html, data/recherche.json,
                                   badges/<agrément>.svg (top 10 de chaque département) et data/badges.json
 scripts/import_auto_ecoles.py     importe le CSV officiel -> data/, puis lance build_site.py
@@ -50,6 +51,8 @@ supabase/migrations/*.sql         tables + sécurité. 1re migration : formulair
 supabase/functions/alertes/       fonction serveur (Deno) : abonnement, paiement Stripe, confirmation,
                                   désabonnement, signalement de places + envoi des e-mails (Resend)
 supabase/functions/pack/          fonction serveur : vérifie le paiement Stripe, renvoie un lien de 1 h vers le PDF
+supabase/functions/stats/         fonction serveur : compteur des contacts envoyés aux pros, rapports des pros,
+                                  tableau de bord (protégé par ADMIN_CODE)
 assets/style.css                  styles (tokens de couleur en haut, thème clair et sombre)
 assets/app.js                     recherche de ville, filtres des pages département, calculateur,
                                   formulaires (Supabase), checklist, alertes, achat et accès au pack,
@@ -76,6 +79,9 @@ candidat-libre/, cout-du-permis/, examen/, methode/, confidentialite/, alertes/,
 moniteurs/, pro/, mentions-legales/, cgv/, 404.html, sitemap.xml, robots.txt
 alertes/confirmer/, alertes/merci/, alertes/desabonner/, pack-candidat-libre/acces/ : pages de retour
                                   (noindex, hors sitemap)
+alertes/continuer/                abonnement après l'essai (lien envoyé par e-mail), noindex
+admin/                            tableau de bord privé de William (code ADMIN_CODE), noindex
+rapport/?p=...&d=...&k=...        rapport d'un pro (lien secret à lui envoyer), noindex
 ```
 
 Le PDF du Pack candidat libre n'est PAS dans le dépôt (il serait téléchargeable gratuitement) :
@@ -125,19 +131,26 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   `alertes` prévient par e-mail les abonnés du département (Resend). Limites anti-abus :
   3 signalements par heure et par appareil (empreinte sha256 de l'IP + sel, IP jamais gardée),
   pas plus d'un e-mail toutes les 10 minutes par abonné.
-- Mode gratuit tant que le secret `ALERTES_LIEN_STRIPE` est vide (double opt-in par e-mail).
-  Mode payant (pass de 30 jours, sans renouvellement automatique) dès qu'il est rempli :
-  passer alors `alertes_payantes` à true dans site.json, relancer build_site.py, pousser.
-  Les deux réglages doivent toujours être d'accord.
+- Formule : **15 jours d'essai gratuit sans carte** (double opt-in par e-mail), puis **9,99 € par mois**
+  (abonnement Stripe, sans engagement). Un seul essai par personne (colonne email_base, sans « +tag »).
+  La tâche quotidienne (`quotidien`, lancée par Supabase Cron avec ADMIN_CODE) envoie le rappel
+  3 jours avant la fin de l'essai, arrête les essais finis (e-mail « en pause » avec lien vers
+  /alertes/continuer/), et vérifie chez Stripe que chaque abonnement est toujours payé.
+- « Ne plus recevoir d'alertes » (lien dans chaque e-mail) arrête les alertes ET résilie l'abonnement
+  Stripe tout de suite (résiliation en un clic, obligation légale).
+- Le secret `ALERTES_LIEN_STRIPE` (lien de paiement de l'abonnement mensuel) décide du mode :
+  vide = lancement gratuit (les essais se prolongent tout seuls). `alertes_payantes` dans site.json
+  doit être d'accord avec lui (textes du site), puis relancer build_site.py et pousser.
 - **Pack candidat libre** (/pack-candidat-libre/) : lien de paiement Stripe dans config.js
   (`lienPaiementPack`), avec `client_reference_id=pack-<uuid>`. Stripe redirige vers
   /pack-candidat-libre/acces/?session_id=..., la fonction `pack` vérifie le paiement
   (statut payé, référence pack-, montant minimum) et renvoie un lien de 1 h vers le PDF.
 - Les fonctions refusent un paiement inférieur au prix attendu (PACK_MONTANT_CENTIMES,
-  ALERTES_MONTANT_CENTIMES) : sinon on pourrait payer 2,99 € avec le lien des alertes
+  ALERTES_MONTANT_CENTIMES) : sinon on pourrait payer avec un lien moins cher
   et récupérer le pack. Si un prix change, changer site.json, le lien Stripe ET ce secret.
 - Déployer les fonctions sans vérification JWT (`supabase functions deploy alertes --no-verify-jwt`,
-  idem pour `pack`) : le site les appelle avec la clé publique.
+  idem pour `pack` et `stats`) : le site les appelle avec la clé publique.
+- Prix de l'abonnement vérifié par la fonction alertes : ALERTES_MONTANT_CENTIMES (défaut 999).
 - Toute vente exige les mentions légales et les CGV remplies (site.json `editeur`,
   `mediateur_consommation`, `email_contact`) : les champs vides s'affichent « à compléter ».
 
@@ -164,8 +177,21 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   (avec utm_source=creno pour que l'auto-école voie que la visite vient de Créno), « Leur écrire »
   (e-mail prérempli « trouvé sur Créno »), un message tout prêt à copier qui demande forfait,
   heures comprises et prix de l'heure, « dis que tu viens de Créno », et un lien pour déclarer son prix.
-- Chaque bouton est compté dans la table clics (cible ae-<agrément>-carte / -site / -email / -message) :
-  c'est la preuve du nombre d'élèves envoyés, à montrer aux auto-écoles avant de leur vendre quoi que ce soit.
+- Ouvrir le volet (ae-<agrément>-ouvert) et chaque bouton (-carte / -site / -email / -message) sont comptés
+  par la fonction `stats` : une personne compte une fois par jour et par bouton (empreinte sha256 du jour,
+  de l'IP, du navigateur et de CRENO_SEL ; IP jamais gardée), robots ignorés, 80 clics par jour et par
+  appareil au plus. Le site ne peut plus écrire directement dans la table clics : personne ne peut
+  gonfler les chiffres. L'ouverture automatique par un lien #ae-... n'est pas comptée.
+- Loueurs : mêmes boutons (Réserver ou Voir le site, Téléphone et itinéraire, message tout prêt,
+  « dis que tu viens de Créno » ou leur code promo), comptés en loueur-<nom>-<bouton>.
+- **Tableau de bord** /admin/ (code ADMIN_CODE) : élèves envoyés à chaque pro (30 jours et depuis le
+  début), abonnés aux alertes, revenu mensuel, et le lien du rapport de chaque pro.
+- **Rapport d'un pro** /rapport/?p=<pro>&d=<dép.>&k=<clé> : la clé est un hachage de CRENO_SEL et du pro,
+  donc un pro ne voit que ses chiffres. Toujours dire « ont cliqué pour vous contacter », jamais
+  « se sont inscrits » : on mesure des clics, pas des inscriptions. Rapport au vouvoiement (adressé à un pro).
+- Espace pros : compteur public du total des contacts, affiché seulement à partir de 50.
+- Rémunération visée : commission d'apporteur d'affaires (contrat écrit avec chaque pro), par élève
+  inscrit ou par location, prouvée par le code Créno ou « je viens de Créno ».
 - Un code promo d'auto-école partenaire (`code_promo`, `reduction`) s'affiche dans le volet s'il existe.
 
 ## Référencement (Google)
@@ -227,7 +253,7 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
    Idées suivantes : pages « location voiture double commande <département> »,
    « permis candidat libre <département> ».
 6. **Comptes élèves** (plus tard) : budget, heures, checklist sur plusieurs appareils.
-7. **Monétisation** : pack candidat libre (14,99 €) et pass alertes (2,99 € / 30 jours) codés,
+7. **Monétisation** : pack candidat libre (14,99 €) et alertes (15 jours gratuits puis 9,99 €/mois) codés,
    à brancher sur Stripe. Ensuite : commissions loueurs (codes promo), mise en avant payante
    clairement signalée, Créno Pro.
 

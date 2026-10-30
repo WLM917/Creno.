@@ -511,9 +511,13 @@
         statusEl.className = "form-status";
         callFn("alertes", body).then(function (j) {
           if (j.paiement) { location.href = j.paiement; return; }
+          if (j.continuer) { location.href = j.continuer; return; }
           button.disabled = false;
-          if (j.confirmation) {
-            setStatus(statusEl, true, "C'est presque fini : on t'a envoyé un e-mail. Clique sur le lien pour activer tes alertes.");
+          if (j.deja) {
+            setStatus(statusEl, true, "Tu suis déjà le " + j.departement + " : tes alertes sont actives jusqu'au " + j.expire_txt + ".");
+          } else if (j.confirmation) {
+            setStatus(statusEl, true, "C'est presque fini : on t'a envoyé un e-mail. Clique sur le lien pour activer " +
+              (j.payant ? "ton essai gratuit de " + j.essai_jours + " jours." : "tes alertes."));
             form.reset();
           } else if (action === "signaler") {
             setStatus(statusEl, true, j.prevenus
@@ -559,8 +563,19 @@
                    desabonner: { action: "desabonner", t: queryParam("t") } }[etat];
     if (!params || !(params.t || params.session_id)) { show(false, "Ce lien est incomplet. Ouvre-le directement depuis ton e-mail."); return; }
     callFn("alertes", params).then(function (j) {
-      if (etat === "desabonner") show(true, "C'est fait : tu ne recevras plus d'alertes pour ce département.");
-      else show(true, "C'est activé : tu recevras les alertes du " + j.departement + " jusqu'au " + j.expire_txt + ".");
+      if (j.continuer) { location.href = j.continuer; return; }
+      if (etat === "desabonner") {
+        if (j.abonnement && !j.resilie) show(false, "Les alertes sont arrêtées, mais ton abonnement n'a pas pu être résilié automatiquement. Écris-nous et on l'arrête tout de suite.");
+        else show(true, "C'est fait : tu ne recevras plus d'alertes pour ce département." + (j.abonnement ? " Ton abonnement est résilié : tu ne seras plus prélevé." : ""));
+      } else if (j.plan === "abonne") {
+        show(true, "C'est activé : ton abonnement aux alertes du " + j.departement + " est en place. Prochain renouvellement vers le " +
+          j.expire_txt + ". Tu peux l'arrêter à tout moment avec le lien en bas de chaque e-mail.");
+      } else if (j.plan === "essai" && j.payant) {
+        show(true, "C'est activé : ton essai gratuit court jusqu'au " + j.expire_txt + ". Tu recevras les alertes du " + j.departement +
+          ". Quelques jours avant la fin, on t'enverra un e-mail si tu veux continuer.");
+      } else {
+        show(true, "C'est activé : tu recevras les alertes du " + j.departement + (j.expire_txt ? " jusqu'au " + j.expire_txt : "") + ".");
+      }
     }).catch(function (e) { show(false, e.message); });
   }
 
@@ -643,17 +658,41 @@
   }
 
   /* ---------- Clics vers les partenaires (preuve des clients envoyés) ---------- */
+  // Compte un clic vers une auto-école ou un loueur (fonction serveur « stats »).
+  // Une même personne compte une fois par jour et par bouton : le serveur s'en occupe.
+  var dejaCompte = {};
+  function compter(cible) {
+    if (!supabaseReady() || !cible || dejaCompte[cible]) return;
+    dejaCompte[cible] = true;
+    try {
+      fetch(CONFIG.supabaseUrl.replace(/\/$/, "") + "/functions/v1/stats", {
+        method: "POST", keepalive: true, headers: supaHeaders(),
+        body: JSON.stringify({ action: "clic", cible: cible, page: location.pathname, dep: BODY.getAttribute("data-dep") || "" })
+      }).catch(function () { /* sans importance */ });
+    } catch (e) { /* sans importance */ }
+  }
+
   function initClics() {
     document.addEventListener("click", function (ev) {
       var a = ev.target.closest && ev.target.closest("[data-clic]");
-      if (!a || !supabaseReady()) return;
-      try { supaInsert("clics", { cible: a.getAttribute("data-clic"), page: location.pathname }, true); } catch (e) { /* sans importance */ }
+      if (a) compter(a.getAttribute("data-clic"));
     });
+    // Ouvrir le volet « Contacter » d'une auto-école compte aussi (sauf ouverture automatique par un lien).
+    document.addEventListener("toggle", function (ev) {
+      var d = ev.target;
+      if (!d.matches || !d.matches("details[data-pro]") || !d.open) return;
+      if (d.getAttribute("data-auto")) { d.removeAttribute("data-auto"); return; }
+      compter(d.getAttribute("data-pro") + "-ouvert");
+    }, true);
   }
 
   /* ---------- Contacter une auto-école du classement ---------- */
-  var MESSAGE = "Bonjour, j'ai trouvé votre auto-école sur Créno. Je voudrais connaître le prix de votre forfait permis B, " +
-    "le nombre d'heures comprises et le prix d'une heure en plus. Merci !";
+  var MESSAGES = {
+    ae: "Bonjour, j'ai trouvé votre auto-école sur Créno. Je voudrais connaître le prix de votre forfait permis B, " +
+      "le nombre d'heures comprises et le prix d'une heure en plus. Merci !",
+    loueur: "Bonjour, j'ai trouvé votre agence sur Créno. Je voudrais louer une voiture à double commande pour m'entraîner " +
+      "et pour le jour de mon examen du permis. Quels sont vos prix et vos disponibilités ? Merci !"
+  };
 
   function prefillDecl(id) {
     var form = $("#contrib-form");
@@ -680,7 +719,6 @@
 
   function initContact() {
     var rows = $all(".rank-row");
-    if (!rows.length) return;
     $all("[data-message]").forEach(function (b) { b.hidden = false; });
     rows.forEach(function (li) { if ($(".rank-more", li)) li.classList.add("is-clickable"); });
 
@@ -689,11 +727,12 @@
       // Bouton « Copier un message tout prêt »
       var btn = t.closest && t.closest("[data-message]");
       if (btn) {
-        var msg = $(".rank-msg", btn.closest(".rank-panel"));
-        copyText(MESSAGE).then(function () {
-          msg.textContent = "Message copié. Colle-le dans un SMS, un e-mail ou le formulaire de leur site : « " + MESSAGE + " »";
+        var msg = $(".rank-msg", btn.closest(".rank-panel, .renter"));
+        var texte = MESSAGES[btn.getAttribute("data-message")] || MESSAGES.ae;
+        copyText(texte).then(function () {
+          msg.textContent = "Message copié. Colle-le dans un SMS, un e-mail ou le formulaire de leur site : « " + texte + " »";
         }, function () {
-          msg.textContent = "Copie ce message : « " + MESSAGE + " »";
+          msg.textContent = "Copie ce message : « " + texte + " »";
         });
         msg.hidden = false;
         return;
@@ -715,11 +754,179 @@
     if (location.hash.indexOf("#ae-") === 0) {
       var el = document.getElementById(location.hash.slice(1));
       var det = el && $(".rank-more", el);
-      if (det) det.open = true;
+      if (det) { det.setAttribute("data-auto", "1"); det.open = true; }
     }
     // Arrivée depuis une page ville avec ?ae=... : l'auto-école est déjà choisie dans le formulaire
     var ae = queryParam("ae");
     if (ae) prefillDecl(ae);
+  }
+
+  /* ---------- Continuer les alertes après l'essai ---------- */
+  function initContinuer() {
+    var form = $("#cont-form");
+    if (!form) return;
+    var msg = $("#cont-msg");
+    function show(ok, text) { msg.textContent = text; msg.classList.toggle("is-error", !ok); }
+    if (!supabaseReady()) { show(false, "Ce service ouvre très bientôt."); return; }
+    var t = queryParam("t");
+    if (!t) { show(false, "Ce lien est incomplet. Ouvre-le directement depuis ton e-mail."); return; }
+    var lien = "";
+    callFn("alertes", { action: "continuer", t: t }).then(function (j) {
+      if (j.deja) { show(true, "Tu es déjà abonné aux alertes du " + j.departement + ", jusqu'au " + j.expire_txt + " au moins. Tu n'as rien à faire."); return; }
+      if (j.gratuit) { show(true, "Bonne nouvelle : les alertes sont gratuites pendant le lancement. Tu n'as rien à payer."); return; }
+      lien = j.paiement;
+      show(true, "Continue à recevoir les places signalées dans le " + j.departement + ", dès qu'un candidat les voit.");
+      $("#cont-offre").hidden = false;
+    }).catch(function (e) { show(false, e.message); });
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      if (lien) location.href = lien;
+    });
+  }
+
+  /* ---------- Noms des auto-écoles et des loueurs (tableau de bord, rapport) ---------- */
+  var depCache = {};
+  function chargerDep(code) {
+    if (!depCache[code]) depCache[code] = fetchJSON("data/departements/" + encodeURIComponent(code) + ".json").catch(function () { return { ecoles: [] }; });
+    return depCache[code];
+  }
+  var loueursCache = null;
+  function chargerLoueurs() {
+    if (!loueursCache) loueursCache = fetchJSON("data/loueurs.json").then(function (j) { return j.loueurs || []; }).catch(function () { return []; });
+    return loueursCache;
+  }
+  function slugJS(s) { return norm(s).replace(/ /g, "-"); }
+  // Renvoie { nom, lieu, type, e } pour « ae-<agrément> » ou « loueur-<nom> »
+  function decrirePro(p, dep) {
+    if (p.indexOf("loueur-") === 0) {
+      return chargerLoueurs().then(function (ls) {
+        var l = ls.filter(function (x) { return "loueur-" + slugJS(x.nom) === p; })[0];
+        return { type: "loueur", nom: l ? l.nom : p.slice(7), lieu: l ? l.ville + " (" + l.dep + ")" : "" };
+      });
+    }
+    var id = p.slice(3);
+    if (!dep) return Promise.resolve({ type: "ae", nom: "Auto-école " + id, lieu: "" });
+    return chargerDep(dep).then(function (d) {
+      var e = (d.ecoles || []).filter(function (x) { return x.id === id; })[0];
+      return { type: "ae", e: e, nom: e ? e.nom : "Auto-école " + id, lieu: e ? e.ville + " (" + dep + ")" : "Département " + dep };
+    });
+  }
+  var moisFmt = new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric" });
+  function moisTxt(m) { var p = String(m).split("-"); return moisFmt.format(new Date(Number(p[0]), Number(p[1]) - 1, 1)); }
+  function dateTxt(iso) { var p = String(iso).split("-"); return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }); }
+  function baseSite() {
+    var canonical = ($("link[rel=canonical]") || {}).href || location.href;
+    return canonical.replace(/(admin|rapport)\/?(index\.html)?(\?.*)?$/, "");
+  }
+
+  /* ---------- Tableau de bord (page privée /admin/) ---------- */
+  function initAdmin() {
+    var form = $("#admin-form");
+    if (!form) return;
+    var statusEl = $(".form-status", form);
+    var saved = "";
+    try { saved = window.sessionStorage.getItem("creno-admin") || ""; } catch (e) { saved = ""; }
+    if (saved) $("#admin-code").value = saved;
+
+    function fact(n, txt) { return "<div><dt>" + n + "</dt><dd>" + txt + "</dd></div>"; }
+    function charger(code) {
+      if (!supabaseReady()) { setStatus(statusEl, false, "Supabase n'est pas encore branché (assets/config.js)."); return; }
+      statusEl.textContent = "Chargement…"; statusEl.className = "form-status";
+      callFn("stats", { action: "admin", code: code }).then(function (j) {
+        try { window.sessionStorage.setItem("creno-admin", code); } catch (e) { /* sans importance */ }
+        statusEl.textContent = "";
+        form.hidden = true;
+        $("#admin-board").hidden = false;
+        var a = j.alertes || {};
+        $("#admin-alertes").innerHTML =
+          fact(intFmt.format(a.abonnes || 0), "abonnés payants") +
+          fact(eur(a.revenu_mensuel || 0), "par mois avec ces abonnés (avant frais Stripe)") +
+          fact(intFmt.format(a.essais || 0), "essais gratuits en cours") +
+          fact(intFmt.format(a.signalements_30j || 0), "places signalées ces 30 derniers jours");
+        var pros = j.pros || [];
+        var t30 = 0, tout = 0;
+        pros.forEach(function (p) { t30 += p.j30; tout += p.total; });
+        $("#admin-totaux").innerHTML = fact(intFmt.format(t30), "élèves envoyés ces 30 derniers jours") +
+          fact(intFmt.format(tout), "élèves envoyés depuis le début") + fact(intFmt.format(pros.length), "auto-écoles et loueurs contactés");
+        $("#admin-vide").hidden = pros.length > 0;
+        var base = baseSite();
+        Promise.all(pros.map(function (p) { return decrirePro(p.p, p.departement).then(function (d) { p.d = d; return p; }); })).then(function () {
+          $("#admin-rows").innerHTML = pros.map(function (p, i) {
+            var url = base + "rapport/?p=" + encodeURIComponent(p.p) + (p.departement ? "&d=" + encodeURIComponent(p.departement) : "") + "&k=" + p.k;
+            p.q = norm(p.d.nom + " " + p.d.lieu + " " + (p.departement || ""));
+            return '<tr data-i="' + i + '"><td class="cell-titre"><strong>' + esc(p.d.nom) + '</strong><span class="sub">' + esc((p.d.type === "loueur" ? "Loueur · " : "Auto-école · ") + p.d.lieu) + '</span></td>' +
+              '<td data-label="30 derniers jours"><span>' + intFmt.format(p.j30) + '<span class="sub">dont ' + intFmt.format(p.j30_action) + ' avec un clic de contact</span></span></td>' +
+              '<td data-label="Depuis le début"><span>' + intFmt.format(p.total) + '<span class="sub">dont ' + intFmt.format(p.total_action) + ' avec un clic de contact</span></span></td>' +
+              '<td data-label="Rapport"><div class="rap-actions"><button class="btn btn-small btn-ghost" type="button" data-copier="' + esc(url) + '">Copier le lien</button>' +
+              '<a class="btn btn-small btn-ghost" href="' + esc(url) + '" target="_blank" rel="noopener">Voir</a></div></td></tr>';
+          }).join("");
+        });
+        $("#admin-filtre").addEventListener("input", function (ev) {
+          var q = norm(ev.target.value);
+          $all("#admin-rows tr").forEach(function (tr) { var p = pros[Number(tr.getAttribute("data-i"))]; tr.hidden = !!q && (p.q || "").indexOf(q) === -1; });
+        });
+      }).catch(function (e) { setStatus(statusEl, false, e.message); });
+    }
+    form.addEventListener("submit", function (ev) { ev.preventDefault(); charger($("#admin-code").value.trim()); });
+    document.addEventListener("click", function (ev) {
+      var b = ev.target.closest && ev.target.closest("[data-copier]");
+      if (!b) return;
+      copyText(b.getAttribute("data-copier")).then(function () { b.textContent = "Lien copié"; }, function () { b.textContent = "Copie impossible"; });
+    });
+    if (saved) charger(saved);
+  }
+
+  /* ---------- Rapport envoyé à une auto-école ou un loueur (page /rapport/) ---------- */
+  function initRapport() {
+    var box = $("#rap-contenu");
+    if (!box) return;
+    var lieu = $("#rap-lieu");
+    function erreur(text) { lieu.textContent = text; lieu.classList.add("is-error"); }
+    if (!supabaseReady()) { erreur("Ce service ouvre très bientôt."); return; }
+    var p = queryParam("p"), k = queryParam("k"), dep = queryParam("d");
+    if (!p || !k) { erreur("Ce lien de rapport est incomplet. Demandez un nouveau lien à Créno."); return; }
+    Promise.all([callFn("stats", { action: "rapport", p: p, k: k }), decrirePro(p, dep), fetchJSON("data/badges.json").catch(function () { return null; })])
+      .then(function (res) {
+        var j = res[0], d = res[1], badges = res[2];
+        var loueur = d.type === "loueur";
+        $("#rap-nom").textContent = d.nom;
+        document.title = "Rapport Créno : " + d.nom;
+        lieu.textContent = (d.lieu ? d.lieu + " · " : "") + (j.depuis ? "chiffres depuis le " + dateTxt(j.depuis) : "aucun contact compté pour l'instant");
+        var total = loueur ? j.total.personnes_action : j.total.personnes;
+        $("#rap-total").textContent = intFmt.format(total);
+        $("#rap-total-txt").textContent = loueur
+          ? (total > 1 ? "élèves ont cliqué pour réserver chez vous ou vous contacter depuis Créno" : "élève a cliqué pour réserver chez vous ou vous contacter depuis Créno")
+          : (total > 1 ? "élèves ont cliqué sur « Contacter » sur votre fiche Créno" : "élève a cliqué sur « Contacter » sur votre fiche Créno");
+        var ceMois = (j.mois || []).filter(function (m) { return m.mois === j.ce_mois; })[0] || { personnes: 0, personnes_action: 0 };
+        var facts = '<div><dt>' + intFmt.format(loueur ? ceMois.personnes_action : ceMois.personnes) + '</dt><dd>en ' + esc(moisTxt(j.ce_mois)) + '</dd></div>';
+        if (!loueur) facts += '<div><dt>' + intFmt.format(j.total.personnes_action) + '</dt><dd>ont ensuite cliqué pour vous appeler, venir ou aller sur votre site</dd></div>';
+        if (d.e && d.e.taux != null) {
+          var top = badges && badges.top && badges.top[d.e.id];
+          facts += '<div><dt>' + Math.round(d.e.taux * 100) + ' %</dt><dd>de réussite au 1er passage' +
+            (top ? ", " + (top[0] === 1 ? "1re" : top[0] + "e") + " sur " + top[1] + " dans le " + esc(dep) + " au classement Créno" : ", taux officiel de la Sécurité routière") + '</dd></div>';
+        }
+        $("#rap-facts").innerHTML = facts;
+        var cols = loueur
+          ? [["personnes_action", "Élèves"], ["reserver", "Réserver"], ["site", "Site web"], ["carte", "Téléphone et itinéraire"], ["message", "Message copié"]]
+          : [["personnes", "Élèves"], ["carte", "Téléphone et itinéraire"], ["site", "Site web"], ["email", "E-mail"], ["message", "Message copié"]];
+        cols = cols.filter(function (c, i) { return i === 0 || (j.mois || []).some(function (m) { return m[c[0]] > 0; }) || c[0] === "carte"; });
+        $("#rap-table thead").innerHTML = "<tr><th scope=\"col\">Mois</th>" + cols.map(function (c) { return '<th scope="col" class="num">' + c[1] + "</th>"; }).join("") + "</tr>";
+        $("#rap-table tbody").innerHTML = (j.mois || []).slice().reverse().map(function (m) {
+          return "<tr><th scope=\"row\">" + esc(moisTxt(m.mois)) + "</th>" + cols.map(function (c) { return '<td class="num" data-label="' + esc(c[1]) + '">' + intFmt.format(m[c[0]]) + "</td>"; }).join("") + "</tr>";
+        }).join("") || '<tr><td colspan="' + (cols.length + 1) + '">Pas encore de chiffres. Revenez dans quelques jours.</td></tr>';
+        box.hidden = false;
+      }).catch(function (e) { erreur(e.message); });
+  }
+
+  /* ---------- Compteur public (espace pros) ---------- */
+  function initTotal() {
+    var el = $("#total-contacts");
+    if (!el || !supabaseReady()) return;
+    callFn("stats", { action: "total" }).then(function (j) {
+      if (!j.total || j.total < 50) return; // on n'affiche pas un chiffre trop petit
+      el.innerHTML = "<strong>" + intFmt.format(j.total) + "</strong> fois, un élève a déjà cliqué sur Créno pour contacter une auto-école ou un loueur.";
+      el.hidden = false;
+    }).catch(function () { /* sans importance */ });
   }
 
   /* ---------- Démarrage ---------- */
@@ -735,6 +942,10 @@
     initBadge();
     initClics();
     initContact();
+    initContinuer();
+    initAdmin();
+    initRapport();
+    initTotal();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

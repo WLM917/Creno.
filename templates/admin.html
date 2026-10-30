@@ -1,0 +1,35 @@
+<div class="wrap stack-lg page-pad">
+  <header class="view-head">
+    <h1>Tableau de bord</h1>
+    <p class="lede">Les élèves envoyés aux auto-écoles et aux loueurs, et tes abonnés aux alertes. Page privée : elle n'apparaît pas sur Google et demande ton code.</p>
+  </header>
+
+  <form class="form-stack admin-login" id="admin-form">
+    <div class="field"><label for="admin-code">Ton code (ADMIN_CODE)</label><input id="admin-code" type="password" autocomplete="current-password" required></div>
+    <div class="form-actions">
+      <button class="btn" type="submit">Ouvrir le tableau de bord</button>
+      <p class="form-status" role="status"></p>
+    </div>
+  </form>
+
+  <div class="stack-lg" id="admin-board" hidden>
+    <section class="block" aria-labelledby="adm-alertes">
+      <h2 id="adm-alertes">Alertes places</h2>
+      <dl class="facts" id="admin-alertes"></dl>
+    </section>
+
+    <section class="block" aria-labelledby="adm-contacts">
+      <h2 id="adm-contacts">Élèves envoyés aux pros</h2>
+      <dl class="facts" id="admin-totaux"></dl>
+      <p class="small">Une personne compte une fois par jour pour chaque auto-école ou loueur, même si elle clique plusieurs fois. Les robots ne sont pas comptés. Pour chaque pro, copie le lien de son rapport et envoie-le lui : il ne voit que ses propres chiffres.</p>
+      <div class="field admin-filter"><label for="admin-filtre">Chercher</label><input id="admin-filtre" type="search" placeholder="Nom, ville ou département" autocomplete="off"></div>
+      <div class="table-scroll">
+        <table class="data-table stack">
+          <thead><tr><th scope="col">Auto-école ou loueur</th><th scope="col">30 derniers jours</th><th scope="col">Depuis le début</th><th scope="col">Rapport à envoyer</th></tr></thead>
+          <tbody id="admin-rows"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="admin-vide" hidden>Aucun contact compté pour l'instant. Les chiffres apparaissent dès que des élèves cliquent sur « Contacter ».</p>
+    </section>
+  </div>
+</div>

@@ -23,7 +23,6 @@
           <select id="follow-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select>
         </div>
         <label class="check-inline" for="follow-ok"><input id="follow-ok" type="checkbox" required> J'accepte de recevoir des e-mails d'alerte pour ce département. Je peux me désabonner à tout moment.</label>
-        {{case_service_immediat}}
         <div class="form-actions">
           <button class="btn btn-signal" type="submit">{{bouton_alertes}}</button>
           <p class="form-status" role="status"></p>
@@ -57,7 +56,7 @@
       <details><summary>Combien d'alertes vais-je recevoir ?</summary><p>Ça dépend du nombre de candidats qui signalent des places dans ton département. Pour ne pas t'inonder, tu reçois au plus une alerte toutes les 10 minutes.</p></details>
       {{faq_prix}}
       <details><summary>Comment réserver la place signalée ?</summary><p>Connecte-toi à RdvPermis avec ton compte candidat, comme d'habitude. Garde ton NEPH et ton accompagnateur déjà déclarés : tu gagneras de précieuses minutes.</p></details>
-      <details><summary>Comment arrêter les alertes ?</summary><p>Chaque e-mail contient un lien « Ne plus recevoir d'alertes ». Un clic suffit.</p></details>
+      <details><summary>Comment arrêter les alertes ?</summary><p>Chaque e-mail contient un lien « Ne plus recevoir d'alertes ». Un clic suffit, et si tu es abonné, l'abonnement s'arrête en même temps.</p></details>
       <details><summary>Que faites-vous de mon e-mail ?</summary><p>Il sert uniquement à t'envoyer les alertes du département choisi. Il n'est ni vendu ni partagé. <a href="{{root}}confidentialite/">Confidentialité</a></p></details>
     </div>
   </section>

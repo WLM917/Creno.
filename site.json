@@ -1,5 +1,5 @@
 {
-  "_aide": "Réglages du générateur de pages (scripts/build_site.py). Après une modification, relance : python3 scripts/build_site.py. alertes_payantes doit correspondre au secret ALERTES_LIEN_STRIPE de Supabase (rempli = payant). editeur et mediateur_consommation : à remplir avant de vendre quoi que ce soit (mentions légales et conditions de vente).",
+  "_aide": "Réglages du générateur de pages (scripts/build_site.py). Après une modification, relance : python3 scripts/build_site.py. Alertes : essai gratuit de essai_alertes_jours jours, puis prix_alertes par mois. alertes_payantes doit correspondre au secret ALERTES_LIEN_STRIPE de Supabase (rempli = payant, vide = gratuit pendant le lancement). editeur et mediateur_consommation : à remplir avant de vendre quoi que ce soit (mentions légales et conditions de vente).",
   "adresse_du_site": "https://creno-tan.vercel.app",
   "departement_par_defaut": "91",
   "email_contact": "",
@@ -7,9 +7,9 @@
   "pages_ville_min_auto_ecoles": 2,
   "google_site_verification": "",
   "prix_pack": "14,99 €",
-  "prix_alertes": "2,99 €",
-  "duree_alertes_jours": 30,
-  "alertes_payantes": false,
+  "prix_alertes": "9,99 €",
+  "essai_alertes_jours": 15,
+  "alertes_payantes": true,
   "vercel_analytics": true,
   "editeur": {
     "nom": "",

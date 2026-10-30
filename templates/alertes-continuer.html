@@ -1,0 +1,24 @@
+<div class="wrap stack-lg page-pad">
+  <header class="view-head">
+    <h1>Continuer les alertes</h1>
+    <p class="lede" id="cont-msg" role="status">Chargement…</p>
+  </header>
+  <section class="block panel" id="cont-offre" aria-labelledby="cont-titre" hidden>
+    <h2 id="cont-titre">L'abonnement aux alertes</h2>
+    <p class="price-amount">{{prix_alertes}} <span class="price-note">par mois</span></p>
+    <ul class="tips">
+      <li>Un e-mail dès qu'un candidat signale des places d'examen dans ton département.</li>
+      <li>Sans engagement : tu arrêtes quand tu veux, en un clic, depuis n'importe quel e-mail d'alerte.</li>
+      <li>Paiement sécurisé par Stripe. Créno ne voit jamais ta carte bancaire.</li>
+    </ul>
+    <form class="form-stack" id="cont-form">
+      <label class="check-inline" for="cont-ok"><input id="cont-ok" type="checkbox" required><span>Je demande que l'abonnement commence dès le paiement et j'accepte les <a href="{{root}}cgv/">conditions de vente</a>.</span></label>
+      <div class="form-actions">
+        <button class="btn btn-signal" type="submit">S'abonner pour {{prix_alertes}} par mois</button>
+        <p class="form-status" role="status"></p>
+      </div>
+    </form>
+  </section>
+  <p class="pledge">Créno ne se connecte jamais à RdvPermis et n'utilise aucun robot. Les alertes viennent uniquement des candidats.</p>
+  <a class="link-strong" href="{{root}}alertes/">Revenir aux alertes</a>
+</div>

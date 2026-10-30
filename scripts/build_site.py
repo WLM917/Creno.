@@ -44,8 +44,8 @@ VILLE_MIN = int(CFG.get("pages_ville_min_auto_ecoles", 2))
 CONTACT = (CFG.get("email_contact") or "").strip()
 GSV = (CFG.get("google_site_verification") or "").strip()
 PRIX_PACK = CFG.get("prix_pack", "14,99 €")
-PRIX_ALERTES = CFG.get("prix_alertes", "2,99 €")
-DUREE_ALERTES = int(CFG.get("duree_alertes_jours", 30))
+PRIX_ALERTES = CFG.get("prix_alertes", "9,99 €")
+ESSAI_ALERTES = int(CFG.get("essai_alertes_jours", 15))
 ALERTES_PAYANTES = bool(CFG.get("alertes_payantes", False))
 ANALYTICS = bool(CFG.get("vercel_analytics", False))
 EDITEUR = CFG.get("editeur") or {}
@@ -76,7 +76,7 @@ FOOTER = [
     ("confidentialite/", "Confidentialité"), ("mentions-legales/", "Mentions légales"), ("cgv/", "Conditions de vente"),
 ]
 GENERATED_DIRS = ["auto-ecoles", "candidat-libre", "examen", "cout-du-permis", "methode", "confidentialite",
-                  "alertes", "pack-candidat-libre", "moniteurs", "pro", "mentions-legales", "cgv", "badges"]
+                  "alertes", "pack-candidat-libre", "moniteurs", "pro", "mentions-legales", "cgv", "badges", "admin", "rapport"]
 
 # Accents absents du fichier officiel, rétablis pour l'affichage des villes les plus courantes.
 ACCENTS = {
@@ -163,13 +163,13 @@ def panneau_contact(e, decl_href):
         code = (f'<p class="promo">Code Créno : <strong>{esc(e["code_promo"])}</strong>'
                 f'{(" : " + esc(e["reduction"])) if e.get("reduction") else ""}</p>')
     return (
-        f'<details class="rank-more"><summary>Contacter<span class="visually-hidden"> {nom}</span></summary>'
+        f'<details class="rank-more" data-pro="ae-{eid}"><summary>Contacter<span class="visually-hidden"> {nom}</span></summary>'
         f'<div class="rank-panel">'
         f'<div class="rank-actions">'
         f'<a class="btn btn-small btn-signal" href="{esc(lien_maps(e))}" target="_blank" rel="noopener" '
         f'data-clic="ae-{eid}-carte">Téléphone et itinéraire<span class="visually-hidden"> ({nom}, sur Google Maps)</span></a>'
         f'{site}'
-        f'<button class="btn btn-small btn-ghost" type="button" data-message="{nom}" data-clic="ae-{eid}-message" hidden>Copier un message tout prêt</button>'
+        f'<button class="btn btn-small btn-ghost" type="button" data-message="ae" data-clic="ae-{eid}-message" hidden>Copier un message tout prêt</button>'
         f'</div>'
         f'{code}'
         f'<p class="rank-tip">Quand tu les appelles ou passes les voir, dis que tu viens de <strong>Créno</strong>.</p>'
@@ -447,26 +447,38 @@ def poteau(L, villes, nom_dep):
 
 
 def loueurs_html(L, loueurs, dep=None):
-    """Annuaire des loueurs. Un loueur partenaire peut avoir un code promo Créno ;
-    chaque clic vers son site est compté (data-clic) pour prouver le nombre de clients envoyés."""
+    """Annuaire des loueurs. Chaque bouton (réserver, téléphone, message) est compté dans la table clics
+    (cible loueur-<nom>-<bouton>) : c'est la preuve du nombre de clients envoyés à chaque loueur."""
     items = [l for l in loueurs if dep is None or l.get("dep") == dep]
     if not items:
         return ""
     items.sort(key=lambda l: (not l.get("partenaire"), l.get("dep", ""), l.get("nom", "")))
     out = []
     for l in items:
-        cible = slug(l.get("nom", "loueur"))
+        cible = f'loueur-{slug(l.get("nom", "loueur"))}'
+        nom = esc(l["nom"])
         lien = l.get("lien_reservation") or l.get("site")
-        bouton = "Réserver" if l.get("lien_reservation") else "Voir le site"
-        site = (f'<a href="{esc(lien)}" target="_blank" rel="noopener nofollow sponsored" data-clic="loueur-{esc(cible)}">{bouton}'
-                f'<span class="visually-hidden"> chez {esc(l["nom"])}</span></a>') if lien else ""
-        promo = ""
+        boutons = []
+        if lien:
+            type_ = "reserver" if l.get("lien_reservation") else "site"
+            boutons.append(f'<a class="btn btn-small btn-signal" href="{esc(avec_utm(lien, "loueurs"))}" target="_blank" '
+                           f'rel="noopener sponsored" data-clic="{cible}-{type_}">{"Réserver" if l.get("lien_reservation") else "Voir le site"}'
+                           f'<span class="visually-hidden"> ({nom})</span></a>')
+        lieu = {"nom": l["nom"], "adresse": l.get("adresse", ""), "cp": l.get("cp", ""), "ville": l.get("ville", "")}
+        boutons.append(f'<a class="btn btn-small btn-ghost" href="{esc(lien_maps(lieu))}" target="_blank" rel="noopener" '
+                       f'data-clic="{cible}-carte">Téléphone et itinéraire<span class="visually-hidden"> ({nom}, sur Google Maps)</span></a>')
+        boutons.append(f'<button class="btn btn-small btn-ghost" type="button" data-message="loueur" data-clic="{cible}-message" hidden>'
+                       f'Copier un message tout prêt</button>')
         if l.get("code_promo"):
-            promo = (f'<span class="promo">Code Créno <strong>{esc(l["code_promo"])}</strong>'
-                     f'{(" : " + esc(l["reduction"])) if l.get("reduction") else ""}</span>')
-        chip = '<span class="chip chip-flag">Partenaire</span>' if l.get("partenaire") else ""
-        prix = f'<span>{esc(l["prix"])}</span>' if l.get("prix") else ""
-        out.append(f'<li><strong>{esc(l["nom"])} {chip}</strong><span>{esc(l["ville"])} ({esc(l["dep"])})</span>{prix}{promo}{site}</li>')
+            tip = (f'<p class="promo">Code Créno : <strong>{esc(l["code_promo"])}</strong>'
+                   f'{(" : " + esc(l["reduction"])) if l.get("reduction") else ""}. Donne-le en réservant.</p>')
+        else:
+            tip = '<p class="rank-tip">Quand tu réserves, dis que tu viens de <strong>Créno</strong>.</p>'
+        chip = ' <span class="chip chip-flag">Partenaire</span>' if l.get("partenaire") else ""
+        prix = f'<span class="renter-price">{esc(l["prix"])}</span>' if l.get("prix") else ""
+        out.append(f'<li class="renter"><div class="renter-head"><strong>{nom}</strong>{chip}'
+                   f'<span>{esc(l["ville"])} ({esc(l["dep"])})</span>{prix}</div>'
+                   f'<div class="rank-actions">{"".join(boutons)}</div>{tip}<p class="rank-msg" role="status" hidden></p></li>')
     return "".join(out)
 
 
@@ -904,7 +916,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         ("mentions-legales/", "mentions-legales.html", None, "Mentions légales | Créno",
          "Éditeur, hébergement et sources des données de Créno.", "Mentions légales", 0.1),
         ("cgv/", "cgv.html", None, "Conditions de vente | Créno",
-         "Conditions de vente du Pack candidat libre et du pass Alertes.", "Conditions de vente", 0.1),
+         "Conditions de vente du Pack candidat libre et de l'abonnement aux Alertes.", "Conditions de vente", 0.1),
     ]
     etats = [
         ("alertes/confirmer/", "Confirmation de ton alerte", "confirmer", "Confirmation en cours…", "alertes/", "Revenir aux alertes"),
@@ -925,19 +937,22 @@ def build(out_dir=ROOT, explicit=False, only=None):
     mediateur_html = (f"Médiateur de la consommation : {esc(MEDIATEUR)}." if MEDIATEUR
                       else f"Médiateur de la consommation : {a_completer}.")
     if ALERTES_PAYANTES:
-        offre_alertes = f"{esc(PRIX_ALERTES)} pour {DUREE_ALERTES} jours, sans abonnement caché ni renouvellement automatique."
-        bouton_alertes = f"Payer {esc(PRIX_ALERTES)} et recevoir les alertes"
-        case_service = ('<label class="check-inline" for="follow-now"><input id="follow-now" type="checkbox" required> '
-                        'Je demande que le service commence dès le paiement et j\'accepte les '
-                        '<a href="{root}cgv/">conditions de vente</a>.</label>')
-        faq_prix = (f'<details><summary>Pourquoi c\'est payant ?</summary><p>Le pass couvre l\'envoi des e-mails et fait vivre le service. '
-                    f'Il dure {DUREE_ALERTES} jours et ne se renouvelle pas tout seul.</p></details>')
+        offre_alertes = (f"<strong>{ESSAI_ALERTES} jours gratuits</strong>, sans carte bancaire. Ensuite, si tu veux continuer : "
+                         f"{esc(PRIX_ALERTES)} par mois, sans engagement.")
+        bouton_alertes = f"Essayer {ESSAI_ALERTES} jours gratuits"
+        faq_prix = (f'<details><summary>Combien ça coûte ?</summary><p>Les {ESSAI_ALERTES} premiers jours sont gratuits et tu ne donnes '
+                    f'pas ta carte bancaire. Quelques jours avant la fin de l\'essai, tu reçois un e-mail : si tu veux continuer, '
+                    f'tu t\'abonnes pour {esc(PRIX_ALERTES)} par mois sur la page sécurisée de Stripe. Sinon, tu ne fais rien : '
+                    f'les alertes s\'arrêtent et rien n\'est prélevé.</p></details>'
+                    f'<details><summary>Comment arrêter l\'abonnement ?</summary><p>En un clic, avec le lien « Ne plus recevoir '
+                    f'd\'alertes » en bas de chaque e-mail. L\'abonnement s\'arrête tout de suite et tu n\'es plus prélevé. '
+                    f'Aucun engagement de durée.</p></details>')
     else:
-        offre_alertes = f"Gratuit pendant le lancement, pour {DUREE_ALERTES} jours. Tu confirmes ton e-mail en un clic."
+        offre_alertes = "Gratuit pendant le lancement. Tu confirmes ton e-mail en un clic."
         bouton_alertes = "Recevoir les alertes"
-        case_service = ""
         faq_prix = ('<details><summary>C\'est gratuit ?</summary><p>Oui, pendant le lancement. '
-                    f'Plus tard, le pass coûtera {esc(PRIX_ALERTES)} pour {DUREE_ALERTES} jours.</p></details>')
+                    f'Plus tard, les alertes coûteront {esc(PRIX_ALERTES)} par mois après {ESSAI_ALERTES} jours d\'essai gratuit, '
+                    'sans engagement.</p></details>')
     for path, tpl, section, title, desc, crumb, prio in fixes:
         L = Links(depuis(path), explicit)
         body = fill((TPL / tpl).read_text(encoding="utf-8"), {
@@ -945,9 +960,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
             "fil_ariane_clair": fil_ariane(L, [("Accueil", ""), (crumb, None)], "crumbs-dark"),
             "loueurs": loueurs_html(L, loueurs) or '<li><span>Aucun loueur pour l\'instant. Ajoute le premier ci-dessous.</span></li>',
             "options_departements": options_deps, "formulaire_prix": formulaire_prix(deps=deps), "contact": contact_txt,
-            "prix_pack": esc(PRIX_PACK), "prix_alertes": esc(PRIX_ALERTES), "duree_alertes": DUREE_ALERTES,
+            "prix_pack": esc(PRIX_PACK), "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
             "offre_alertes": offre_alertes, "bouton_alertes": bouton_alertes,
-            "case_service_immediat": case_service.replace("{root}", L.root), "faq_prix": faq_prix,
+            "faq_prix": faq_prix,
             "pros": pros_html(L, pros), "editeur": editeur_html, "mediateur": mediateur_html,
             "nb_pages_villes": fr_int(stats["villes"]), "nb_pages_deps": fr_int(stats["departements"]),
         })
@@ -955,6 +970,19 @@ def build(out_dir=ROOT, explicit=False, only=None):
             body = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', body)
         write(path, page(L, path, section or "autre", title, desc, body,
                          [jsonld_ariane([("Accueil", ""), (crumb, path)])], section), prio)
+
+    # --- pages privées (pas dans Google) : continuer les alertes, tableau de bord, rapport envoyé aux pros
+    prives = [
+        ("alertes/continuer/", "alertes-continuer.html", "Continuer les alertes", "Continuer à recevoir les alertes places d'examen."),
+        ("admin/", "admin.html", "Tableau de bord", "Tableau de bord de Créno."),
+        ("rapport/", "rapport.html", "Rapport Créno", "Les élèves envoyés par Créno à votre établissement."),
+    ]
+    for path, tpl, titre, desc in prives:
+        L = Links(depuis(path), explicit)
+        body = fill((TPL / tpl).read_text(encoding="utf-8"), {
+            **common, "root": L.root, "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
+            "contact": contact_txt})
+        write(path, page(L, path, "prive", f"{titre} | Créno", desc, body, noindex=True), sitemap=False)
 
     # --- pages de confirmation (alertes, accès au pack) : pas dans Google
     for path, titre, etat, attente, retour, retour_txt in etats:

@@ -720,6 +720,11 @@ input[type="checkbox"] { accent-color: var(--signal); width: 1.2rem; height: 1.2
 }
 .renters strong { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
 .renters span { color: var(--muted); font-size: 0.95rem; }
+.renters li.renter { gap: 0.6rem; }
+.renter-head { display: flex; flex-direction: column; gap: 0.1rem; }
+.renter-head .chip { align-self: flex-start; }
+.renters .renter-price { color: var(--ink); font-weight: 700; }
+.renters .rank-tip, .renters .promo { margin: 0; font-size: 0.93rem; }
 
 .disclose summary {
   cursor: pointer;
@@ -1353,4 +1358,79 @@ textarea:focus-visible { border-color: var(--signal); }
   .toc { grid-template-columns: minmax(0, 1fr); }
   .buy-box { grid-template-columns: minmax(0, 1fr); }
   .facts { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- Compteur, rapport des pros, tableau de bord ---------- */
+.live-count {
+  font-size: 1.05rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--chantier);
+  background: var(--surface);
+  border-radius: var(--radius-field);
+  max-width: 62ch;
+}
+.live-count strong { font-family: var(--font-display); font-weight: 900; font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+.eyebrow {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--link);
+}
+.rap-big {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.4rem 1.5rem 1.5rem;
+  background: var(--asphalt);
+  color: var(--asphalt-ink);
+  border-radius: var(--radius-sign);
+  border-left: 8px solid var(--signal);
+  max-width: 40rem;
+}
+.rap-big strong {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3rem, 12vw, 4.6rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.rap-big span { font-size: 1.1rem; max-width: 34ch; }
+.data-table { border-collapse: collapse; width: 100%; min-width: 30rem; }
+.data-table th, .data-table td {
+  text-align: left;
+  padding: 0.65rem 0.9rem 0.65rem 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  font-variant-numeric: tabular-nums;
+}
+.data-table thead th {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  border-bottom: 2px solid var(--ink);
+}
+.data-table td.num, .data-table th.num { text-align: right; }
+.data-table .sub { display: block; color: var(--muted); font-size: 0.85rem; }
+.data-table .btn-small { min-height: 40px; }
+.admin-login { max-width: 26rem; }
+.admin-filter { max-width: 24rem; }
+.data-table .rap-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.data-table .btn-ghost, .rap-actions .btn-ghost { background: transparent; color: var(--ink); }
+.data-table .btn-ghost:hover, .rap-actions .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+@media (max-width: 600px) {
+  .data-table.stack { min-width: 0; }
+  .data-table.stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .data-table.stack, .data-table.stack tbody, .data-table.stack tr, .data-table.stack th, .data-table.stack td { display: block; width: auto; }
+  .data-table.stack tr { border-top: 2px solid var(--ink); padding: 0.65rem 0 0.5rem; }
+  .data-table.stack tbody th, .data-table.stack td.cell-titre {
+    border: 0; padding: 0 0 0.35rem; font-family: var(--font-display); font-weight: 800; font-size: 1.05rem;
+  }
+  .data-table.stack td.cell-titre .sub { font-family: var(--font-body); font-weight: 400; }
+  .data-table.stack td[data-label] {
+    border: 0; padding: 0.25rem 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.75rem; text-align: right;
+  }
+  .data-table.stack td[data-label]::before { content: attr(data-label); color: var(--muted); font-size: 0.9rem; text-align: left; }
+  .data-table.stack td[data-label] .rap-actions { justify-content: flex-end; }
 }

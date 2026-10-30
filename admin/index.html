@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tableau de bord | Créno</title>
+<meta name="description" content="Tableau de bord de Créno.">
+<link rel="canonical" href="https://creno-tan.vercel.app/admin/">
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Créno">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Tableau de bord | Créno">
+<meta property="og:description" content="Tableau de bord de Créno.">
+<meta property="og:url" content="https://creno-tan.vercel.app/admin/">
+<meta property="og:image" content="https://creno-tan.vercel.app/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2A2F35">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Overpass:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-root="../" data-page="prive">
+<a class="skip" href="#main">Aller au contenu</a>
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="logo" href="../" aria-label="Créno, accueil">
+      <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="1" y="1" width="30" height="30" rx="5" fill="var(--signal)"/>
+        <rect x="3.5" y="3.5" width="25" height="25" rx="3" fill="none" stroke="var(--signal-ink)" stroke-width="1.6"/>
+        <path d="M11 25 L13.5 7 M21 25 L18.5 7" stroke="var(--signal-ink)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M16 23.5 V20.5 M16 16.5 V13.5 M16 9.8 V8" stroke="var(--chantier)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-word">créno</span>
+    </a>
+    <nav class="site-nav" aria-label="Sections"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../alertes/">Alertes places</a><a href="../pack-candidat-libre/">Le pack</a></nav>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+<div class="wrap stack-lg page-pad">
+  <header class="view-head">
+    <h1>Tableau de bord</h1>
+    <p class="lede">Les élèves envoyés aux auto-écoles et aux loueurs, et tes abonnés aux alertes. Page privée : elle n'apparaît pas sur Google et demande ton code.</p>
+  </header>
+
+  <form class="form-stack admin-login" id="admin-form">
+    <div class="field"><label for="admin-code">Ton code (ADMIN_CODE)</label><input id="admin-code" type="password" autocomplete="current-password" required></div>
+    <div class="form-actions">
+      <button class="btn" type="submit">Ouvrir le tableau de bord</button>
+      <p class="form-status" role="status"></p>
+    </div>
+  </form>
+
+  <div class="stack-lg" id="admin-board" hidden>
+    <section class="block" aria-labelledby="adm-alertes">
+      <h2 id="adm-alertes">Alertes places</h2>
+      <dl class="facts" id="admin-alertes"></dl>
+    </section>
+
+    <section class="block" aria-labelledby="adm-contacts">
+      <h2 id="adm-contacts">Élèves envoyés aux pros</h2>
+      <dl class="facts" id="admin-totaux"></dl>
+      <p class="small">Une personne compte une fois par jour pour chaque auto-école ou loueur, même si elle clique plusieurs fois. Les robots ne sont pas comptés. Pour chaque pro, copie le lien de son rapport et envoie-le lui : il ne voit que ses propres chiffres.</p>
+      <div class="field admin-filter"><label for="admin-filtre">Chercher</label><input id="admin-filtre" type="search" placeholder="Nom, ville ou département" autocomplete="off"></div>
+      <div class="table-scroll">
+        <table class="data-table stack">
+          <thead><tr><th scope="col">Auto-école ou loueur</th><th scope="col">30 derniers jours</th><th scope="col">Depuis le début</th><th scope="col">Rapport à envoyer</th></tr></thead>
+          <tbody id="admin-rows"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="admin-vide" hidden>Aucun contact compté pour l'instant. Les chiffres apparaissent dès que des élèves cliquent sur « Contacter ».</p>
+    </section>
+  </div>
+</div>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-row">
+    <p><strong>Créno, le bon créneau pour ton permis.</strong> Projet indépendant, sans lien avec l'administration ni avec RdvPermis. Taux de réussite : Sécurité routière.</p>
+    <nav aria-label="Pied de page"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../alertes/">Alertes places</a><a href="../pack-candidat-libre/">Pack candidat libre</a><a href="../moniteurs/">Moniteurs</a><a href="../cout-du-permis/">Coût du permis</a><a href="../examen/">Jour de l&#x27;examen</a><a href="../pro/">Espace pros</a><a href="../methode/">Méthode</a><a href="../confidentialite/">Confidentialité</a><a href="../mentions-legales/">Mentions légales</a><a href="../cgv/">Conditions de vente</a></nav>
+  </div>
+</footer>
+<script src="../assets/config.js"></script>
+<script src="../assets/app.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

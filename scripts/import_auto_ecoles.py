@@ -87,6 +87,63 @@ ACCENTS = {"ecole": "école", "ecoles": "écoles", "academie": "académie", "sec
            "prefecture": "préfecture", "republique": "république"}
 TOKEN = re.compile(r"([\s\-'’./()&,+]+)")
 
+# Dans une partie de la source, chaque lettre accentuée a été remplacée par un « E » majuscule
+# (« avenue du MarEchal Foch », « ChEteau », « JaurEs »). On devine la bonne lettre :
+# d'abord les mots connus, puis les fins de mots en « ère », « ège »..., sinon « é ».
+E_MOTS = {
+    "chEteau": "château", "chEteaux": "châteaux", "chaEteau": "château", "chEteauneuf": "châteauneuf",
+    "chEteauvert": "châteauvert", "chEtelet": "châtelet", "chEtillons": "châtillons", "chEtre": "châtre",
+    "chElons": "châlons", "bEtiment": "bâtiment", "bEt": "bât", "thEatre": "théâtre", "evEque": "évêque",
+    "gEôle": "geôle", "noEl": "noël", "noEs": "noës", "mickaEl": "mickaël", "raphaEl": "raphaël",
+    "gaEtan": "gaëtan", "joElle": "joëlle", "laEnnec": "laennec", "clEmenceau": "clemenceau",
+    "mittErand": "mitterrand", "jaurEs": "jaurès", "agnEs": "agnès", "argelEs": "argelès",
+    "barcarEs": "barcarès", "mendEs": "mendès", "barbEs": "barbès", "accEs": "accès",
+    "compiEgne": "compiègne", "allEgre": "allègre", "sEche": "sèche", "lutEce": "lutèce",
+    "ospEdale": "ospedale", "faouEt": "faouët",
+}
+E_FINS = (("Eres", "ères"), ("Ere", "ère"), ("Eges", "èges"), ("Ege", "ège"), ("Emes", "èmes"),
+          ("Eme", "ème"), ("Enes", "ènes"), ("Ene", "ène"), ("Eves", "èves"), ("Eve", "ève"),
+          ("Eles", "èles"), ("Ele", "èle"), ("Ese", "èse"), ("Eces", "èces"), ("Ece", "èce"),
+          ("Ede", "ède"))
+# Mots qui commencent par une majuscule sans accent dans un texte déjà en minuscules
+E_DEBUT = {"Ecole": "École", "Ecoles": "Écoles", "Eglise": "Église", "Etage": "Étage", "Etienne": "Étienne",
+           "Emile": "Émile", "Edouard": "Édouard", "Etoile": "Étoile", "Etats": "États", "Egalite": "Égalité",
+           "Elysee": "Élysée", "Elysées": "Élysées", "Epinal": "Épinal", "Etampes": "Étampes", "Evry": "Évry"}
+
+
+def _e_lettre(word):
+    if word in E_DEBUT:
+        return E_DEBUT[word]
+    if "E" not in word[1:] or word.isupper() or not any(c.islower() for c in word):
+        return word
+    key = word[0].lower() + word[1:]
+    if key in E_MOTS:
+        rep = E_MOTS[key]
+        return rep[0].upper() + rep[1:] if word[0].isupper() else rep
+    for fin, rep in E_FINS:
+        if word.endswith(fin) and len(word) > len(fin) and word[-len(fin) - 1].isalpha():
+            word = word[:-len(fin)] + rep
+            break
+    out = list(word)
+    for i in range(1, len(out)):
+        if out[i] != "E":
+            continue
+        avant, apres = out[i - 1], out[i + 1] if i + 1 < len(out) else ""
+        # « DRIVEco », « jEAN » : vraie majuscule, on n'y touche pas
+        if apres and apres.isupper():
+            continue
+        if avant.islower() or (i == 1 and avant.isupper()):
+            out[i] = "é"
+    return "".join(out)
+
+
+def accents_perdus(value):
+    """Répare « avenue du MarEchal Foch » en « avenue du Maréchal Foch ». Ne touche pas aux textes tout en majuscules."""
+    s = str(value or "")
+    if not any(c.islower() for c in s):
+        return s
+    return re.sub(r"[A-Za-zÀ-ÿ]+", lambda m: _e_lettre(m.group(0)), s)
+
 
 def demojibake(value):
     """Répare le texte encodé deux fois dans la source (ex. « FORÃŠT » au lieu de « FORÊT »)."""
@@ -173,9 +230,20 @@ def dep_code(v):
     return d
 
 
+SITES_EXCLUS = ("vroomvroom.fr",)  # annuaires concurrents : ce n'est pas le site de l'auto-école
+
+
+def clean_email(v):
+    """Certaines auto-écoles ont mis leur e-mail dans la colonne du site web."""
+    s = str(v or "").strip().lower()
+    return s if re.fullmatch(r"[a-z0-9._%+\-]+@[a-z0-9\-]+(\.[a-z0-9\-]+)*\.[a-z]{2,}", s) else None
+
+
 def clean_site(v):
     s = str(v or "").strip()
-    if not s or " " in s:
+    if not s or " " in s or "@" in s:
+        return None
+    if any(d in s.lower() for d in SITES_EXCLUS):
         return None
     if not re.match(r"^https?://", s, re.I):
         s = "https://" + s
@@ -266,14 +334,17 @@ def main():
         n = num(r["B_nombre_1pra"])
         e = {
             "id": r["raf_numero"].strip(),
-            "nom": nice_text(demojibake(r["aue_raisonsociale"])),
-            "adresse": nice_text(demojibake(r["aue_adresse"])),
+            "nom": nice_text(accents_perdus(demojibake(r["aue_raisonsociale"]))),
+            "adresse": nice_text(accents_perdus(demojibake(r["aue_adresse"]))),
             "cp": cp,
-            "ville": nice_city(demojibake(r["aue_commune"]), cp),
+            "ville": nice_city(accents_perdus(demojibake(r["aue_commune"])), cp),
         }
         site = clean_site(r["aue_siteinternet"])
         if site:
             e["site"] = site
+        email = clean_email(r["aue_siteinternet"])
+        if email:
+            e["email"] = email
         if taux is not None and n:
             e["taux"] = round(taux, 4)
             e["presentes"] = int(n)

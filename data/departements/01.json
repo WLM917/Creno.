@@ -64,7 +64,7 @@
 {"id":"E1100104570","nom":"La Cluse","adresse":"85 Rue du Jura","cp":"01460","ville":"Montreal-la-Cluse","taux":0.7317,"presentes":82,"taux_tous":0.74,"examens_tous":109,"labels":["aac","cs"]},
 {"id":"E2200100010","nom":"Centre","adresse":"3 Rue des Tortipieds","cp":"01340","ville":"Montrevel-en-Bresse","taux":0.8085,"presentes":94,"taux_tous":0.77,"examens_tous":124,"labels":["qualite","permis1euro","cs"]},
 {"id":"E0800104330","nom":"Espace","adresse":"325 Impasse Treize Vents","cp":"01340","ville":"Montrevel-en-Bresse","taux":0.8947,"presentes":57,"taux_tous":0.84,"examens_tous":74,"labels":["qualite","permis1euro","aac","cs"]},
-{"id":"E1604400090_1","nom":"Marianne Formation","adresse":"12 rue Charles BrunelliEre","cp":"44100","ville":"Nantes","taux":0.721,"presentes":276,"taux_tous":0.72,"examens_tous":358,"labels":["enligne","cs"]},
+{"id":"E1604400090_1","nom":"Marianne Formation","adresse":"12 rue Charles Brunellière","cp":"44100","ville":"Nantes","taux":0.721,"presentes":276,"taux_tous":0.72,"examens_tous":358,"labels":["enligne","cs"]},
 {"id":"E2300100060","nom":"Auto École Julien","adresse":"14 Rue du College","cp":"01130","ville":"Nantua","taux":0.7885,"presentes":52,"taux_tous":0.76,"examens_tous":76,"labels":["cs"]},
 {"id":"E2300100040","nom":"NAT Auto Moto","adresse":"16 Rue du College","cp":"01130","ville":"Nantua","taux":0.7627,"presentes":59,"taux_tous":0.76,"examens_tous":74,"labels":["cs"]},
 {"id":"E2200100210","nom":"Ababil Auto École","adresse":"4 Rue Victor Hugo","cp":"01100","ville":"Oyonnax","taux":0.65,"presentes":40,"taux_tous":0.63,"examens_tous":71,"labels":["qualite","permis1euro","cs"]},

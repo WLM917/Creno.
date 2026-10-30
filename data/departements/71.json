@@ -77,7 +77,7 @@
 {"id":"E1507100020","nom":"Start and Stop","adresse":"21 Rue du 11 Novembre 1918","cp":"71300","ville":"Montceau-les-Mines","taux":0.4468,"presentes":47,"taux_tous":0.45,"examens_tous":83,"labels":["cs"]},
 {"id":"E2407100090","nom":"Pilon Formation","adresse":"96 Avenue de la République","cp":"71210","ville":"Montchanin"},
 {"id":"E1307100120","nom":"Sarl EMC","adresse":"59 Avenue de la République","cp":"71210","ville":"Montchanin","taux":0.5349,"presentes":43,"taux_tous":0.59,"examens_tous":69,"labels":["cs"]},
-{"id":"E1604400090_71","nom":"Marianne Formation","adresse":"12 rue Charles BrunelliEre","cp":"44100","ville":"Nantes","taux":0.5226,"presentes":266,"taux_tous":0.5,"examens_tous":449,"labels":["enligne","cs"]},
+{"id":"E1604400090_71","nom":"Marianne Formation","adresse":"12 rue Charles Brunellière","cp":"44100","ville":"Nantes","taux":0.5226,"presentes":266,"taux_tous":0.5,"examens_tous":449,"labels":["enligne","cs"]},
 {"id":"E1807100030","nom":"Auto École G.Hilaire","adresse":"27 Rue Victor Hugo","cp":"71600","ville":"Paray-le-Monial","labels":["permis1euro"]},
 {"id":"E1307100170","nom":"Defi Permis","adresse":"1 Boulevard Dauphin Louis","cp":"71600","ville":"Paray-le-Monial","taux":0.5449,"presentes":334,"taux_tous":0.53,"examens_tous":566,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2207500190_71","nom":"EVS Auto- École","adresse":"44 rue des Dames","cp":"75017","ville":"Paris 17e","taux":0.4727,"presentes":55,"taux_tous":0.49,"examens_tous":96,"labels":["enligne","cs"]},

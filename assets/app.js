@@ -651,6 +651,77 @@
     });
   }
 
+  /* ---------- Contacter une auto-école du classement ---------- */
+  var MESSAGE = "Bonjour, j'ai trouvé votre auto-école sur Créno. Je voudrais connaître le prix de votre forfait permis B, " +
+    "le nombre d'heures comprises et le prix d'une heure en plus. Merci !";
+
+  function prefillDecl(id) {
+    var form = $("#contrib-form");
+    if (!form || !id) return false;
+    var opt = $all("#decl-ecoles option", form).filter(function (o) { return o.getAttribute("data-id") === id; })[0];
+    if (!opt) return false;
+    $("#decl-ecole", form).value = opt.value;
+    $("input[name=auto_ecole_id]", form).value = id;
+    return true;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) resolve(); else reject(new Error("copie impossible"));
+    });
+  }
+
+  function initContact() {
+    var rows = $all(".rank-row");
+    if (!rows.length) return;
+    $all("[data-message]").forEach(function (b) { b.hidden = false; });
+    rows.forEach(function (li) { if ($(".rank-more", li)) li.classList.add("is-clickable"); });
+
+    document.addEventListener("click", function (ev) {
+      var t = ev.target;
+      // Bouton « Copier un message tout prêt »
+      var btn = t.closest && t.closest("[data-message]");
+      if (btn) {
+        var msg = $(".rank-msg", btn.closest(".rank-panel"));
+        copyText(MESSAGE).then(function () {
+          msg.textContent = "Message copié. Colle-le dans un SMS, un e-mail ou le formulaire de leur site : « " + MESSAGE + " »";
+        }, function () {
+          msg.textContent = "Copie ce message : « " + MESSAGE + " »";
+        });
+        msg.hidden = false;
+        return;
+      }
+      // « J'y suis inscrit » : on préremplit le formulaire de la page
+      var decl = t.closest && t.closest("[data-decl]");
+      if (decl) {
+        if ((decl.getAttribute("href") || "").charAt(0) === "#") prefillDecl(decl.getAttribute("data-decl"));
+        return;
+      }
+      // Toucher la carte d'une auto-école ouvre ou ferme son volet « Contacter »
+      var li = t.closest && t.closest(".rank-row.is-clickable");
+      if (!li || t.closest("a, button, summary, input, select, label, .rank-panel")) return;
+      var d = $(".rank-more", li);
+      d.open = !d.open;
+    });
+
+    // Arrivée depuis un lien vers une auto-école (#ae-...) : son volet est ouvert
+    if (location.hash.indexOf("#ae-") === 0) {
+      var el = document.getElementById(location.hash.slice(1));
+      var det = el && $(".rank-more", el);
+      if (det) det.open = true;
+    }
+    // Arrivée depuis une page ville avec ?ae=... : l'auto-école est déjà choisie dans le formulaire
+    var ae = queryParam("ae");
+    if (ae) prefillDecl(ae);
+  }
+
   /* ---------- Démarrage ---------- */
   function start() {
     $all("form[data-finder]").forEach(initFinder);
@@ -663,6 +734,7 @@
     initPack();
     initBadge();
     initClics();
+    initContact();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

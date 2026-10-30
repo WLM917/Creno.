@@ -88,6 +88,9 @@ Données réelles importées le 29 octobre 2026 depuis le fichier officiel de la
 en France 60 %, en Essonne 53 %. Les auto-écoles sans taux publié sont listées à part, non classées.
 Le fichier source contient du texte mal encodé (« FORÃŠT ») : l'import le répare (demojibake).
 Les noms de villes de la source n'ont pas d'accents : build_site.py en rétablit une partie (ACCENTS).
+Dans une partie de la source, les lettres accentuées sont remplacées par « E » (« MarEchal », « ChEteau ») :
+l'import les répare (accents_perdus). Certaines auto-écoles ont mis leur e-mail dans la colonne du site :
+l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomvroom.fr) sont ignorés.
 
 ## Formule du classement (codée dans scripts/build_site.py, fonction classer)
 
@@ -153,6 +156,17 @@ Les noms de villes de la source n'ont pas d'accents : build_site.py en rétablit
 - Loueurs partenaires : `code_promo` et `lien_reservation` dans data/loueurs.json, clics comptés
   (table clics) pour prouver le trafic envoyé avant de demander une commission.
 - Statistiques de visite : Vercel Web Analytics (sans cookie), à activer dans le projet Vercel.
+
+## Contacter une auto-école depuis le classement
+
+- Toucher une auto-école ouvre son volet « Contacter » (fonction panneau_contact de build_site.py) :
+  « Téléphone et itinéraire » (fiche Google Maps, car la source n'a pas de téléphone), son site web
+  (avec utm_source=creno pour que l'auto-école voie que la visite vient de Créno), « Leur écrire »
+  (e-mail prérempli « trouvé sur Créno »), un message tout prêt à copier qui demande forfait,
+  heures comprises et prix de l'heure, « dis que tu viens de Créno », et un lien pour déclarer son prix.
+- Chaque bouton est compté dans la table clics (cible ae-<agrément>-carte / -site / -email / -message) :
+  c'est la preuve du nombre d'élèves envoyés, à montrer aux auto-écoles avant de leur vendre quoi que ce soit.
+- Un code promo d'auto-école partenaire (`code_promo`, `reduction`) s'affiche dans le volet s'il existe.
 
 ## Référencement (Google)
 

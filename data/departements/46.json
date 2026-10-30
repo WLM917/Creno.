@@ -1,11 +1,11 @@
 {"code": "46", "nom": "Lot", "moyenne": 0.5598, "ecoles": [
-{"id":"E2404600060","nom":"DOS Santos et Fils Biars","adresse":"108 Avenue de la REpublique","cp":"46130","ville":"Biars-sur-Cere","site":"https://dossantosformation.jimdofree.com/","taux":0.5816,"presentes":239,"taux_tous":0.58,"examens_tous":412,"labels":["permis1euro","cs"]},
+{"id":"E2404600060","nom":"DOS Santos et Fils Biars","adresse":"108 Avenue de la République","cp":"46130","ville":"Biars-sur-Cere","site":"https://dossantosformation.jimdofree.com/","taux":0.5816,"presentes":239,"taux_tous":0.58,"examens_tous":412,"labels":["permis1euro","cs"]},
 {"id":"E1404600040","nom":"Cahors Conduite","adresse":"53 rue Georges Sand PLACE FRANKLIN ROOSEVELT","cp":"46000","ville":"Cahors","taux":0.4512,"presentes":215,"taux_tous":0.44,"examens_tous":381,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2404600010","nom":"Ceer Cahors Auto-École","adresse":"29 bd leon gambetta","cp":"46000","ville":"Cahors","taux":0.5236,"presentes":212,"taux_tous":0.56,"examens_tous":403,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2004600010","nom":"ECF Cahors LTI Auto École","adresse":"4 Boulevard Gambetta","cp":"46000","ville":"Cahors","taux":0.5288,"presentes":382,"taux_tous":0.56,"examens_tous":624,"labels":["permis1euro","cs"]},
 {"id":"E2504600010","nom":"Lot O École","adresse":"21 Avenue Charles de Freycinet","cp":"46000","ville":"Cahors","taux":0.125,"presentes":8,"taux_tous":0.33,"examens_tous":18,"labels":["cs"]},
 {"id":"E0204601460","nom":"Azur","adresse":"20 Quai Bessieres","cp":"46100","ville":"Figeac","taux":0.46,"presentes":50,"taux_tous":0.41,"examens_tous":108,"labels":["aac","cs"]},
-{"id":"E1204611720","nom":"CER JL Gonard","adresse":"10 allEes Pierre BErEgovoy","cp":"46100","ville":"Figeac","site":"https://www.cer-jeanlucgonard.com","taux":0.6357,"presentes":129,"taux_tous":0.65,"examens_tous":190,"labels":["qualite","permis1euro","cs"]},
+{"id":"E1204611720","nom":"CER JL Gonard","adresse":"10 allées Pierre Bérégovoy","cp":"46100","ville":"Figeac","site":"https://www.cer-jeanlucgonard.com","taux":0.6357,"presentes":129,"taux_tous":0.65,"examens_tous":190,"labels":["qualite","permis1euro","cs"]},
 {"id":"E2604600010","nom":"CER Morais","adresse":"10 Allees Pierre Beregovoy","cp":"46100","ville":"Figeac"},
 {"id":"E1204611690","nom":"Cayrol","adresse":"21 Rue Maquisards","cp":"46100","ville":"Figeac","site":"https://www.ecf.asso.fr/auto-ecole/ecf-jerome-cayrol/ecf-jerome-cayrol-figeac","taux":0.6885,"presentes":61,"taux_tous":0.67,"examens_tous":91,"labels":["aac","cs"]},
 {"id":"E1404600010","nom":"Theron","adresse":"9 Bd du Marechal Joffre","cp":"46100","ville":"Figeac","taux":0.5195,"presentes":77,"taux_tous":0.5,"examens_tous":123,"labels":["cs"]},

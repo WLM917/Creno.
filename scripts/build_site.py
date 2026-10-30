@@ -27,6 +27,7 @@ import shutil
 import unicodedata
 from datetime import date
 from pathlib import Path
+from urllib.parse import parse_qsl, quote, urlencode, urlsplit, urlunsplit
 
 if sys.version_info < (3, 12):
     sys.exit("Ce script demande Python 3.12 ou plus récent.")
@@ -123,6 +124,59 @@ def ville_affichee(v):
             return w
         return rep if w[:1].isupper() else rep.lower()
     return re.sub(r"[A-Za-z]+", fix, v)
+
+
+def lien_maps(e):
+    """Fiche Google Maps de l'auto-école (téléphone, horaires, itinéraire) : la source officielle n'a pas de téléphone."""
+    lieu = ", ".join(x for x in (e["nom"], e.get("adresse", ""), f'{e["cp"]} {ville_affichee(e["ville"])}') if x)
+    return "https://www.google.com/maps/search/?api=1&query=" + quote(lieu)
+
+
+def avec_utm(url, campagne="classement"):
+    """Ajoute utm_source=creno : l'auto-école voit dans ses statistiques que la visite vient de Créno."""
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return url
+    q = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True) if not k.lower().startswith("utm_")]
+    q += [("utm_source", "creno"), ("utm_medium", "referral"), ("utm_campaign", campagne)]
+    return urlunsplit(parts._replace(query=urlencode(q)))
+
+
+MESSAGE_CONTACT = ("Bonjour, j'ai trouvé votre auto-école sur Créno. Je voudrais connaître le prix de votre forfait "
+                   "permis B, le nombre d'heures comprises et le prix d'une heure en plus. Merci !")
+
+
+def panneau_contact(e, decl_href):
+    """Volet « Contacter » d'une auto-école du classement. Chaque clic est compté (table clics)."""
+    eid = esc(e["id"])
+    nom = esc(e["nom"])
+    site = (f'<a class="btn btn-small btn-ghost" href="{esc(avec_utm(e["site"]))}" target="_blank" rel="noopener" '
+            f'data-clic="ae-{eid}-site">Son site web<span class="visually-hidden"> ({nom})</span></a>') if e.get("site") else ""
+    if e.get("email"):
+        mail = ("mailto:" + quote(e["email"], safe="@.") + "?subject=" + quote("Demande d'information (trouvé sur Créno)")
+                + "&body=" + quote(MESSAGE_CONTACT))
+        site += (f'<a class="btn btn-small btn-ghost" href="{esc(mail)}" data-clic="ae-{eid}-email">'
+                 f'Leur écrire<span class="visually-hidden"> ({nom})</span></a>')
+    code = ""
+    if e.get("code_promo"):
+        code = (f'<p class="promo">Code Créno : <strong>{esc(e["code_promo"])}</strong>'
+                f'{(" : " + esc(e["reduction"])) if e.get("reduction") else ""}</p>')
+    return (
+        f'<details class="rank-more"><summary>Contacter<span class="visually-hidden"> {nom}</span></summary>'
+        f'<div class="rank-panel">'
+        f'<div class="rank-actions">'
+        f'<a class="btn btn-small btn-signal" href="{esc(lien_maps(e))}" target="_blank" rel="noopener" '
+        f'data-clic="ae-{eid}-carte">Téléphone et itinéraire<span class="visually-hidden"> ({nom}, sur Google Maps)</span></a>'
+        f'{site}'
+        f'<button class="btn btn-small btn-ghost" type="button" data-message="{nom}" data-clic="ae-{eid}-message" hidden>Copier un message tout prêt</button>'
+        f'</div>'
+        f'{code}'
+        f'<p class="rank-tip">Quand tu les appelles ou passes les voir, dis que tu viens de <strong>Créno</strong>.</p>'
+        f'<p class="rank-msg" role="status" hidden></p>'
+        f'<a class="rank-decl" href="{decl_href}" data-decl="{eid}">J\'y suis inscrit : je déclare ce que j\'ai payé</a>'
+        f'</div></details>'
+    )
 
 
 def pct(x):
@@ -225,9 +279,11 @@ def chips(e):
     return out
 
 
-def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True):
+def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True, href=None, decl_href="#declarer"):
     """mode : 'complet' (page département), 'ville' (page ville), 'compact' (accueil).
-    avec_prix=False : aucun prix déclaré dans le département, la colonne coût n'est pas affichée."""
+    avec_prix=False : aucun prix déclaré dans le département, la colonne coût n'est pas affichée.
+    href (compact) : lien vers l'auto-école dans le classement du département.
+    decl_href : lien vers le formulaire de déclaration de prix."""
     e = r["e"]
     ville = ville_affichee(e["ville"])
     labels = " ".join(e.get("labels") or [])
@@ -236,10 +292,7 @@ def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True):
              f' data-taux="{e["taux"]}" data-cout="{"" if r["cout"] is None else r["cout"]}"'
              f' data-labels="{esc(labels)}" data-q="{esc(q)}"') if mode == "complet" else ""
     place = esc(ville) if mode == "compact" else esc((e.get("adresse") + ", ") if e.get("adresse") else "") + esc(ville)
-    site = ""
-    if mode != "compact" and e.get("site"):
-        site = (f' <a class="rank-site" href="{esc(e["site"])}" target="_blank" rel="noopener nofollow">'
-                f'Site web<span class="visually-hidden"> de {esc(e["nom"])}</span></a>')
+    contact = "" if mode == "compact" else panneau_contact(e, decl_href)
     extra = ""
     if mode == "ville":
         extra = f'<p class="rank-deprank">{rang_txt(r["rang"])} sur {nb_dep} dans le {esc(code)}</p>'
@@ -258,11 +311,12 @@ def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True):
                      f'<span class="metric-note">{plural(e["declarations"], "déclaration", "déclarations")}</span></div>')
     t = round(e["taux"] * 100)
     m = round(moyenne * 100)
+    nom_html = f'<a class="rank-link" href="{href}">{esc(e["nom"])}</a>' if href else esc(e["nom"])
     return (
         f'<li class="rank-row{" is-first" if r["rang"] == 1 else ""}{"" if avec_prix else " no-cost"}"{attrs}>'
         f'<span class="rank-plate{" is-long" if r["rang"] >= 100 else ""}"><span class="visually-hidden">Rang </span>{r["rang"]}</span>'
-        f'<div class="rank-main"><h3 class="rank-name">{esc(e["nom"])}</h3>'
-        f'<p class="rank-place">{place}{site}</p>{extra}{chip_html}</div>'
+        f'<div class="rank-main"><h3 class="rank-name">{nom_html}</h3>'
+        f'<p class="rank-place">{place}</p>{extra}{chip_html}</div>'
         f'<div class="metric metric-taux"><span class="metric-label">Réussite</span>'
         f'<span class="metric-value">{pct(e["taux"])}</span>'
         f'<span class="bar" role="img" aria-label="{t} % de réussite, moyenne du département {m} %">'
@@ -270,6 +324,7 @@ def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True):
         f'<span class="metric-note">{taux_note}</span></div>'
         f'{cout_cell}'
         f'<div class="rank-score"><strong>{r["indice"]}</strong><span>sur 100</span></div>'
+        f'{contact}'
         f'</li>'
     )
 
@@ -583,7 +638,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
             continue
         search_deps.append([d["code"], d["nom"], d["url"], nb])
         if d["code"] == DEP_DEFAUT:
-            top_defaut = "".join(ligne(r, res["moyenne"], "compact", avec_prix=res["avec_prix"]) for r in rows[:5])
+            LH = Links(depuis(""), explicit)
+            top_defaut = "".join(ligne(r, res["moyenne"], "compact", avec_prix=res["avec_prix"],
+                                       href=f'{LH(d["url"])}#ae-{esc(r["e"]["id"])}') for r in rows[:5])
         if only is not None and d["code"] not in only:
             continue
         stats["departements"] += 1
@@ -696,6 +753,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
   <div class="summary-block">
     <p class="zone-summary" id="zone-summary" aria-live="polite">{plural(nb, "auto-école classée", "auto-écoles classées")} dans le {esc(d["code"])}.</p>
     <p class="small">{price_note} Données de la Sécurité routière, fichier du {date_import}. <a href="{L("methode/")}">Comment on calcule l'indice</a></p>
+    <p class="rank-hint">Touche une auto-école pour la contacter : téléphone, itinéraire ou message tout prêt.</p>
   </div>
   <ol class="ranking" id="ranking" data-dynamic>
     {"".join(ligne(r, res["moyenne"], "complet", avec_prix=res["avec_prix"]) for r in rows)}
@@ -746,8 +804,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
     <h1>Auto-écoles à {esc(vp["nom"])}</h1>
     <p class="lede">{plural(len(vp["ecoles"]), "auto-école enseigne", "auto-écoles enseignent")} le permis B à {esc(vp["nom"])} ({esc(cps)}). Réussite moyenne au 1er passage : {pct(moy_v)}, {comp} la moyenne du département ({pct(res["moyenne"])}).</p>
   </header>
+  <p class="rank-hint">Touche une auto-école pour la contacter : téléphone, itinéraire ou message tout prêt.</p>
   <ol class="ranking ranking-city">
-    {"".join(ligne(r, res["moyenne"], "ville", nb, d["code"], res["avec_prix"]) for r in cl)}
+    {"".join(ligne(r, res["moyenne"], "ville", nb, d["code"], res["avec_prix"], decl_href=f'{LV(path)}?ae={esc(r["e"]["id"])}#declarer') for r in cl)}
   </ol>
   <p class="small">Le rang compare chaque auto-école à toutes celles du {esc(d["code"])}. Données de la Sécurité routière, fichier du {date_import}. <a href="{LV("methode/")}">Comment on calcule l'indice</a></p>
   {sans_html}

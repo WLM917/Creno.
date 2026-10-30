@@ -434,6 +434,56 @@ a { color: var(--link); text-underline-offset: 0.18em; }
 
 .ranking-compact .metric-note { display: none; }
 
+/* Volet « Contacter » d'une auto-école */
+.rank-row.is-clickable { cursor: pointer; }
+.rank-row.is-clickable:hover .rank-name { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.rank-more { grid-column: 2 / -1; cursor: auto; }
+.rank-more > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: var(--link);
+  cursor: pointer;
+  list-style: none;
+}
+.rank-more > summary::-webkit-details-marker { display: none; }
+.rank-more > summary::after {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2.5px solid currentColor;
+  border-bottom: 2.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+.rank-more[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+.rank-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--signal);
+  border-radius: var(--radius-field);
+}
+.rank-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.btn-small { min-height: 44px; padding: 0.45rem 0.9rem; font-size: 0.93rem; }
+.rank-actions .btn-signal { align-self: auto; }
+.rank-actions .btn-ghost { align-self: auto; background: transparent; color: var(--ink); }
+.rank-actions .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+.rank-tip { font-size: 0.95rem; }
+.rank-msg { font-size: 0.9rem; color: var(--muted); max-width: 60ch; }
+.rank-decl { font-size: 0.9rem; font-weight: 700; }
+.rank-panel .promo { margin: 0; }
+.rank-link { color: inherit; text-decoration: none; }
+.rank-link:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.rank-hint { font-size: 0.95rem; }
+
 .zone-summary { color: var(--muted); font-size: 0.98rem; }
 .summary-block { display: flex; flex-direction: column; gap: 0.3rem; max-width: 70ch; }
 .summary-block .zone-summary { color: var(--ink); font-weight: 700; }

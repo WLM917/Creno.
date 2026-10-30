@@ -1,9 +1,9 @@
 {"code": "23", "nom": "Creuse", "moyenne": 0.5957, "ecoles": [
-{"id":"E1802300010","nom":"Auto Ecole CAP Conduite","adresse":"10 rue des DEportEs","cp":"23200","ville":"Aubusson","taux":0.5102,"presentes":49,"taux_tous":0.48,"examens_tous":102,"labels":["qualite","permis1euro","cs"]},
+{"id":"E1802300010","nom":"Auto École CAP Conduite","adresse":"10 rue des Déportés","cp":"23200","ville":"Aubusson","taux":0.5102,"presentes":49,"taux_tous":0.48,"examens_tous":102,"labels":["qualite","permis1euro","cs"]},
 {"id":"E0402300870","nom":"Auto École Montlhery","adresse":"75 Grande Rue","cp":"23200","ville":"Aubusson","taux":0.5312,"presentes":32,"taux_tous":0.54,"examens_tous":61,"labels":["aac"]},
 {"id":"E2202300050","nom":"Eurl Alta Conduite","adresse":"10 avenue des lissiers","cp":"23200","ville":"Aubusson","taux":0.7018,"presentes":57,"taux_tous":0.71,"examens_tous":85,"labels":["qualite","permis1euro","cs"]},
 {"id":"I1902300030","nom":"Maison de l Emploi et de la Formation 23","adresse":"Esplanade Charles de Gaulle","cp":"23200","ville":"Aubusson","labels":["associative"]},
-{"id":"E1802300020","nom":"Sarl Auto École Maryse","adresse":"18 Rue des DEportEs","cp":"23200","ville":"Aubusson","taux":0.6456,"presentes":79,"taux_tous":0.62,"examens_tous":119,"labels":["cs"]},
+{"id":"E1802300020","nom":"Sarl Auto École Maryse","adresse":"18 Rue des Déportés","cp":"23200","ville":"Aubusson","taux":0.6456,"presentes":79,"taux_tous":0.62,"examens_tous":119,"labels":["cs"]},
 {"id":"I2002300010","nom":"Maison de l Emploi et de la Formation 23","adresse":"28 Rue du Billadour","cp":"23400","ville":"Bourganeuf","labels":["associative"]},
 {"id":"E2202300030","nom":"C'Permis 23","adresse":"11 rue Vincent","cp":"23600","ville":"Boussac","taux":0.5758,"presentes":33,"taux_tous":0.46,"examens_tous":54,"labels":["cs"]},
 {"id":"E0202300660","nom":"AUTO ECOLE Anne REDONDEAU","adresse":"3 grande rue","cp":"23130","ville":"Chenerailles","taux":0.7,"presentes":20,"taux_tous":0.71,"examens_tous":31,"labels":["aac","cs"]},

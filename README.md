@@ -44,7 +44,7 @@ Google met en général de quelques jours à quelques semaines pour indexer les 
 
 ## Brancher les alertes, le pack et le compteur
 
-1. **SQL** : dans *SQL Editor*, lancer dans l'ordre les trois fichiers de `supabase/migrations/`.
+1. **SQL** : dans *SQL Editor*, lancer dans l'ordre tous les fichiers de `supabase/migrations/` (du plus ancien au plus récent).
 2. **PDF** : *Storage* > espace `pack` (privé) > déposer `pack-candidat-libre.pdf`. Ne jamais le mettre dans le dépôt.
 3. **Stripe** : créer deux *Payment Links* :
    - Pack candidat libre, 14,99 €, paiement unique ; après paiement, rediriger vers
@@ -81,6 +81,15 @@ Google met en général de quelques jours à quelques semaines pour indexer les 
    Dans `site.json`, remplir `email_contact`, `editeur` et `mediateur_consommation` ; `alertes_payantes`
    doit être d'accord avec `ALERTES_LIEN_STRIPE`. Relancer `python3 scripts/build_site.py`, pousser.
 9. **Vercel** : onglet *Analytics* > activer Web Analytics.
+
+## Afficher les prix des auto-écoles
+
+- Une auto-école donne ses tarifs depuis l'espace pros (« Donner mes tarifs ») : ils arrivent dans la
+  table `tarifs_proposes` de Supabase. Vérifie-les (sa page de tarifs, un appel), passe `valide` à true,
+  puis lance `scripts/sync_prix.py` (voir plus haut) : ils s'affichent sur sa fiche.
+- Tu peux aussi recopier à la main les tarifs publiés sur le site d'une auto-école dans `data/tarifs.json`
+  (avec `source: "site"`, le lien de la page et la date), relancer `python3 scripts/build_site.py` et pousser.
+- Les prix payés par les élèves s'affichent à partir de 3 déclarations pour la même auto-école.
 
 ## Tableau de bord et rapports des pros
 

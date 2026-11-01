@@ -255,7 +255,10 @@
     $("#f-budget").value = state.budget;
     $("#f-sort").value = state.sort;
     $("#f-unknown").checked = state.unknown;
-    crits.forEach(function (c) { c.checked = !!state.crit[c.getAttribute("data-label")]; });
+    crits.forEach(function (c) {
+      if (c.disabled) state.crit[c.getAttribute("data-label")] = false;
+      c.checked = !!state.crit[c.getAttribute("data-label")];
+    });
     $("#f-budget").disabled = !avecPrix;
     $("#f-unknown").disabled = !avecPrix;
     if (window.matchMedia && window.matchMedia("(max-width: 600px)").matches) $(".more-filters").open = false;
@@ -383,15 +386,15 @@
   // Chaque formulaire va dans sa table Supabase (voir supabase/migrations).
   var TABLES = {
     declaration: "declarations", loueur: "loueurs_proposes", alerte: "alertes",
-    demande_pro: "demandes_pros", pro: "pros_proposes", contact_pro: "contacts_pros"
+    demande_pro: "demandes_pros", pro: "pros_proposes", contact_pro: "contacts_pros", tarifs: "tarifs_proposes"
   };
-  var NUMBERS = ["forfait", "heures_incluses", "prix_heure", "heures_total", "frais_examen"];
+  var NUMBERS = ["forfait", "heures_incluses", "prix_heure", "heures_total", "frais_examen", "heures_forfait"];
 
   function initSchoolPicker(form) {
-    var input = $("#decl-ecole", form);
+    var input = $("input[name=auto_ecole_nom][list]", form);
     if (!input) return;
     var hidden = $("input[name=auto_ecole_id]", form);
-    var datalist = $("#decl-ecoles", form);
+    var datalist = document.getElementById(input.getAttribute("list"));
     function resolve() {
       hidden.value = "";
       $all("option", datalist).forEach(function (o) { if (o.value === input.value) hidden.value = o.getAttribute("data-id") || ""; });
@@ -461,7 +464,8 @@
           var merci = {
             declaration: "Merci, ta réponse est envoyée.",
             demande_pro: "Merci, ta demande est envoyée. Un pro de ton département te recontacte.",
-            pro: "Merci, on vérifie tes informations et on revient vers toi."
+            pro: "Merci, on vérifie tes informations et on revient vers toi.",
+            tarifs: "Merci ! On vérifie tes tarifs (avec ta page de tarifs ou par téléphone) avant de les afficher sur ta fiche."
           };
           done(true, merci[type] || "Merci, c'est envoyé.");
         }).catch(function () {

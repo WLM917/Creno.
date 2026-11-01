@@ -43,7 +43,8 @@ scripts/build_site.py             génère toutes les pages + sitemap.xml, robot
                                   badges/<agrément>.svg (top 10 de chaque département) et data/badges.json
 scripts/import_auto_ecoles.py     importe le CSV officiel -> data/, puis lance build_site.py
                                   (--prix-seulement : refusionne data/prix.json sans CSV)
-scripts/sync_prix.py              lit les déclarations dans Supabase, calcule les médianes -> data/prix.json
+scripts/sync_prix.py              lit les déclarations dans Supabase, calcule les médianes -> data/prix.json,
+                                  et les tarifs vérifiés des auto-écoles (tarifs_proposes, valide = true) -> data/tarifs.json
 supabase/migrations/*.sql         tables + sécurité. 1re migration : formulaires (insertion seule pour le site).
                                   2e : abonnes_alertes et signalements (aucun accès public, seulement les
                                   fonctions), pros_proposes, demandes_pros, contacts_pros, clics (insertion
@@ -63,6 +64,7 @@ assets/og.png                     image de partage (réseaux sociaux)
 data/index.json                   départements (code, nom, nb, moyenne), date d'import
 data/departements/<code>.json     auto-écoles d'un département (id = numéro d'agrément raf_numero)
 data/prix.json                    prix déclarés par les élèves, par numéro d'agrément (vide pour l'instant)
+data/tarifs.json                  prix annoncés par les auto-écoles (vérifiés), par numéro d'agrément (vide pour l'instant)
 data/loueurs.json                 loueurs de voitures à double commande (2 entrées réelles à vérifier) ;
                                   champs optionnels partenaire, code_promo, reduction, lien_reservation
 data/pros.json                    annuaire des moniteurs / auto-écoles pour examen blanc (vide, à remplir
@@ -110,6 +112,21 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Aucun prix déclaré dans tout le département : indice = réussite seule, colonne coût masquée,
   filtre budget désactivé.
 - Si la formule change, mettre à jour templates/methode.html en même temps.
+
+## Prix affichés et formation accélérée
+
+- Le fichier officiel n'a AUCUN prix. Chaque fiche affiche « Forfait 20 h : X € · Heure en plus : Y € »
+  quand on les connaît, sinon « prix pas encore connus » (jamais de prix inventé, règle 3).
+- Deux sources, toujours indiquées : prix annoncés par l'auto-école (data/tarifs.json, formulaire
+  « Donner mes tarifs » de /pro/ -> table tarifs_proposes, publiés seulement après vérification :
+  valide = true puis sync_prix.py ; ou ajoutés à la main avec source « site », le lien et la date),
+  et prix payés par les élèves (médianes de data/prix.json, à partir de min_declarations_prix).
+- Seuls les prix des élèves entrent dans l'indice (coût réel). Les prix annoncés sont affichés, pas notés.
+- 20 heures de conduite minimum en boîte manuelle, 13 h en boîte automatique : c'est souvent le contenu
+  du forfait. Les auto-écoles doivent afficher leurs tarifs (arrêté du 19 juin 1987).
+- « Formation accélérée » (étiquette, filtre, détail dans le volet) : annoncée par l'auto-école,
+  ou déclarée par au moins 2 élèves (case dans le formulaire de déclaration, colonne declarations.accelere).
+  Le filtre est désactivé dans un département où on ne connaît encore aucune formation accélérée.
 
 ## Formulaires et Supabase
 

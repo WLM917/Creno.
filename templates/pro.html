@@ -24,6 +24,11 @@
         <p>Gratuitement, avec ton taux officiel et ton rang dans le département. Tu peux nous signaler une erreur ou compléter tes informations.</p>
       </div>
       <div class="option">
+        <h3>Tes prix sur ta fiche</h3>
+        <p>Les élèves comparent d'abord les prix. Donne ton forfait 20 h, le prix de l'heure en plus et ta formation accélérée si tu en as une : ils s'affichent sur ta fiche, gratuitement, après vérification.</p>
+        <a class="link-strong" href="#tarifs">Donner mes tarifs</a>
+      </div>
+      <div class="option">
         <h3>Le badge du top 10</h3>
         <p>Si tu fais partie des 10 meilleures auto-écoles de ton département, affiche ton rang sur ton site. Il se met à jour tout seul à chaque trimestre.</p>
         <a class="link-strong" href="#badge">Trouver mon badge</a>
@@ -38,9 +43,9 @@
         <p>Examens blancs, heures à l'unité, présentation à l'examen : reçois les demandes des élèves de ton département.</p>
       </div>
       <div class="option option-soon">
-        <h3>Créno Pro, bientôt</h3>
-        <p>Ton rang et son évolution chaque trimestre, ton prix comparé à la médiane du département dès que les élèves déclarent leurs prix, et les demandes reçues.</p>
-        <a class="link-strong" href="#contact">Être parmi les premiers</a>
+        <h3>Créno Pro, bientôt (payant)</h3>
+        <p>L'abonnement pour les auto-écoles qui veulent plus d'élèves : ta fiche mise en avant dans ta ville (toujours marquée « Partenaire payant », ton rang ne change pas), un code Créno pour reconnaître nos élèves, ton rapport de contacts en direct et tes prix comparés à ceux du département. Tout le reste de cette page reste gratuit.</p>
+        <a class="link-strong" href="#contact">Être prévenu du lancement</a>
       </div>
     </div>
   </section>
@@ -58,6 +63,33 @@
   <section class="block" aria-labelledby="mon-title">
     <h2 id="mon-title">Pour les moniteurs</h2>
     <p>Tu es moniteur et tu enseignes dans le cadre d'une auto-école agréée ? Reçois des demandes d'examens blancs et d'heures de conduite. Nous vérifions ton autorisation d'enseigner et ton établissement de rattachement avant de te référencer.</p>
+  </section>
+
+  <section class="block" id="tarifs" aria-labelledby="tarifs-title">
+    <h2 id="tarifs-title">Donner mes tarifs (auto-écoles)</h2>
+    <p>Tes prix s'affichent sur ta fiche, dans le classement de ton département et de ta ville. On les vérifie avant de les publier, avec ta page de tarifs ou par un appel.</p>
+    <form class="form-grid" id="tarifs-form" data-form-type="tarifs">
+      <div class="field"><label for="tar-dep">Département</label>
+        <select id="tar-dep" name="departement" required data-load-ecoles><option value="">Choisis</option>{{options_departements}}</select>
+      </div>
+      <div class="field"><label for="tar-ecole">Ton auto-école</label>
+        <input id="tar-ecole" name="auto_ecole_nom" list="tar-ecoles" required autocomplete="off" maxlength="160" placeholder="Choisis d'abord ton département">
+        <datalist id="tar-ecoles"></datalist>
+        <input type="hidden" name="auto_ecole_id" value="">
+      </div>
+      <div class="field"><label for="tar-forfait">Prix du forfait (€)</label><input id="tar-forfait" name="forfait" type="number" inputmode="numeric" min="0" max="10000" required></div>
+      <div class="field"><label for="tar-heures">Heures de conduite dans le forfait</label><input id="tar-heures" name="heures_forfait" type="number" inputmode="numeric" min="0" max="200" value="20" required></div>
+      <div class="field"><label for="tar-heure">Prix d'une heure en plus (€)</label><input id="tar-heure" name="prix_heure" type="number" inputmode="numeric" min="0" max="500" required></div>
+      <div class="field"><label for="tar-examen">Présentation à l'examen (€), si en plus</label><input id="tar-examen" name="frais_examen" type="number" inputmode="numeric" min="0" max="1000"></div>
+      <label class="check-inline field-wide" for="tar-acc"><input id="tar-acc" name="accelere" type="checkbox"> Je propose une formation accélérée (stage intensif)</label>
+      <div class="field field-wide"><label for="tar-acc-det">Ta formation accélérée en une phrase (facultatif)</label><input id="tar-acc-det" name="accelere_details" maxlength="200" placeholder="Ex. 3 semaines, 30 h de conduite, 1 690 €"></div>
+      <div class="field"><label for="tar-lien">Page de tes tarifs sur ton site (facultatif)</label><input id="tar-lien" name="lien" type="url" maxlength="300" placeholder="https://"></div>
+      <div class="field"><label for="tar-contact">Ton e-mail ou téléphone</label><input id="tar-contact" name="contact" required maxlength="200" autocomplete="email"></div>
+      <div class="form-actions field-wide">
+        <button class="btn" type="submit">Envoyer mes tarifs</button>
+        <p class="form-status" role="status"></p>
+      </div>
+    </form>
   </section>
 
   <section class="block" id="badge" aria-labelledby="badge-title">

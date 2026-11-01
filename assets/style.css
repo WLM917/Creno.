@@ -564,7 +564,7 @@ a { color: var(--link); text-underline-offset: 0.18em; }
 .field output { font-weight: 400; color: var(--muted); font-variant-numeric: tabular-nums; }
 
 input, select, button, textarea { font: inherit; color: inherit; }
-input[type="text"], input[type="search"], input[type="number"], input[type="email"], input:not([type]), select {
+input[type="text"], input[type="search"], input[type="number"], input[type="email"], input[type="url"], input[type="tel"], input[type="password"], input:not([type]), select {
   width: 100%;
   min-height: 44px;
   padding: 0.5rem 0.65rem;
@@ -1434,3 +1434,15 @@ textarea:focus-visible { border-color: var(--signal); }
   .data-table.stack td[data-label]::before { content: attr(data-label); color: var(--muted); font-size: 0.9rem; text-align: left; }
   .data-table.stack td[data-label] .rap-actions { justify-content: flex-end; }
 }
+
+/* ---------- Prix dans le classement ---------- */
+.rank-prix { font-size: 0.95rem; margin-top: 0.2rem; font-variant-numeric: tabular-nums; }
+.rank-prix strong { font-family: var(--font-display); font-weight: 800; }
+.rank-prix.is-missing { color: var(--muted); font-size: 0.9rem; font-style: italic; }
+.rank-tarifs { display: flex; flex-direction: column; gap: 0.35rem; width: 100%; }
+.rank-tarifs dl { margin: 0; display: grid; gap: 0.3rem; }
+.rank-tarifs dl div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px dashed var(--line); padding-bottom: 0.25rem; max-width: 26rem; }
+.rank-tarifs dt { color: var(--muted); }
+.rank-tarifs dd { margin: 0; font-family: var(--font-display); font-weight: 800; font-variant-numeric: tabular-nums; }
+.rank-tarifs-vide { font-size: 0.93rem; color: var(--muted); }
+.rank-acc { font-size: 0.95rem; }

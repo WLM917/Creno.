@@ -1,0 +1,6 @@
+{
+ "meta": {
+  "description": "Prix annoncés par les auto-écoles, par numéro d'agrément. Rempli par scripts/sync_prix.py à partir des tarifs que les auto-écoles envoient depuis l'espace pros (après vérification : valide = true dans Supabase). On peut aussi en ajouter à la main, en recopiant la page de tarifs de l'auto-école : mettre alors source = \"site\", le lien de la page et la date. Champs : forfait (€), heures_forfait (souvent 20, le minimum légal en boîte manuelle), prix_heure (€, heure en plus), frais_examen (€, présentation à l'examen), accelere (true/false), accelere_details (texte court), lien, mis_a_jour (AAAA-MM-JJ), source (auto-ecole ou site). Ne jamais inventer de prix."
+ },
+ "ecoles": {}
+}

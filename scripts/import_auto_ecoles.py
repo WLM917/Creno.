@@ -46,7 +46,8 @@ LABELS = {
     "aue_aac_flag": "aac",
     "aue_cs_flag": "cs",
 }
-PRICE_FIELDS = ["forfait", "heures_incluses", "prix_heure", "heures_moyennes", "frais_examen", "declarations"]
+PRICE_FIELDS = ["forfait", "heures_incluses", "prix_heure", "heures_moyennes", "frais_examen", "declarations",
+                "accelere_declarations"]
 
 DEPARTEMENTS = {
     "01": "Ain", "02": "Aisne", "03": "Allier", "04": "Alpes-de-Haute-Provence", "05": "Hautes-Alpes",

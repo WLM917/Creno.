@@ -62,7 +62,11 @@ LABELS = {
     "aac": "Conduite accompagnée",
     "associative": "Associative",
     "enligne": "En ligne",
+    "accelere": "Formation accélérée",
 }
+# Prix annoncés par les auto-écoles elles-mêmes (vérifiés), par numéro d'agrément : voir scripts/sync_prix.py
+TARIFS = ((json.loads((ROOT / "data" / "tarifs.json").read_text(encoding="utf-8")).get("ecoles") or {})
+          if (ROOT / "data" / "tarifs.json").exists() else {})
 NAV = [
     ("auto-ecoles/", "Auto-écoles", "auto-ecoles"),
     ("candidat-libre/", "Candidat libre", "candidat-libre"),
@@ -165,6 +169,7 @@ def panneau_contact(e, decl_href):
     return (
         f'<details class="rank-more" data-pro="ae-{eid}"><summary>Contacter<span class="visually-hidden"> {nom}</span></summary>'
         f'<div class="rank-panel">'
+        f'{bloc_prix(e)}'
         f'<div class="rank-actions">'
         f'<a class="btn btn-small btn-signal" href="{esc(lien_maps(e))}" target="_blank" rel="noopener" '
         f'data-clic="ae-{eid}-carte">Téléphone et itinéraire<span class="visually-hidden"> ({nom}, sur Google Maps)</span></a>'
@@ -272,8 +277,79 @@ def classer(dep):
 
 
 # ---------------------------------------------------------------- morceaux de page
+def prix_connus(e):
+    """Prix d'une auto-école : annoncés par elle (vérifiés) ou payés par les élèves (médianes, à partir de
+    MIN_DECL déclarations). None tant qu'on ne les connaît pas : on n'invente jamais de prix."""
+    t = TARIFS.get(e["id"])
+    if t and (t.get("forfait") is not None or t.get("prix_heure") is not None):
+        return {"source": t.get("source") or "auto-ecole", "forfait": t.get("forfait"), "heures": t.get("heures_forfait") or 20,
+                "prix_heure": t.get("prix_heure"), "frais": t.get("frais_examen"), "date": t.get("mis_a_jour"), "lien": t.get("lien")}
+    if (e.get("declarations") or 0) >= MIN_DECL and e.get("forfait") is not None:
+        return {"source": "eleves", "forfait": e["forfait"], "heures": e.get("heures_incluses"), "prix_heure": e.get("prix_heure"),
+                "frais": e.get("frais_examen"), "n": e["declarations"]}
+    return None
+
+
+def accelere(e):
+    """Formation accélérée : annoncée par l'auto-école, ou déclarée par au moins 2 élèves.
+    Renvoie le détail (texte, parfois vide) si oui, None si on ne sait pas."""
+    t = TARIFS.get(e["id"]) or {}
+    if t.get("accelere"):
+        return t.get("accelere_details") or ""
+    if (e.get("accelere_declarations") or 0) >= 2:
+        return ""
+    return None
+
+
+def labels_de(e):
+    out = list(e.get("labels") or [])
+    if accelere(e) is not None:
+        out.append("accelere")
+    return out
+
+
+def ligne_prix(p):
+    """Ligne visible dans le classement : forfait (souvent les 20 h minimum) et prix de l'heure en plus."""
+    if not p:
+        return '<p class="rank-prix is-missing">Forfait 20 h et heure en plus : prix pas encore connus</p>'
+    parts = []
+    if p.get("forfait") is not None:
+        parts.append(f'Forfait{(" " + str(p["heures"]) + " h") if p.get("heures") else ""} : <strong>{eur(p["forfait"])}</strong>')
+    if p.get("prix_heure") is not None:
+        parts.append(f'Heure en plus : <strong>{eur(p["prix_heure"])}</strong>')
+    return f'<p class="rank-prix">{" · ".join(parts)}</p>'
+
+
+def bloc_prix(e):
+    """Détail des prix dans le volet « Contacter »."""
+    p = prix_connus(e)
+    if p:
+        lignes = []
+        if p.get("forfait") is not None:
+            lignes.append(f'<div><dt>Forfait{(" " + str(p["heures"]) + " h de conduite") if p.get("heures") else ""}</dt><dd>{eur(p["forfait"])}</dd></div>')
+        if p.get("prix_heure") is not None:
+            lignes.append(f'<div><dt>Heure de conduite en plus</dt><dd>{eur(p["prix_heure"])}</dd></div>')
+        if p.get("frais") is not None:
+            lignes.append(f'<div><dt>Présentation à l\'examen</dt><dd>{eur(p["frais"])}</dd></div>')
+        if p["source"] == "eleves":
+            src = f'Prix payés par les élèves (médiane de {plural(p["n"], "déclaration", "déclarations")})'
+        else:
+            src = "Prix annoncés par l'auto-école" + (f", relevés le {date_fr(p['date'])}" if p.get("date") else "")
+        lien = (f' <a href="{esc(p["lien"])}" target="_blank" rel="noopener nofollow">Voir leurs tarifs</a>'
+                if p.get("lien") else "")
+        html = f'<div class="rank-tarifs"><dl>{"".join(lignes)}</dl><p class="small">{src}. Vérifie toujours avec l\'auto-école.{lien}</p></div>'
+    else:
+        html = ('<p class="rank-tarifs-vide">Prix pas encore connus. Demande-leur le prix du forfait 20 h et de l\'heure en plus : '
+                'le message tout prêt le fait pour toi.</p>')
+    acc = accelere(e)
+    if acc is not None:
+        html += f'<p class="rank-acc"><strong>Formation accélérée :</strong> oui{(", " + esc(acc)) if acc else ""}.</p>'
+    return html
+
+
 def chips(e):
-    out = "".join(f'<span class="chip">{esc(LABELS[l])}</span>' for l in ("qualite", "permis1euro", "aac", "associative", "enligne") if l in (e.get("labels") or []))
+    labels = labels_de(e)
+    out = "".join(f'<span class="chip">{esc(LABELS[l])}</span>' for l in ("accelere", "qualite", "permis1euro", "aac", "associative", "enligne") if l in labels)
     if e.get("partenaire"):
         out = '<span class="chip chip-flag">Partenaire payant</span>' + out
     return out
@@ -286,7 +362,7 @@ def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True, href=None, d
     decl_href : lien vers le formulaire de déclaration de prix."""
     e = r["e"]
     ville = ville_affichee(e["ville"])
-    labels = " ".join(e.get("labels") or [])
+    labels = " ".join(labels_de(e))
     q = norm(f'{e["nom"]} {ville} {e["cp"]} {e.get("adresse", "")}')
     attrs = (f' id="ae-{esc(e["id"])}" data-rang="{r["rang"]}" data-indice="{r["indice"]}"'
              f' data-taux="{e["taux"]}" data-cout="{"" if r["cout"] is None else r["cout"]}"'
@@ -312,11 +388,12 @@ def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True, href=None, d
     t = round(e["taux"] * 100)
     m = round(moyenne * 100)
     nom_html = f'<a class="rank-link" href="{href}">{esc(e["nom"])}</a>' if href else esc(e["nom"])
+    prix_html = "" if mode == "compact" else ligne_prix(prix_connus(e))
     return (
         f'<li class="rank-row{" is-first" if r["rang"] == 1 else ""}{"" if avec_prix else " no-cost"}"{attrs}>'
         f'<span class="rank-plate{" is-long" if r["rang"] >= 100 else ""}"><span class="visually-hidden">Rang </span>{r["rang"]}</span>'
         f'<div class="rank-main"><h3 class="rank-name">{nom_html}</h3>'
-        f'<p class="rank-place">{place}</p>{extra}{chip_html}</div>'
+        f'<p class="rank-place">{place}</p>{extra}{prix_html}{chip_html}</div>'
         f'<div class="metric metric-taux"><span class="metric-label">Réussite</span>'
         f'<span class="metric-value">{pct(e["taux"])}</span>'
         f'<span class="bar" role="img" aria-label="{t} % de réussite, moyenne du département {m} %">'
@@ -408,6 +485,7 @@ def formulaire_prix(dep=None, ecoles=None, deps=None):
       <div class="field"><label for="decl-prix">Prix d'une heure en plus (€)</label><input id="decl-prix" name="prix_heure" type="number" inputmode="numeric" min="0" max="500" required></div>
       <div class="field"><label for="decl-heures">Heures faites au total</label><input id="decl-heures" name="heures_total" type="number" inputmode="numeric" min="0" max="300" required></div>
       <div class="field"><label for="decl-frais">Frais d'examen payés (€), si tu sais</label><input id="decl-frais" name="frais_examen" type="number" inputmode="numeric" min="0" max="1000"></div>
+      <label class="check-inline field-wide" for="decl-acc"><input id="decl-acc" name="accelere" type="checkbox"> J'ai suivi une formation accélérée (stage intensif) dans cette auto-école</label>
       <div class="field">
         <label for="decl-resultat">Ton résultat</label>
         <select id="decl-resultat" name="resultat" required>
@@ -700,6 +778,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
         price_note = (f'{plural(res["nb_prix"], "auto-école a", "auto-écoles ont")} des prix déclarés par les élèves dans ce département.'
                       if res["avec_prix"] else
                       "Aucun prix déclaré pour l'instant dans ce département : l'indice se base sur la réussite. Le coût réel apparaîtra avec les déclarations des élèves.")
+        nb_acc = sum(1 for r in rows if accelere(r["e"]) is not None)
+        acc_attr = "" if nb_acc else " disabled"
+        acc_note = "" if nb_acc else ' <span class="small">(pas encore d\'info dans ce département)</span>'
         unranked = ""
         if sans_taux:
             items = "".join(f'<li data-q="{esc(norm(e["nom"] + " " + ville_affichee(e["ville"]) + " " + e["cp"]))}"><strong>{esc(e["nom"])}</strong><span>{esc(ville_affichee(e["ville"]))}</span></li>'
@@ -753,6 +834,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
           <label class="check-inline" for="f-1euro"><input id="f-1euro" type="checkbox" data-label="permis1euro"> Le permis à 1 € par jour</label>
           <label class="check-inline" for="f-qualite"><input id="f-qualite" type="checkbox" data-label="qualite"> Le label qualité</label>
           <label class="check-inline" for="f-aac"><input id="f-aac" type="checkbox" data-label="aac"> La conduite accompagnée</label>
+          <label class="check-inline" for="f-acc"><input id="f-acc" type="checkbox" data-label="accelere"{acc_attr}> La formation accélérée{acc_note}</label>
         </fieldset>
         <label class="check-inline crit-unknown" for="f-unknown">
           <input id="f-unknown" type="checkbox" checked>
@@ -765,7 +847,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
   <div class="summary-block">
     <p class="zone-summary" id="zone-summary" aria-live="polite">{plural(nb, "auto-école classée", "auto-écoles classées")} dans le {esc(d["code"])}.</p>
     <p class="small">{price_note} Données de la Sécurité routière, fichier du {date_import}. <a href="{L("methode/")}">Comment on calcule l'indice</a></p>
-    <p class="rank-hint">Touche une auto-école pour la contacter : téléphone, itinéraire ou message tout prêt.</p>
+    <p class="rank-hint">Touche une auto-école pour voir ses prix et la contacter : téléphone, itinéraire ou message tout prêt. Le permis demande au moins 20 heures de conduite (13 h en boîte automatique) : c'est souvent ce que comprend le forfait, les heures en plus se paient à l'unité.</p>
   </div>
   <ol class="ranking" id="ranking" data-dynamic>
     {"".join(ligne(r, res["moyenne"], "complet", avec_prix=res["avec_prix"]) for r in rows)}
@@ -816,7 +898,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
     <h1>Auto-écoles à {esc(vp["nom"])}</h1>
     <p class="lede">{plural(len(vp["ecoles"]), "auto-école enseigne", "auto-écoles enseignent")} le permis B à {esc(vp["nom"])} ({esc(cps)}). Réussite moyenne au 1er passage : {pct(moy_v)}, {comp} la moyenne du département ({pct(res["moyenne"])}).</p>
   </header>
-  <p class="rank-hint">Touche une auto-école pour la contacter : téléphone, itinéraire ou message tout prêt.</p>
+  <p class="rank-hint">Touche une auto-école pour voir ses prix et la contacter : téléphone, itinéraire ou message tout prêt. Le permis demande au moins 20 heures de conduite (13 h en boîte automatique) : c'est souvent ce que comprend le forfait, les heures en plus se paient à l'unité.</p>
   <ol class="ranking ranking-city">
     {"".join(ligne(r, res["moyenne"], "ville", nb, d["code"], res["avec_prix"], decl_href=f'{LV(path)}?ae={esc(r["e"]["id"])}#declarer') for r in cl)}
   </ol>

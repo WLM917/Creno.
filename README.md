@@ -30,71 +30,81 @@ S'il déménage (domaine perso comme creno.fr), changer `adresse_du_site` dans `
 
 Google met en général de quelques jours à quelques semaines pour indexer les pages.
 
-## Brancher Supabase (formulaires)
+## Brancher le site (une seule fois)
 
-1. Dans Supabase, *SQL Editor* : coller le contenu de `supabase/migrations/20261029120000_formulaires.sql`, *Run* (si les tables n'ont pas été créées automatiquement par l'intégration GitHub).
-2. *Project Settings > API* : copier *Project URL* et la clé *anon public* dans `assets/config.js`. Ne jamais y mettre la clé *service_role*.
-3. Pour intégrer les prix déclarés au classement :
+Tout se fait depuis un navigateur, même sur iPad. Pas de terminal.
 
-   ```bash
-   export SUPABASE_URL="https://xxxx.supabase.co"
-   export SUPABASE_SERVICE_KEY="clé service_role (secrète)"
-   python3 scripts/sync_prix.py
-   ```
+**Vercel n'a besoin d'aucune variable d'environnement** : le site est fait de pages déjà prêtes,
+Vercel les affiche telles quelles. Seul réglage utile : onglet *Analytics* > activer Web Analytics.
 
-## Brancher les alertes, le pack et le compteur
+### 1. Trois codes à prendre dans Supabase
 
-1. **SQL** : dans *SQL Editor*, lancer dans l'ordre tous les fichiers de `supabase/migrations/` (du plus ancien au plus récent).
-2. **PDF** : *Storage* > espace `pack` (privé) > déposer `pack-candidat-libre.pdf`. Ne jamais le mettre dans le dépôt.
-3. **Stripe** : créer les *Payment Links* :
-   - Pack candidat libre, 14,99 €, paiement unique ; après paiement, rediriger vers
-     `https://creno-tan.vercel.app/pack-candidat-libre/acces/?session_id={CHECKOUT_SESSION_ID}`
-   - Créno Pro, 19,99 € **par mois** (produit récurrent), le même pour les auto-écoles et les loueurs.
-   - Plus tard seulement, si les alertes deviennent payantes : Alertes, 9,99 € par mois ; rediriger vers
-     `https://creno-tan.vercel.app/alertes/merci/?session_id={CHECKOUT_SESSION_ID}`
-4. **Resend** : créer un compte, vérifier un domaine (ex. creno.fr), créer une clé API.
-5. **Fonctions** : déployer `alertes`, `pack`, `stats` et `pros`, sans vérification JWT :
+- **Jeton d'accès** : supabase.com > ton avatar > *Account preferences* > *Access Tokens* >
+  *Generate new token*. Copie-le tout de suite (il n'est montré qu'une fois).
+- **Identifiant du projet** : *Project Settings > General > Project ID*
+  (l'adresse `https://xxxx.supabase.co` marche aussi).
+- **Mot de passe de la base** : celui choisi à la création du projet. Oublié : *Project Settings >
+  Database > Reset database password*.
 
-   ```bash
-   supabase functions deploy alertes --no-verify-jwt
-   supabase functions deploy pack --no-verify-jwt
-   supabase functions deploy stats --no-verify-jwt
-   supabase functions deploy pros --no-verify-jwt
-   ```
+### 2. Les coller dans GitHub
 
-6. **Secrets** (*Edge Functions > Secrets*) : `SITE_URL`, `RESEND_API_KEY`, `ALERTES_EXPEDITEUR`,
-   `STRIPE_SECRET_KEY`, `CRENO_SEL` (phrase au hasard), `ADMIN_CODE` (ton code du tableau de bord),
-   `ADMIN_EMAIL` (ton e-mail : tu y reçois chaque demande d'élève, chaque réponse de pro et chaque formulaire),
-   `PACK_MONTANT_CENTIMES=1499`, `ALERTES_MONTANT_CENTIMES=999`, `ALERTES_ESSAI_JOURS=15`,
-   et `ALERTES_LIEN_STRIPE` : **laisse-le vide tant que les alertes sont gratuites** (remplis-le avec le
-   lien de l'abonnement seulement le jour où elles deviennent payantes).
-7. **Tâche quotidienne des alertes** (utile seulement quand les alertes sont payantes : rappels de fin d'essai, renouvellements) : *Integrations > Cron*,
-   créer une tâche chaque jour à 9 h qui appelle la fonction `alertes` en POST avec le corps
-   `{"action":"quotidien","code":"TON_ADMIN_CODE"}`. Ou en SQL (extensions pg_cron et pg_net activées) :
+Dépôt sur github.com > *Settings > Secrets and variables > Actions > New repository secret*.
+Un secret = un nom (à recopier exactement) + sa valeur :
 
-   ```sql
-   select cron.schedule('alertes-quotidien', '7 8 * * *', $$
-     select net.http_post(
-       url := 'https://TON-PROJET.supabase.co/functions/v1/alertes',
-       headers := '{"Content-Type": "application/json"}'::jsonb,
-       body := '{"action": "quotidien", "code": "TON_ADMIN_CODE"}'::jsonb)
-   $$);
-   ```
+| Nom | Valeur |
+|---|---|
+| `SUPABASE_ACCESS_TOKEN` | le jeton d'accès |
+| `SUPABASE_PROJECT_ID` | l'identifiant du projet |
+| `SUPABASE_DB_PASSWORD` | le mot de passe de la base |
+| `ADMIN_CODE` | un code que tu inventes pour ouvrir ton tableau de bord /admin/ |
+| `ADMIN_EMAIL` | ton e-mail (tu y reçois chaque demande d'élève, réponse de pro et formulaire) |
+| `CRENO_SEL` | facultatif : une phrase au hasard (sert à rendre anonymes les compteurs) |
 
-8. **Site** : dans `assets/config.js`, remplir `supabaseUrl`, `supabaseAnonKey`, `lienPaiementPack` et
-   `lienCrenoPro` (lien de l'abonnement Créno Pro à 19,99 €/mois).
-   Dans `site.json`, remplir `email_contact`, `editeur` et `mediateur_consommation` ; `alertes_payantes`
-   (false aujourd'hui) doit être d'accord avec `ALERTES_LIEN_STRIPE`. Relancer `python3 scripts/build_site.py`, pousser.
-9. **Vercel** : onglet *Analytics* > activer Web Analytics.
+Plus tard, quand les comptes existent : `STRIPE_SECRET_KEY` (Stripe > Développeurs > Clés API),
+`RESEND_API_KEY` (resend.com > API Keys) et `ALERTES_EXPEDITEUR` (ex. `Créno <alertes@creno.fr>`,
+une fois un domaine vérifié dans Resend). Ne mets **pas** `ALERTES_LIEN_STRIPE` tant que les alertes sont gratuites.
 
-## Mise à jour automatique des prix (GitHub)
+Les clés secrètes ne vont jamais dans le code, ni dans une conversation : seulement ici.
 
-Sur GitHub : *Settings > Secrets and variables > Actions > New repository secret*, ajouter
-`SUPABASE_URL` et `SUPABASE_SERVICE_KEY` (clé service_role ou secret, jamais dans le code).
-Chaque jour, `.github/workflows/mise-a-jour-prix.yml` lit Supabase, régénère les pages et publie.
-Pour le lancer tout de suite : onglet *Actions* > « Mettre à jour les prix » > *Run workflow*.
-Si Vercel refuse de déployer les commits du robot (dépôt privé), mettre dans le workflow l'e-mail
-de ton compte GitHub à la place de celui de github-actions[bot].
+### 3. Lancer l'installation
+
+Onglet *Actions* du dépôt > « Brancher Supabase » > *Run workflow*. Ça crée les tables, déploie les
+4 fonctions (alertes, pack, stats, pros), copie les secrets dans Supabase et remplit `assets/config.js`.
+Coche verte = c'est bon. Croix rouge = ouvrir l'étape en rouge et envoyer une capture à Claude.
+À relancer après chaque nouveau secret ajouté.
+
+`.github/workflows/mise-a-jour-prix.yml` utilise les mêmes secrets : chaque jour, il lit les prix dans
+Supabase, régénère les pages et publie (*Actions* > « Mettre à jour les prix » > *Run workflow* pour
+le lancer tout de suite).
+
+### 4. Le PDF du pack
+
+Supabase > *Storage* > espace `pack` > *Upload file* : `pack-candidat-libre.pdf`. Jamais dans le dépôt.
+
+### 5. Stripe (pour vendre)
+
+Créer deux *Payment Links* et envoyer les liens à Claude (ils vont dans `assets/config.js`) :
+- Pack candidat libre, 14,99 €, paiement unique ; après paiement, rediriger vers
+  `https://creno-tan.vercel.app/pack-candidat-libre/acces/?session_id={CHECKOUT_SESSION_ID}`
+- Créno Pro, 19,99 € **par mois** (produit récurrent), le même pour les auto-écoles et les loueurs.
+
+Plus tard seulement, si les alertes deviennent payantes : un lien Alertes à 9,99 € par mois (redirection
+vers `https://creno-tan.vercel.app/alertes/merci/?session_id={CHECKOUT_SESSION_ID}`), dans le secret
+`ALERTES_LIEN_STRIPE`, `alertes_payantes: true` dans `site.json`, et une tâche quotidienne
+(*Integrations > Cron* : POST vers la fonction `alertes` avec `{"action":"quotidien","code":"TON_ADMIN_CODE"}`).
+
+### 6. Avant de vendre
+
+Remplir dans `site.json` : `email_contact`, `editeur` (statut, par exemple micro-entreprise, et SIRET)
+et `mediateur_consommation`. Puis relancer `python3 scripts/build_site.py` et pousser.
+
+### Sans GitHub Actions (avec un ordinateur)
+
+```bash
+supabase link --project-ref TON_PROJET && supabase db push
+supabase functions deploy --project-ref TON_PROJET --no-verify-jwt
+SUPABASE_URL=https://TON_PROJET.supabase.co SUPABASE_SERVICE_KEY=... python3 scripts/sync_prix.py
+```
 
 ## Afficher les prix des auto-écoles
 

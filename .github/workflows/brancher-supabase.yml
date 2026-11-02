@@ -1,0 +1,130 @@
+# Créno : installe tout seul la partie serveur dans Supabase (pas besoin d'ordinateur).
+#
+# Se lance à chaque modification du dossier supabase/, ou à la main :
+# onglet Actions > « Brancher Supabase » > Run workflow.
+#   1. crée ou met à jour les tables (fichiers de supabase/migrations)
+#   2. déploie les 4 fonctions serveur (alertes, pack, stats, pros), sans vérification JWT
+#   3. copie dans Supabase les secrets des fonctions réglés sur GitHub
+#   4. remplit assets/config.js (adresse du projet + clé publique) s'il est encore vide
+#
+# Secrets à régler sur GitHub : Settings > Secrets and variables > Actions > New repository secret
+#   SUPABASE_ACCESS_TOKEN   jeton d'accès (supabase.com > Account > Access Tokens)
+#   SUPABASE_PROJECT_ID     identifiant du projet (l'adresse https://xxxx.supabase.co marche aussi)
+#   SUPABASE_DB_PASSWORD    mot de passe de la base de données (pour créer les tables)
+#   ADMIN_CODE, ADMIN_EMAIL code du tableau de bord /admin/ et e-mail qui reçoit les demandes
+#   plus tard : RESEND_API_KEY, ALERTES_EXPEDITEUR, STRIPE_SECRET_KEY
+#   facultatifs : CRENO_SEL, ALERTES_LIEN_STRIPE (vide = alertes gratuites), PACK_MONTANT_CENTIMES
+# Ces secrets restent cachés : personne ne peut les relire, pas même toi.
+name: Brancher Supabase
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "supabase/**"
+      - ".github/workflows/brancher-supabase.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brancher-supabase
+  cancel-in-progress: false
+
+jobs:
+  supabase:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - name: Vérifier les secrets
+        id: verif
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_PROJECT_ID" ]; then
+            echo "::warning::Il manque SUPABASE_ACCESS_TOKEN ou SUPABASE_PROJECT_ID dans les secrets GitHub. Rien n'a été fait."
+            echo "ok=non" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Accepte l'identifiant seul, l'adresse https://xxxx.supabase.co ou le lien du tableau de bord.
+          PROJET=$(printf '%s' "$SUPABASE_PROJECT_ID" | tr -d '[:space:]' | sed -E 's#^https?://##; s#\.supabase\.co.*$##; s#^.*/project/##; s#/.*$##')
+          echo "PROJET=$PROJET" >> "$GITHUB_ENV"
+          echo "ok=oui" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.verif.outputs.ok == 'oui'
+
+      - uses: supabase/setup-cli@v1
+        if: steps.verif.outputs.ok == 'oui'
+        with:
+          version: 2.90.0
+
+      - name: 1. Tables (migrations)
+        if: steps.verif.outputs.ok == 'oui'
+        run: |
+          if [ -z "$SUPABASE_DB_PASSWORD" ]; then
+            echo "::warning::Il manque SUPABASE_DB_PASSWORD : les tables n'ont pas été créées."
+            exit 0
+          fi
+          supabase link --project-ref "$PROJET"
+          if ! supabase db push --yes; then
+            echo "::error::Les tables n'ont pas pu être créées. Envoie une capture de cette erreur à Claude."
+            exit 1
+          fi
+
+      - name: 2. Fonctions serveur
+        if: always() && steps.verif.outputs.ok == 'oui'
+        run: supabase functions deploy --project-ref "$PROJET" --no-verify-jwt --use-api --yes
+
+      - name: 3. Secrets des fonctions
+        if: always() && steps.verif.outputs.ok == 'oui'
+        env:
+          ADMIN_CODE: ${{ secrets.ADMIN_CODE }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          CRENO_SEL: ${{ secrets.CRENO_SEL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERTES_EXPEDITEUR: ${{ secrets.ALERTES_EXPEDITEUR }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          ALERTES_LIEN_STRIPE: ${{ secrets.ALERTES_LIEN_STRIPE }}
+          PACK_MONTANT_CENTIMES: ${{ secrets.PACK_MONTANT_CENTIMES }}
+          ALERTES_MONTANT_CENTIMES: ${{ secrets.ALERTES_MONTANT_CENTIMES }}
+        run: |
+          args=()
+          for n in ADMIN_CODE ADMIN_EMAIL CRENO_SEL RESEND_API_KEY ALERTES_EXPEDITEUR STRIPE_SECRET_KEY \
+                   ALERTES_LIEN_STRIPE PACK_MONTANT_CENTIMES ALERTES_MONTANT_CENTIMES; do
+            v="${!n}"
+            if [ -n "$v" ]; then
+              args+=("$n=$v")
+              echo "Copié dans Supabase : $n"
+            fi
+          done
+          if [ ${#args[@]} -eq 0 ]; then
+            echo "Aucun secret de fonction sur GitHub pour l'instant."
+            exit 0
+          fi
+          supabase secrets set --project-ref "$PROJET" "${args[@]}"
+
+      - name: 4. Remplir assets/config.js
+        if: always() && steps.verif.outputs.ok == 'oui'
+        run: |
+          if ! grep -q 'supabaseUrl: ""' assets/config.js; then
+            echo "assets/config.js est déjà rempli."
+            exit 0
+          fi
+          if ! supabase projects api-keys --project-ref "$PROJET" -o json > "$RUNNER_TEMP/cles.json"; then
+            echo "::warning::Clé publique introuvable : envoie à Claude l'adresse du projet et la clé publishable."
+            exit 0
+          fi
+          if ! CLE=$(python3 scripts/cle_supabase.py publique < "$RUNNER_TEMP/cles.json"); then
+            echo "::warning::Clé publique introuvable : envoie à Claude l'adresse du projet et la clé publishable."
+            exit 0
+          fi
+          sed -i "s#supabaseUrl: \"\"#supabaseUrl: \"https://$PROJET.supabase.co\"#; s#supabaseAnonKey: \"\"#supabaseAnonKey: \"$CLE\"#" assets/config.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/config.js
+          git commit -m "Brancher le site à Supabase (adresse et clé publique)"
+          git pull --rebase
+          git push

@@ -59,7 +59,15 @@ supabase/functions/stats/         fonction serveur : compteur des contacts envoy
 supabase/functions/pros/          fonction serveur : demandes d'élèves (publication, liste sans contact, réponses
                                   des pros, fermeture) et formulaires des pros (tarifs, services, messages, inscription
                                   des loueurs, demande Créno Pro), avec un e-mail à William (ADMIN_EMAIL) pour chaque envoi
-.github/workflows/                mise-a-jour-prix.yml : chaque jour, lit Supabase (sync_prix.py), régénère et publie
+.github/workflows/                brancher-supabase.yml : à chaque changement de supabase/ (ou Run workflow), crée les
+                                  tables (db push), déploie les 4 fonctions sans JWT, copie les secrets GitHub dans
+                                  Supabase, remplit config.js s'il est vide. William n'a pas d'ordinateur (iPad) :
+                                  tout le branchement Supabase passe par là.
+                                  mise-a-jour-prix.yml : chaque jour, lit Supabase (sync_prix.py), régénère et publie.
+                                  Secrets GitHub : SUPABASE_ACCESS_TOKEN, SUPABASE_PROJECT_ID, SUPABASE_DB_PASSWORD,
+                                  ADMIN_CODE, ADMIN_EMAIL, puis STRIPE_SECRET_KEY, RESEND_API_KEY, ALERTES_EXPEDITEUR
+scripts/cle_supabase.py           trouve la clé publique / service_role dans `supabase projects api-keys -o json`
+                                  (pour les workflows, jamais affichée)
 assets/style.css                  styles (tokens de couleur en haut, thème clair et sombre)
 assets/app.js                     recherche de ville, filtres des pages département, calculateur,
                                   formulaires (Supabase), checklist, alertes, achat et accès au pack,
@@ -181,8 +189,8 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Les fonctions refusent un paiement inférieur au prix attendu (PACK_MONTANT_CENTIMES,
   ALERTES_MONTANT_CENTIMES) : sinon on pourrait payer avec un lien moins cher
   et récupérer le pack. Si un prix change, changer site.json, le lien Stripe ET ce secret.
-- Déployer les fonctions sans vérification JWT (`supabase functions deploy alertes --no-verify-jwt`,
-  idem pour `pack` et `stats`) : le site les appelle avec la clé publique.
+- Les fonctions sont déployées sans vérification JWT (workflow brancher-supabase.yml, ou
+  `supabase functions deploy --no-verify-jwt`) : le site les appelle avec la clé publique.
 - Prix de l'abonnement vérifié par la fonction alertes : ALERTES_MONTANT_CENTIMES (défaut 999).
 - Toute vente exige les mentions légales et les CGV remplies (site.json `editeur`,
   `mediateur_consommation`, `email_contact`) : les champs vides s'affichent « à compléter ».
@@ -312,8 +320,10 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 7. Données personnelles : on ne demande pas de nom pour les déclarations. Toute nouvelle
    collecte doit être expliquée sur la page Confidentialité.
 8. **Pas d'accompagnement payant le jour de l'examen** pour un candidat libre (voir Moniteurs).
-9. **Aucun secret dans le dépôt** : clé service_role, clé secrète Stripe, clé Resend vont
-   uniquement dans les secrets Supabase ou les variables d'environnement.
+9. **Aucun secret dans le dépôt** : clé service_role, clé secrète Stripe, clé Resend, jeton d'accès
+   Supabase vont uniquement dans les secrets GitHub Actions (recopiés dans Supabase par
+   brancher-supabase.yml) ou les secrets Supabase. Jamais dans le code ni dans une conversation.
+   Vercel n'utilise aucune variable d'environnement (site statique).
 
 ## Design
 

@@ -86,7 +86,8 @@ Supabase > *Storage* > espace `pack` > *Upload file* : `pack-candidat-libre.pdf`
 Créer deux *Payment Links* et envoyer les liens à Claude (ils vont dans `assets/config.js`) :
 - Pack candidat libre, 14,99 €, paiement unique ; après paiement, rediriger vers
   `https://creno-tan.vercel.app/pack-candidat-libre/acces/?session_id={CHECKOUT_SESSION_ID}`
-- Créno Pro, 19,99 € **par mois** (produit récurrent), le même pour les auto-écoles et les loueurs.
+- Créno Pro Auto-école et Créno Pro Loueur, 19,99 € **par mois** chacun (produits récurrents) :
+  `lienCrenoPro` et `lienCrenoProLoueur` dans `assets/config.js`.
 
 Plus tard seulement, si les alertes deviennent payantes : un lien Alertes à 9,99 € par mois (redirection
 vers `https://creno-tan.vercel.app/alertes/merci/?session_id={CHECKOUT_SESSION_ID}`), dans le secret

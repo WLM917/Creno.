@@ -76,7 +76,8 @@ assets/app.js                     recherche de ville, filtres des pages départe
                                   formulaires (Supabase), checklist, alertes, achat et accès au pack,
                                   outil badge de l'espace pros, comptage des clics vers les partenaires
 assets/config.js                  supabaseUrl + supabaseAnonKey (clé publique), lienPaiementPack (Stripe),
-                                  lienCrenoPro (abonnement Stripe 19,99 €/mois, auto-écoles et loueurs), formEndpoint de secours
+                                  lienCrenoPro (abonnement Stripe 19,99 €/mois des auto-écoles),
+                                  lienCrenoProLoueur (celui des loueurs ; vide = lienCrenoPro), formEndpoint de secours
 assets/og.png                     image de partage (réseaux sociaux)
 data/index.json                   départements (code, nom, nb, moyenne), date d'import
 data/departements/<code>.json     auto-écoles d'un département (id = numéro d'agrément raf_numero)

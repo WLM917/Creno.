@@ -463,8 +463,9 @@
           callFn("pros", corps).then(function (j) {
             // Créno Pro (auto-école, ou loueur qui choisit Créno Pro) : direction le paiement Stripe
             var pro = type === "creno_pro" || (type === "loueur" && row.formule === "partenaire");
-            if (pro && CONFIG.lienCrenoPro && j.id) {
-              var lien = CONFIG.lienCrenoPro;
+            // Deux produits Stripe : un pour les auto-écoles, un pour les loueurs (sinon le même lien).
+            var lien = type === "creno_pro" ? CONFIG.lienCrenoPro : (CONFIG.lienCrenoProLoueur || CONFIG.lienCrenoPro);
+            if (pro && lien && j.id) {
               location.href = lien + (lien.indexOf("?") === -1 ? "?" : "&") + "client_reference_id=pro-" +
                 (type === "creno_pro" ? "ae-" : "loueur-") + j.id + (row.email ? "&prefilled_email=" + encodeURIComponent(row.email) : "");
               return;

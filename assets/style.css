@@ -1477,3 +1477,6 @@ textarea:focus-visible { border-color: var(--signal); }
 .a-traiter .sub { display: block; color: var(--muted); font-size: 0.88rem; }
 #admin-a-traiter h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
 #admin-a-traiter { display: grid; gap: 1.25rem; }
+
+/* Espace pros : les blocs d'un même public se suivent, sans grand espace */
+.pro-groupe { display: flex; flex-direction: column; gap: 1.75rem; }

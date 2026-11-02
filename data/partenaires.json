@@ -1,0 +1,6 @@
+{
+ "meta": {
+  "description": "Auto-écoles abonnées à Créno Pro, par numéro d'agrément. Elles apparaissent dans « Mises en avant » en haut des pages de leur ville et de leur département, avec la mention « Partenaire payant ». Leur rang dans le classement NE change PAS. Champs : depuis (AAAA-MM-JJ), code_promo et reduction (facultatifs, affichés dans leur volet Contacter). Ajouter une auto-école seulement après son paiement Créno Pro, la retirer quand elle arrête."
+ },
+ "auto_ecoles": {}
+}

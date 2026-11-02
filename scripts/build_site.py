@@ -46,6 +46,7 @@ GSV = (CFG.get("google_site_verification") or "").strip()
 PRIX_PACK = CFG.get("prix_pack", "14,99 €")
 PRIX_ALERTES = CFG.get("prix_alertes", "9,99 €")
 ESSAI_ALERTES = int(CFG.get("essai_alertes_jours", 15))
+PRIX_CRENO_PRO = CFG.get("prix_creno_pro", "19,99 €")
 ALERTES_PAYANTES = bool(CFG.get("alertes_payantes", False))
 ANALYTICS = bool(CFG.get("vercel_analytics", False))
 EDITEUR = CFG.get("editeur") or {}
@@ -64,6 +65,9 @@ LABELS = {
     "enligne": "En ligne",
     "accelere": "Formation accélérée",
 }
+# Auto-écoles abonnées à Créno Pro : mises en avant (encadré séparé), sans changer leur rang
+PARTENAIRES = ((json.loads((ROOT / "data" / "partenaires.json").read_text(encoding="utf-8")).get("auto_ecoles") or {})
+               if (ROOT / "data" / "partenaires.json").exists() else {})
 # Prix annoncés par les auto-écoles elles-mêmes (vérifiés), par numéro d'agrément : voir scripts/sync_prix.py
 TARIFS = ((json.loads((ROOT / "data" / "tarifs.json").read_text(encoding="utf-8")).get("ecoles") or {})
           if (ROOT / "data" / "tarifs.json").exists() else {})
@@ -408,6 +412,29 @@ def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True, href=None, d
     )
 
 
+def mises_en_avant(L, rows, nb, code, dep_url, ville=None):
+    """Encadré des auto-écoles Créno Pro (au plus 3), séparé du classement : leur rang ne change pas.
+    Sur une page ville, celles de la ville d'abord, puis celles du département."""
+    part = [r for r in rows if r["e"].get("partenaire")]
+    if ville is not None:
+        part.sort(key=lambda r: (r["e"]["ville"] != ville, r["rang"]))
+    part = part[:3]
+    if not part:
+        return ""
+    items = []
+    for r in part:
+        e = r["e"]
+        promo = (f'<span class="promo">Code Créno : <strong>{esc(e["code_promo"])}</strong>'
+                 f'{(" : " + esc(e["reduction"])) if e.get("reduction") else ""}</span>') if e.get("code_promo") else ""
+        items.append(f'<li><a href="{L(dep_url)}#ae-{esc(e["id"])}"><strong>{esc(e["nom"])}</strong></a>'
+                     f'<span>{esc(ville_affichee(e["ville"]))} · {rang_txt(r["rang"])} sur {nb} dans le {esc(code)} · '
+                     f'{pct(e["taux"])} de réussite</span>{promo}</li>')
+    return (f'<section class="block a-la-une" aria-labelledby="une-title"><div class="une-head">'
+            f'<h2 id="une-title">Mises en avant</h2><span class="chip chip-flag">Partenaire payant</span></div>'
+            f'<p class="small">Ces auto-écoles paient Créno Pro pour être mises en avant. Leur rang dans le classement ne change pas.</p>'
+            f'<ul class="une-liste">{"".join(items)}</ul></section>')
+
+
 def fil_ariane(L, items, extra_class=""):
     """items : liste de (libellé, chemin ou None pour la page courante)."""
     parts = []
@@ -530,8 +557,8 @@ def est_partenaire(l):
     return l.get("formule") == "partenaire" or bool(l.get("partenaire"))
 
 
-MENTION_LOUEURS = ('<p class="small">Les agences paient un abonnement pour apparaître sur Créno (certaines sont listées gratuitement '
-                   'pendant le lancement). Celles marquées « Partenaire » paient pour être mises en avant et apparaissent en premier.</p>')
+MENTION_LOUEURS = ('<p class="small">L\'inscription des agences sur Créno est gratuite. Celles marquées « Partenaire » '
+                   'ont pris Créno Pro (payant) pour être mises en avant et apparaissent en premier.</p>')
 
 
 def loueurs_html(L, loueurs, dep=None):
@@ -778,6 +805,13 @@ def build(out_dir=ROOT, explicit=False, only=None):
         if only is not None and d["code"] not in only and d["code"] != DEP_DEFAUT:
             continue
         dep = json.loads((DATA / "departements" / f'{d["code"]}.json').read_text(encoding="utf-8"))
+        for e in dep["ecoles"]:
+            pa = PARTENAIRES.get(e["id"])
+            if pa:
+                e["partenaire"] = True
+                for k in ("code_promo", "reduction"):
+                    if pa.get(k):
+                        e[k] = pa[k]
         res = classer(dep)
         rows = res["rows"]
         nb = len(rows)
@@ -906,6 +940,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
     <p class="small">{price_note} Données de la Sécurité routière, fichier du {date_import}. <a href="{L("methode/")}">Comment on calcule l'indice</a></p>
     <p class="rank-hint">Touche une auto-école pour la contacter : téléphone, itinéraire ou message tout prêt. Le permis demande au moins 20 heures de conduite (13 h en boîte automatique) : c'est souvent ce que comprend le forfait, les heures en plus se paient à l'unité.</p>
   </div>
+  {mises_en_avant(L, rows, nb, d["code"], path)}
   <ol class="ranking" id="ranking" data-dynamic>
     {"".join(ligne(r, res["moyenne"], "complet", avec_prix=res["avec_prix"]) for r in rows)}
   </ol>
@@ -956,6 +991,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
     <p class="lede">{plural(len(vp["ecoles"]), "auto-école enseigne", "auto-écoles enseignent")} le permis B à {esc(vp["nom"])} ({esc(cps)}). Réussite moyenne au 1er passage : {pct(moy_v)}, {comp} la moyenne du département ({pct(res["moyenne"])}).</p>
   </header>
   <p class="rank-hint">Touche une auto-école pour la contacter : téléphone, itinéraire ou message tout prêt. Le permis demande au moins 20 heures de conduite (13 h en boîte automatique) : c'est souvent ce que comprend le forfait, les heures en plus se paient à l'unité.</p>
+  {mises_en_avant(LV, cl, nb, d["code"], path, v)}
   <ol class="ranking ranking-city">
     {"".join(ligne(r, res["moyenne"], "ville", nb, d["code"], res["avec_prix"], decl_href=f'{LV(path)}?ae={esc(r["e"]["id"])}#declarer') for r in cl)}
   </ol>
@@ -1091,11 +1127,38 @@ def build(out_dir=ROOT, explicit=False, only=None):
                     f'd\'alertes » en bas de chaque e-mail. L\'abonnement s\'arrête tout de suite et tu n\'es plus prélevé. '
                     f'Aucun engagement de durée.</p></details>')
     else:
-        offre_alertes = "Gratuit pendant le lancement. Tu confirmes ton e-mail en un clic."
-        bouton_alertes = "Recevoir les alertes"
-        faq_prix = ('<details><summary>C\'est gratuit ?</summary><p>Oui, pendant le lancement. '
-                    f'Plus tard, les alertes coûteront {esc(PRIX_ALERTES)} par mois après {ESSAI_ALERTES} jours d\'essai gratuit, '
-                    'sans engagement.</p></details>')
+        offre_alertes = "<strong>Gratuit.</strong> Tu confirmes ton e-mail en un clic, et c'est parti."
+        bouton_alertes = "Recevoir les alertes gratuitement"
+        faq_prix = ('<details><summary>C\'est vraiment gratuit ?</summary><p>Oui. Si un jour les alertes deviennent payantes, '
+                    'tu seras prévenu par e-mail à l\'avance, et rien ne sera jamais prélevé sans ton accord.</p></details>')
+    if ALERTES_PAYANTES:
+        cgv = {
+            "cgv_lede": "le Pack candidat libre, l'abonnement aux Alertes et Créno Pro pour les pros.",
+            "cgv_offre_alertes": (f"<li><strong>Alertes places d'examen</strong> : des e-mails envoyés quand des candidats signalent des places "
+                                  f"d'examen dans le département choisi. Les {ESSAI_ALERTES} premiers jours sont gratuits, sans carte bancaire et "
+                                  f"sans engagement. Pour continuer ensuite, abonnement de {esc(PRIX_ALERTES)} TTC par mois, renouvelé chaque mois "
+                                  f"jusqu'à ce que tu l'arrêtes. Aucun abonnement ne commence sans ton accord.</li>"),
+            "cgv_paiement_alertes": " L'abonnement aux alertes est prélevé chaque mois, à la date anniversaire de ton abonnement.",
+            "cgv_resil_alertes": (
+                '\n  <section class="block" aria-labelledby="cgv-resil">\n'
+                '    <h2 id="cgv-resil">Arrêter l\'abonnement aux alertes</h2>\n'
+                '    <p>Tu peux l\'arrêter à tout moment, sans frais et sans justification, en un clic : lien « Ne plus recevoir '
+                'd\'alertes » en bas de chaque e-mail. L\'arrêt prend effet tout de suite : aucun nouveau prélèvement n\'a lieu. '
+                'Le mois en cours déjà payé n\'est pas remboursé, sauf si tu exerces ton droit de rétractation.</p>\n'
+                '  </section>\n'),
+            "cgv_retract_alertes": ("<p><strong>Abonnement aux alertes :</strong> le service commence dès le paiement, à ta demande (case à cocher "
+                                    "avant de payer). Tu peux te rétracter dans les 14 jours en nous écrivant ; tu es alors remboursé, moins le "
+                                    "montant correspondant à la période déjà fournie (article L221-25 du Code de la consommation).</p>"),
+        }
+    else:
+        cgv = {
+            "cgv_lede": "le Pack candidat libre, et Créno Pro pour les pros. Les alertes places d'examen sont gratuites.",
+            "cgv_offre_alertes": ("<li><strong>Alertes places d'examen</strong> : gratuites, aucun paiement n'est demandé. Si elles deviennent "
+                                  "payantes un jour, tu seras prévenu à l'avance et rien ne sera prélevé sans ton accord.</li>"),
+            "cgv_paiement_alertes": "",
+            "cgv_resil_alertes": "",
+            "cgv_retract_alertes": "",
+        }
     for path, tpl, section, title, desc, crumb, prio in fixes:
         L = Links(depuis(path), explicit)
         body = fill((TPL / tpl).read_text(encoding="utf-8"), {
@@ -1106,7 +1169,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
             "options_departements": options_deps, "formulaire_prix": formulaire_prix(deps=deps), "contact": contact_txt,
             "prix_pack": esc(PRIX_PACK), "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
             "offre_alertes": offre_alertes, "bouton_alertes": bouton_alertes,
-            "faq_prix": faq_prix,
+            "faq_prix": faq_prix, "prix_creno_pro": esc(PRIX_CRENO_PRO), **cgv,
             "contact_direct": (f'<p class="small">Tu préfères un e-mail ? Écris à <a href="mailto:{esc(CONTACT)}">{esc(CONTACT)}</a>.</p>'
                                if CONTACT else ""),
             "pros": pros_html(L, pros), "editeur": editeur_html, "mediateur": mediateur_html,

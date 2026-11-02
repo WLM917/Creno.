@@ -7,10 +7,10 @@ Le bon créneau pour ton permis. Site pour passer son permis B au meilleur prix 
 - **Coût du permis** : calculateur du coût réel d'un devis.
 - **Candidat libre** : les étapes, un annuaire de loueurs de voitures à double commande, des conseils légaux pour trouver une date d'examen plus vite.
 - **Jour de l'examen** : checklist à cocher, enregistrée sur le téléphone.
-- **Alertes places** : les candidats signalent les places vues sur RdvPermis, les abonnés du département reçoivent un e-mail (15 jours gratuits, puis 9,99 € par mois sans engagement). Aucun robot.
+- **Alertes places** : les candidats signalent les places vues sur RdvPermis, les abonnés du département reçoivent un e-mail. Gratuit pour l'instant (un mode payant, 15 jours gratuits puis 9,99 € par mois, est prêt pour plus tard). Aucun robot.
 - **Pack candidat libre** (14,99 €) : guide PDF du dossier au jour J, programme en 12 séances, examen blanc noté.
 - **Moniteurs** : examen blanc ou présentation à l'examen par une auto-école agréée, dans les règles.
-- **Espace pros** : offres pour auto-écoles, moniteurs et loueurs, badges du top 10, compteur des élèves envoyés et rapport personnel pour chaque pro.
+- **Espace pros** : gratuit pour les auto-écoles, les moniteurs et les loueurs (inscription, tarifs, réponses aux demandes d'élèves), badges du top 10, compteur des élèves envoyés et rapport personnel pour chaque pro. En option, **Créno Pro** (19,99 € par mois) pour se faire connaître : encadré « Mises en avant » pour les auto-écoles (le rang ne change pas), première place et mention « Partenaire » pour les loueurs.
 - **Méthode** : la formule du classement, publique. **Mentions légales** et **conditions de vente**.
 
 Site statique : les pages HTML sont générées par `scripts/build_site.py` et peuvent être hébergées gratuitement sur GitHub Pages, Vercel ou Netlify. Détails techniques et règles du projet : voir `CLAUDE.md`.
@@ -46,10 +46,11 @@ Google met en général de quelques jours à quelques semaines pour indexer les 
 
 1. **SQL** : dans *SQL Editor*, lancer dans l'ordre tous les fichiers de `supabase/migrations/` (du plus ancien au plus récent).
 2. **PDF** : *Storage* > espace `pack` (privé) > déposer `pack-candidat-libre.pdf`. Ne jamais le mettre dans le dépôt.
-3. **Stripe** : créer deux *Payment Links* :
+3. **Stripe** : créer les *Payment Links* :
    - Pack candidat libre, 14,99 €, paiement unique ; après paiement, rediriger vers
      `https://creno-tan.vercel.app/pack-candidat-libre/acces/?session_id={CHECKOUT_SESSION_ID}`
-   - Alertes, 9,99 € **par mois** (produit récurrent) ; rediriger vers
+   - Créno Pro, 19,99 € **par mois** (produit récurrent), le même pour les auto-écoles et les loueurs.
+   - Plus tard seulement, si les alertes deviennent payantes : Alertes, 9,99 € par mois ; rediriger vers
      `https://creno-tan.vercel.app/alertes/merci/?session_id={CHECKOUT_SESSION_ID}`
 4. **Resend** : créer un compte, vérifier un domaine (ex. creno.fr), créer une clé API.
 5. **Fonctions** : déployer `alertes`, `pack`, `stats` et `pros`, sans vérification JWT :
@@ -65,8 +66,9 @@ Google met en général de quelques jours à quelques semaines pour indexer les 
    `STRIPE_SECRET_KEY`, `CRENO_SEL` (phrase au hasard), `ADMIN_CODE` (ton code du tableau de bord),
    `ADMIN_EMAIL` (ton e-mail : tu y reçois chaque demande d'élève, chaque réponse de pro et chaque formulaire),
    `PACK_MONTANT_CENTIMES=1499`, `ALERTES_MONTANT_CENTIMES=999`, `ALERTES_ESSAI_JOURS=15`,
-   et `ALERTES_LIEN_STRIPE` (lien de l'abonnement) quand les alertes deviennent payantes.
-7. **Tâche quotidienne des alertes** (rappels de fin d'essai, renouvellements) : *Integrations > Cron*,
+   et `ALERTES_LIEN_STRIPE` : **laisse-le vide tant que les alertes sont gratuites** (remplis-le avec le
+   lien de l'abonnement seulement le jour où elles deviennent payantes).
+7. **Tâche quotidienne des alertes** (utile seulement quand les alertes sont payantes : rappels de fin d'essai, renouvellements) : *Integrations > Cron*,
    créer une tâche chaque jour à 9 h qui appelle la fonction `alertes` en POST avec le corps
    `{"action":"quotidien","code":"TON_ADMIN_CODE"}`. Ou en SQL (extensions pg_cron et pg_net activées) :
 
@@ -79,10 +81,10 @@ Google met en général de quelques jours à quelques semaines pour indexer les 
    $$);
    ```
 
-8. **Site** : dans `assets/config.js`, remplir `supabaseUrl`, `supabaseAnonKey`, `lienPaiementPack`, et les
-   liens Stripe des abonnements des loueurs (`lienLoueurReferencement` à 10 €/mois, `lienLoueurPartenaire` à 20 €/mois).
+8. **Site** : dans `assets/config.js`, remplir `supabaseUrl`, `supabaseAnonKey`, `lienPaiementPack` et
+   `lienCrenoPro` (lien de l'abonnement Créno Pro à 19,99 €/mois).
    Dans `site.json`, remplir `email_contact`, `editeur` et `mediateur_consommation` ; `alertes_payantes`
-   doit être d'accord avec `ALERTES_LIEN_STRIPE`. Relancer `python3 scripts/build_site.py`, pousser.
+   (false aujourd'hui) doit être d'accord avec `ALERTES_LIEN_STRIPE`. Relancer `python3 scripts/build_site.py`, pousser.
 9. **Vercel** : onglet *Analytics* > activer Web Analytics.
 
 ## Mise à jour automatique des prix (GitHub)
@@ -103,6 +105,22 @@ de ton compte GitHub à la place de celui de github-actions[bot].
 - Tu peux aussi recopier à la main les tarifs publiés sur le site d'une auto-école dans `data/tarifs.json`
   (avec `source: "site"`, le lien de la page et la date), relancer `python3 scripts/build_site.py` et pousser.
 - Les prix payés par les élèves s'affichent à partir de 3 déclarations pour la même auto-école.
+
+## Activer Créno Pro pour un pro
+
+- **Auto-école** : sa demande arrive par e-mail et dans « À traiter » du tableau de bord. Une fois le
+  paiement vu dans Stripe, ajoute-la dans `data/partenaires.json`, par exemple :
+
+  ```json
+  "auto_ecoles": {
+    "E1109108230": { "depuis": "2026-11-15", "code_promo": "CRENO10", "reduction": "frais de dossier offerts" }
+  }
+  ```
+
+  (`code_promo` et `reduction` sont facultatifs), relance `python3 scripts/build_site.py` et pousse.
+  Elle apparaît dans « Mises en avant » en haut des pages de sa ville et de son département, avec
+  « Partenaire payant ». Son rang ne change pas. Quand elle arrête de payer, retire-la.
+- **Loueur** : dans `data/loueurs.json`, passe sa `formule` de `"gratuit"` à `"partenaire"`, relance le build et pousse.
 
 ## Tableau de bord et rapports des pros
 

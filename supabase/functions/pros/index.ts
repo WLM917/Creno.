@@ -7,7 +7,7 @@
 //   repondre   { demande, pro_type, departement_pro, auto_ecole_id? | loueur?, nom?, contact, message?, engagement }
 //              -> un pro répond : son message part à l'élève par e-mail, et tu es prévenu.
 //   fermer     { t }              -> l'élève ferme sa demande (lien dans ses e-mails)
-//   formulaire { type: pro | contact_pro | tarifs | loueur, ... } -> enregistre le formulaire et te prévient par e-mail
+//   formulaire { type: pro | contact_pro | tarifs | loueur | creno_pro, ... } -> enregistre le formulaire et te prévient par e-mail
 //
 // Qui peut répondre : une auto-école de la liste officielle (ou un de ses moniteurs), ou un loueur référencé
 // sur Créno. 3 réponses au plus par demande, une seule par pro. Une demande reste ouverte 30 jours.
@@ -311,6 +311,8 @@ const FORMULAIRES: Record<string, { table: string; champs: string[]; titre: stri
   tarifs: { table: "tarifs_proposes", titre: "Une auto-école envoie ses tarifs",
     champs: ["auto_ecole_id", "auto_ecole_nom", "departement", "forfait", "heures_forfait", "prix_heure", "frais_examen",
       "accelere", "accelere_details", "lien", "contact"] },
+  creno_pro: { table: "creno_pro_demandes", titre: "Une auto-école veut Créno Pro",
+    champs: ["auto_ecole_id", "auto_ecole_nom", "departement", "contact", "email", "message"] },
   loueur: { table: "loueurs_proposes", titre: "Un loueur veut s'inscrire",
     champs: ["nom", "ville", "departement", "adresse", "site", "contact", "email", "prix_heure", "boite", "formule"] },
 };

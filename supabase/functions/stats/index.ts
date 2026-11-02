@@ -179,7 +179,7 @@ async function admin(body: Record<string, unknown>) {
   }
   pros.sort((a, b) => b.j30 - a.j30 || b.total - a.total);
 
-  const [reponses, demandes, tarifs, prosProposes, loueurs, messages, demandesOuvertes, demandes30] = await Promise.all([
+  const [reponses, demandes, tarifs, prosProposes, loueurs, messages, demandesOuvertes, demandes30, crenoPro] = await Promise.all([
     db("reponses_demandes?select=created_at,pro_type,pro_ref,pro_nom,contact,message,demandes_pros(besoin,departement,ville)" +
       "&order=created_at.desc&limit=50").then((r) => r.data ?? []),
     db("demandes_pros?select=id,created_at,besoin,departement,ville,disponibilites,nb_reponses,statut&email=not.is.null" +
@@ -190,6 +190,7 @@ async function admin(body: Record<string, unknown>) {
     db("contacts_pros?traite=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
     compte(`demandes_pros?statut=eq.ouverte&email=not.is.null&created_at=gte.${il30iso}&select=id`),
     compte(`demandes_pros?email=not.is.null&created_at=gte.${il30iso}&select=id`),
+    db("creno_pro_demandes?traite=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
   ]);
 
   const now = new Date().toISOString();
@@ -204,7 +205,7 @@ async function admin(body: Record<string, unknown>) {
     ok: true, pros,
     alertes: { essais, abonnes, en_attente: enAttente, signalements_30j: signalements, revenu_mensuel: abonnes * centimes / 100 },
     demandes: { ouvertes: demandesOuvertes, recues_30j: demandes30, liste: demandes, reponses },
-    a_traiter: { tarifs, pros: prosProposes, loueurs, messages },
+    a_traiter: { creno_pro: crenoPro, tarifs, pros: prosProposes, loueurs, messages },
   });
 }
 
@@ -214,6 +215,7 @@ const TRAITEMENTS: Record<string, { table: string; champ: string }> = {
   pros: { table: "pros_proposes", champ: "verifie" },
   loueurs: { table: "loueurs_proposes", champ: "verifie" },
   messages: { table: "contacts_pros", champ: "traite" },
+  creno_pro: { table: "creno_pro_demandes", champ: "traite" },
 };
 
 async function traiter(body: Record<string, unknown>) {

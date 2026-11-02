@@ -390,14 +390,16 @@
   };
   var NUMBERS = ["forfait", "heures_incluses", "prix_heure", "heures_total", "frais_examen", "heures_forfait"];
   // Ces formulaires passent par la fonction serveur « pros » : elle enregistre et te prévient par e-mail.
-  var VIA_PROS = { demande_pro: true, pro: true, contact_pro: true, tarifs: true, loueur: true };
+  var VIA_PROS = { demande_pro: true, pro: true, contact_pro: true, tarifs: true, loueur: true, creno_pro: true };
   var MERCI = {
     declaration: "Merci, ta réponse est envoyée.",
     demande_pro: "C'est en ligne ! On t'a envoyé un e-mail. Les pros qui peuvent t'aider te répondront par e-mail.",
     pro: "Merci, on vérifie tes informations et on revient vers toi.",
     contact_pro: "Merci, ton message est envoyé. On te répond vite.",
     tarifs: "Merci ! On vérifie tes tarifs (avec ta page de tarifs ou par téléphone) avant de les afficher sur ta fiche.",
-    loueur: "Merci ! On te recontacte très vite pour activer ton abonnement."
+    loueur: "Merci ! On vérifie ton agence et on l'ajoute sur Créno, gratuitement.",
+    loueur_pro: "Merci ! On te recontacte très vite pour activer Créno Pro.",
+    creno_pro: "Merci ! On te recontacte très vite pour activer Créno Pro."
   };
 
   function initSchoolPicker(form) {
@@ -459,15 +461,15 @@
           else { corps.action = "formulaire"; corps.type_formulaire = type; }
           button.disabled = true;
           callFn("pros", corps).then(function (j) {
-            if (type === "loueur") {
-              var lien = row.formule === "partenaire" ? CONFIG.lienLoueurPartenaire : CONFIG.lienLoueurReferencement;
-              if (lien && j.id) {
-                location.href = lien + (lien.indexOf("?") === -1 ? "?" : "&") + "client_reference_id=loueur-" + j.id +
-                  (row.email ? "&prefilled_email=" + encodeURIComponent(row.email) : "");
-                return;
-              }
+            // Créno Pro (auto-école, ou loueur qui choisit Créno Pro) : direction le paiement Stripe
+            var pro = type === "creno_pro" || (type === "loueur" && row.formule === "partenaire");
+            if (pro && CONFIG.lienCrenoPro && j.id) {
+              var lien = CONFIG.lienCrenoPro;
+              location.href = lien + (lien.indexOf("?") === -1 ? "?" : "&") + "client_reference_id=pro-" +
+                (type === "creno_pro" ? "ae-" : "loueur-") + j.id + (row.email ? "&prefilled_email=" + encodeURIComponent(row.email) : "");
+              return;
             }
-            done(true, MERCI[type] || "Merci, c'est envoyé.");
+            done(true, MERCI[type === "loueur" && pro ? "loueur_pro" : type] || "Merci, c'est envoyé.");
           }).catch(function (e) { done(false, e.message); });
           return;
         }
@@ -966,6 +968,12 @@
     }).join("") || '<tr><td colspan="3">Aucune réponse de pro pour l\'instant.</td></tr>';
 
     var blocs = [
+      ["creno_pro", "Auto-écoles qui veulent Créno Pro", "C'est fait", function (x) {
+        return "<strong>" + esc(x.auto_ecole_nom) + "</strong>" + (x.departement ? " (" + esc(x.departement) + ")" : "") +
+          '<span class="sub">' + esc([x.contact, x.email].filter(Boolean).join(" · ")) + "</span>" +
+          (x.message ? '<span class="sub">Réduction proposée : ' + esc(x.message) + "</span>" : "") +
+          '<span class="sub">Vérifie le paiement dans Stripe, puis ajoute-la dans data/partenaires.json.</span>';
+      }],
       ["tarifs", "Tarifs envoyés par des auto-écoles", "Publier", function (x) {
         return "<strong>" + esc(x.auto_ecole_nom) + "</strong> (" + esc(x.departement) + ") : forfait " + eur(x.forfait) +
           (x.heures_forfait ? " pour " + x.heures_forfait + " h" : "") + ", heure en plus " + eur(x.prix_heure) +
@@ -974,7 +982,7 @@
       }],
       ["loueurs", "Loueurs qui veulent s'inscrire", "C'est fait", function (x) {
         return "<strong>" + esc(x.nom) + "</strong>, " + esc(x.ville) + (x.departement ? " (" + esc(x.departement) + ")" : "") +
-          " · formule " + esc(x.formule === "partenaire" ? "Partenaire (20 €)" : "Référencement (10 €)") +
+          " · " + esc(x.formule === "partenaire" ? "Créno Pro (payant)" : "inscription gratuite") +
           '<span class="sub">' + esc([x.contact, x.email, x.site].filter(Boolean).join(" · ")) + "</span>";
       }],
       ["pros", "Pros qui proposent leurs services", "C'est fait", function (x) {

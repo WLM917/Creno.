@@ -1517,3 +1517,20 @@ textarea:focus-visible { border-color: var(--signal); }
   .pro-tabs-liste { gap: 0.25rem; padding: 0.3rem; }
   .pro-tab { min-width: 0; white-space: normal; text-align: center; line-height: 1.15; font-size: 0.92rem; padding: 0.4rem 0.45rem; }
 }
+
+/* ---------- Mises en avant (Créno Pro), séparées du classement ---------- */
+.a-la-une {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--chantier);
+  border-radius: var(--radius-field);
+  padding: 1rem 1.1rem 1.1rem;
+  gap: 0.6rem;
+}
+.une-head { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.une-head h2 { font-size: 1.15rem; margin: 0; }
+.une-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+.une-liste li { display: flex; flex-direction: column; gap: 0.1rem; }
+.une-liste a { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
+.une-liste span { color: var(--muted); font-size: 0.92rem; }
+.une-liste .promo { color: var(--ink); }

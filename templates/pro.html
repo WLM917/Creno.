@@ -52,10 +52,11 @@
           <p>Des élèves publient ce qu'ils cherchent : examen blanc, heures à l'unité, présentation à l'examen. Tu vois leur besoin et tu leur réponds en un clic, via Créno.</p>
           <a class="link-strong" href="{{root}}pro/demandes/">Voir les demandes</a>
         </div>
-        <div class="option option-soon">
-          <h3>Créno Pro, bientôt (payant)</h3>
-          <p>L'abonnement pour les auto-écoles qui veulent plus d'élèves : ta fiche mise en avant dans ta ville (toujours marquée « Partenaire payant », ton rang ne change pas), un code Créno pour reconnaître nos élèves, ton rapport de contacts en direct et tes prix comparés à ceux du département. Tout le reste de cette page reste gratuit.</p>
-          <a class="link-strong" href="{{root}}contact/">Être prévenu du lancement</a>
+        <div class="option option-feature">
+          <h3>Créno Pro</h3>
+          <p class="option-price">{{prix_creno_pro}} par mois</p>
+          <p>Ton auto-école est moins bien classée que d'autres ? Tu peux quand même te faire connaître : avec Créno Pro, elle apparaît en haut des pages de ta ville et de ton département. Pas obligatoire.</p>
+          <a class="link-strong" href="#creno-pro">Découvrir Créno Pro</a>
         </div>
       </div>
     </section>
@@ -105,6 +106,51 @@
       </form>
       <div class="badge-result" id="badge-result" aria-live="polite" hidden></div>
     </section>
+
+    <section class="block" id="creno-pro" aria-labelledby="creno-pro-title">
+      <h2 id="creno-pro-title">Créno Pro (auto-écoles)</h2>
+      <p>Le classement dépend seulement des résultats officiels et des prix : personne ne peut l'acheter. Mais une auto-école moins bien classée a aussi le droit de se faire connaître. C'est à ça que sert Créno Pro, et c'est <strong>facultatif</strong> : sans abonnement, ta fiche reste en ligne gratuitement, avec tout le reste de cette page.</p>
+      <div class="offer-grid">
+        <div class="option option-feature">
+          <h3>Créno Pro</h3>
+          <p class="option-price">{{prix_creno_pro}} par mois</p>
+          <ul class="tips">
+            <li>Ton auto-école dans « Mises en avant », en haut des pages de ta ville et de ton département</li>
+            <li>La mention « Partenaire payant », pour que les élèves sachent que c'est une mise en avant</li>
+            <li>Ton code Créno et ta réduction affichés sur ta fiche, pour reconnaître nos élèves</li>
+            <li>Ton rapport de contacts chaque mois</li>
+          </ul>
+        </div>
+        <div class="option">
+          <h3>Ce qui ne change pas</h3>
+          <ul class="tips">
+            <li>Ton rang dans le classement : il dépend seulement de tes résultats</li>
+            <li>Ta fiche, ton badge du top 10, les demandes d'élèves : toujours gratuits</li>
+            <li>Sans engagement : tu arrêtes quand tu veux</li>
+          </ul>
+        </div>
+      </div>
+
+      <form class="form-grid panel" id="creno-pro-form" data-form-type="creno_pro">
+        <h3 class="field-wide">Passer à Créno Pro</h3>
+        <div class="field"><label for="cpro-dep">Département</label>
+          <select id="cpro-dep" name="departement" required data-load-ecoles><option value="">Choisis</option>{{options_departements}}</select>
+        </div>
+        <div class="field"><label for="cpro-ecole">Ton auto-école</label>
+          <input id="cpro-ecole" name="auto_ecole_nom" list="cpro-ecoles" required autocomplete="off" maxlength="160" placeholder="Choisis d'abord ton département">
+          <datalist id="cpro-ecoles"></datalist>
+          <input type="hidden" name="auto_ecole_id" value="">
+        </div>
+        <div class="field"><label for="cpro-email">E-mail</label><input id="cpro-email" name="email" type="email" required maxlength="200" autocomplete="email"></div>
+        <div class="field"><label for="cpro-tel">Téléphone</label><input id="cpro-tel" name="contact" type="tel" required maxlength="200" autocomplete="tel"></div>
+        <div class="field field-wide"><label for="cpro-msg">La réduction que tu offres aux élèves de Créno (facultatif)</label><input id="cpro-msg" name="message" maxlength="600" placeholder="Ex. frais de dossier offerts"></div>
+        <label class="check-inline field-wide" for="cpro-ok"><input id="cpro-ok" type="checkbox" required><span>J'accepte les <a href="{{root}}cgv/">conditions de vente</a> de Créno Pro ({{prix_creno_pro}} par mois, sans engagement).</span></label>
+        <div class="form-actions field-wide">
+          <button class="btn btn-signal" type="submit">Passer à Créno Pro</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </section>
   </div>
 
   <div class="pro-panel pro-groupe" id="pour-moniteurs" role="tabpanel" aria-labelledby="onglet-moniteurs" tabindex="-1">
@@ -143,11 +189,11 @@
   <div class="pro-panel pro-groupe" id="pour-loueurs" role="tabpanel" aria-labelledby="onglet-loueurs" tabindex="-1">
     <section class="block" aria-labelledby="loueurs-title">
       <h2 id="loueurs-title">Pour les loueurs de voitures à double commande</h2>
-      <p>Les élèves en candidat libre cherchent une voiture à double commande près de chez eux. Inscris ton agence : elle apparaît sur la page Candidat libre et sur les pages des villes de ton département.</p>
+      <p>Les élèves en candidat libre cherchent une voiture à double commande près de chez eux. Inscris ton agence gratuitement : elle apparaît sur la page Candidat libre et sur les pages des villes de ton département.</p>
       <div class="offer-grid">
         <div class="option">
-          <h3>Référencement</h3>
-          <p class="option-price">10 € par mois</p>
+          <h3>Inscription</h3>
+          <p class="option-price">Gratuit</p>
           <ul class="tips">
             <li>Ton agence sur la page Candidat libre et les pages ville de ton département</li>
             <li>Boutons « Voir le site », téléphone et itinéraire, message tout prêt</li>
@@ -156,24 +202,24 @@
           </ul>
         </div>
         <div class="option option-feature">
-          <h3>Partenaire</h3>
-          <p class="option-price">20 € par mois</p>
+          <h3>Créno Pro</h3>
+          <p class="option-price">{{prix_creno_pro}} par mois</p>
           <ul class="tips">
-            <li>Tout le référencement</li>
-            <li>Ton agence en premier, avec la mention « Partenaire »</li>
+            <li>Tout ce qui est gratuit, plus :</li>
+            <li>Ton agence en premier, avant les autres loueurs, avec la mention « Partenaire »</li>
             <li>Ton bouton « Réserver » qui mène droit à ta réservation</li>
             <li>Un code Créno avec la réduction de ton choix, pour reconnaître nos élèves</li>
           </ul>
         </div>
       </div>
-      <p class="small">Sans engagement : tu arrêtes quand tu veux. La mise en avant est toujours signalée aux élèves.</p>
+      <p class="small">Créno Pro est facultatif et sans engagement : tu arrêtes quand tu veux. La mise en avant est toujours signalée aux élèves.</p>
 
       <form class="form-grid panel" id="inscrire-agence" data-form-type="loueur">
         <h3 class="field-wide">Inscrire mon agence</h3>
         <fieldset class="field-wide crit">
           <legend>Ta formule</legend>
-          <label class="check-inline" for="lou-f1"><input id="lou-f1" type="radio" name="formule" value="referencement" required checked> Référencement, 10 € par mois</label>
-          <label class="check-inline" for="lou-f2"><input id="lou-f2" type="radio" name="formule" value="partenaire"> Partenaire, 20 € par mois</label>
+          <label class="check-inline" for="lou-f1"><input id="lou-f1" type="radio" name="formule" value="referencement" required checked> Inscription gratuite</label>
+          <label class="check-inline" for="lou-f2"><input id="lou-f2" type="radio" name="formule" value="partenaire"> Créno Pro, {{prix_creno_pro}} par mois</label>
         </fieldset>
         <div class="field"><label for="lou-nom">Nom de l'agence</label><input id="lou-nom" name="nom" required maxlength="120" autocomplete="organization"></div>
         <div class="field"><label for="lou-ville">Ville</label><input id="lou-ville" name="ville" required maxlength="80" autocomplete="address-level2"></div>

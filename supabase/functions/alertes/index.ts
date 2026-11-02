@@ -230,7 +230,7 @@ async function abonner(body: Record<string, unknown>) {
   const confirmUrl = `${SITE_URL}/alertes/confirmer/?t=${token}`;
   const offre = lienPaye()
     ? `<p>Clique sur le bouton pour activer ton <strong>essai gratuit de ${ESSAI_JOURS} jours</strong>. Pas de carte bancaire : à la fin de l'essai, tu choisis si tu veux continuer.</p>`
-    : `<p>Clique sur le bouton pour activer tes alertes. Elles sont gratuites pendant le lancement.</p>`;
+    : `<p>Clique sur le bouton pour activer tes alertes. Elles sont gratuites.</p>`;
   const [sent] = await sendEmails([{
     from: expediteur(),
     to: [email],

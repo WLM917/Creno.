@@ -33,7 +33,8 @@ ou le générateur, puis relance `python3 scripts/build_site.py` (Python 3.12 ou
 ```
 site.json                         réglages : adresse du site (canonical, sitemap), département par défaut,
                                   e-mail de contact, nb minimum de déclarations, code Google Search Console,
-                                  prix du pack, prix_alertes (par mois) et essai_alertes_jours, alertes_payantes, vercel_analytics,
+                                  prix du pack, prix_alertes (par mois) et essai_alertes_jours, alertes_payantes (false :
+                                  alertes gratuites), prix_creno_pro (19,99 € par mois), vercel_analytics,
                                   editeur (mentions légales) et mediateur_consommation (CGV)
 templates/*.html                  contenu des pages fixes (accueil, candidat-libre, examen, methode,
                                   cout-du-permis, confidentialite, alertes, pack, moniteurs, pro,
@@ -48,7 +49,8 @@ scripts/sync_prix.py              lit les déclarations dans Supabase, calcule l
 supabase/migrations/*.sql         tables + sécurité. 1re migration : formulaires (insertion seule pour le site).
                                   2e : abonnes_alertes et signalements (aucun accès public, seulement les
                                   fonctions), pros_proposes, demandes_pros, contacts_pros, clics (insertion
-                                  seule), espace de stockage privé « pack »
+                                  seule), espace de stockage privé « pack ». Dernière : creno_pro_demandes
+                                  (demandes d'abonnement Créno Pro des auto-écoles, aucun accès public)
 supabase/functions/alertes/       fonction serveur (Deno) : abonnement, paiement Stripe, confirmation,
                                   désabonnement, signalement de places + envoi des e-mails (Resend)
 supabase/functions/pack/          fonction serveur : vérifie le paiement Stripe, renvoie un lien de 1 h vers le PDF
@@ -56,21 +58,24 @@ supabase/functions/stats/         fonction serveur : compteur des contacts envoy
                                   tableau de bord (protégé par ADMIN_CODE), boutons « Publier / C'est fait » du tableau de bord
 supabase/functions/pros/          fonction serveur : demandes d'élèves (publication, liste sans contact, réponses
                                   des pros, fermeture) et formulaires des pros (tarifs, services, messages, inscription
-                                  des loueurs), avec un e-mail à William (ADMIN_EMAIL) pour chaque envoi
+                                  des loueurs, demande Créno Pro), avec un e-mail à William (ADMIN_EMAIL) pour chaque envoi
 .github/workflows/                mise-a-jour-prix.yml : chaque jour, lit Supabase (sync_prix.py), régénère et publie
 assets/style.css                  styles (tokens de couleur en haut, thème clair et sombre)
 assets/app.js                     recherche de ville, filtres des pages département, calculateur,
                                   formulaires (Supabase), checklist, alertes, achat et accès au pack,
                                   outil badge de l'espace pros, comptage des clics vers les partenaires
 assets/config.js                  supabaseUrl + supabaseAnonKey (clé publique), lienPaiementPack (Stripe),
-                                  formEndpoint de secours
+                                  lienCrenoPro (abonnement Stripe 19,99 €/mois, auto-écoles et loueurs), formEndpoint de secours
 assets/og.png                     image de partage (réseaux sociaux)
 data/index.json                   départements (code, nom, nb, moyenne), date d'import
 data/departements/<code>.json     auto-écoles d'un département (id = numéro d'agrément raf_numero)
 data/prix.json                    prix déclarés par les élèves, par numéro d'agrément (vide pour l'instant)
 data/tarifs.json                  prix annoncés par les auto-écoles (vérifiés), par numéro d'agrément (vide pour l'instant)
 data/loueurs.json                 loueurs de voitures à double commande (2 entrées réelles à vérifier) ;
-                                  champs optionnels partenaire, code_promo, reduction, lien_reservation
+                                  "formule": "gratuit" ou "partenaire" (Créno Pro) ; champs optionnels
+                                  code_promo, reduction, lien_reservation
+data/partenaires.json             auto-écoles abonnées à Créno Pro (par numéro d'agrément : depuis, code_promo,
+                                  reduction), vide pour l'instant ; à remplir à la main après chaque paiement
 data/pros.json                    annuaire des moniteurs / auto-écoles pour examen blanc (vide, à remplir
                                   à la main après vérification de chaque pro)
 data/recherche.json               index de recherche des villes (généré)
@@ -150,13 +155,16 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Nouvelles clés Supabase (`sb_publishable_...`) : app.js n'envoie alors que l'en-tête apikey,
   sans « Authorization: Bearer ».
 
-## Services payants (alertes, pack)
+## Services payants (alertes, pack, Créno Pro)
 
 - **Alertes places** (/alertes/) : un candidat signale des places vues sur RdvPermis, la fonction
   `alertes` prévient par e-mail les abonnés du département (Resend). Limites anti-abus :
   3 signalements par heure et par appareil (empreinte sha256 de l'IP + sel, IP jamais gardée),
   pas plus d'un e-mail toutes les 10 minutes par abonné.
-- Formule : **15 jours d'essai gratuit sans carte** (double opt-in par e-mail), puis **9,99 € par mois**
+- **Pour l'instant, les alertes sont GRATUITES** (choix de William, novembre 2026 : à rendre payantes
+  plus tard si le site prend de l'ampleur). site.json `alertes_payantes: false` et secret
+  `ALERTES_LIEN_STRIPE` vide. Le mode payant reste codé, prêt à être rallumé :
+- Formule payante : **15 jours d'essai gratuit sans carte** (double opt-in par e-mail), puis **9,99 € par mois**
   (abonnement Stripe, sans engagement). Un seul essai par personne (colonne email_base, sans « +tag »).
   La tâche quotidienne (`quotidien`, lancée par Supabase Cron avec ADMIN_CODE) envoie le rappel
   3 jours avant la fin de l'essai, arrête les essais finis (e-mail « en pause » avec lien vers
@@ -178,12 +186,24 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Prix de l'abonnement vérifié par la fonction alertes : ALERTES_MONTANT_CENTIMES (défaut 999).
 - Toute vente exige les mentions légales et les CGV remplies (site.json `editeur`,
   `mediateur_consommation`, `email_contact`) : les champs vides s'affichent « à compléter ».
+  Les CGV changent toutes seules selon `alertes_payantes` (dictionnaire cgv de build_site.py).
+- **Créno Pro** (19,99 € par mois, `prix_creno_pro`, FACULTATIF) : le même abonnement pour les auto-écoles
+  et les loueurs, pour se faire connaître même avec un classement plus bas.
+  - Auto-école : formulaire /pro/#creno-pro -> table creno_pro_demandes (fonction pros, e-mail à William,
+    « À traiter » dans le tableau de bord), puis paiement Stripe si `lienCrenoPro` est rempli
+    (client_reference_id=pro-ae-<id>). Après paiement, William l'ajoute dans data/partenaires.json :
+    elle apparaît dans l'encadré « Mises en avant » en haut des pages de sa ville et de son département
+    (fonction mises_en_avant), avec « Partenaire payant » et son code promo. **Son rang ne change pas.**
+  - Loueur : radio « Créno Pro » du formulaire « Inscrire mon agence » (client_reference_id=pro-loueur-<id>),
+    puis "formule": "partenaire" dans data/loueurs.json : affiché en premier, mention « Partenaire »,
+    bouton Réserver, code Créno.
 
 ## Moniteurs (/moniteurs/) et espace pros (/pro/)
 
 - Menu du haut (NAV) : Auto-écoles, Candidat libre, Alertes places, Le pack, Espace pros, Nous contacter.
 - /pro/ : trois onglets (auto-écoles : présentation, « Donner mes tarifs », « Trouver mon badge » ;
-  moniteurs : présentation, « Proposer mes services » ; loueurs : formules et inscription).$
+  moniteurs : présentation, « Proposer mes services » ; loueurs : inscription gratuite et Créno Pro).
+  L'onglet auto-écoles contient aussi la section #creno-pro (explication + formulaire).
   « Pourquoi faire confiance à Créno » est au-dessus des onglets. Sans JavaScript, les trois parties restent l'une sous l'autre.
   Un lien vers /pro/#badge, #tarifs, #proposer, #inscrire-agence... ouvre le bon onglet.
 - /contact/ : « Nous écrire » pour tout le monde (élève, parent, auto-école, moniteur, loueur, autre),
@@ -198,8 +218,9 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   pour un **examen blanc**, des heures à l'unité, ou la **présentation à l'examen par une
   auto-école** (avec sa voiture). Demande d'élève -> table demandes_pros (consentement obligatoire).
 - Un pro n'entre dans data/pros.json qu'après vérification de son agrément.
-- Espace pros : gratuit pendant le lancement, liste d'attente Créno Pro, badges gratuits
-  pour le top 10 de chaque département (lien retour vers Créno = référencement).
+- Espace pros : présence, tarifs, réponses aux demandes et inscription des loueurs gratuits ; Créno Pro
+  (19,99 €/mois) en option ; badges gratuits pour le top 10 de chaque département (lien retour vers
+  Créno = référencement).
 - Loueurs partenaires : `code_promo` et `lien_reservation` dans data/loueurs.json, clics comptés
   (table clics) pour prouver le trafic envoyé avant de demander une commission.
 - Statistiques de visite : Vercel Web Analytics (sans cookie), à activer dans le projet Vercel.
@@ -219,16 +240,16 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Limites anti-abus : table limites (empreinte du jour) ; 3 demandes par heure, 30 réponses par jour,
   6 formulaires par heure et par appareil.
 
-## Loueurs : abonnement pour être affiché
+## Loueurs : inscription gratuite, Créno Pro en option
 
-- Référencement 10 € par mois, Partenaire 20 € par mois (en premier, mention « Partenaire », bouton
-  Réserver, code Créno). Formulaire « Inscrire mon agence » (/pro/#inscrire-agence) -> loueurs_proposes,
-  puis paiement Stripe si les liens sont remplis dans config.js (lienLoueurReferencement,
-  lienLoueurPartenaire, client_reference_id=loueur-<id>). William vérifie le paiement dans Stripe,
-  puis ajoute l'agence dans data/loueurs.json avec "formule": "referencement" ou "partenaire".
-- Les agences listées avant ce modèle ont "formule": "lancement" (gratuites pendant le lancement).
-- Mention obligatoire sous chaque liste de loueurs (MENTION_LOUEURS) : les agences paient pour apparaître,
-  les partenaires paient pour être mises en avant (transparence des plateformes).
+- Inscription gratuite (formulaire « Inscrire mon agence », /pro/#inscrire-agence -> loueurs_proposes).
+  William vérifie l'agence, puis l'ajoute dans data/loueurs.json avec "formule": "gratuit".
+- Créno Pro (19,99 € par mois) remplace l'ancien Partenaire à 20 € : radio « Créno Pro » du même formulaire,
+  paiement Stripe (lienCrenoPro), puis "formule": "partenaire" (en premier, mention « Partenaire »,
+  bouton Réserver, code Créno). L'ancien Référencement à 10 € n'existe plus.
+- Rémunération visée ensuite : commission par client envoyé (code promo / « je viens de Créno »).
+- Mention obligatoire sous chaque liste de loueurs (MENTION_LOUEURS) : l'inscription est gratuite,
+  les partenaires paient pour être mis en avant (transparence des plateformes).
 
 ## Contacter une auto-école depuis le classement
 
@@ -274,8 +295,9 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
    pas de réservation à la place du candidat, pas de revente de places. Les places sont
    nominatives et l'administration lutte contre les bots. On aide uniquement avec de
    l'information, des conseils et des alertes partagées par les candidats eux-mêmes.
-2. **Le classement ne s'achète pas.** Une auto-école partenaire payante est marquée
-   `"partenaire": true` et le site affiche « Partenaire payant », sans changer son indice.
+2. **Le classement ne s'achète pas.** Une auto-école Créno Pro (data/partenaires.json) est marquée
+   `"partenaire": true`, apparaît dans l'encadré séparé « Mises en avant » et le site affiche
+   « Partenaire payant », sans changer son indice ni son rang.
    La méthode de classement reste publique (obligation de transparence des sites qui classent).
 3. **Données honnêtes** : toute donnée d'exemple est marquée comme telle. Ne jamais présenter
    des chiffres inventés comme réels. Citer la source des taux.
@@ -308,7 +330,7 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
    `python3 scripts/import_auto_ecoles.py fichier.csv` (nouveau CSV de la carte officielle).
 2. **Déclarations d'élèves** : code et tables prêts. Reste à créer les tables dans Supabase,
    remplir assets/config.js, puis lancer sync_prix.py régulièrement.
-3. **Annuaire des loueurs double commande** : abonnement 10 € / 20 € par mois codé (formulaire + Stripe).
+3. **Annuaire des loueurs double commande** : inscription gratuite, Créno Pro 19,99 €/mois codé (formulaire + Stripe).
    Reste : recherche par ville, boîte manuelle/auto dans la fiche.
 4. **Trouver une date d'examen** : guide fait, alertes communautaires codées (fonction `alertes`).
    Reste : déployer la fonction, brancher Resend et un domaine. Jamais de bot (règle 1).
@@ -316,9 +338,9 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
    Idées suivantes : pages « location voiture double commande <département> »,
    « permis candidat libre <département> ».
 6. **Comptes élèves** (plus tard) : budget, heures, checklist sur plusieurs appareils.
-7. **Monétisation** : pack candidat libre (14,99 €) et alertes (15 jours gratuits puis 9,99 €/mois) codés,
-   à brancher sur Stripe. Ensuite : commissions loueurs (codes promo), mise en avant payante
-   clairement signalée, Créno Pro.
+7. **Monétisation** : pack candidat libre (14,99 €) et Créno Pro (19,99 €/mois, auto-écoles et loueurs)
+   codés, à brancher sur Stripe. Alertes gratuites pour l'instant (mode 9,99 €/mois prêt).
+   Ensuite : commissions par élève (auto-écoles) et par client (loueurs), contrat d'apporteur d'affaires.
 
 ## Concurrents à connaître
 

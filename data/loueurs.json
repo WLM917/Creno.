@@ -1,6 +1,6 @@
 {
   "meta": {
-    "description": "Loueurs de voitures à double commande. Informations publiques à vérifier avec chaque loueur. formule : \"referencement\" (10 € par mois), \"partenaire\" (20 € par mois, affiché en premier avec la mention Partenaire) ou \"lancement\" (listé gratuitement pendant le lancement). Champs facultatifs : code_promo, reduction (ex. \"-10 % sur l'heure\"), lien_reservation, prix (ex. \"à partir de 30 € l'heure\"), adresse, cp. Les clics vers chaque loueur sont comptés (fonction stats).",
+    "description": "Loueurs de voitures à double commande. Informations publiques à vérifier avec chaque loueur. formule : \"gratuit\" (inscription gratuite) ou \"partenaire\" (Créno Pro, payant : affiché en premier avec la mention Partenaire). Champs facultatifs : code_promo, reduction (ex. \"-10 % sur l'heure\"), lien_reservation, prix (ex. \"à partir de 30 € l'heure\"), adresse, cp. Les clics vers chaque loueur sont comptés (fonction stats).",
     "mis_a_jour": "2026-11-02"
   },
   "loueurs": [
@@ -9,14 +9,14 @@
       "ville": "Bourg-la-Reine",
       "dep": "92",
       "site": "https://www.permis-malin.com",
-      "formule": "lancement"
+      "formule": "gratuit"
     },
     {
       "nom": "Just Permis",
       "ville": "Serris",
       "dep": "77",
       "site": "http://justpermis.com/",
-      "formule": "lancement"
+      "formule": "gratuit"
     }
   ]
 }

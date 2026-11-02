@@ -42,10 +42,20 @@ jobs:
     steps:
       - name: Vérifier les secrets
         id: verif
+        env:
+          ADMIN_CODE: ${{ secrets.ADMIN_CODE }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
         run: |
+          # Dit quels secrets GitHub voit (jamais leur valeur).
+          for n in SUPABASE_ACCESS_TOKEN SUPABASE_PROJECT_ID SUPABASE_DB_PASSWORD ADMIN_CODE ADMIN_EMAIL; do
+            if [ -n "${!n}" ]; then echo "Trouvé : $n"; else echo "::warning::Secret GitHub manquant : $n"; fi
+          done
           if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_PROJECT_ID" ]; then
-            echo "::warning::Il manque SUPABASE_ACCESS_TOKEN ou SUPABASE_PROJECT_ID dans les secrets GitHub. Rien n'a été fait."
             echo "ok=non" >> "$GITHUB_OUTPUT"
+            if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+              echo "::error::Rien n'a été fait : ajoute les secrets manquants dans GitHub (Settings > Secrets and variables > Actions), pas dans Vercel."
+              exit 1
+            fi
             exit 0
           fi
           # Accepte l'identifiant seul, l'adresse https://xxxx.supabase.co ou le lien du tableau de bord.

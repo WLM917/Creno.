@@ -34,19 +34,8 @@
     <ul class="renters">
       {{loueurs}}
     </ul>
-    <details class="disclose">
-      <summary>Tu loues des voitures à double commande ? Ajoute ton agence</summary>
-      <form class="form-grid" id="renter-form" data-form-type="loueur">
-        <div class="field"><label for="renter-nom">Nom de l'agence</label><input id="renter-nom" name="nom" required autocomplete="organization" maxlength="120"></div>
-        <div class="field"><label for="renter-ville">Ville</label><input id="renter-ville" name="ville" required autocomplete="address-level2" maxlength="80"></div>
-        <div class="field"><label for="renter-site">Site web ou téléphone</label><input id="renter-site" name="contact" required maxlength="200"></div>
-        <div class="field"><label for="renter-prix">Prix de l'heure (€)</label><input id="renter-prix" name="prix_heure" type="number" inputmode="numeric" min="0" max="500"></div>
-        <div class="form-actions field-wide">
-          <button class="btn" type="submit">Proposer mon agence</button>
-          <p class="form-status" role="status"></p>
-        </div>
-      </form>
-    </details>
+    {{mention_loueurs}}
+    <p><a class="link-strong" href="{{root}}pro/#loueurs-title">Tu loues des voitures à double commande ? Inscris ton agence</a></p>
   </section>
 
   <section class="block" aria-labelledby="date-title">

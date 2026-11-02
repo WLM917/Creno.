@@ -2,7 +2,7 @@
   {{fil_ariane}}
   <header class="view-head">
     <h1>Créno pour les pros</h1>
-    <p class="lede">Auto-écoles, moniteurs, loueurs de voitures à double commande : Créno met en avant les pros qui font réussir les élèves, à partir des chiffres officiels. Pendant le lancement, tout est gratuit, et tu ne paieras plus tard que pour les clients qu'on t'envoie.</p>
+    <p class="lede">Auto-écoles, moniteurs, loueurs de voitures à double commande : Créno met en avant les pros qui font réussir les élèves, à partir des chiffres officiels. Pour les auto-écoles et les moniteurs, tout est gratuit pendant le lancement. Les loueurs choisissent une formule à partir de 10 € par mois.</p>
   </header>
 
   <section class="block" aria-labelledby="pourquoi-title">
@@ -40,7 +40,8 @@
       </div>
       <div class="option">
         <h3>Des demandes d'élèves</h3>
-        <p>Examens blancs, heures à l'unité, présentation à l'examen : reçois les demandes des élèves de ton département.</p>
+        <p>Des élèves publient ce qu'ils cherchent : examen blanc, heures à l'unité, présentation à l'examen. Tu vois leur besoin et tu leur réponds en un clic, via Créno.</p>
+        <a class="link-strong" href="{{root}}pro/demandes/">Voir les demandes</a>
       </div>
       <div class="option option-soon">
         <h3>Créno Pro, bientôt (payant)</h3>
@@ -52,17 +53,60 @@
 
   <section class="block" aria-labelledby="loueurs-title">
     <h2 id="loueurs-title">Pour les loueurs de voitures à double commande</h2>
+    <p>Les élèves en candidat libre cherchent une voiture à double commande près de chez eux. Inscris ton agence : elle apparaît sur la page Candidat libre et sur les pages des villes de ton département.</p>
     <div class="offer-grid">
-      <div class="option"><h3>Référencement gratuit</h3><p>Pendant le lancement, ton agence apparaît gratuitement sur la page Candidat libre et sur les pages ville de ton département.</p></div>
-      <div class="option"><h3>Ton rapport de clics</h3><p>Chaque élève qui clique pour réserver chez toi, t'appeler ou venir à ton agence depuis Créno est compté. Tu reçois ton rapport mois par mois.</p></div>
-      <div class="option"><h3>Un code Créno pour tes clients</h3><p>Tu choisis la réduction offerte aux élèves. Chaque location avec ce code vient de Créno : tu sais exactement ce qu'on t'apporte.</p></div>
-      <div class="option"><h3>Tu paies seulement les résultats</h3><p>Une commission sur les locations faites avec le code, fixée ensemble. Pas de client, pas de commission.</p></div>
+      <div class="option">
+        <h3>Référencement</h3>
+        <p class="option-price">10 € par mois</p>
+        <ul class="tips">
+          <li>Ton agence sur la page Candidat libre et les pages ville de ton département</li>
+          <li>Boutons « Voir le site », téléphone et itinéraire, message tout prêt</li>
+          <li>Tu réponds aux demandes d'élèves qui cherchent une voiture</li>
+          <li>Ton rapport de clics chaque mois</li>
+        </ul>
+      </div>
+      <div class="option option-feature">
+        <h3>Partenaire</h3>
+        <p class="option-price">20 € par mois</p>
+        <ul class="tips">
+          <li>Tout le référencement</li>
+          <li>Ton agence en premier, avec la mention « Partenaire »</li>
+          <li>Ton bouton « Réserver » qui mène droit à ta réservation</li>
+          <li>Un code Créno avec la réduction de ton choix, pour reconnaître nos élèves</li>
+        </ul>
+      </div>
     </div>
+    <p class="small">Sans engagement : tu arrêtes quand tu veux. La mise en avant est toujours signalée aux élèves.</p>
+
+    <form class="form-grid panel" id="inscrire-agence" data-form-type="loueur">
+      <h3 class="field-wide">Inscrire mon agence</h3>
+      <fieldset class="field-wide crit">
+        <legend>Ta formule</legend>
+        <label class="check-inline" for="lou-f1"><input id="lou-f1" type="radio" name="formule" value="referencement" required checked> Référencement, 10 € par mois</label>
+        <label class="check-inline" for="lou-f2"><input id="lou-f2" type="radio" name="formule" value="partenaire"> Partenaire, 20 € par mois</label>
+      </fieldset>
+      <div class="field"><label for="lou-nom">Nom de l'agence</label><input id="lou-nom" name="nom" required maxlength="120" autocomplete="organization"></div>
+      <div class="field"><label for="lou-ville">Ville</label><input id="lou-ville" name="ville" required maxlength="80" autocomplete="address-level2"></div>
+      <div class="field"><label for="lou-dep">Département</label><select id="lou-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select></div>
+      <div class="field"><label for="lou-adresse">Adresse</label><input id="lou-adresse" name="adresse" maxlength="200" autocomplete="street-address"></div>
+      <div class="field"><label for="lou-site">Site ou page de réservation</label><input id="lou-site" name="site" type="url" maxlength="300" placeholder="https://"></div>
+      <div class="field"><label for="lou-prix">Prix de l'heure (€)</label><input id="lou-prix" name="prix_heure" type="number" inputmode="numeric" min="0" max="500"></div>
+      <div class="field"><label for="lou-boite">Boîte de vitesses</label>
+        <select id="lou-boite" name="boite"><option value="">Choisis</option><option value="manuelle">Manuelle</option><option value="automatique">Automatique</option><option value="les-deux">Les deux</option></select>
+      </div>
+      <div class="field"><label for="lou-tel">Téléphone</label><input id="lou-tel" name="contact" type="tel" required maxlength="200" autocomplete="tel"></div>
+      <div class="field field-wide"><label for="lou-email">E-mail</label><input id="lou-email" name="email" type="email" required maxlength="200" autocomplete="email"></div>
+      <div class="form-actions field-wide">
+        <button class="btn btn-signal" type="submit">Inscrire mon agence</button>
+        <p class="form-status" role="status"></p>
+      </div>
+    </form>
   </section>
 
   <section class="block" aria-labelledby="mon-title">
     <h2 id="mon-title">Pour les moniteurs</h2>
-    <p>Tu es moniteur et tu enseignes dans le cadre d'une auto-école agréée ? Reçois des demandes d'examens blancs et d'heures de conduite. Nous vérifions ton autorisation d'enseigner et ton établissement de rattachement avant de te référencer.</p>
+    <p>Tu es moniteur et tu enseignes dans le cadre d'une auto-école agréée ? Réponds aux demandes d'examens blancs et d'heures de conduite des élèves de ton secteur, au nom de ton auto-école. Pour apparaître dans l'annuaire de la page Moniteurs, propose tes services plus bas : nous vérifions ton autorisation d'enseigner et ton établissement avant de te référencer.</p>
+    <a class="link-strong" href="{{root}}pro/demandes/">Voir les demandes d'élèves</a>
   </section>
 
   <section class="block" id="tarifs" aria-labelledby="tarifs-title">
@@ -94,6 +138,11 @@
 
   <section class="block" id="badge" aria-labelledby="badge-title">
     <h2 id="badge-title">Trouver mon badge</h2>
+    <p>Le badge est une petite image qui montre ton rang dans ton département. Deux façons de l'utiliser :</p>
+    <ul class="tips">
+      <li><strong>Sur ton site :</strong> copie le code et colle-le dans ta page. Le badge s'affiche, renvoie vers ta fiche Créno, et se met à jour tout seul à chaque nouveau classement.</li>
+      <li><strong>Sur tes réseaux, tes vidéos ou tes documents :</strong> télécharge l'image. Elle porte le mois du classement, pour rester vraie.</li>
+    </ul>
     <form class="form-grid" id="badge-form" onsubmit="return false">
       <div class="field"><label for="badge-dep">Département</label>
         <select id="badge-dep" required><option value="">Choisis</option>{{options_departements}}</select>

@@ -53,7 +53,11 @@ supabase/functions/alertes/       fonction serveur (Deno) : abonnement, paiement
                                   désabonnement, signalement de places + envoi des e-mails (Resend)
 supabase/functions/pack/          fonction serveur : vérifie le paiement Stripe, renvoie un lien de 1 h vers le PDF
 supabase/functions/stats/         fonction serveur : compteur des contacts envoyés aux pros, rapports des pros,
-                                  tableau de bord (protégé par ADMIN_CODE)
+                                  tableau de bord (protégé par ADMIN_CODE), boutons « Publier / C'est fait » du tableau de bord
+supabase/functions/pros/          fonction serveur : demandes d'élèves (publication, liste sans contact, réponses
+                                  des pros, fermeture) et formulaires des pros (tarifs, services, messages, inscription
+                                  des loueurs), avec un e-mail à William (ADMIN_EMAIL) pour chaque envoi
+.github/workflows/                mise-a-jour-prix.yml : chaque jour, lit Supabase (sync_prix.py), régénère et publie
 assets/style.css                  styles (tokens de couleur en haut, thème clair et sombre)
 assets/app.js                     recherche de ville, filtres des pages département, calculateur,
                                   formulaires (Supabase), checklist, alertes, achat et accès au pack,
@@ -78,10 +82,11 @@ auto-ecoles/                      liste des départements
 auto-ecoles/<nom>-<code>/         une page par département (102) : classement complet + filtres
 auto-ecoles/<nom>-<code>/<ville>/ une page par ville d'au moins 2 auto-écoles (1 777)
 candidat-libre/, cout-du-permis/, examen/, methode/, confidentialite/, alertes/, pack-candidat-libre/,
-moniteurs/, pro/, mentions-legales/, cgv/, 404.html, sitemap.xml, robots.txt
+moniteurs/, pro/, pro/demandes/ (demandes d'élèves vues par les pros), mentions-legales/, cgv/, 404.html, sitemap.xml, robots.txt
 alertes/confirmer/, alertes/merci/, alertes/desabonner/, pack-candidat-libre/acces/ : pages de retour
                                   (noindex, hors sitemap)
 alertes/continuer/                abonnement après l'essai (lien envoyé par e-mail), noindex
+pro/demandes/fermer/              l'élève ferme sa demande (lien envoyé par e-mail), noindex
 admin/                            tableau de bord privé de William (code ADMIN_CODE), noindex
 rapport/?p=...&d=...&k=...        rapport d'un pro (lien secret à lui envoyer), noindex
 ```
@@ -116,10 +121,12 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 ## Prix affichés et formation accélérée
 
 - Le fichier officiel n'a AUCUN prix. Chaque fiche affiche « Forfait 20 h : X € · Heure en plus : Y € »
-  quand on les connaît, sinon « prix pas encore connus » (jamais de prix inventé, règle 3).
+  seulement quand on les connaît. Sinon, rien n'est affiché (choix de William : pas de « prix inconnu »).
+  Jamais de prix inventé (règle 3).
 - Deux sources, toujours indiquées : prix annoncés par l'auto-école (data/tarifs.json, formulaire
   « Donner mes tarifs » de /pro/ -> table tarifs_proposes, publiés seulement après vérification :
-  valide = true puis sync_prix.py ; ou ajoutés à la main avec source « site », le lien et la date),
+  bouton « Publier » du tableau de bord (valide = true), puis la mise à jour automatique quotidienne
+  (GitHub Actions) ; ou ajoutés à la main dans data/tarifs.json avec source « site », le lien et la date),
   et prix payés par les élèves (médianes de data/prix.json, à partir de min_declarations_prix).
 - Seuls les prix des élèves entrent dans l'indice (coût réel). Les prix annoncés sont affichés, pas notés.
 - 20 heures de conduite minimum en boîte manuelle, 13 h en boîte automatique : c'est souvent le contenu
@@ -187,6 +194,32 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   (table clics) pour prouver le trafic envoyé avant de demander une commission.
 - Statistiques de visite : Vercel Web Analytics (sans cookie), à activer dans le projet Vercel.
 
+## Demandes d'élèves (/moniteurs/#demande -> /pro/demandes/)
+
+- L'élève publie son besoin (examen blanc, présentation à l'examen, heures, location de voiture), son
+  département, sa ville, ses disponibilités, son e-mail (obligatoire) et son téléphone (facultatif,
+  partagé seulement s'il coche la case). La demande apparaît sur /pro/demandes/ SANS nom ni contact.
+- Un pro clique « Répondre à cet élève » : auto-école choisie dans la liste officielle (vérifiée par la
+  fonction dans data/departements/<dép>.json du site), moniteur (avec son auto-école de rattachement)
+  ou loueur référencé (data/loueurs.json). Son message et son contact partent à l'élève par e-mail.
+- 3 réponses au plus par demande, une par pro (pro_ref ae-<agrément> ou loueur-<nom>), demande ouverte
+  30 jours, l'élève peut la fermer. William reçoit un e-mail à chaque demande et à chaque réponse.
+- Chaque réponse est comptée dans reponses_demandes : tableau de bord (liste des réponses, « N élèves
+  contactés via les demandes » par pro) et rapport du pro (« N élèves contactés grâce aux demandes »).
+- Limites anti-abus : table limites (empreinte du jour) ; 3 demandes par heure, 30 réponses par jour,
+  6 formulaires par heure et par appareil.
+
+## Loueurs : abonnement pour être affiché
+
+- Référencement 10 € par mois, Partenaire 20 € par mois (en premier, mention « Partenaire », bouton
+  Réserver, code Créno). Formulaire « Inscrire mon agence » (/pro/#inscrire-agence) -> loueurs_proposes,
+  puis paiement Stripe si les liens sont remplis dans config.js (lienLoueurReferencement,
+  lienLoueurPartenaire, client_reference_id=loueur-<id>). William vérifie le paiement dans Stripe,
+  puis ajoute l'agence dans data/loueurs.json avec "formule": "referencement" ou "partenaire".
+- Les agences listées avant ce modèle ont "formule": "lancement" (gratuites pendant le lancement).
+- Mention obligatoire sous chaque liste de loueurs (MENTION_LOUEURS) : les agences paient pour apparaître,
+  les partenaires paient pour être mises en avant (transparence des plateformes).
+
 ## Contacter une auto-école depuis le classement
 
 - Toucher une auto-école ouvre son volet « Contacter » (fonction panneau_contact de build_site.py) :
@@ -207,6 +240,9 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   donc un pro ne voit que ses chiffres. Toujours dire « ont cliqué pour vous contacter », jamais
   « se sont inscrits » : on mesure des clics, pas des inscriptions. Rapport au vouvoiement (adressé à un pro).
 - Espace pros : compteur public du total des contacts, affiché seulement à partir de 50.
+- Badge du top 10 (badges/<agrément>.svg) : textes mesurés avec les largeurs d'Arial (ARIAL_W) pour ne
+  jamais dépasser ; nom sur deux lignes s'il est long ; mois du classement écrit dessus. Le code à coller
+  se masque tout seul si l'auto-école sort du top 10 (onerror). Bouton « Télécharger l'image » (PNG).
 - Rémunération visée : commission d'apporteur d'affaires (contrat écrit avec chaque pro), par élève
   inscrit ou par location, prouvée par le code Créno ou « je viens de Créno ».
 - Un code promo d'auto-école partenaire (`code_promo`, `reduction`) s'affiche dans le volet s'il existe.
@@ -262,8 +298,8 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
    `python3 scripts/import_auto_ecoles.py fichier.csv` (nouveau CSV de la carte officielle).
 2. **Déclarations d'élèves** : code et tables prêts. Reste à créer les tables dans Supabase,
    remplir assets/config.js, puis lancer sync_prix.py régulièrement.
-3. **Annuaire des loueurs double commande** : recherche par ville, prix de l'heure,
-   boîte manuelle/auto, lien de réservation. Modèle économique : commission ou affiliation.
+3. **Annuaire des loueurs double commande** : abonnement 10 € / 20 € par mois codé (formulaire + Stripe).
+   Reste : recherche par ville, boîte manuelle/auto dans la fiche.
 4. **Trouver une date d'examen** : guide fait, alertes communautaires codées (fonction `alertes`).
    Reste : déployer la fonction, brancher Resend et un domaine. Jamais de bot (règle 1).
 5. ~~Pages par ville et par département pour Google~~ : fait (1 892 pages).

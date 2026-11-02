@@ -72,6 +72,7 @@ NAV = [
     ("candidat-libre/", "Candidat libre", "candidat-libre"),
     ("alertes/", "Alertes places", "alertes"),
     ("pack-candidat-libre/", "Le pack", "pack"),
+    ("pro/", "Espace pros", "pro"),
 ]
 FOOTER = [
     ("auto-ecoles/", "Auto-écoles"), ("candidat-libre/", "Candidat libre"), ("alertes/", "Alertes places"),
@@ -311,7 +312,7 @@ def labels_de(e):
 def ligne_prix(p):
     """Ligne visible dans le classement : forfait (souvent les 20 h minimum) et prix de l'heure en plus."""
     if not p:
-        return '<p class="rank-prix is-missing">Forfait 20 h et heure en plus : prix pas encore connus</p>'
+        return ""
     parts = []
     if p.get("forfait") is not None:
         parts.append(f'Forfait{(" " + str(p["heures"]) + " h") if p.get("heures") else ""} : <strong>{eur(p["forfait"])}</strong>')
@@ -339,8 +340,7 @@ def bloc_prix(e):
                 if p.get("lien") else "")
         html = f'<div class="rank-tarifs"><dl>{"".join(lignes)}</dl><p class="small">{src}. Vérifie toujours avec l\'auto-école.{lien}</p></div>'
     else:
-        html = ('<p class="rank-tarifs-vide">Prix pas encore connus. Demande-leur le prix du forfait 20 h et de l\'heure en plus : '
-                'le message tout prêt le fait pour toi.</p>')
+        html = ""
     acc = accelere(e)
     if acc is not None:
         html += f'<p class="rank-acc"><strong>Formation accélérée :</strong> oui{(", " + esc(acc)) if acc else ""}.</p>'
@@ -524,13 +524,21 @@ def poteau(L, villes, nom_dep):
             f'<span class="post-pole" aria-hidden="true"></span>{signs}</nav>')
 
 
+def est_partenaire(l):
+    return l.get("formule") == "partenaire" or bool(l.get("partenaire"))
+
+
+MENTION_LOUEURS = ('<p class="small">Les agences paient un abonnement pour apparaître sur Créno (certaines sont listées gratuitement '
+                   'pendant le lancement). Celles marquées « Partenaire » paient pour être mises en avant et apparaissent en premier.</p>')
+
+
 def loueurs_html(L, loueurs, dep=None):
     """Annuaire des loueurs. Chaque bouton (réserver, téléphone, message) est compté dans la table clics
     (cible loueur-<nom>-<bouton>) : c'est la preuve du nombre de clients envoyés à chaque loueur."""
     items = [l for l in loueurs if dep is None or l.get("dep") == dep]
     if not items:
         return ""
-    items.sort(key=lambda l: (not l.get("partenaire"), l.get("dep", ""), l.get("nom", "")))
+    items.sort(key=lambda l: (not est_partenaire(l), l.get("dep", ""), l.get("nom", "")))
     out = []
     for l in items:
         cible = f'loueur-{slug(l.get("nom", "loueur"))}'
@@ -552,7 +560,7 @@ def loueurs_html(L, loueurs, dep=None):
                    f'{(" : " + esc(l["reduction"])) if l.get("reduction") else ""}. Donne-le en réservant.</p>')
         else:
             tip = '<p class="rank-tip">Quand tu réserves, dis que tu viens de <strong>Créno</strong>.</p>'
-        chip = ' <span class="chip chip-flag">Partenaire</span>' if l.get("partenaire") else ""
+        chip = ' <span class="chip chip-flag">Partenaire</span>' if est_partenaire(l) else ""
         prix = f'<span class="renter-price">{esc(l["prix"])}</span>' if l.get("prix") else ""
         out.append(f'<li class="renter"><div class="renter-head"><strong>{nom}</strong>{chip}'
                    f'<span>{esc(l["ville"])} ({esc(l["dep"])})</span>{prix}</div>'
@@ -579,18 +587,64 @@ def pros_html(L, pros):
     return f'<ul class="renters">{"".join(out)}</ul>'
 
 
-def badge_svg(e, rang, nb, dep_nom, dep_code):
-    """Badge à afficher sur le site d'une auto-école du top 10 de son département."""
-    ligne1 = f"{rang_txt(rang)} sur {nb} en {dep_nom}"
-    nom = e["nom"] if len(e["nom"]) <= 34 else e["nom"][:32] + "…"
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="280" height="88" viewBox="0 0 280 88" role="img" aria-label="{esc(nom)} : {esc(ligne1)}, classement Créno">
+# Largeur des caractères d'Arial (pour 1000 px de police), pour que les textes du badge tiennent dans leur case.
+ARIAL_CHARS = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~àâäçéèêëîïôöùûüÿœæÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸŒÆ’«»…·–—°€'
+ARIAL_W = {
+    "r": [278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584,556,556,556,500,556,556,556,556,278,278,556,556,556,556,556,500,944,889,667,667,667,722,667,667,667,667,278,278,778,778,722,722,722,667,1000,1000,222,556,556,1000,333,556,1000,400,556],
+    "b": [278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584,556,556,556,556,556,556,556,556,278,278,611,611,611,611,611,556,944,889,722,722,722,722,667,667,667,667,278,278,778,778,722,722,722,667,1000,1000,278,556,556,1000,333,556,1000,400,556],
+}
+
+
+def largeur(txt, taille, gras=False):
+    w = ARIAL_W["b" if gras else "r"]
+    return sum(w[ARIAL_CHARS.index(c)] if c in ARIAL_CHARS else 600 for c in txt) * taille / 1000
+
+
+def ajuster(txt, max_w, taille, taille_min, gras=False):
+    """Réduit la police jusqu'à ce que le texte tienne ; sinon le coupe avec « … »."""
+    t = taille
+    while t > taille_min and largeur(txt, t, gras) > max_w:
+        t = round(t - 0.5, 1)
+    while largeur(txt, t, gras) > max_w and len(txt) > 4:
+        txt = txt[:-2].rstrip() + "…"
+    return txt, t
+
+
+def badge_svg(e, rang, nb, dep_nom, dep_code, mois):
+    """Badge à afficher sur le site d'une auto-école du top 10 de son département (280 x 88).
+    Les textes sont mesurés pour ne jamais dépasser de leur case."""
+    max_w = 196
+    # Nom : une ligne si possible, sinon deux lignes (coupées entre deux mots)
+    if largeur(e["nom"], 10.5) <= max_w:
+        nom, t_nom = ajuster(e["nom"], max_w, 12.5, 10.5)
+        lignes_nom = [(nom, 26)]
+    else:
+        t_nom = 10.5
+        mots, l1 = e["nom"].split(), ""
+        while mots and largeur((l1 + " " + mots[0]).strip(), t_nom) <= max_w:
+            l1 = (l1 + " " + mots.pop(0)).strip()
+        l2, t_nom2 = ajuster(" ".join(mots), max_w, t_nom, 9.5)
+        if not l1:
+            l1, l2 = ajuster(e["nom"], max_w, t_nom, 9.5)[0], ""
+        t_nom = min(t_nom, t_nom2)
+        lignes_nom = [(l1, 18), (l2, 30)] if l2 else [(l1, 26)]
+    nom_svg = "".join(
+        f'\n  <text x="15" y="{y}" font-family="Arial, Helvetica, sans-serif" font-size="{t_nom}" fill="#55606B">{esc(t)}</text>'
+        for t, y in lignes_nom)
+    for essai in (f"{rang_txt(rang)} sur {nb} en {dep_nom}", f"{rang_txt(rang)} sur {nb} auto-écoles"):
+        ligne1, t1 = ajuster(essai, max_w, 19, 14, True)
+        if not ligne1.endswith("…"):
+            break
+    ligne2, t2 = ajuster(f"Classement Créno · {mois}", max_w, 10.5, 8.5)
+    t_dep = 22 if len(dep_code) <= 2 else 18
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="280" height="88" viewBox="0 0 280 88" role="img" aria-label="{esc(e["nom"])} : {esc(rang_txt(rang))} sur {nb} en {esc(dep_nom)}, classement Créno, {esc(mois)}">
   <rect x="1" y="1" width="278" height="86" rx="9" fill="#FFFFFF" stroke="#1A1F25" stroke-width="2"/>
   <rect x="226" y="1" width="53" height="86" rx="9" fill="#0A4F8F"/>
   <rect x="226" y="1" width="12" height="86" fill="#0A4F8F"/>
-  <text x="252.5" y="52" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">{esc(dep_code)}</text>
-  <text x="16" y="27" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#55606B">{esc(nom)}</text>
-  <text x="16" y="52" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#1A1F25">{esc(ligne1)}</text>
-  <text x="16" y="73" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#55606B">Classement Créno, taux de réussite officiels</text>
+  <text x="252.5" y="52" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="{t_dep}" font-weight="700" fill="#FFFFFF">{esc(dep_code)}</text>
+  {nom_svg.strip()}
+  <text x="15" y="{55 if len(lignes_nom) == 2 else 52}" font-family="Arial, Helvetica, sans-serif" font-size="{t1}" font-weight="700" fill="#1A1F25">{esc(ligne1)}</text>
+  <text x="15" y="{76 if len(lignes_nom) == 2 else 73}" font-family="Arial, Helvetica, sans-serif" font-size="{t2}" fill="#55606B">{esc(ligne2)}</text>
 </svg>
 '''
 
@@ -687,6 +741,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         d["url"] = f'auto-ecoles/{d["slug"]}/'
     deps_by_code = {d["code"]: d for d in deps}
     date_import = date_fr(meta["importe_le"])
+    mois_badge = date_import.split(" ", 1)[1] if " " in date_import else date_import  # ex. « octobre 2026 »
     common = {
         "nb_classees": fr_int(meta["nb_avec_taux"]),
         "nb_auto_ecoles": fr_int(meta["nb_auto_ecoles"]),
@@ -739,7 +794,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         for r in rows[:TOP_BADGE]:
             badges["top"][r["e"]["id"]] = [r["rang"], nb]
             (out_dir / "badges" / f'{r["e"]["id"]}.svg').write_text(
-                badge_svg(r["e"], r["rang"], nb, d["nom"], d["code"]), encoding="utf-8")
+                badge_svg(r["e"], r["rang"], nb, d["nom"], d["code"], mois_badge), encoding="utf-8")
         path = d["url"]
         L = Links(depuis(path), explicit)
 
@@ -847,7 +902,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
   <div class="summary-block">
     <p class="zone-summary" id="zone-summary" aria-live="polite">{plural(nb, "auto-école classée", "auto-écoles classées")} dans le {esc(d["code"])}.</p>
     <p class="small">{price_note} Données de la Sécurité routière, fichier du {date_import}. <a href="{L("methode/")}">Comment on calcule l'indice</a></p>
-    <p class="rank-hint">Touche une auto-école pour voir ses prix et la contacter : téléphone, itinéraire ou message tout prêt. Le permis demande au moins 20 heures de conduite (13 h en boîte automatique) : c'est souvent ce que comprend le forfait, les heures en plus se paient à l'unité.</p>
+    <p class="rank-hint">Touche une auto-école pour la contacter : téléphone, itinéraire ou message tout prêt. Le permis demande au moins 20 heures de conduite (13 h en boîte automatique) : c'est souvent ce que comprend le forfait, les heures en plus se paient à l'unité.</p>
   </div>
   <ol class="ranking" id="ranking" data-dynamic>
     {"".join(ligne(r, res["moyenne"], "complet", avec_prix=res["avec_prix"]) for r in rows)}
@@ -887,7 +942,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
             others = "".join([f'<li><a href="{LV(o["url"])}">{esc(o["nom"])}</a><span>{len(o["ecoles"])}</span></li>'
                               for o in autres if o["url"] != vpath][:16])
             loc = loueurs_html(LV, loueurs, d["code"])
-            loueurs_block = f'<ul class="renters">{loc}</ul>' if loc else ""
+            loueurs_block = f'<ul class="renters">{loc}</ul>{MENTION_LOUEURS}' if loc else ""
             vtitle = f'Auto-écoles à {vp["nom"]} ({vp["cps"][0]}) : taux de réussite et classement | Créno'
             best = cl[0]["e"]
             vdesc = (f'{plural(len(vp["ecoles"]), "auto-école enseigne", "auto-écoles enseignent")} le permis B à {vp["nom"]}. '
@@ -898,7 +953,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
     <h1>Auto-écoles à {esc(vp["nom"])}</h1>
     <p class="lede">{plural(len(vp["ecoles"]), "auto-école enseigne", "auto-écoles enseignent")} le permis B à {esc(vp["nom"])} ({esc(cps)}). Réussite moyenne au 1er passage : {pct(moy_v)}, {comp} la moyenne du département ({pct(res["moyenne"])}).</p>
   </header>
-  <p class="rank-hint">Touche une auto-école pour voir ses prix et la contacter : téléphone, itinéraire ou message tout prêt. Le permis demande au moins 20 heures de conduite (13 h en boîte automatique) : c'est souvent ce que comprend le forfait, les heures en plus se paient à l'unité.</p>
+  <p class="rank-hint">Touche une auto-école pour la contacter : téléphone, itinéraire ou message tout prêt. Le permis demande au moins 20 heures de conduite (13 h en boîte automatique) : c'est souvent ce que comprend le forfait, les heures en plus se paient à l'unité.</p>
   <ol class="ranking ranking-city">
     {"".join(ligne(r, res["moyenne"], "ville", nb, d["code"], res["avec_prix"], decl_href=f'{LV(path)}?ae={esc(r["e"]["id"])}#declarer') for r in cl)}
   </ol>
@@ -992,7 +1047,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         ("moniteurs/", "moniteurs.html", None, "Moniteur pour examen blanc ou présentation à l'examen du permis | Créno",
          "Faire appel à un moniteur dans les règles : examen blanc, heures à l'unité, présentation à l'examen par une auto-école agréée.",
          "Moniteurs", 0.6),
-        ("pro/", "pro.html", None, "Créno pour les auto-écoles, moniteurs et loueurs | Créno",
+        ("pro/", "pro.html", "pro", "Créno pour les auto-écoles, moniteurs et loueurs | Créno",
          "Badge du top 10, demandes d'élèves, référencement des loueurs de voitures à double commande : ce que Créno apporte aux pros.",
          "Espace pros", 0.5),
         ("mentions-legales/", "mentions-legales.html", None, "Mentions légales | Créno",
@@ -1004,6 +1059,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         ("alertes/confirmer/", "Confirmation de ton alerte", "confirmer", "Confirmation en cours…", "alertes/", "Revenir aux alertes"),
         ("alertes/merci/", "Merci pour ton paiement", "paiement", "Vérification du paiement…", "alertes/", "Revenir aux alertes"),
         ("alertes/desabonner/", "Arrêter les alertes", "desabonner", "Désabonnement en cours…", "alertes/", "Revenir aux alertes"),
+        ("pro/demandes/fermer/", "Fermer ma demande", "fermer", "Fermeture de ta demande…", "moniteurs/", "Revenir à la page Moniteurs"),
         ("pack-candidat-libre/acces/", "Ton Pack candidat libre", "pack", "Vérification de ton achat…", "candidat-libre/", "Revenir au guide candidat libre"),
     ]
     contact_txt = (f'Écris à <a href="mailto:{esc(CONTACT)}">{esc(CONTACT)}</a>.' if CONTACT
@@ -1040,7 +1096,8 @@ def build(out_dir=ROOT, explicit=False, only=None):
         body = fill((TPL / tpl).read_text(encoding="utf-8"), {
             **common, "root": L.root, "fil_ariane": fil_ariane(L, [("Accueil", ""), (crumb, None)]),
             "fil_ariane_clair": fil_ariane(L, [("Accueil", ""), (crumb, None)], "crumbs-dark"),
-            "loueurs": loueurs_html(L, loueurs) or '<li><span>Aucun loueur pour l\'instant. Ajoute le premier ci-dessous.</span></li>',
+            "loueurs": loueurs_html(L, loueurs) or '<li><span>Aucune agence pour l\'instant.</span></li>',
+            "mention_loueurs": MENTION_LOUEURS,
             "options_departements": options_deps, "formulaire_prix": formulaire_prix(deps=deps), "contact": contact_txt,
             "prix_pack": esc(PRIX_PACK), "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
             "offre_alertes": offre_alertes, "bouton_alertes": bouton_alertes,
@@ -1052,6 +1109,18 @@ def build(out_dir=ROOT, explicit=False, only=None):
             body = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', body)
         write(path, page(L, path, section or "autre", title, desc, body,
                          [jsonld_ariane([("Accueil", ""), (crumb, path)])], section), prio)
+
+    # --- demandes d'élèves, vues par les pros
+    path = "pro/demandes/"
+    L = Links(depuis(path), explicit)
+    body = fill((TPL / "pro-demandes.html").read_text(encoding="utf-8"), {
+        **common, "root": L.root, "options_departements": options_deps,
+        "fil_ariane": fil_ariane(L, [("Accueil", ""), ("Espace pros", "pro/"), ("Demandes d'élèves", None)])})
+    if explicit:
+        body = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', body)
+    write(path, page(L, path, "pro", "Demandes d'élèves : examens blancs, heures, voitures double commande | Créno",
+                     "Les élèves de ton département cherchent un examen blanc, des heures avec un moniteur ou une voiture à double commande. Réponds-leur via Créno.",
+                     body, [jsonld_ariane([("Accueil", ""), ("Espace pros", "pro/"), ("Demandes d'élèves", path)])], "pro"), 0.4)
 
     # --- pages privées (pas dans Google) : continuer les alertes, tableau de bord, rapport envoyé aux pros
     prives = [

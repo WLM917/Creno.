@@ -1,0 +1,64 @@
+<div class="wrap stack-lg page-pad">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Demandes d'élèves</h1>
+    <p class="lede">Des élèves cherchent un examen blanc, des heures avec un moniteur, une auto-école pour les présenter à l'examen ou une voiture à double commande. Réponds à ceux de ton secteur : ton message leur arrive par e-mail, via Créno.</p>
+  </header>
+
+  <section class="block note-block" aria-labelledby="qui-title">
+    <h2 id="qui-title">Comment ça marche</h2>
+    <ul class="tips">
+      <li>Tu vois le besoin, la ville et les disponibilités de l'élève, jamais son nom ni son contact.</li>
+      <li>Tu réponds avec ton contact et un petit message. L'élève le reçoit par e-mail et rappelle qui il veut.</li>
+      <li>Peuvent répondre : les auto-écoles de la liste officielle et leurs moniteurs, et les loueurs référencés sur Créno. Gratuit pendant le lancement.</li>
+      <li>Trois réponses au plus par demande, une seule par pro. Réponds seulement si tu peux aider : pas de démarchage.</li>
+      <li>Rappel : un pro ne peut pas être payé pour accompagner un candidat libre le jour de l'examen.</li>
+    </ul>
+  </section>
+
+  <div class="field dem-filtre"><label for="dem-filtre-dep">Département</label>
+    <select id="dem-filtre-dep"><option value="">Tous les départements</option>{{options_departements}}</select>
+  </div>
+  <p class="zone-summary" id="dem-etat" role="status">Chargement des demandes…</p>
+  <ul class="demandes" id="dem-liste"></ul>
+
+  <form class="form-grid panel rep-form" id="rep-form" hidden>
+    <h3 class="field-wide">Répondre à cet élève</h3>
+    <input type="hidden" name="demande" value="">
+    <div class="field field-wide"><label for="rep-type">Tu es</label>
+      <select id="rep-type" name="pro_type" required>
+        <option value="">Choisis</option>
+        <option value="auto-ecole">Une auto-école</option>
+        <option value="moniteur">Un moniteur d'une auto-école</option>
+        <option value="loueur">Un loueur de voitures à double commande</option>
+      </select>
+    </div>
+    <div class="field" data-pour="ae"><label for="rep-dep">Département de ton auto-école</label>
+      <select id="rep-dep" name="departement_pro" data-load-ecoles><option value="">Choisis</option>{{options_departements}}</select>
+    </div>
+    <div class="field" data-pour="ae"><label for="rep-ecole">Ton auto-école</label>
+      <input id="rep-ecole" name="auto_ecole_nom" list="rep-ecoles" autocomplete="off" maxlength="160" placeholder="Choisis d'abord le département">
+      <datalist id="rep-ecoles"></datalist>
+      <input type="hidden" name="auto_ecole_id" value="">
+    </div>
+    <div class="field field-wide" data-pour="moniteur" hidden><label for="rep-nom">Ton nom de moniteur</label><input id="rep-nom" name="nom" maxlength="80" autocomplete="name"></div>
+    <div class="field field-wide" data-pour="loueur" hidden><label for="rep-loueur">Ton agence</label>
+      <select id="rep-loueur" name="loueur"><option value="">Choisis</option></select>
+      <p class="small">Ton agence n'est pas dans la liste ? <a href="{{root}}pro/#inscrire-agence">Inscris-la</a>.</p>
+    </div>
+    <div class="field field-wide"><label for="rep-contact">Ton e-mail ou téléphone (l'élève le recevra)</label><input id="rep-contact" name="contact" required maxlength="200" autocomplete="email"></div>
+    <div class="field field-wide"><label for="rep-message">Ton message</label><textarea id="rep-message" name="message" rows="4" maxlength="600"></textarea></div>
+    <label class="check-inline field-wide" for="rep-ok"><input id="rep-ok" name="engagement" type="checkbox" required><span>Je suis bien ce professionnel et je contacte cet élève seulement pour son besoin.</span></label>
+    <div class="form-actions field-wide">
+      <button class="btn btn-signal" type="submit">Envoyer ma réponse à l'élève</button>
+      <button class="btn btn-ghost" type="button" id="rep-annuler">Annuler</button>
+      <p class="form-status" role="status"></p>
+    </div>
+  </form>
+
+  <section class="block" aria-labelledby="eleve-title">
+    <h2 id="eleve-title">Tu es élève ?</h2>
+    <p>Dis ce dont tu as besoin : les pros de ton département te répondent par e-mail, sans voir ton nom ni ton contact.</p>
+    <a class="link-strong" href="{{root}}moniteurs/#demande">Publier ma demande</a>
+  </section>
+</div>

@@ -1,0 +1,54 @@
+# Créno : met à jour les prix du site chaque jour, tout seul.
+#
+# Lit dans Supabase les prix déclarés par les élèves et les tarifs des auto-écoles que tu as
+# validés (bouton « Publier » du tableau de bord), régénère les pages, puis publie si quelque
+# chose a changé. Vercel met alors le site à jour.
+#
+# À régler une seule fois sur GitHub : Settings > Secrets and variables > Actions > New repository secret
+#   SUPABASE_URL          l'adresse du projet Supabase (https://xxxx.supabase.co)
+#   SUPABASE_SERVICE_KEY  la clé service_role ou secret de Supabase (secrète : jamais dans le code)
+# Pour lancer une mise à jour tout de suite : onglet Actions > « Mettre à jour les prix » > Run workflow.
+name: Mettre à jour les prix
+
+on:
+  schedule:
+    - cron: "23 4 * * *"   # chaque jour vers 5 h 23 (heure de Paris en hiver)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mise-a-jour-prix
+  cancel-in-progress: false
+
+jobs:
+  prix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Lire Supabase et régénérer le site
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_KEY" ]; then
+            echo "Secrets Supabase pas encore réglés : rien à faire."
+            exit 0
+          fi
+          python3 scripts/sync_prix.py
+      - name: Publier si quelque chose a changé
+        run: |
+          rm -rf scripts/__pycache__
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Rien de nouveau."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Prix et tarifs mis à jour depuis Supabase"
+          git push

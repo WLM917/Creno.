@@ -389,6 +389,16 @@
     demande_pro: "demandes_pros", pro: "pros_proposes", contact_pro: "contacts_pros", tarifs: "tarifs_proposes"
   };
   var NUMBERS = ["forfait", "heures_incluses", "prix_heure", "heures_total", "frais_examen", "heures_forfait"];
+  // Ces formulaires passent par la fonction serveur « pros » : elle enregistre et te prévient par e-mail.
+  var VIA_PROS = { demande_pro: true, pro: true, contact_pro: true, tarifs: true, loueur: true };
+  var MERCI = {
+    declaration: "Merci, ta réponse est envoyée.",
+    demande_pro: "C'est en ligne ! On t'a envoyé un e-mail. Les pros qui peuvent t'aider te répondront par e-mail.",
+    pro: "Merci, on vérifie tes informations et on revient vers toi.",
+    contact_pro: "Merci, ton message est envoyé. On te répond vite.",
+    tarifs: "Merci ! On vérifie tes tarifs (avec ta page de tarifs ou par téléphone) avant de les afficher sur ta fiche.",
+    loueur: "Merci ! On te recontacte très vite pour activer ton abonnement."
+  };
 
   function initSchoolPicker(form) {
     var input = $("input[name=auto_ecole_nom][list]", form);
@@ -427,6 +437,7 @@
         var button = $("button[type=submit]", form);
         var row = {};
         $all("input[name], select[name], textarea[name]", form).forEach(function (f) {
+          if (f.type === "radio") { if (f.checked) row[f.name] = f.value; return; }
           if (f.type === "checkbox") { row[f.name] = f.checked; return; }
           var v = f.value.trim();
           if (NUMBERS.indexOf(f.name) !== -1) row[f.name] = v === "" ? null : Math.round(Number(v));
@@ -441,6 +452,25 @@
         }
 
         var req = null;
+        if (supabaseReady() && VIA_PROS[type]) {
+          var corps = {};
+          for (var k in row) corps[k] = row[k];
+          if (type === "demande_pro") corps.action = "demande";
+          else { corps.action = "formulaire"; corps.type_formulaire = type; }
+          button.disabled = true;
+          callFn("pros", corps).then(function (j) {
+            if (type === "loueur") {
+              var lien = row.formule === "partenaire" ? CONFIG.lienLoueurPartenaire : CONFIG.lienLoueurReferencement;
+              if (lien && j.id) {
+                location.href = lien + (lien.indexOf("?") === -1 ? "?" : "&") + "client_reference_id=loueur-" + j.id +
+                  (row.email ? "&prefilled_email=" + encodeURIComponent(row.email) : "");
+                return;
+              }
+            }
+            done(true, MERCI[type] || "Merci, c'est envoyé.");
+          }).catch(function (e) { done(false, e.message); });
+          return;
+        }
         if (supabaseReady()) {
           req = supaInsert(TABLES[type], row);
         } else if (CONFIG.formEndpoint) {
@@ -461,13 +491,7 @@
         }
         req.then(function (r) {
           if (!r.ok) throw new Error("HTTP " + r.status);
-          var merci = {
-            declaration: "Merci, ta réponse est envoyée.",
-            demande_pro: "Merci, ta demande est envoyée. Un pro de ton département te recontacte.",
-            pro: "Merci, on vérifie tes informations et on revient vers toi.",
-            tarifs: "Merci ! On vérifie tes tarifs (avec ta page de tarifs ou par téléphone) avant de les afficher sur ta fiche."
-          };
-          done(true, merci[type] || "Merci, c'est envoyé.");
+          done(true, MERCI[type] || "Merci, c'est envoyé.");
         }).catch(function () {
           done(false, "L'envoi n'a pas marché. Vérifie tes réponses et ta connexion, puis réessaie.");
         });
@@ -562,6 +586,13 @@
       return;
     }
 
+    if (etat === "fermer") {
+      if (!queryParam("t")) { show(false, "Ce lien est incomplet. Ouvre-le directement depuis ton e-mail."); return; }
+      callFn("pros", { action: "fermer", t: queryParam("t") }).then(function () {
+        show(true, "C'est fait : ta demande est fermée. Plus aucun pro ne pourra y répondre. Bonne route !");
+      }).catch(function (e) { show(false, e.message); });
+      return;
+    }
     var params = { confirmer: { action: "confirmer", t: queryParam("t") },
                    paiement: { action: "paiement", session_id: queryParam("session_id") },
                    desabonner: { action: "desabonner", t: queryParam("t") } }[etat];
@@ -598,6 +629,30 @@
   }
 
   /* ---------- Badge des auto-écoles (espace pros) ---------- */
+  // Transforme le badge (SVG) en image PNG nette (3 fois sa taille) et la télécharge.
+  function telechargerBadge(url, nom, statusEl) {
+    fetch(url).then(function (r) { return r.text(); }).then(function (svg) {
+      var img = new Image();
+      var blobUrl = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+      img.onload = function () {
+        var canvas = document.createElement("canvas");
+        canvas.width = 840; canvas.height = 264;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, 840, 264);
+        URL.revokeObjectURL(blobUrl);
+        canvas.toBlob(function (blob) {
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = nom;
+          document.body.appendChild(a); a.click(); a.remove();
+          setStatus(statusEl, true, "Image téléchargée.");
+        }, "image/png");
+      };
+      img.onerror = function () { setStatus(statusEl, false, "Le téléchargement n'a pas marché. Réessaie."); };
+      img.src = blobUrl;
+    }).catch(function () { setStatus(statusEl, false, "Le téléchargement n'a pas marché. Réessaie."); });
+  }
+
   function initBadge() {
     var depSel = $("#badge-dep");
     if (!depSel) return;
@@ -623,10 +678,14 @@
         input.focus();
       });
     });
+    var affiche = "";
     function show() {
       var e = null;
       ecoles.forEach(function (x) { if (x.nom + ", " + x.ville === input.value) e = x; });
-      if (!e) { result.hidden = true; return; }
+      if (!e) { result.hidden = true; affiche = ""; return; }
+      // Déjà affiché : on ne refait pas le bloc (sinon un clic sur ses boutons serait perdu)
+      if (affiche === e.id && !result.hidden) return;
+      affiche = e.id;
       getBadges().then(function (b) {
         var depUrl = b.deps[depSel.value];
         var fiche = base + depUrl + "#ae-" + e.id;
@@ -638,14 +697,20 @@
         } else {
           var rang = top[0] === 1 ? "1re" : top[0] + "e";
           var code = '<a href="' + fiche + '" title="Classement Créno des auto-écoles"><img src="' + base + 'badges/' + e.id +
-            '.svg" alt="' + esc(e.nom) + ' : ' + rang + ' sur ' + top[1] + ' auto-écoles, classement Créno" width="280" height="88"></a>';
+            '.svg" alt="' + esc(e.nom) + ' : ' + rang + ' sur ' + top[1] + ' auto-écoles, classement Créno" width="280" height="88"' +
+            ' onerror="this.parentNode.style.display=\'none\'"></a>';
           result.innerHTML =
             '<p><strong>Bravo, ' + esc(e.nom) + ' est ' + rang + ' sur ' + top[1] + ' dans le ' + esc(depSel.value) + '.</strong> Voici ton badge :</p>' +
             '<p><img src="' + ROOT + 'badges/' + esc(e.id) + '.svg" alt="" width="280" height="88"></p>' +
             '<div class="field"><label for="badge-code">Code à coller sur ton site</label>' +
             '<textarea id="badge-code" rows="4" readonly>' + esc(code) + '</textarea></div>' +
-            '<button class="btn" type="button" id="badge-copy">Copier le code</button> <span class="form-status" role="status"></span>' +
-            '<p class="small">Le badge se met à jour tout seul à chaque nouveau fichier officiel. S\'il n\'est plus dans le top 10, il indique simplement son rang.</p>';
+            '<div class="rank-actions"><button class="btn" type="button" id="badge-copy">Copier le code pour mon site</button>' +
+            '<button class="btn btn-ghost" type="button" id="badge-png">Télécharger l\'image</button></div> <span class="form-status" role="status"></span>' +
+            '<p class="small">Sur ton site, le badge se met à jour tout seul à chaque nouveau classement. Si ton auto-école sort du top 10, il disparaît de ton site sans laisser de trou. ' +
+            'L\'image téléchargée, elle, ne change pas : elle porte le mois du classement.</p>';
+          $("#badge-png").addEventListener("click", function () {
+            telechargerBadge(ROOT + "badges/" + e.id + ".svg", "badge-creno-" + slugJS(e.nom) + ".png", $(".form-status", result));
+          });
           $("#badge-copy").addEventListener("click", function () {
             var ta = $("#badge-code");
             var st = $(".form-status", result);
@@ -858,13 +923,15 @@
           $("#admin-rows").innerHTML = pros.map(function (p, i) {
             var url = base + "rapport/?p=" + encodeURIComponent(p.p) + (p.departement ? "&d=" + encodeURIComponent(p.departement) : "") + "&k=" + p.k;
             p.q = norm(p.d.nom + " " + p.d.lieu + " " + (p.departement || ""));
-            return '<tr data-i="' + i + '"><td class="cell-titre"><strong>' + esc(p.d.nom) + '</strong><span class="sub">' + esc((p.d.type === "loueur" ? "Loueur · " : "Auto-école · ") + p.d.lieu) + '</span></td>' +
+            return '<tr data-i="' + i + '"><td class="cell-titre"><strong>' + esc(p.d.nom) + '</strong><span class="sub">' + esc((p.d.type === "loueur" ? "Loueur · " : "Auto-école · ") + p.d.lieu) + '</span>' +
+              (p.demandes ? '<span class="sub">' + plural(p.demandes, "élève contacté", "élèves contactés") + ' via les demandes</span>' : "") + '</td>' +
               '<td data-label="30 derniers jours"><span>' + intFmt.format(p.j30) + '<span class="sub">dont ' + intFmt.format(p.j30_action) + ' avec un clic de contact</span></span></td>' +
               '<td data-label="Depuis le début"><span>' + intFmt.format(p.total) + '<span class="sub">dont ' + intFmt.format(p.total_action) + ' avec un clic de contact</span></span></td>' +
               '<td data-label="Rapport"><div class="rap-actions"><button class="btn btn-small btn-ghost" type="button" data-copier="' + esc(url) + '">Copier le lien</button>' +
               '<a class="btn btn-small btn-ghost" href="' + esc(url) + '" target="_blank" rel="noopener">Voir</a></div></td></tr>';
           }).join("");
         });
+        afficherDemandes(j, code);
         $("#admin-filtre").addEventListener("input", function (ev) {
           var q = norm(ev.target.value);
           $all("#admin-rows tr").forEach(function (tr) { var p = pros[Number(tr.getAttribute("data-i"))]; tr.hidden = !!q && (p.q || "").indexOf(q) === -1; });
@@ -878,6 +945,75 @@
       copyText(b.getAttribute("data-copier")).then(function () { b.textContent = "Lien copié"; }, function () { b.textContent = "Copie impossible"; });
     });
     if (saved) charger(saved);
+  }
+
+  // Tableau de bord : demandes d'élèves, réponses des pros, formulaires à traiter
+  function afficherDemandes(j, code) {
+    var box = $("#admin-demandes");
+    if (!box) return;
+    var dm = j.demandes || { liste: [], reponses: [] };
+    var at = j.a_traiter || {};
+    function fact(n, txt) { return "<div><dt>" + n + "</dt><dd>" + txt + "</dd></div>"; }
+    function date(iso) { return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }); }
+    $("#admin-dem-faits").innerHTML = fact(intFmt.format(dm.ouvertes || 0), "demandes ouvertes") +
+      fact(intFmt.format(dm.recues_30j || 0), "demandes reçues ces 30 jours") +
+      fact(intFmt.format((dm.reponses || []).length), "réponses de pros (50 dernières)");
+    $("#admin-reponses").innerHTML = (dm.reponses || []).map(function (r) {
+      var d = r.demandes_pros || {};
+      return '<tr><td class="cell-titre"><strong>' + esc(r.pro_nom) + '</strong><span class="sub">' + esc(r.pro_type) + " · " + esc(r.contact) + "</span></td>" +
+        '<td data-label="Demande"><span>' + esc(BESOINS[d.besoin] || d.besoin || "") + '<span class="sub">' + esc((d.ville ? d.ville + ", " : "") + (d.departement || "")) + "</span></span></td>" +
+        '<td data-label="Date">' + date(r.created_at) + "</td></tr>";
+    }).join("") || '<tr><td colspan="3">Aucune réponse de pro pour l\'instant.</td></tr>';
+
+    var blocs = [
+      ["tarifs", "Tarifs envoyés par des auto-écoles", "Publier", function (x) {
+        return "<strong>" + esc(x.auto_ecole_nom) + "</strong> (" + esc(x.departement) + ") : forfait " + eur(x.forfait) +
+          (x.heures_forfait ? " pour " + x.heures_forfait + " h" : "") + ", heure en plus " + eur(x.prix_heure) +
+          (x.frais_examen != null ? ", examen " + eur(x.frais_examen) : "") + (x.accelere ? ", formation accélérée" + (x.accelere_details ? " (" + esc(x.accelere_details) + ")" : "") : "") +
+          '<span class="sub">' + esc(x.contact) + (x.lien ? ' · <a href="' + esc(x.lien) + '" target="_blank" rel="noopener">leur page de tarifs</a>' : "") + "</span>";
+      }],
+      ["loueurs", "Loueurs qui veulent s'inscrire", "C'est fait", function (x) {
+        return "<strong>" + esc(x.nom) + "</strong>, " + esc(x.ville) + (x.departement ? " (" + esc(x.departement) + ")" : "") +
+          " · formule " + esc(x.formule === "partenaire" ? "Partenaire (20 €)" : "Référencement (10 €)") +
+          '<span class="sub">' + esc([x.contact, x.email, x.site].filter(Boolean).join(" · ")) + "</span>";
+      }],
+      ["pros", "Pros qui proposent leurs services", "C'est fait", function (x) {
+        return "<strong>" + esc(x.nom) + "</strong> (" + esc(x.type) + "), " + esc(x.ville) + " (" + esc(x.departement) + ")" +
+          '<span class="sub">' + esc([x.etablissement, x.numero_agrement, x.offres, x.prix, x.contact].filter(Boolean).join(" · ")) + "</span>";
+      }],
+      ["messages", "Messages des pros", "Lu", function (x) {
+        return "<strong>" + esc(x.nom) + "</strong> (" + esc(x.type) + ")" + (x.ville ? ", " + esc(x.ville) : "") +
+          '<span class="sub">' + esc(x.contact) + "</span>" + (x.message ? '<span class="sub">« ' + esc(x.message) + " »</span>" : "");
+      }]
+    ];
+    $("#admin-a-traiter").innerHTML = blocs.map(function (b) {
+      var items = at[b[0]] || [];
+      return '<section class="block"><h3>' + b[1] + " (" + items.length + ")</h3>" +
+        (items.length ? '<ul class="a-traiter">' + items.map(function (x) {
+          return '<li><p>' + b[3](x) + '</p><p class="small">' + date(x.created_at) + "</p>" +
+            '<div class="rap-actions"><button class="btn btn-small" type="button" data-traiter="' + b[0] + '" data-id="' + x.id + '">' + b[2] + "</button>" +
+            '<button class="btn btn-small btn-ghost" type="button" data-traiter="' + b[0] + '" data-id="' + x.id + '" data-decision="supprimer">Supprimer</button></div></li>';
+        }).join("") + "</ul>" : '<p class="small">Rien à traiter.</p>') + "</section>";
+    }).join("");
+    box.hidden = false;
+    var zone = $("#admin-a-traiter");
+    if (zone.getAttribute("data-pret")) return;
+    zone.setAttribute("data-pret", "1");
+    zone.addEventListener("click", function (ev) {
+      var b = ev.target.closest && ev.target.closest("[data-traiter]");
+      if (!b) return;
+      var decision = b.getAttribute("data-decision") || "ok";
+      b.disabled = true;
+      callFn("stats", { action: "traiter", code: code, quoi: b.getAttribute("data-traiter"), id: Number(b.getAttribute("data-id")), decision: decision })
+        .then(function () {
+          var li = b.closest("li");
+          li.innerHTML = '<p class="form-status is-ok">' + (decision === "supprimer" ? "Supprimé." :
+            b.getAttribute("data-traiter") === "tarifs" ? "Validé : les prix s'afficheront sur sa fiche à la prochaine mise à jour du site." : "C'est noté.") + "</p>";
+        }).catch(function (e) { b.disabled = false; alertStatus(b, e.message); });
+    });
+  }
+  function alertStatus(el, text) {
+    var p = document.createElement("p"); p.className = "form-status is-error"; p.textContent = text; el.parentNode.appendChild(p);
   }
 
   /* ---------- Rapport envoyé à une auto-école ou un loueur (page /rapport/) ---------- */
@@ -904,6 +1040,10 @@
         var ceMois = (j.mois || []).filter(function (m) { return m.mois === j.ce_mois; })[0] || { personnes: 0, personnes_action: 0 };
         var facts = '<div><dt>' + intFmt.format(loueur ? ceMois.personnes_action : ceMois.personnes) + '</dt><dd>en ' + esc(moisTxt(j.ce_mois)) + '</dd></div>';
         if (!loueur) facts += '<div><dt>' + intFmt.format(j.total.personnes_action) + '</dt><dd>ont ensuite cliqué pour vous appeler, venir ou aller sur votre site</dd></div>';
+        if (j.demandes && j.demandes.total) {
+          facts += '<div><dt>' + intFmt.format(j.demandes.total) + '</dt><dd>' + (j.demandes.total > 1 ? "élèves contactés" : "élève contacté") +
+            " grâce aux demandes publiées sur Créno" + (j.demandes.ce_mois ? ", dont " + intFmt.format(j.demandes.ce_mois) + " ce mois-ci" : "") + "</dd></div>";
+        }
         if (d.e && d.e.taux != null) {
           var top = badges && badges.top && badges.top[d.e.id];
           facts += '<div><dt>' + Math.round(d.e.taux * 100) + ' %</dt><dd>de réussite au 1er passage' +
@@ -920,6 +1060,129 @@
         }).join("") || '<tr><td colspan="' + (cols.length + 1) + '">Pas encore de chiffres. Revenez dans quelques jours.</td></tr>';
         box.hidden = false;
       }).catch(function (e) { erreur(e.message); });
+  }
+
+  /* ---------- Demandes d'élèves, vues par les pros (/pro/demandes/) ---------- */
+  var BESOINS = {
+    "examen-blanc": "Une évaluation ou un examen blanc",
+    "presentation-examen": "Être présenté à l'examen par une auto-école",
+    "heures": "Des heures de conduite avec un moniteur",
+    "location-voiture": "Louer une voiture à double commande"
+  };
+  function ilYa(iso) {
+    var j = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+    return j <= 0 ? "aujourd'hui" : j === 1 ? "hier" : "il y a " + j + " jours";
+  }
+  function initDemandesPros() {
+    var liste = $("#dem-liste");
+    if (!liste) return;
+    var etatEl = $("#dem-etat");
+    var form = $("#rep-form");
+    var filtre = $("#dem-filtre-dep");
+    var repondues = store.get("creno-reponses", {}) || {};
+    var demandes = [];
+    if (!supabaseReady()) { etatEl.textContent = "Les demandes d'élèves ouvrent très bientôt."; return; }
+
+    // Formulaire de réponse : champs selon le type de pro
+    initSchoolPicker(form);
+    var typeSel = $("#rep-type", form);
+    function majType() {
+      var t = typeSel.value;
+      $all("[data-pour]", form).forEach(function (el) {
+        var pour = el.getAttribute("data-pour");
+        el.hidden = !((pour === "ae" && (t === "auto-ecole" || t === "moniteur")) || pour === t);
+      });
+      $("#rep-dep", form).required = $("#rep-ecole", form).required = (t === "auto-ecole" || t === "moniteur");
+      $("#rep-nom", form).required = t === "moniteur";
+      $("#rep-loueur", form).required = t === "loueur";
+    }
+    typeSel.addEventListener("change", majType);
+    majType();
+    chargerLoueurs().then(function (ls) {
+      $("#rep-loueur", form).innerHTML = '<option value="">Choisis</option>' + ls.map(function (l) {
+        return '<option value="' + esc(slugJS(l.nom)) + '">' + esc(l.nom + " (" + l.ville + ")") + "</option>";
+      }).join("");
+    });
+
+    function afficher() {
+      var dep = filtre.value;
+      var vis = demandes.filter(function (d) { return !dep || d.departement === dep; });
+      etatEl.textContent = vis.length
+        ? plural(vis.length, "demande ouverte", "demandes ouvertes") + (dep ? " dans le " + dep : "") + "."
+        : "Aucune demande ouverte" + (dep ? " dans le " + dep : "") + " pour l'instant. Reviens bientôt.";
+      liste.innerHTML = vis.map(function (d) {
+        var deja = repondues[d.id];
+        return '<li class="demande" data-id="' + d.id + '"><div class="demande-head"><span class="dep-code">' + esc(d.departement) + "</span>" +
+          "<strong>" + esc(BESOINS[d.besoin] || d.besoin) + "</strong></div>" +
+          "<p>" + esc(d.ville || "Ville non précisée") + " · " + ilYa(d.created_at) + "</p>" +
+          (d.disponibilites ? '<p class="small">Disponibilités : ' + esc(d.disponibilites) + "</p>" : "") +
+          '<p class="small">' + d.nb_reponses + " réponse" + (d.nb_reponses > 1 ? "s" : "") + " sur 3</p>" +
+          (deja ? '<p class="form-status is-ok">Tu as répondu à cette demande.</p>'
+                : '<button class="btn btn-signal btn-small" type="button" data-repondre="' + d.id + '">Répondre à cet élève</button>') +
+          "</li>";
+      }).join("");
+    }
+    function charger() {
+      callFn("pros", { action: "liste" }).then(function (j) { demandes = j.demandes || []; afficher(); })
+        .catch(function (e) { etatEl.textContent = e.message; });
+    }
+    filtre.addEventListener("change", afficher);
+    liste.addEventListener("click", function (ev) {
+      var b = ev.target.closest && ev.target.closest("[data-repondre]");
+      if (!b) return;
+      var li = b.closest("li");
+      var d = demandes.filter(function (x) { return String(x.id) === b.getAttribute("data-repondre"); })[0];
+      form.elements.demande.value = d.id;
+      if (!form.elements.message.value) {
+        form.elements.message.value = "Bonjour, j'ai vu ta demande sur Créno (" + (BESOINS[d.besoin] || "").toLowerCase() +
+          "). Je peux t'aider : appelle-moi ou écris-moi pour en parler.";
+      }
+      if (!$("#rep-dep", form).value && d.departement) {
+        $("#rep-dep", form).value = d.departement;
+        $("#rep-dep", form).dispatchEvent(new Event("change"));
+      }
+      $(".form-status", form).textContent = "";
+      $all("[data-repondre]", liste).forEach(function (x) { x.hidden = false; });
+      b.hidden = true;
+      li.appendChild(form);
+      form.hidden = false;
+      typeSel.focus();
+    });
+    $("#rep-annuler").addEventListener("click", function () {
+      form.hidden = true;
+      $all("[data-repondre]", liste).forEach(function (x) { x.hidden = false; });
+    });
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var statusEl = $(".form-status", form);
+      var button = $("button[type=submit]", form);
+      var corps = { action: "repondre" };
+      $all("input[name], select[name], textarea[name]", form).forEach(function (f) {
+        corps[f.name] = f.type === "checkbox" ? f.checked : f.value.trim();
+      });
+      corps.demande = Number(corps.demande);
+      button.disabled = true;
+      statusEl.textContent = "Envoi…"; statusEl.className = "form-status";
+      callFn("pros", corps).then(function (j) {
+        button.disabled = false;
+        repondues[corps.demande] = true;
+        store.set("creno-reponses", repondues);
+        var li = form.closest("li");
+        form.hidden = true;
+        document.querySelector("main") ? $("main").appendChild(form) : document.body.appendChild(form);
+        var msg = "C'est envoyé : l'élève a reçu ton message par e-mail, avec ton contact." +
+          (j.telephone ? " Il accepte aussi d'être appelé : " + j.telephone + "." : "");
+        if (li) {
+          var ok = document.createElement("p");
+          ok.className = "form-status is-ok";
+          ok.textContent = msg;
+          var btn = $("[data-repondre]", li);
+          if (btn) btn.replaceWith(ok); else li.appendChild(ok);
+        }
+        form.elements.message.value = "";
+      }).catch(function (e) { button.disabled = false; setStatus(statusEl, false, e.message); });
+    });
+    charger();
   }
 
   /* ---------- Compteur public (espace pros) ---------- */
@@ -950,6 +1213,7 @@
     initAdmin();
     initRapport();
     initTotal();
+    initDemandesPros();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

@@ -11,6 +11,9 @@
   Dans Stripe, règle « Après le paiement » sur « Rediriger vers ton site » avec l'adresse :
   https://creno-tan.vercel.app/pack-candidat-libre/acces/?session_id={CHECKOUT_SESSION_ID}
 
+  lienLoueurReferencement / lienLoueurPartenaire : les liens de paiement Stripe des abonnements des loueurs
+  (10 € et 20 € par mois). Vides : l'inscription est enregistrée et tu recontactes l'agence pour l'activer.
+
   Le lien de paiement des alertes ne va pas ici : il se règle dans les secrets Supabase
   (ALERTES_LIEN_STRIPE), voir supabase/functions/alertes/index.ts.
 
@@ -21,5 +24,7 @@ window.CRENO_CONFIG = {
   supabaseUrl: "",
   supabaseAnonKey: "",
   lienPaiementPack: "",
+  lienLoueurReferencement: "",
+  lienLoueurPartenaire: "",
   formEndpoint: ""
 };

@@ -52,16 +52,18 @@ Google met en général de quelques jours à quelques semaines pour indexer les 
    - Alertes, 9,99 € **par mois** (produit récurrent) ; rediriger vers
      `https://creno-tan.vercel.app/alertes/merci/?session_id={CHECKOUT_SESSION_ID}`
 4. **Resend** : créer un compte, vérifier un domaine (ex. creno.fr), créer une clé API.
-5. **Fonctions** : déployer `alertes`, `pack` et `stats`, sans vérification JWT :
+5. **Fonctions** : déployer `alertes`, `pack`, `stats` et `pros`, sans vérification JWT :
 
    ```bash
    supabase functions deploy alertes --no-verify-jwt
    supabase functions deploy pack --no-verify-jwt
    supabase functions deploy stats --no-verify-jwt
+   supabase functions deploy pros --no-verify-jwt
    ```
 
 6. **Secrets** (*Edge Functions > Secrets*) : `SITE_URL`, `RESEND_API_KEY`, `ALERTES_EXPEDITEUR`,
    `STRIPE_SECRET_KEY`, `CRENO_SEL` (phrase au hasard), `ADMIN_CODE` (ton code du tableau de bord),
+   `ADMIN_EMAIL` (ton e-mail : tu y reçois chaque demande d'élève, chaque réponse de pro et chaque formulaire),
    `PACK_MONTANT_CENTIMES=1499`, `ALERTES_MONTANT_CENTIMES=999`, `ALERTES_ESSAI_JOURS=15`,
    et `ALERTES_LIEN_STRIPE` (lien de l'abonnement) quand les alertes deviennent payantes.
 7. **Tâche quotidienne des alertes** (rappels de fin d'essai, renouvellements) : *Integrations > Cron*,
@@ -77,16 +79,27 @@ Google met en général de quelques jours à quelques semaines pour indexer les 
    $$);
    ```
 
-8. **Site** : dans `assets/config.js`, remplir `supabaseUrl`, `supabaseAnonKey` et `lienPaiementPack`.
+8. **Site** : dans `assets/config.js`, remplir `supabaseUrl`, `supabaseAnonKey`, `lienPaiementPack`, et les
+   liens Stripe des abonnements des loueurs (`lienLoueurReferencement` à 10 €/mois, `lienLoueurPartenaire` à 20 €/mois).
    Dans `site.json`, remplir `email_contact`, `editeur` et `mediateur_consommation` ; `alertes_payantes`
    doit être d'accord avec `ALERTES_LIEN_STRIPE`. Relancer `python3 scripts/build_site.py`, pousser.
 9. **Vercel** : onglet *Analytics* > activer Web Analytics.
 
+## Mise à jour automatique des prix (GitHub)
+
+Sur GitHub : *Settings > Secrets and variables > Actions > New repository secret*, ajouter
+`SUPABASE_URL` et `SUPABASE_SERVICE_KEY` (clé service_role ou secret, jamais dans le code).
+Chaque jour, `.github/workflows/mise-a-jour-prix.yml` lit Supabase, régénère les pages et publie.
+Pour le lancer tout de suite : onglet *Actions* > « Mettre à jour les prix » > *Run workflow*.
+Si Vercel refuse de déployer les commits du robot (dépôt privé), mettre dans le workflow l'e-mail
+de ton compte GitHub à la place de celui de github-actions[bot].
+
 ## Afficher les prix des auto-écoles
 
-- Une auto-école donne ses tarifs depuis l'espace pros (« Donner mes tarifs ») : ils arrivent dans la
-  table `tarifs_proposes` de Supabase. Vérifie-les (sa page de tarifs, un appel), passe `valide` à true,
-  puis lance `scripts/sync_prix.py` (voir plus haut) : ils s'affichent sur sa fiche.
+- Une auto-école donne ses tarifs depuis l'espace pros (« Donner mes tarifs ») : tu reçois un e-mail et
+  ils apparaissent dans ton tableau de bord. Vérifie-les (sa page de tarifs, un appel), clique « Publier » :
+  ils s'affichent sur sa fiche à la prochaine mise à jour automatique (chaque jour, ou tout de suite avec
+  *Run workflow*).
 - Tu peux aussi recopier à la main les tarifs publiés sur le site d'une auto-école dans `data/tarifs.json`
   (avec `source: "site"`, le lien de la page et la date), relancer `python3 scripts/build_site.py` et pousser.
 - Les prix payés par les élèves s'affichent à partir de 3 déclarations pour la même auto-école.

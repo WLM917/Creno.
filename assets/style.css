@@ -1210,6 +1210,12 @@ textarea:focus-visible { border-color: var(--signal); }
 .option-link:hover h3 { text-decoration: underline; text-underline-offset: 0.18em; }
 .option-feature { background: var(--signal); border-color: var(--signal); color: var(--signal-ink); }
 .option-feature p { color: var(--signal-ink); opacity: 0.88; }
+.option-feature p.option-price { color: var(--plate-ink); opacity: 1; }
+.option-feature .tips li { color: var(--signal-ink); }
+.option-feature .tips li::marker { color: var(--signal-ink); }
+.option .tips { margin: 0; }
+.option > .option-price + .tips { margin-top: 0.2rem; }
+.option:has(.tips) .option-price { margin-top: 0; }
 .option-price {
   margin-top: auto;
   align-self: flex-start;
@@ -1446,3 +1452,28 @@ textarea:focus-visible { border-color: var(--signal); }
 .rank-tarifs dd { margin: 0; font-family: var(--font-display); font-weight: 800; font-variant-numeric: tabular-nums; }
 .rank-tarifs-vide { font-size: 0.93rem; color: var(--muted); }
 .rank-acc { font-size: 0.95rem; }
+
+/* ---------- Demandes d'élèves (espace pros) ---------- */
+.dem-filtre { max-width: 22rem; }
+.demandes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
+.demande {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--signal);
+  border-radius: var(--radius-field);
+  padding: 0.9rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+.demande-head { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.demande-head strong { font-family: var(--font-display); font-weight: 800; font-size: 1.08rem; }
+.demande .btn-small { margin-top: 0.3rem; }
+.demande .rep-form { width: 100%; margin-top: 0.6rem; }
+.rep-form h3 { margin: 0; }
+.a-traiter { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.a-traiter li { border: 1px solid var(--line); border-radius: var(--radius-field); padding: 0.75rem 0.9rem; background: var(--surface); }
+.a-traiter .sub { display: block; color: var(--muted); font-size: 0.88rem; }
+#admin-a-traiter h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+#admin-a-traiter { display: grid; gap: 1.25rem; }

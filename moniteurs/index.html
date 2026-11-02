@@ -35,7 +35,7 @@
       </svg>
       <span class="logo-word">créno</span>
     </a>
-    <nav class="site-nav" aria-label="Sections"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../alertes/">Alertes places</a><a href="../pack-candidat-libre/">Le pack</a></nav>
+    <nav class="site-nav" aria-label="Sections"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../alertes/">Alertes places</a><a href="../pack-candidat-libre/">Le pack</a><a href="../pro/">Espace pros</a></nav>
   </div>
 </header>
 <main id="main" tabindex="-1">
@@ -76,7 +76,7 @@
 
   <section class="block" id="demande" aria-labelledby="demande-title">
     <h2 id="demande-title">Trouver un pro près de chez toi</h2>
-    <p class="lede">Dis-nous ce dont tu as besoin : on transmet ta demande à un pro vérifié de ton département, qui te recontacte avec son prix.</p>
+    <p class="lede">Dis ce dont tu as besoin : ta demande apparaît chez les pros de Créno, sans ton nom ni ton contact. Ceux qui peuvent t'aider te répondent par e-mail, avec leur prix. Trois réponses au plus.</p>
     <form class="form-grid" id="demande-form" data-form-type="demande_pro">
       <div class="field"><label for="dem-besoin">Ce dont tu as besoin</label>
         <select id="dem-besoin" name="besoin" required>
@@ -84,6 +84,7 @@
           <option value="examen-blanc">Une évaluation ou un examen blanc</option>
           <option value="presentation-examen">Être présenté à l'examen avec un moniteur</option>
           <option value="heures">Des heures de conduite avec un moniteur</option>
+          <option value="location-voiture">Louer une voiture à double commande</option>
         </select>
       </div>
       <div class="field"><label for="dem-dep">Département</label>
@@ -91,8 +92,10 @@
       </div>
       <div class="field"><label for="dem-ville">Ville</label><input id="dem-ville" name="ville" maxlength="80" autocomplete="address-level2"></div>
       <div class="field"><label for="dem-dispo">Tes disponibilités</label><input id="dem-dispo" name="disponibilites" maxlength="300" placeholder="Ex. le samedi matin"></div>
-      <div class="field field-wide"><label for="dem-contact">E-mail ou téléphone</label><input id="dem-contact" name="contact" required maxlength="200" autocomplete="email"></div>
-      <label class="check-inline field-wide" for="dem-ok"><input id="dem-ok" name="consentement" type="checkbox" value="true" required> J'accepte que Créno transmette ma demande et mon contact à un pro de mon département.</label>
+      <div class="field"><label for="dem-email">Ton e-mail (les réponses arrivent ici)</label><input id="dem-email" name="email" type="email" required maxlength="200" autocomplete="email"></div>
+      <div class="field"><label for="dem-tel">Ton téléphone (facultatif)</label><input id="dem-tel" name="telephone" type="tel" maxlength="30" autocomplete="tel"></div>
+      <label class="check-inline field-wide" for="dem-tel-ok"><input id="dem-tel-ok" name="partage_tel" type="checkbox"> Les pros qui me répondent peuvent voir mon numéro pour m'appeler.</label>
+      <label class="check-inline field-wide" for="dem-ok"><input id="dem-ok" name="consentement" type="checkbox" required> J'accepte que ma demande soit visible par les pros de Créno, sans mon nom ni mon contact, et que leurs réponses m'arrivent par e-mail.</label>
       <div class="form-actions field-wide">
         <button class="btn" type="submit">Envoyer ma demande</button>
         <p class="form-status" role="status"></p>
@@ -103,7 +106,7 @@
   <section class="block" aria-labelledby="propro-title">
     <h2 id="propro-title">Tu es moniteur ou auto-école ?</h2>
     <p>Propose tes heures, tes examens blancs ou ta formule de présentation à l'examen, et reçois des demandes d'élèves de ton département.</p>
-    <a class="link-strong" href="../pro/#proposer">Proposer mes services</a>
+    <a class="link-strong" href="../pro/demandes/">Voir les demandes d'élèves</a>
   </section>
 </div>
 

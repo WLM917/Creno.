@@ -40,9 +40,14 @@ def requete(sql, jeton, projet):
     except urllib.error.HTTPError as e:
         corps = e.read().decode(errors="replace")
         try:
-            corps = json.loads(corps).get("message", corps)
+            d = json.loads(corps)
+            manque = d.get("missing_permissions")
+            corps = d.get("message", corps) + (f" {manque}" if manque else "")
         except (ValueError, AttributeError):
             pass
+        if e.code in (401, 403):
+            corps += ("\nLe jeton Supabase n'a pas assez de droits : recrée-le avec ton projet et "
+                      "« Full access », puis remplace le secret GitHub SUPABASE_ACCESS_TOKEN.")
         raise ErreurSQL(f"HTTP {e.code} : {corps}") from None
     except urllib.error.URLError as e:
         raise ErreurSQL(f"Supabase injoignable : {e.reason}") from None

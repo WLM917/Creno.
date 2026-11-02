@@ -83,8 +83,15 @@ jobs:
             else
               {
                 echo "### ❌ $titre"
+                if grep -qiE "missing.?required|missing_permissions|status 403|HTTP 403" "$sortie"; then
+                  echo ""
+                  echo "👉 **Le jeton Supabase n'a pas assez de droits.** Recrée-le sur supabase.com (Access Tokens) avec ton projet et la permission « Full access », puis remplace le secret GitHub SUPABASE_ACCESS_TOKEN."
+                  echo ""
+                fi
                 echo '```'
-                tail -n 25 "$sortie" | sed "s/${SUPABASE_ACCESS_TOKEN:-jeton-absent}/***/g"
+                # Sans les lignes de téléchargement Docker, et coupé pour se lire sur un téléphone.
+                grep -vE '^[0-9a-f]{12}: |^Digest: |^Status: Downloaded' "$sortie" | tail -n 15 \
+                  | sed "s/${SUPABASE_ACCESS_TOKEN:-jeton-absent}/***/g" | fold -w 70 -s
                 echo '```'
               } >> "$GITHUB_STEP_SUMMARY"
             fi
@@ -111,6 +118,9 @@ jobs:
         run: |
           . "$RUNNER_TEMP/etape.sh"
           if ! etape "2. Fonctions serveur" supabase functions deploy --project-ref "$PROJET" --no-verify-jwt --use-api --yes; then
+            if grep -qiE "missing.?required|403" "$RUNNER_TEMP/sortie.txt"; then
+              exit 1   # problème de droits du jeton : un 2e essai ne changerait rien
+            fi
             echo "Nouvel essai, avec Docker pour préparer les fonctions."
             etape "2. Fonctions serveur (2e essai)" supabase functions deploy --project-ref "$PROJET" --no-verify-jwt --yes
           fi

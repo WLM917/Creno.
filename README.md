@@ -40,7 +40,9 @@ Vercel les affiche telles quelles. Seul réglage utile : onglet *Analytics* > ac
 ### 1. Deux codes à prendre dans Supabase
 
 - **Jeton d'accès** : supabase.com > ton avatar > *Account preferences* > *Access Tokens* >
-  *Generate new token*. Copie-le tout de suite (il n'est montré qu'une fois).
+  *Generate new token*. Choisis ton projet Créno et la permission **Full access** (avec « Read-only »,
+  le robot ne peut rien créer : erreur 403 « Missing required permissions »), et la durée la plus
+  longue. Copie-le tout de suite (il n'est montré qu'une fois). À refaire quand il expire.
 - **Identifiant du projet** : *Project Settings > General > Project ID*
   (l'adresse `https://xxxx.supabase.co` marche aussi).
 

@@ -341,12 +341,14 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
 
 1. ~~Vrais taux de réussite~~ : fait. À refaire chaque trimestre avec
    `python3 scripts/import_auto_ecoles.py fichier.csv` (nouveau CSV de la carte officielle).
-2. **Déclarations d'élèves** : code et tables prêts. Reste à créer les tables dans Supabase,
-   remplir assets/config.js, puis lancer sync_prix.py régulièrement.
+2. ~~Brancher Supabase~~ : fait le 2 novembre 2026 (projet bfcgtjkzgvpaafyclnmt, tables, 4 fonctions,
+   secrets ADMIN_CODE / ADMIN_EMAIL / CRENO_SEL, config.js). Les prix déclarés sont repris chaque
+   jour par mise-a-jour-prix.yml. Reste : déposer le PDF du pack dans le stockage « pack ».
 3. **Annuaire des loueurs double commande** : inscription gratuite, Créno Pro 19,99 €/mois codé (formulaire + Stripe).
    Reste : recherche par ville, boîte manuelle/auto dans la fiche.
-4. **Trouver une date d'examen** : guide fait, alertes communautaires codées (fonction `alertes`).
-   Reste : déployer la fonction, brancher Resend et un domaine. Jamais de bot (règle 1).
+4. **Trouver une date d'examen** : guide fait, alertes communautaires codées et déployées (fonction `alertes`).
+   Reste : brancher Resend (RESEND_API_KEY) et un domaine, sans quoi aucun e-mail ne part
+   (les formulaires sont quand même enregistrés). Jamais de bot (règle 1).
 5. ~~Pages par ville et par département pour Google~~ : fait (1 892 pages).
    Idées suivantes : pages « location voiture double commande <département> »,
    « permis candidat libre <département> ».

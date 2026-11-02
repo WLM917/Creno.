@@ -183,8 +183,8 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 
 - Menu du haut (NAV) : Auto-écoles, Candidat libre, Alertes places, Le pack, Espace pros, Nous contacter.
 - /pro/ : trois onglets (auto-écoles : présentation, « Donner mes tarifs », « Trouver mon badge » ;
-  moniteurs : présentation, « Proposer mes services » ; loueurs : formules et inscription), puis
-  « Pourquoi faire confiance à Créno ». Sans JavaScript, les trois parties restent l'une sous l'autre.
+  moniteurs : présentation, « Proposer mes services » ; loueurs : formules et inscription).$
+  « Pourquoi faire confiance à Créno » est au-dessus des onglets. Sans JavaScript, les trois parties restent l'une sous l'autre.
   Un lien vers /pro/#badge, #tarifs, #proposer, #inscrire-agence... ouvre le bon onglet.
 - /contact/ : « Nous écrire » pour tout le monde (élève, parent, auto-école, moniteur, loueur, autre),
   nom facultatif -> table contacts_pros via la fonction pros, e-mail à William, « Messages reçus » dans

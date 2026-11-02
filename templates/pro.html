@@ -2,8 +2,19 @@
   {{fil_ariane}}
   <header class="view-head">
     <h1>Créno pour les pros</h1>
-    <p class="lede">Auto-écoles, moniteurs, loueurs de voitures à double commande : Créno met en avant les pros qui font réussir les élèves, à partir des chiffres officiels. Pour les auto-écoles et les moniteurs, tout est gratuit pendant le lancement. Les loueurs choisissent une formule à partir de 10 € par mois.</p>
+    <p class="lede">Auto-écoles, moniteurs, loueurs de voitures à double commande : Créno met en avant les pros qui font réussir les élèves, à partir des chiffres officiels.</p>
   </header>
+
+  <section class="block" aria-labelledby="pourquoi-title">
+    <h2 id="pourquoi-title">Pourquoi faire confiance à Créno</h2>
+    <dl class="facts">
+      <div><dt>{{nb_classees}}</dt><dd>auto-écoles classées à partir des taux de réussite officiels de la Sécurité routière</dd></div>
+      <div><dt>{{nb_pages_villes}}</dt><dd>pages ville et {{nb_pages_deps}} pages département, faites pour être trouvées sur Google</dd></div>
+      <div><dt>{{date_import}}</dt><dd>date du dernier fichier officiel importé. Mise à jour à chaque trimestre</dd></div>
+    </dl>
+    <p class="live-count" id="total-contacts" hidden></p>
+    <p>Le classement ne s'achète pas : la formule est publique et une fiche partenaire est toujours marquée « Partenaire payant ». C'est ce qui donne de la valeur à ton rang. <a href="{{root}}methode/">Voir la méthode</a></p>
+  </section>
 
   <nav class="pro-tabs" aria-label="Choisis ton métier">
     <div role="tablist" class="pro-tabs-liste">
@@ -183,14 +194,4 @@
     </section>
   </div>
 
-  <section class="block" aria-labelledby="pourquoi-title">
-    <h2 id="pourquoi-title">Pourquoi faire confiance à Créno</h2>
-    <dl class="facts">
-      <div><dt>{{nb_classees}}</dt><dd>auto-écoles classées à partir des taux de réussite officiels de la Sécurité routière</dd></div>
-      <div><dt>{{nb_pages_villes}}</dt><dd>pages ville et {{nb_pages_deps}} pages département, faites pour être trouvées sur Google</dd></div>
-      <div><dt>{{date_import}}</dt><dd>date du dernier fichier officiel importé. Mise à jour à chaque trimestre</dd></div>
-    </dl>
-    <p class="live-count" id="total-contacts" hidden></p>
-    <p>Le classement ne s'achète pas : la formule est publique et une fiche partenaire est toujours marquée « Partenaire payant ». C'est ce qui donne de la valeur à ton rang. <a href="{{root}}methode/">Voir la méthode</a></p>
-  </section>
 </div>

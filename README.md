@@ -37,14 +37,12 @@ Tout se fait depuis un navigateur, même sur iPad. Pas de terminal.
 **Vercel n'a besoin d'aucune variable d'environnement** : le site est fait de pages déjà prêtes,
 Vercel les affiche telles quelles. Seul réglage utile : onglet *Analytics* > activer Web Analytics.
 
-### 1. Trois codes à prendre dans Supabase
+### 1. Deux codes à prendre dans Supabase
 
 - **Jeton d'accès** : supabase.com > ton avatar > *Account preferences* > *Access Tokens* >
   *Generate new token*. Copie-le tout de suite (il n'est montré qu'une fois).
 - **Identifiant du projet** : *Project Settings > General > Project ID*
   (l'adresse `https://xxxx.supabase.co` marche aussi).
-- **Mot de passe de la base** : celui choisi à la création du projet. Oublié : *Project Settings >
-  Database > Reset database password*.
 
 ### 2. Les coller dans GitHub
 
@@ -55,7 +53,6 @@ Un secret = un nom (à recopier exactement) + sa valeur :
 |---|---|
 | `SUPABASE_ACCESS_TOKEN` | le jeton d'accès |
 | `SUPABASE_PROJECT_ID` | l'identifiant du projet |
-| `SUPABASE_DB_PASSWORD` | le mot de passe de la base |
 | `ADMIN_CODE` | un code que tu inventes pour ouvrir ton tableau de bord /admin/ |
 | `ADMIN_EMAIL` | ton e-mail (tu y reçois chaque demande d'élève, réponse de pro et formulaire) |
 | `CRENO_SEL` | facultatif : une phrase au hasard (sert à rendre anonymes les compteurs) |
@@ -68,9 +65,10 @@ Les clés secrètes ne vont jamais dans le code, ni dans une conversation : seul
 
 ### 3. Lancer l'installation
 
-Onglet *Actions* du dépôt > « Brancher Supabase » > *Run workflow*. Ça crée les tables, déploie les
-4 fonctions (alertes, pack, stats, pros), copie les secrets dans Supabase et remplit `assets/config.js`.
-Coche verte = c'est bon. Croix rouge = ouvrir l'étape en rouge et envoyer une capture à Claude.
+Onglet *Actions* du dépôt > « Brancher Supabase » > *Run workflow*. Ça crée les tables (par l'API
+Supabase, sans mot de passe), déploie les 4 fonctions (alertes, pack, stats, pros), copie les secrets
+dans Supabase et remplit `assets/config.js`. La page *Summary* du lancement affiche chaque étape
+(✅ ou ❌ avec l'erreur exacte) : en cas de croix rouge, envoyer une capture de cette page à Claude.
 À relancer après chaque nouveau secret ajouté.
 
 `.github/workflows/mise-a-jour-prix.yml` utilise les mêmes secrets : chaque jour, il lit les prix dans

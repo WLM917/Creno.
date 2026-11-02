@@ -46,7 +46,8 @@ scripts/import_auto_ecoles.py     importe le CSV officiel -> data/, puis lance b
                                   (--prix-seulement : refusionne data/prix.json sans CSV)
 scripts/sync_prix.py              lit les déclarations dans Supabase, calcule les médianes -> data/prix.json,
                                   et les tarifs vérifiés des auto-écoles (tarifs_proposes, valide = true) -> data/tarifs.json
-supabase/migrations/*.sql         tables + sécurité. 1re migration : formulaires (insertion seule pour le site).
+supabase/migrations/*.sql         tables + sécurité. Toujours REJOUABLES (if not exists / drop ... if exists) :
+                                  testées sur un vrai Postgres 16 local (/usr/lib/postgresql/16/bin). 1re migration : formulaires (insertion seule pour le site).
                                   2e : abonnes_alertes et signalements (aucun accès public, seulement les
                                   fonctions), pros_proposes, demandes_pros, contacts_pros, clics (insertion
                                   seule), espace de stockage privé « pack ». Dernière : creno_pro_demandes
@@ -60,12 +61,14 @@ supabase/functions/pros/          fonction serveur : demandes d'élèves (public
                                   des pros, fermeture) et formulaires des pros (tarifs, services, messages, inscription
                                   des loueurs, demande Créno Pro), avec un e-mail à William (ADMIN_EMAIL) pour chaque envoi
 .github/workflows/                brancher-supabase.yml : à chaque changement de supabase/ (ou Run workflow), crée les
-                                  tables (db push), déploie les 4 fonctions sans JWT, copie les secrets GitHub dans
+                                  tables (scripts/migrer_supabase.py, par l'API Supabase avec le jeton, sans mot de
+                                  passe), déploie les 4 fonctions sans JWT, copie les secrets GitHub dans
                                   Supabase, remplit config.js s'il est vide. William n'a pas d'ordinateur (iPad) :
                                   tout le branchement Supabase passe par là.
                                   mise-a-jour-prix.yml : chaque jour, lit Supabase (sync_prix.py), régénère et publie.
-                                  Secrets GitHub : SUPABASE_ACCESS_TOKEN, SUPABASE_PROJECT_ID, SUPABASE_DB_PASSWORD,
-                                  ADMIN_CODE, ADMIN_EMAIL, puis STRIPE_SECRET_KEY, RESEND_API_KEY, ALERTES_EXPEDITEUR
+                                  Secrets GitHub : SUPABASE_ACCESS_TOKEN, SUPABASE_PROJECT_ID, ADMIN_CODE,
+                                  ADMIN_EMAIL, puis STRIPE_SECRET_KEY, RESEND_API_KEY, ALERTES_EXPEDITEUR.
+                                  Résultat de chaque étape (et erreur exacte) sur la page Summary du lancement.
 scripts/cle_supabase.py           trouve la clé publique / service_role dans `supabase projects api-keys -o json`
                                   (pour les workflows, jamais affichée)
 assets/style.css                  styles (tokens de couleur en haut, thème clair et sombre)

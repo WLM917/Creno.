@@ -2,15 +2,16 @@
 #
 # Se lance à chaque modification du dossier supabase/, ou à la main :
 # onglet Actions > « Brancher Supabase » > Run workflow.
-#   1. crée ou met à jour les tables (fichiers de supabase/migrations)
+#   1. crée ou met à jour les tables (fichiers de supabase/migrations, via l'API Supabase)
 #   2. déploie les 4 fonctions serveur (alertes, pack, stats, pros), sans vérification JWT
 #   3. copie dans Supabase les secrets des fonctions réglés sur GitHub
 #   4. remplit assets/config.js (adresse du projet + clé publique) s'il est encore vide
+# Le résultat de chaque étape (et l'erreur exacte s'il y en a une) s'affiche sur la page
+# « Summary » du lancement.
 #
 # Secrets à régler sur GitHub : Settings > Secrets and variables > Actions > New repository secret
 #   SUPABASE_ACCESS_TOKEN   jeton d'accès (supabase.com > Account > Access Tokens)
 #   SUPABASE_PROJECT_ID     identifiant du projet (l'adresse https://xxxx.supabase.co marche aussi)
-#   SUPABASE_DB_PASSWORD    mot de passe de la base de données (pour créer les tables)
 #   ADMIN_CODE, ADMIN_EMAIL code du tableau de bord /admin/ et e-mail qui reçoit les demandes
 #   plus tard : RESEND_API_KEY, ALERTES_EXPEDITEUR, STRIPE_SECRET_KEY
 #   facultatifs : CRENO_SEL, ALERTES_LIEN_STRIPE (vide = alertes gratuites), PACK_MONTANT_CENTIMES
@@ -22,6 +23,7 @@ on:
     branches: [main]
     paths:
       - "supabase/**"
+      - "scripts/migrer_supabase.py"
       - ".github/workflows/brancher-supabase.yml"
   workflow_dispatch:
 
@@ -38,7 +40,6 @@ jobs:
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
     steps:
       - name: Vérifier les secrets
         id: verif
@@ -47,9 +48,14 @@ jobs:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
         run: |
           # Dit quels secrets GitHub voit (jamais leur valeur).
-          for n in SUPABASE_ACCESS_TOKEN SUPABASE_PROJECT_ID SUPABASE_DB_PASSWORD ADMIN_CODE ADMIN_EMAIL; do
-            if [ -n "${!n}" ]; then echo "Trouvé : $n"; else echo "::warning::Secret GitHub manquant : $n"; fi
-          done
+          {
+            echo "## Brancher Supabase"
+            echo ""
+            for n in SUPABASE_ACCESS_TOKEN SUPABASE_PROJECT_ID ADMIN_CODE ADMIN_EMAIL; do
+              if [ -n "${!n}" ]; then echo "- Secret trouvé : \`$n\`"; else echo "- **Secret manquant : \`$n\`**"; fi
+            done
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
           if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_PROJECT_ID" ]; then
             echo "ok=non" >> "$GITHUB_OUTPUT"
             if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
@@ -62,6 +68,29 @@ jobs:
           PROJET=$(printf '%s' "$SUPABASE_PROJECT_ID" | tr -d '[:space:]' | sed -E 's#^https?://##; s#\.supabase\.co.*$##; s#^.*/project/##; s#/.*$##')
           echo "PROJET=$PROJET" >> "$GITHUB_ENV"
           echo "ok=oui" >> "$GITHUB_OUTPUT"
+          # Petit outil pour les étapes suivantes : lance une commande, écrit le résultat dans Summary.
+          cat > "$RUNNER_TEMP/etape.sh" <<'FIN'
+          etape() {
+            titre="$1"; shift
+            sortie="$RUNNER_TEMP/sortie.txt"
+            set +e
+            "$@" > "$sortie" 2>&1
+            code=$?
+            set -e
+            cat "$sortie"
+            if [ "$code" -eq 0 ]; then
+              echo "### ✅ $titre" >> "$GITHUB_STEP_SUMMARY"
+            else
+              {
+                echo "### ❌ $titre"
+                echo '```'
+                tail -n 25 "$sortie" | sed "s/${SUPABASE_ACCESS_TOKEN:-jeton-absent}/***/g"
+                echo '```'
+              } >> "$GITHUB_STEP_SUMMARY"
+            fi
+            return "$code"
+          }
+          FIN
 
       - uses: actions/checkout@v4
         if: steps.verif.outputs.ok == 'oui'
@@ -71,22 +100,20 @@ jobs:
         with:
           version: 2.90.0
 
-      - name: 1. Tables (migrations)
+      - name: 1. Tables
         if: steps.verif.outputs.ok == 'oui'
         run: |
-          if [ -z "$SUPABASE_DB_PASSWORD" ]; then
-            echo "::warning::Il manque SUPABASE_DB_PASSWORD : les tables n'ont pas été créées."
-            exit 0
-          fi
-          supabase link --project-ref "$PROJET"
-          if ! supabase db push --yes; then
-            echo "::error::Les tables n'ont pas pu être créées. Envoie une capture de cette erreur à Claude."
-            exit 1
-          fi
+          . "$RUNNER_TEMP/etape.sh"
+          etape "1. Tables" python3 scripts/migrer_supabase.py
 
       - name: 2. Fonctions serveur
         if: always() && steps.verif.outputs.ok == 'oui'
-        run: supabase functions deploy --project-ref "$PROJET" --no-verify-jwt --use-api --yes
+        run: |
+          . "$RUNNER_TEMP/etape.sh"
+          if ! etape "2. Fonctions serveur" supabase functions deploy --project-ref "$PROJET" --no-verify-jwt --use-api --yes; then
+            echo "Nouvel essai, avec Docker pour préparer les fonctions."
+            etape "2. Fonctions serveur (2e essai)" supabase functions deploy --project-ref "$PROJET" --no-verify-jwt --yes
+          fi
 
       - name: 3. Secrets des fonctions
         if: always() && steps.verif.outputs.ok == 'oui'
@@ -101,35 +128,36 @@ jobs:
           PACK_MONTANT_CENTIMES: ${{ secrets.PACK_MONTANT_CENTIMES }}
           ALERTES_MONTANT_CENTIMES: ${{ secrets.ALERTES_MONTANT_CENTIMES }}
         run: |
+          . "$RUNNER_TEMP/etape.sh"
           args=()
+          noms=""
           for n in ADMIN_CODE ADMIN_EMAIL CRENO_SEL RESEND_API_KEY ALERTES_EXPEDITEUR STRIPE_SECRET_KEY \
                    ALERTES_LIEN_STRIPE PACK_MONTANT_CENTIMES ALERTES_MONTANT_CENTIMES; do
-            v="${!n}"
+            # Enlève les retours à la ligne et les espaces collés par erreur au début ou à la fin.
+            v=$(printf '%s' "${!n}" | tr -d '\r\n' | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
             if [ -n "$v" ]; then
               args+=("$n=$v")
-              echo "Copié dans Supabase : $n"
+              noms="$noms $n"
             fi
           done
           if [ ${#args[@]} -eq 0 ]; then
-            echo "Aucun secret de fonction sur GitHub pour l'instant."
+            echo "### ⚪ 3. Secrets des fonctions : aucun sur GitHub pour l'instant" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          supabase secrets set --project-ref "$PROJET" "${args[@]}"
+          echo "Copiés dans Supabase :$noms"
+          etape "3. Secrets des fonctions :$noms" supabase secrets set --project-ref "$PROJET" "${args[@]}"
 
       - name: 4. Remplir assets/config.js
         if: always() && steps.verif.outputs.ok == 'oui'
         run: |
           if ! grep -q 'supabaseUrl: ""' assets/config.js; then
-            echo "assets/config.js est déjà rempli."
+            echo "### ✅ 4. Site branché (assets/config.js déjà rempli)" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          if ! supabase projects api-keys --project-ref "$PROJET" -o json > "$RUNNER_TEMP/cles.json"; then
-            echo "::warning::Clé publique introuvable : envoie à Claude l'adresse du projet et la clé publishable."
-            exit 0
-          fi
-          if ! CLE=$(python3 scripts/cle_supabase.py publique < "$RUNNER_TEMP/cles.json"); then
-            echo "::warning::Clé publique introuvable : envoie à Claude l'adresse du projet et la clé publishable."
-            exit 0
+          if ! supabase projects api-keys --project-ref "$PROJET" -o json > "$RUNNER_TEMP/cles.json" \
+             || ! CLE=$(python3 scripts/cle_supabase.py publique < "$RUNNER_TEMP/cles.json"); then
+            echo "### ❌ 4. Clé publique introuvable : envoie à Claude la clé publishable de Supabase" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
           sed -i "s#supabaseUrl: \"\"#supabaseUrl: \"https://$PROJET.supabase.co\"#; s#supabaseAnonKey: \"\"#supabaseAnonKey: \"$CLE\"#" assets/config.js
           git config user.name "github-actions[bot]"
@@ -138,3 +166,4 @@ jobs:
           git commit -m "Brancher le site à Supabase (adresse et clé publique)"
           git pull --rebase
           git push
+          echo "### ✅ 4. Site branché (assets/config.js rempli)" >> "$GITHUB_STEP_SUMMARY"

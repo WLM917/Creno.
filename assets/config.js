@@ -21,8 +21,8 @@
   Si les deux sont vides, les réponses restent sur l'appareil de la personne.
 */
 window.CRENO_CONFIG = {
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://bfcgtjkzgvpaafyclnmt.supabase.co",
+  supabaseAnonKey: "sb_publishable_X-hWXCFGAVrRr4OOpxePKg_TGyyULKd",
   lienPaiementPack: "",
   lienCrenoPro: "",
   formEndpoint: ""

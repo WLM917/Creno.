@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nous contacter | Créno</title>
+<meta name="description" content="Une question sur ton permis ou sur Créno, une erreur sur une fiche : écris-nous, élève ou pro, on te répond.">
+<link rel="canonical" href="https://creno-tan.vercel.app/contact/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Créno">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Nous contacter | Créno">
+<meta property="og:description" content="Une question sur ton permis ou sur Créno, une erreur sur une fiche : écris-nous, élève ou pro, on te répond.">
+<meta property="og:url" content="https://creno-tan.vercel.app/contact/">
+<meta property="og:image" content="https://creno-tan.vercel.app/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2A2F35">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Overpass:wght@500;700;800;900&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://creno-tan.vercel.app/"}, {"@type": "ListItem", "position": 2, "name": "Nous contacter", "item": "https://creno-tan.vercel.app/contact/"}]}</script>
+</head>
+<body data-root="../" data-page="contact">
+<a class="skip" href="#main">Aller au contenu</a>
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="logo" href="../" aria-label="Créno, accueil">
+      <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="1" y="1" width="30" height="30" rx="5" fill="var(--signal)"/>
+        <rect x="3.5" y="3.5" width="25" height="25" rx="3" fill="none" stroke="var(--signal-ink)" stroke-width="1.6"/>
+        <path d="M11 25 L13.5 7 M21 25 L18.5 7" stroke="var(--signal-ink)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M16 23.5 V20.5 M16 16.5 V13.5 M16 9.8 V8" stroke="var(--chantier)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-word">créno</span>
+    </a>
+    <nav class="site-nav" aria-label="Sections"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../alertes/">Alertes places</a><a href="../pack-candidat-libre/">Le pack</a><a href="../pro/">Espace pros</a><a href="../contact/" aria-current="page">Nous contacter</a></nav>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+<div class="wrap stack-lg page-pad">
+  <nav class="crumbs" aria-label="Fil d'Ariane"><ol><li><a href="../">Accueil</a></li><li><span aria-current="page">Nous contacter</span></li></ol></nav>
+  <header class="view-head">
+    <h1>Nous contacter</h1>
+    <p class="lede">Une question sur ton permis ou sur le site, une erreur sur une fiche, un souci avec les alertes ou le pack, une idée : écris-nous, on te répond. Élève, parent ou pro, ce formulaire est pour tout le monde.</p>
+  </header>
+
+  <section class="block panel" id="ecrire" aria-labelledby="ecrire-title">
+    <h2 id="ecrire-title">Nous écrire</h2>
+    <form class="form-grid" id="contact-form" data-form-type="contact_pro">
+      <div class="field"><label for="cp-type">Tu es</label>
+        <select id="cp-type" name="type" required>
+          <option value="">Choisis</option>
+          <option value="eleve">Un élève ou un parent</option>
+          <option value="auto-ecole">Une auto-école</option>
+          <option value="moniteur">Un moniteur</option>
+          <option value="loueur">Un loueur de voitures à double commande</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="field"><label for="cp-nom">Ton prénom ou ton établissement (facultatif)</label><input id="cp-nom" name="nom" maxlength="160" autocomplete="name"></div>
+      <div class="field"><label for="cp-contact">Ton e-mail ou téléphone, pour te répondre</label><input id="cp-contact" name="contact" required maxlength="200" autocomplete="email"></div>
+      <div class="field"><label for="cp-ville">Ta ville (facultatif)</label><input id="cp-ville" name="ville" maxlength="80" autocomplete="address-level2"></div>
+      <div class="field field-wide"><label for="cp-message">Ton message</label><textarea id="cp-message" name="message" rows="6" required maxlength="1000"></textarea></div>
+      <div class="form-actions field-wide">
+        <button class="btn btn-signal" type="submit">Envoyer mon message</button>
+        <p class="form-status" role="status"></p>
+      </div>
+    </form>
+    
+  </section>
+
+  <section class="block" aria-labelledby="peut-etre-title">
+    <h2 id="peut-etre-title">Ta réponse est peut-être déjà ici</h2>
+    <ul class="tips">
+      <li>Arrêter les alertes ou ton abonnement : le lien « Ne plus recevoir d'alertes » en bas de chaque e-mail d'alerte. <a href="../alertes/">Les alertes</a></li>
+      <li>Retrouver ton Pack candidat libre : ouvre le lien reçu après ton paiement, depuis le même appareil. <a href="../pack-candidat-libre/">Le pack</a></li>
+      <li>Comprendre le classement des auto-écoles : <a href="../methode/">la méthode de calcul</a></li>
+      <li>Ce qu'on fait de tes données : <a href="../confidentialite/">confidentialité</a></li>
+      <li>Tu es un pro : <a href="../pro/">l'espace pros</a> (tarifs, badge, demandes d'élèves, inscription des loueurs)</li>
+    </ul>
+    <p class="small">Créno n'a aucun lien avec RdvPermis ni avec l'administration : pour ton dossier ou ta date d'examen, passe par <a href="https://candidat.permisdeconduire.gouv.fr" target="_blank" rel="noopener">RdvPermis, le site officiel</a>.</p>
+  </section>
+</div>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-row">
+    <p><strong>Créno, le bon créneau pour ton permis.</strong> Projet indépendant, sans lien avec l'administration ni avec RdvPermis. Taux de réussite : Sécurité routière.</p>
+    <nav aria-label="Pied de page"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../alertes/">Alertes places</a><a href="../pack-candidat-libre/">Pack candidat libre</a><a href="../moniteurs/">Moniteurs</a><a href="../cout-du-permis/">Coût du permis</a><a href="../examen/">Jour de l&#x27;examen</a><a href="../pro/">Espace pros</a><a href="../methode/">Méthode</a><a href="../contact/">Nous contacter</a><a href="../confidentialite/">Confidentialité</a><a href="../mentions-legales/">Mentions légales</a><a href="../cgv/">Conditions de vente</a></nav>
+  </div>
+</footer>
+<script src="../assets/config.js"></script>
+<script src="../assets/app.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

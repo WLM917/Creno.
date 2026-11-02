@@ -73,15 +73,17 @@ NAV = [
     ("alertes/", "Alertes places", "alertes"),
     ("pack-candidat-libre/", "Le pack", "pack"),
     ("pro/", "Espace pros", "pro"),
+    ("contact/", "Nous contacter", "contact"),
 ]
 FOOTER = [
     ("auto-ecoles/", "Auto-écoles"), ("candidat-libre/", "Candidat libre"), ("alertes/", "Alertes places"),
     ("pack-candidat-libre/", "Pack candidat libre"), ("moniteurs/", "Moniteurs"), ("cout-du-permis/", "Coût du permis"),
     ("examen/", "Jour de l'examen"), ("pro/", "Espace pros"), ("methode/", "Méthode"),
-    ("confidentialite/", "Confidentialité"), ("mentions-legales/", "Mentions légales"), ("cgv/", "Conditions de vente"),
+    ("contact/", "Nous contacter"), ("confidentialite/", "Confidentialité"), ("mentions-legales/", "Mentions légales"),
+    ("cgv/", "Conditions de vente"),
 ]
 GENERATED_DIRS = ["auto-ecoles", "candidat-libre", "examen", "cout-du-permis", "methode", "confidentialite",
-                  "alertes", "pack-candidat-libre", "moniteurs", "pro", "mentions-legales", "cgv", "badges", "admin", "rapport"]
+                  "alertes", "pack-candidat-libre", "moniteurs", "pro", "mentions-legales", "cgv", "badges", "admin", "rapport", "contact"]
 
 # Accents absents du fichier officiel, rétablis pour l'affichage des villes les plus courantes.
 ACCENTS = {
@@ -1047,6 +1049,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
         ("moniteurs/", "moniteurs.html", None, "Moniteur pour examen blanc ou présentation à l'examen du permis | Créno",
          "Faire appel à un moniteur dans les règles : examen blanc, heures à l'unité, présentation à l'examen par une auto-école agréée.",
          "Moniteurs", 0.6),
+        ("contact/", "contact.html", "contact", "Nous contacter | Créno",
+         "Une question sur ton permis ou sur Créno, une erreur sur une fiche : écris-nous, élève ou pro, on te répond.",
+         "Nous contacter", 0.3),
         ("pro/", "pro.html", "pro", "Créno pour les auto-écoles, moniteurs et loueurs | Créno",
          "Badge du top 10, demandes d'élèves, référencement des loueurs de voitures à double commande : ce que Créno apporte aux pros.",
          "Espace pros", 0.5),
@@ -1102,6 +1107,8 @@ def build(out_dir=ROOT, explicit=False, only=None):
             "prix_pack": esc(PRIX_PACK), "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
             "offre_alertes": offre_alertes, "bouton_alertes": bouton_alertes,
             "faq_prix": faq_prix,
+            "contact_direct": (f'<p class="small">Tu préfères un e-mail ? Écris à <a href="mailto:{esc(CONTACT)}">{esc(CONTACT)}</a>.</p>'
+                               if CONTACT else ""),
             "pros": pros_html(L, pros), "editeur": editeur_html, "mediateur": mediateur_html,
             "nb_pages_villes": fr_int(stats["villes"]), "nb_pages_deps": fr_int(stats["departements"]),
         })

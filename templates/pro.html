@@ -5,18 +5,15 @@
     <p class="lede">Auto-écoles, moniteurs, loueurs de voitures à double commande : Créno met en avant les pros qui font réussir les élèves, à partir des chiffres officiels. Pour les auto-écoles et les moniteurs, tout est gratuit pendant le lancement. Les loueurs choisissent une formule à partir de 10 € par mois.</p>
   </header>
 
-  <section class="block" aria-labelledby="pourquoi-title">
-    <h2 id="pourquoi-title">Pourquoi faire confiance à Créno</h2>
-    <dl class="facts">
-      <div><dt>{{nb_classees}}</dt><dd>auto-écoles classées à partir des taux de réussite officiels de la Sécurité routière</dd></div>
-      <div><dt>{{nb_pages_villes}}</dt><dd>pages ville et {{nb_pages_deps}} pages département, faites pour être trouvées sur Google</dd></div>
-      <div><dt>{{date_import}}</dt><dd>date du dernier fichier officiel importé. Mise à jour à chaque trimestre</dd></div>
-    </dl>
-    <p class="live-count" id="total-contacts" hidden></p>
-    <p>Le classement ne s'achète pas : la formule est publique et une fiche partenaire est toujours marquée « Partenaire payant ». C'est ce qui donne de la valeur à ton rang. <a href="{{root}}methode/">Voir la méthode</a></p>
-  </section>
+  <nav class="pro-tabs" aria-label="Choisis ton métier">
+    <div role="tablist" class="pro-tabs-liste">
+      <a class="pro-tab" id="onglet-ae" role="tab" href="#pour-auto-ecoles" aria-controls="pour-auto-ecoles" aria-selected="true">Auto-écoles</a>
+      <a class="pro-tab" id="onglet-moniteurs" role="tab" href="#pour-moniteurs" aria-controls="pour-moniteurs" aria-selected="false">Moniteurs</a>
+      <a class="pro-tab" id="onglet-loueurs" role="tab" href="#pour-loueurs" aria-controls="pour-loueurs" aria-selected="false">Loueurs de voitures</a>
+    </div>
+  </nav>
 
-  <div class="pro-groupe">
+  <div class="pro-panel pro-groupe" id="pour-auto-ecoles" role="tabpanel" aria-labelledby="onglet-ae" tabindex="-1">
     <section class="block" aria-labelledby="ae-title">
       <h2 id="ae-title">Pour les auto-écoles</h2>
       <div class="offer-grid">
@@ -37,7 +34,7 @@
         <div class="option">
           <h3>Ton rapport de contacts</h3>
           <p>Chaque élève qui clique sur « Contacter » sur ta fiche, puis sur ton téléphone, ton itinéraire ou ton site, est compté. On t'envoie le lien de ton rapport : tu vois chaque mois combien d'élèves Créno t'a envoyés.</p>
-          <a class="link-strong" href="#contact">Demander mon rapport</a>
+          <a class="link-strong" href="{{root}}contact/">Demander mon rapport</a>
         </div>
         <div class="option">
           <h3>Des demandes d'élèves</h3>
@@ -47,7 +44,7 @@
         <div class="option option-soon">
           <h3>Créno Pro, bientôt (payant)</h3>
           <p>L'abonnement pour les auto-écoles qui veulent plus d'élèves : ta fiche mise en avant dans ta ville (toujours marquée « Partenaire payant », ton rang ne change pas), un code Créno pour reconnaître nos élèves, ton rapport de contacts en direct et tes prix comparés à ceux du département. Tout le reste de cette page reste gratuit.</p>
-          <a class="link-strong" href="#contact">Être prévenu du lancement</a>
+          <a class="link-strong" href="{{root}}contact/">Être prévenu du lancement</a>
         </div>
       </div>
     </section>
@@ -99,7 +96,7 @@
     </section>
   </div>
 
-  <div class="pro-groupe">
+  <div class="pro-panel pro-groupe" id="pour-moniteurs" role="tabpanel" aria-labelledby="onglet-moniteurs" tabindex="-1">
     <section class="block" aria-labelledby="mon-title">
       <h2 id="mon-title">Pour les moniteurs</h2>
       <p>Tu es moniteur et tu enseignes dans le cadre d'une auto-école agréée ? Réponds aux demandes d'examens blancs et d'heures de conduite des élèves de ton secteur, au nom de ton auto-école. Pour apparaître dans l'annuaire de la page Moniteurs, propose tes services juste en dessous : nous vérifions ton autorisation d'enseigner et ton établissement avant de te référencer.</p>
@@ -132,79 +129,68 @@
     </section>
   </div>
 
-  <section class="block" aria-labelledby="loueurs-title">
-    <h2 id="loueurs-title">Pour les loueurs de voitures à double commande</h2>
-    <p>Les élèves en candidat libre cherchent une voiture à double commande près de chez eux. Inscris ton agence : elle apparaît sur la page Candidat libre et sur les pages des villes de ton département.</p>
-    <div class="offer-grid">
-      <div class="option">
-        <h3>Référencement</h3>
-        <p class="option-price">10 € par mois</p>
-        <ul class="tips">
-          <li>Ton agence sur la page Candidat libre et les pages ville de ton département</li>
-          <li>Boutons « Voir le site », téléphone et itinéraire, message tout prêt</li>
-          <li>Tu réponds aux demandes d'élèves qui cherchent une voiture</li>
-          <li>Ton rapport de clics chaque mois</li>
-        </ul>
+  <div class="pro-panel pro-groupe" id="pour-loueurs" role="tabpanel" aria-labelledby="onglet-loueurs" tabindex="-1">
+    <section class="block" aria-labelledby="loueurs-title">
+      <h2 id="loueurs-title">Pour les loueurs de voitures à double commande</h2>
+      <p>Les élèves en candidat libre cherchent une voiture à double commande près de chez eux. Inscris ton agence : elle apparaît sur la page Candidat libre et sur les pages des villes de ton département.</p>
+      <div class="offer-grid">
+        <div class="option">
+          <h3>Référencement</h3>
+          <p class="option-price">10 € par mois</p>
+          <ul class="tips">
+            <li>Ton agence sur la page Candidat libre et les pages ville de ton département</li>
+            <li>Boutons « Voir le site », téléphone et itinéraire, message tout prêt</li>
+            <li>Tu réponds aux demandes d'élèves qui cherchent une voiture</li>
+            <li>Ton rapport de clics chaque mois</li>
+          </ul>
+        </div>
+        <div class="option option-feature">
+          <h3>Partenaire</h3>
+          <p class="option-price">20 € par mois</p>
+          <ul class="tips">
+            <li>Tout le référencement</li>
+            <li>Ton agence en premier, avec la mention « Partenaire »</li>
+            <li>Ton bouton « Réserver » qui mène droit à ta réservation</li>
+            <li>Un code Créno avec la réduction de ton choix, pour reconnaître nos élèves</li>
+          </ul>
+        </div>
       </div>
-      <div class="option option-feature">
-        <h3>Partenaire</h3>
-        <p class="option-price">20 € par mois</p>
-        <ul class="tips">
-          <li>Tout le référencement</li>
-          <li>Ton agence en premier, avec la mention « Partenaire »</li>
-          <li>Ton bouton « Réserver » qui mène droit à ta réservation</li>
-          <li>Un code Créno avec la réduction de ton choix, pour reconnaître nos élèves</li>
-        </ul>
-      </div>
-    </div>
-    <p class="small">Sans engagement : tu arrêtes quand tu veux. La mise en avant est toujours signalée aux élèves.</p>
+      <p class="small">Sans engagement : tu arrêtes quand tu veux. La mise en avant est toujours signalée aux élèves.</p>
 
-    <form class="form-grid panel" id="inscrire-agence" data-form-type="loueur">
-      <h3 class="field-wide">Inscrire mon agence</h3>
-      <fieldset class="field-wide crit">
-        <legend>Ta formule</legend>
-        <label class="check-inline" for="lou-f1"><input id="lou-f1" type="radio" name="formule" value="referencement" required checked> Référencement, 10 € par mois</label>
-        <label class="check-inline" for="lou-f2"><input id="lou-f2" type="radio" name="formule" value="partenaire"> Partenaire, 20 € par mois</label>
-      </fieldset>
-      <div class="field"><label for="lou-nom">Nom de l'agence</label><input id="lou-nom" name="nom" required maxlength="120" autocomplete="organization"></div>
-      <div class="field"><label for="lou-ville">Ville</label><input id="lou-ville" name="ville" required maxlength="80" autocomplete="address-level2"></div>
-      <div class="field"><label for="lou-dep">Département</label><select id="lou-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select></div>
-      <div class="field"><label for="lou-adresse">Adresse</label><input id="lou-adresse" name="adresse" maxlength="200" autocomplete="street-address"></div>
-      <div class="field"><label for="lou-site">Site ou page de réservation</label><input id="lou-site" name="site" type="url" maxlength="300" placeholder="https://"></div>
-      <div class="field"><label for="lou-prix">Prix de l'heure (€)</label><input id="lou-prix" name="prix_heure" type="number" inputmode="numeric" min="0" max="500"></div>
-      <div class="field"><label for="lou-boite">Boîte de vitesses</label>
-        <select id="lou-boite" name="boite"><option value="">Choisis</option><option value="manuelle">Manuelle</option><option value="automatique">Automatique</option><option value="les-deux">Les deux</option></select>
-      </div>
-      <div class="field"><label for="lou-tel">Téléphone</label><input id="lou-tel" name="contact" type="tel" required maxlength="200" autocomplete="tel"></div>
-      <div class="field field-wide"><label for="lou-email">E-mail</label><input id="lou-email" name="email" type="email" required maxlength="200" autocomplete="email"></div>
-      <div class="form-actions field-wide">
-        <button class="btn btn-signal" type="submit">Inscrire mon agence</button>
-        <p class="form-status" role="status"></p>
-      </div>
-    </form>
-  </section>
+      <form class="form-grid panel" id="inscrire-agence" data-form-type="loueur">
+        <h3 class="field-wide">Inscrire mon agence</h3>
+        <fieldset class="field-wide crit">
+          <legend>Ta formule</legend>
+          <label class="check-inline" for="lou-f1"><input id="lou-f1" type="radio" name="formule" value="referencement" required checked> Référencement, 10 € par mois</label>
+          <label class="check-inline" for="lou-f2"><input id="lou-f2" type="radio" name="formule" value="partenaire"> Partenaire, 20 € par mois</label>
+        </fieldset>
+        <div class="field"><label for="lou-nom">Nom de l'agence</label><input id="lou-nom" name="nom" required maxlength="120" autocomplete="organization"></div>
+        <div class="field"><label for="lou-ville">Ville</label><input id="lou-ville" name="ville" required maxlength="80" autocomplete="address-level2"></div>
+        <div class="field"><label for="lou-dep">Département</label><select id="lou-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select></div>
+        <div class="field"><label for="lou-adresse">Adresse</label><input id="lou-adresse" name="adresse" maxlength="200" autocomplete="street-address"></div>
+        <div class="field"><label for="lou-site">Site ou page de réservation</label><input id="lou-site" name="site" type="url" maxlength="300" placeholder="https://"></div>
+        <div class="field"><label for="lou-prix">Prix de l'heure (€)</label><input id="lou-prix" name="prix_heure" type="number" inputmode="numeric" min="0" max="500"></div>
+        <div class="field"><label for="lou-boite">Boîte de vitesses</label>
+          <select id="lou-boite" name="boite"><option value="">Choisis</option><option value="manuelle">Manuelle</option><option value="automatique">Automatique</option><option value="les-deux">Les deux</option></select>
+        </div>
+        <div class="field"><label for="lou-tel">Téléphone</label><input id="lou-tel" name="contact" type="tel" required maxlength="200" autocomplete="tel"></div>
+        <div class="field field-wide"><label for="lou-email">E-mail</label><input id="lou-email" name="email" type="email" required maxlength="200" autocomplete="email"></div>
+        <div class="form-actions field-wide">
+          <button class="btn btn-signal" type="submit">Inscrire mon agence</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </section>
+  </div>
 
-  <section class="block" id="contact" aria-labelledby="contact-title">
-    <h2 id="contact-title">Nous écrire</h2>
-    <p>Une erreur sur ta fiche, une question sur les offres, l'envie d'essayer Créno Pro : on te répond.</p>
-    <form class="form-grid" id="contact-pro-form" data-form-type="contact_pro">
-      <div class="field"><label for="cp-type">Tu es</label>
-        <select id="cp-type" name="type" required>
-          <option value="">Choisis</option>
-          <option value="auto-ecole">Une auto-école</option>
-          <option value="moniteur">Un moniteur</option>
-          <option value="loueur">Un loueur</option>
-          <option value="autre">Autre</option>
-        </select>
-      </div>
-      <div class="field"><label for="cp-nom">Nom</label><input id="cp-nom" name="nom" required maxlength="160" autocomplete="organization"></div>
-      <div class="field"><label for="cp-ville">Ville</label><input id="cp-ville" name="ville" maxlength="80" autocomplete="address-level2"></div>
-      <div class="field"><label for="cp-contact">E-mail ou téléphone</label><input id="cp-contact" name="contact" required maxlength="200" autocomplete="email"></div>
-      <div class="field field-wide"><label for="cp-message">Message</label><textarea id="cp-message" name="message" rows="4" maxlength="1000"></textarea></div>
-      <div class="form-actions field-wide">
-        <button class="btn" type="submit">Envoyer</button>
-        <p class="form-status" role="status"></p>
-      </div>
-    </form>
+  <section class="block" aria-labelledby="pourquoi-title">
+    <h2 id="pourquoi-title">Pourquoi faire confiance à Créno</h2>
+    <dl class="facts">
+      <div><dt>{{nb_classees}}</dt><dd>auto-écoles classées à partir des taux de réussite officiels de la Sécurité routière</dd></div>
+      <div><dt>{{nb_pages_villes}}</dt><dd>pages ville et {{nb_pages_deps}} pages département, faites pour être trouvées sur Google</dd></div>
+      <div><dt>{{date_import}}</dt><dd>date du dernier fichier officiel importé. Mise à jour à chaque trimestre</dd></div>
+    </dl>
+    <p class="live-count" id="total-contacts" hidden></p>
+    <p>Le classement ne s'achète pas : la formule est publique et une fiche partenaire est toujours marquée « Partenaire payant ». C'est ce qui donne de la valeur à ton rang. <a href="{{root}}methode/">Voir la méthode</a></p>
   </section>
 </div>

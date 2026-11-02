@@ -306,7 +306,7 @@ async function fermer(body: Record<string, unknown>) {
 const FORMULAIRES: Record<string, { table: string; champs: string[]; titre: string }> = {
   pro: { table: "pros_proposes", titre: "Un pro propose ses services",
     champs: ["type", "nom", "etablissement", "numero_agrement", "ville", "departement", "offres", "prix", "contact"] },
-  contact_pro: { table: "contacts_pros", titre: "Nouveau message d'un pro",
+  contact_pro: { table: "contacts_pros", titre: "Nouveau message (page Nous contacter)",
     champs: ["type", "nom", "ville", "contact", "message", "auto_ecole_id"] },
   tarifs: { table: "tarifs_proposes", titre: "Une auto-école envoie ses tarifs",
     champs: ["auto_ecole_id", "auto_ecole_nom", "departement", "forfait", "heures_forfait", "prix_heure", "frais_examen",

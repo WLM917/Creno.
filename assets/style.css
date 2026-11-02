@@ -1480,3 +1480,40 @@ textarea:focus-visible { border-color: var(--signal); }
 
 /* Espace pros : les blocs d'un même public se suivent, sans grand espace */
 .pro-groupe { display: flex; flex-direction: column; gap: 1.75rem; }
+
+/* ---------- Onglets de l'espace pros ---------- */
+.pro-tabs { position: relative; }
+.pro-tabs-liste {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sign);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pro-tabs-liste::-webkit-scrollbar { display: none; }
+.pro-tab {
+  flex: 1 1 0;
+  min-width: max-content;
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.9rem;
+  border-radius: calc(var(--radius-sign) - 3px);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.pro-tab:hover { background: var(--signal-soft); }
+.pro-tab[aria-selected="true"] { background: var(--signal); color: var(--signal-ink); }
+.pro-panel:focus { outline: none; }
+@media (max-width: 600px) {
+  .pro-tabs-liste { gap: 0.25rem; padding: 0.3rem; }
+  .pro-tab { min-width: 0; white-space: normal; text-align: center; line-height: 1.15; font-size: 0.92rem; padding: 0.4rem 0.45rem; }
+}

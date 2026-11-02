@@ -981,8 +981,9 @@
         return "<strong>" + esc(x.nom) + "</strong> (" + esc(x.type) + "), " + esc(x.ville) + " (" + esc(x.departement) + ")" +
           '<span class="sub">' + esc([x.etablissement, x.numero_agrement, x.offres, x.prix, x.contact].filter(Boolean).join(" · ")) + "</span>";
       }],
-      ["messages", "Messages des pros", "Lu", function (x) {
-        return "<strong>" + esc(x.nom) + "</strong> (" + esc(x.type) + ")" + (x.ville ? ", " + esc(x.ville) : "") +
+      ["messages", "Messages reçus (page Nous contacter)", "Lu", function (x) {
+        var qui = { eleve: "élève ou parent", "auto-ecole": "auto-école", moniteur: "moniteur", loueur: "loueur", autre: "autre" }[x.type] || x.type;
+        return "<strong>" + esc(x.nom || "Sans nom") + "</strong> (" + esc(qui) + ")" + (x.ville ? ", " + esc(x.ville) : "") +
           '<span class="sub">' + esc(x.contact) + "</span>" + (x.message ? '<span class="sub">« ' + esc(x.message) + " »</span>" : "");
       }]
     ];
@@ -1196,6 +1197,58 @@
     }).catch(function () { /* sans importance */ });
   }
 
+  /* ---------- Onglets de l'espace pros (auto-écoles, moniteurs, loueurs) ---------- */
+  // Sans JavaScript, les trois parties restent affichées l'une sous l'autre.
+  function initProTabs() {
+    var tabs = $all(".pro-tabs [role=tab]");
+    if (!tabs.length) return;
+    var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute("aria-controls")); });
+    function activer(i, focus) {
+      tabs.forEach(function (t, k) {
+        var on = k === i;
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        t.tabIndex = on ? 0 : -1;
+        panels[k].hidden = !on;
+      });
+      if (focus) tabs[i].focus();
+    }
+    // Quel onglet ouvrir : celui du lien (#pour-loueurs) ou celui qui contient l'élément visé (#badge, #inscrire-agence...)
+    function depuisAdresse() {
+      var id = location.hash.slice(1);
+      var cible = id && document.getElementById(id);
+      var i = 0;
+      panels.forEach(function (p, k) { if (cible && (p === cible || p.contains(cible))) i = k; });
+      activer(i, false);
+      if (cible && panels.indexOf(cible) === -1) setTimeout(function () { cible.scrollIntoView({ block: "start" }); }, 0);
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        activer(i, false);
+        if (history.replaceState) history.replaceState(null, "", "#" + panels[i].id);
+      });
+      t.addEventListener("keydown", function (ev) {
+        var n = { ArrowRight: 1, ArrowLeft: -1 }[ev.key];
+        if (ev.key === "Home") n = -i; else if (ev.key === "End") n = tabs.length - 1 - i;
+        if (n === undefined) return;
+        ev.preventDefault();
+        var j = (i + n + tabs.length) % tabs.length;
+        activer(j, true);
+        if (history.replaceState) history.replaceState(null, "", "#" + panels[j].id);
+      });
+    });
+    // Liens internes vers une partie d'un autre onglet (ex. « Donner mes tarifs »)
+    document.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest('a[href^="#"]');
+      if (!a || a.getAttribute("role") === "tab") return;
+      var cible = document.getElementById(a.getAttribute("href").slice(1));
+      if (!cible) return;
+      panels.forEach(function (p, k) { if (p.contains(cible) && p.hidden) activer(k, false); });
+    });
+    window.addEventListener("hashchange", depuisAdresse);
+    depuisAdresse();
+  }
+
   /* ---------- Démarrage ---------- */
   function start() {
     $all("form[data-finder]").forEach(initFinder);
@@ -1214,6 +1267,7 @@
     initRapport();
     initTotal();
     initDemandesPros();
+    initProTabs();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

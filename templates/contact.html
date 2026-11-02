@@ -1,0 +1,44 @@
+<div class="wrap stack-lg page-pad">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Nous contacter</h1>
+    <p class="lede">Une question sur ton permis ou sur le site, une erreur sur une fiche, un souci avec les alertes ou le pack, une idée : écris-nous, on te répond. Élève, parent ou pro, ce formulaire est pour tout le monde.</p>
+  </header>
+
+  <section class="block panel" id="ecrire" aria-labelledby="ecrire-title">
+    <h2 id="ecrire-title">Nous écrire</h2>
+    <form class="form-grid" id="contact-form" data-form-type="contact_pro">
+      <div class="field"><label for="cp-type">Tu es</label>
+        <select id="cp-type" name="type" required>
+          <option value="">Choisis</option>
+          <option value="eleve">Un élève ou un parent</option>
+          <option value="auto-ecole">Une auto-école</option>
+          <option value="moniteur">Un moniteur</option>
+          <option value="loueur">Un loueur de voitures à double commande</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="field"><label for="cp-nom">Ton prénom ou ton établissement (facultatif)</label><input id="cp-nom" name="nom" maxlength="160" autocomplete="name"></div>
+      <div class="field"><label for="cp-contact">Ton e-mail ou téléphone, pour te répondre</label><input id="cp-contact" name="contact" required maxlength="200" autocomplete="email"></div>
+      <div class="field"><label for="cp-ville">Ta ville (facultatif)</label><input id="cp-ville" name="ville" maxlength="80" autocomplete="address-level2"></div>
+      <div class="field field-wide"><label for="cp-message">Ton message</label><textarea id="cp-message" name="message" rows="6" required maxlength="1000"></textarea></div>
+      <div class="form-actions field-wide">
+        <button class="btn btn-signal" type="submit">Envoyer mon message</button>
+        <p class="form-status" role="status"></p>
+      </div>
+    </form>
+    {{contact_direct}}
+  </section>
+
+  <section class="block" aria-labelledby="peut-etre-title">
+    <h2 id="peut-etre-title">Ta réponse est peut-être déjà ici</h2>
+    <ul class="tips">
+      <li>Arrêter les alertes ou ton abonnement : le lien « Ne plus recevoir d'alertes » en bas de chaque e-mail d'alerte. <a href="{{root}}alertes/">Les alertes</a></li>
+      <li>Retrouver ton Pack candidat libre : ouvre le lien reçu après ton paiement, depuis le même appareil. <a href="{{root}}pack-candidat-libre/">Le pack</a></li>
+      <li>Comprendre le classement des auto-écoles : <a href="{{root}}methode/">la méthode de calcul</a></li>
+      <li>Ce qu'on fait de tes données : <a href="{{root}}confidentialite/">confidentialité</a></li>
+      <li>Tu es un pro : <a href="{{root}}pro/">l'espace pros</a> (tarifs, badge, demandes d'élèves, inscription des loueurs)</li>
+    </ul>
+    <p class="small">Créno n'a aucun lien avec RdvPermis ni avec l'administration : pour ton dossier ou ta date d'examen, passe par <a href="https://candidat.permisdeconduire.gouv.fr" target="_blank" rel="noopener">RdvPermis, le site officiel</a>.</p>
+  </section>
+</div>

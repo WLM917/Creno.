@@ -82,7 +82,8 @@ auto-ecoles/                      liste des départements
 auto-ecoles/<nom>-<code>/         une page par département (102) : classement complet + filtres
 auto-ecoles/<nom>-<code>/<ville>/ une page par ville d'au moins 2 auto-écoles (1 777)
 candidat-libre/, cout-du-permis/, examen/, methode/, confidentialite/, alertes/, pack-candidat-libre/,
-moniteurs/, pro/, pro/demandes/ (demandes d'élèves vues par les pros), mentions-legales/, cgv/, 404.html, sitemap.xml, robots.txt
+moniteurs/, pro/ (3 onglets : auto-écoles, moniteurs, loueurs), pro/demandes/ (demandes d'élèves vues par les pros),
+contact/ (« Nous contacter », formulaire pour élèves et pros), mentions-legales/, cgv/, 404.html, sitemap.xml, robots.txt
 alertes/confirmer/, alertes/merci/, alertes/desabonner/, pack-candidat-libre/acces/ : pages de retour
                                   (noindex, hors sitemap)
 alertes/continuer/                abonnement après l'essai (lien envoyé par e-mail), noindex
@@ -179,6 +180,15 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   `mediateur_consommation`, `email_contact`) : les champs vides s'affichent « à compléter ».
 
 ## Moniteurs (/moniteurs/) et espace pros (/pro/)
+
+- Menu du haut (NAV) : Auto-écoles, Candidat libre, Alertes places, Le pack, Espace pros, Nous contacter.
+- /pro/ : trois onglets (auto-écoles : présentation, « Donner mes tarifs », « Trouver mon badge » ;
+  moniteurs : présentation, « Proposer mes services » ; loueurs : formules et inscription), puis
+  « Pourquoi faire confiance à Créno ». Sans JavaScript, les trois parties restent l'une sous l'autre.
+  Un lien vers /pro/#badge, #tarifs, #proposer, #inscrire-agence... ouvre le bon onglet.
+- /contact/ : « Nous écrire » pour tout le monde (élève, parent, auto-école, moniteur, loueur, autre),
+  nom facultatif -> table contacts_pros via la fonction pros, e-mail à William, « Messages reçus » dans
+  le tableau de bord.
 
 - **Interdit** : faire payer un moniteur ou un pro pour accompagner un candidat libre le jour
   de l'examen (la préfecture le refuse), ou donner des cours payants hors d'une auto-école agréée

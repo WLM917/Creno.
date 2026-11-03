@@ -344,7 +344,9 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
    `python3 scripts/import_auto_ecoles.py fichier.csv` (nouveau CSV de la carte officielle).
 2. ~~Brancher Supabase~~ : fait le 2 novembre 2026 (projet bfcgtjkzgvpaafyclnmt, tables, 4 fonctions,
    secrets ADMIN_CODE / ADMIN_EMAIL / CRENO_SEL, config.js). Les prix déclarés sont repris chaque
-   jour par mise-a-jour-prix.yml. Reste : déposer le PDF du pack dans le stockage « pack ».
+   jour par mise-a-jour-prix.yml. PDF du pack déposé dans le stockage « pack » le 3 novembre 2026
+   (version de novembre 2026, 19 pages, boîte manuelle ET automatique : chapitre 2 « Boîte manuelle ou
+   automatique ? », lignes « En manuelle / En automatique » dans les séances ; source hors dépôt).
 3. **Annuaire des loueurs double commande** : inscription gratuite, Créno Pro 19,99 €/mois codé (formulaire + Stripe).
    Reste : recherche par ville, boîte manuelle/auto dans la fiche.
 4. **Trouver une date d'examen** : guide fait, alertes communautaires codées et déployées (fonction `alertes`).

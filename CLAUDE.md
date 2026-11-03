@@ -86,7 +86,7 @@ assets/app.js                     comptes (connexion Supabase Auth en REST, sans
 assets/config.js                  supabaseUrl + supabaseAnonKey (clé publique), lienPaiementPack (Stripe),
                                   lienCrenoPro (abonnement Stripe 19,99 €/mois des auto-écoles),
                                   lienCrenoProLoueur (celui des loueurs ; vide = lienCrenoPro), lienGererAbonnement
-                                  (portail client Stripe, vide pour l'instant), formEndpoint de secours
+                                  (portail client Stripe, rempli le 4 novembre 2026), formEndpoint de secours
 assets/og.png                     image de partage (réseaux sociaux)
 data/index.json                   départements (code, nom, nb, moyenne), date d'import
 data/departements/<code>.json     auto-écoles d'un département (id = numéro d'agrément raf_numero)
@@ -399,7 +399,7 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
    Idées suivantes : pages « location voiture double commande <département> »,
    « permis candidat libre <département> ».
 6. ~~Comptes élèves et pros~~ : faits (novembre 2026). Reste : brancher Resend (confirmation de l'adresse,
-   mot de passe oublié, pack par e-mail), portail client Stripe (lienGererAbonnement), puis budget, heures
+   mot de passe oublié, pack par e-mail), puis budget, heures
    et checklist synchronisés.
 7. **Monétisation** : pack candidat libre (14,99 €, paiement unique) et Créno Pro (19,99 €/mois, un produit
    auto-écoles et un produit loueurs) branchés sur Stripe le 3 novembre 2026 (compte Stripe partagé avec

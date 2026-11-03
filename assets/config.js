@@ -32,6 +32,6 @@ window.CRENO_CONFIG = {
   lienPaiementPack: "https://buy.stripe.com/bJefZg23Gb3YbTNbLP4ko02",
   lienCrenoPro: "https://buy.stripe.com/9B614m0ZCb3Yf5ZcPT4ko01",
   lienCrenoProLoueur: "https://buy.stripe.com/cNifZgfUw1tof5Z8zD4ko00",
-  lienGererAbonnement: "",
+  lienGererAbonnement: "https://billing.stripe.com/p/login/cNifZgfUw1tof5Z8zD4ko00",
   formEndpoint: ""
 };

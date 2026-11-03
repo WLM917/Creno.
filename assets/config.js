@@ -24,8 +24,8 @@
 window.CRENO_CONFIG = {
   supabaseUrl: "https://bfcgtjkzgvpaafyclnmt.supabase.co",
   supabaseAnonKey: "sb_publishable_X-hWXCFGAVrRr4OOpxePKg_TGyyULKd",
-  lienPaiementPack: "",
-  lienCrenoPro: "",
-  lienCrenoProLoueur: "",
+  lienPaiementPack: "https://buy.stripe.com/bJefZg23Gb3YbTNbLP4ko02",
+  lienCrenoPro: "https://buy.stripe.com/9B614m0ZCb3Yf5ZcPT4ko01",
+  lienCrenoProLoueur: "https://buy.stripe.com/cNifZgfUw1tof5Z8zD4ko00",
   formEndpoint: ""
 };

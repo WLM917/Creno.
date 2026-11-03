@@ -354,8 +354,9 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
    Idées suivantes : pages « location voiture double commande <département> »,
    « permis candidat libre <département> ».
 6. **Comptes élèves** (plus tard) : budget, heures, checklist sur plusieurs appareils.
-7. **Monétisation** : pack candidat libre (14,99 €) et Créno Pro (19,99 €/mois, auto-écoles et loueurs)
-   codés, à brancher sur Stripe. Alertes gratuites pour l'instant (mode 9,99 €/mois prêt).
+7. **Monétisation** : pack candidat libre (14,99 €, paiement unique) et Créno Pro (19,99 €/mois, un produit
+   auto-écoles et un produit loueurs) branchés sur Stripe le 3 novembre 2026 (compte Stripe partagé avec
+   Oralixia/Preporal, libellés « Creno » / « Creno Pro », clé restreinte Checkout Sessions en lecture). Alertes gratuites pour l'instant (mode 9,99 €/mois prêt).
    Ensuite : commissions par élève (auto-écoles) et par client (loueurs), contrat d'apporteur d'affaires.
 
 ## Concurrents à connaître

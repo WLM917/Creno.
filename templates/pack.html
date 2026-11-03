@@ -59,7 +59,7 @@
     <h2 id="acheter-title">Obtenir le pack</h2>
     <div class="buy-box">
       <div class="buy-price"><span class="price-amount">{{prix_pack}}</span><span class="price-note">Paiement unique et sécurisé par Stripe</span></div>
-      <form class="form-stack" id="pack-form">
+      <form class="form-stack" id="pack-form" data-compte="tous" data-suite="pack-candidat-libre/#acheter" data-compte-txt="Le pack est relié à ton compte : tu pourras retélécharger le PDF quand tu veux, sur n'importe quel appareil.">
         <label class="check-inline" for="pack-ok"><input id="pack-ok" type="checkbox" required> Je veux accéder au pack tout de suite après le paiement et je renonce à mon droit de rétractation pour ce contenu numérique.</label>
         <label class="check-inline" for="pack-cgv"><input id="pack-cgv" type="checkbox" required><span>J'accepte les <a href="{{root}}cgv/">conditions de vente</a>.</span></label>
         <div class="form-actions">
@@ -68,7 +68,7 @@
         </div>
       </form>
     </div>
-    <p class="small">Après le paiement, tu arrives sur une page qui te donne le PDF. Garde cette page dans tes favoris : elle marche à nouveau plus tard.</p>
+    <p class="small">Après le paiement, tu arrives sur une page qui te donne le PDF. Il reste aussi dans ton compte (icône en haut à droite) : tu peux le retélécharger ou te l'envoyer par e-mail quand tu veux.</p>
   </section>
 
   <section class="block" aria-labelledby="faq-pack">
@@ -76,7 +76,7 @@
     <div class="faq">
       <details><summary>Sous quelle forme est le pack ?</summary><p>Un PDF que tu télécharges juste après le paiement. Il se lit bien sur téléphone, et les fiches s'impriment en A4.</p></details>
       <details><summary>Les informations sont-elles à jour ?</summary><p>Le pack s'appuie sur les sources officielles (Sécurité routière, préfectures, service-public) au moment de sa rédaction, et indique chaque fois où vérifier. Les règles peuvent changer : en cas de doute, la source officielle a toujours raison.</p></details>
-      <details><summary>J'ai perdu mon lien de téléchargement</summary><p>Écris-nous avec l'e-mail utilisé pour le paiement, on te le renvoie. {{contact}}</p></details>
+      <details><summary>J'ai perdu mon lien de téléchargement</summary><p>Connecte-toi à ton compte Créno (icône en haut à droite) : le bouton « Télécharger le PDF » te donne un nouveau lien. Un souci ? Écris-nous avec l'e-mail utilisé pour le paiement. {{contact}}</p></details>
     </div>
   </section>
 </div>

@@ -187,8 +187,21 @@ async function abonne(token: string): Promise<Abonne | null> {
   return data?.[0] ?? null;
 }
 
+// Vérifie le jeton de connexion envoyé par le site (compte Créno). null si absent ou expiré.
+async function utilisateur(jeton: unknown): Promise<{ id: string; email: string } | null> {
+  const t = String(jeton ?? "");
+  if (t.length < 20) return null;
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, { headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${t}` } });
+  if (!res.ok) return null;
+  const u = await res.json();
+  return u?.id ? { id: u.id, email: String(u.email ?? "").toLowerCase() } : null;
+}
+
 async function abonner(body: Record<string, unknown>) {
-  const email = String(body.email ?? "").trim().toLowerCase();
+  // Il faut un compte Créno : l'abonnement y est rattaché (rubrique « Mes alertes » du compte).
+  const u = await utilisateur(body.jeton);
+  if (!u) return reply(401, { erreur: "Connecte-toi à ton compte pour recevoir les alertes." });
+  const email = u.email;
   const departement = String(body.departement ?? "").toUpperCase();
   if (!EMAIL.test(email) || email.length > 200) return reply(400, { erreur: "Cette adresse e-mail n'est pas valide." });
   if (!DEPARTEMENT.test(departement)) return reply(400, { erreur: "Choisis un département." });
@@ -222,9 +235,11 @@ async function abonner(body: Record<string, unknown>) {
   if (!token) {
     const { data } = await db("abonnes_alertes", {
       method: "POST", headers: { Prefer: "return=representation" },
-      body: JSON.stringify({ email, email_base: base, departement }),
+      body: JSON.stringify({ email, email_base: base, departement, user_id: u.id }),
     });
     token = data[0].token as string;
+  } else {
+    await db(`abonnes_alertes?token=eq.${token}`, { method: "PATCH", body: JSON.stringify({ user_id: u.id }) });
   }
 
   const confirmUrl = `${SITE_URL}/alertes/confirmer/?t=${token}`;
@@ -240,7 +255,8 @@ async function abonner(body: Record<string, unknown>) {
       <p style="color:#55606B;font-size:13px">Si ce n'est pas toi, ignore cet e-mail : rien ne sera activé.</p>`),
     text: `Active tes alertes Créno pour le ${departement} : ${confirmUrl}`,
   }]);
-  if (!sent) return reply(503, { erreur: "L'e-mail de confirmation n'a pas pu partir. Réessaie dans quelques minutes." });
+  // E-mails pas encore branchés : l'inscription est gardée, les places signalées restent visibles dans le compte.
+  if (!sent) return reply(200, { confirmation: false, compte: true, departement });
   return reply(200, { confirmation: true, essai_jours: ESSAI_JOURS, payant: !!lienPaye() });
 }
 

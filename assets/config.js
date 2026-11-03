@@ -15,6 +15,11 @@
   lienCrenoProLoueur : celui des loueurs (vide : les loueurs utilisent aussi lienCrenoPro).
   Vide : la demande est enregistrée et tu recontactes le pro pour l'activer.
 
+  lienGererAbonnement : le lien du portail client Stripe (Stripe > Paramètres > Billing > Portail client,
+  « Lien de connexion », https://billing.stripe.com/p/login/...). Les pros abonnés à Créno Pro y retrouvent
+  leurs factures, changent leur carte ou arrêtent l'abonnement, depuis « Gérer mon compte ».
+  Vide : le compte leur propose de t'écrire pour arrêter.
+
   Le lien de paiement des alertes ne va pas ici : il se règle dans les secrets Supabase
   (ALERTES_LIEN_STRIPE), voir supabase/functions/alertes/index.ts.
 
@@ -27,5 +32,6 @@ window.CRENO_CONFIG = {
   lienPaiementPack: "https://buy.stripe.com/bJefZg23Gb3YbTNbLP4ko02",
   lienCrenoPro: "https://buy.stripe.com/9B614m0ZCb3Yf5ZcPT4ko01",
   lienCrenoProLoueur: "https://buy.stripe.com/cNifZgfUw1tof5Z8zD4ko00",
+  lienGererAbonnement: "",
   formEndpoint: ""
 };

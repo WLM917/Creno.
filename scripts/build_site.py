@@ -89,7 +89,7 @@ FOOTER = [
     ("cgv/", "Conditions de vente"),
 ]
 GENERATED_DIRS = ["auto-ecoles", "candidat-libre", "examen", "cout-du-permis", "methode", "confidentialite",
-                  "alertes", "pack-candidat-libre", "moniteurs", "pro", "mentions-legales", "cgv", "badges", "admin", "rapport", "contact"]
+                  "alertes", "pack-candidat-libre", "moniteurs", "pro", "mentions-legales", "cgv", "badges", "admin", "rapport", "contact", "compte"]
 
 # Accents absents du fichier officiel, rétablis pour l'affichage des villes les plus courantes.
 ACCENTS = {
@@ -732,6 +732,10 @@ def page(L, path, kind, title, description, body, jsonld=None, section=None, dep
       </svg>
       <span class="logo-word">créno</span>
     </a>
+    <a class="compte-btn" href="{L("compte/")}"{current if kind == "compte" else ""} data-compte-btn aria-label="Se connecter ou créer un compte" title="Se connecter">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="compte-btn-txt">Compte</span>
+    </a>
     <nav class="site-nav" aria-label="Sections">{nav}</nav>
   </div>
 </header>
@@ -829,6 +833,10 @@ def build(out_dir=ROOT, explicit=False, only=None):
         stats["departements"] += 1
         badges["deps"][d["code"]] = d["url"]
         (out_dir / "badges").mkdir(exist_ok=True)
+        # Rang de chaque auto-école (affiché dans le compte des pros) : {agrément: [rang, nb, indice]}
+        (out_dir / "data" / "rangs").mkdir(parents=True, exist_ok=True)
+        (out_dir / "data" / "rangs" / f'{d["code"]}.json').write_text(
+            json.dumps({r["e"]["id"]: [r["rang"], nb, r["indice"]] for r in rows}, separators=(",", ":")), encoding="utf-8")
         for r in rows[:TOP_BADGE]:
             badges["top"][r["e"]["id"]] = [r["rang"], nb]
             (out_dir / "badges" / f'{r["e"]["id"]}.svg').write_text(
@@ -1201,13 +1209,16 @@ def build(out_dir=ROOT, explicit=False, only=None):
         ("alertes/continuer/", "alertes-continuer.html", "Continuer les alertes", "Continuer à recevoir les alertes places d'examen."),
         ("admin/", "admin.html", "Tableau de bord", "Tableau de bord de Créno."),
         ("rapport/", "rapport.html", "Rapport Créno", "Les élèves envoyés par Créno à votre établissement."),
+        ("compte/", "compte.html", "Mon compte", "Gérer ton compte Créno : ton pack, tes alertes, tes demandes, ou ton établissement si tu es un pro."),
     ]
     for path, tpl, titre, desc in prives:
         L = Links(depuis(path), explicit)
         body = fill((TPL / tpl).read_text(encoding="utf-8"), {
             **common, "root": L.root, "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
-            "prix_creno_pro": esc(PRIX_CRENO_PRO), "contact": contact_txt})
-        write(path, page(L, path, "prive", f"{titre} | Créno", desc, body, noindex=True), sitemap=False)
+            "prix_creno_pro": esc(PRIX_CRENO_PRO), "contact": contact_txt, "options_departements": options_deps})
+        if explicit:
+            body = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', body)
+        write(path, page(L, path, "compte" if path == "compte/" else "prive", f"{titre} | Créno", desc, body, noindex=True), sitemap=False)
 
     # --- pages de confirmation (alertes, accès au pack) : pas dans Google
     for path, titre, etat, attente, retour, retour_txt in etats:

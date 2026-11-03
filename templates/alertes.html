@@ -6,7 +6,7 @@
   </header>
 
   <ol class="steps steps-inline">
-    <li><h3>Tu suis ton département</h3><p>Tu laisses ton e-mail et tu choisis le département où tu veux passer l'examen.</p></li>
+    <li><h3>Tu suis ton département</h3><p>Tu te connectes à ton compte et tu choisis le département où tu veux passer l'examen.</p></li>
     <li><h3>Un candidat voit des places</h3><p>En cherchant sur RdvPermis, il tombe sur des créneaux libres et les signale ici.</p></li>
     <li><h3>Tu es prévenu tout de suite</h3><p>Tu reçois un e-mail avec le centre et le créneau. À toi de réserver vite sur RdvPermis.</p></li>
   </ol>
@@ -17,8 +17,8 @@
     <section class="block panel" id="suivre" aria-labelledby="suivre-title">
       <h2 id="suivre-title">Recevoir les alertes</h2>
       <p class="offer">{{offre_alertes}}</p>
-      <form class="form-stack" id="follow-form" data-alertes="abonner">
-        <div class="field"><label for="follow-email">Ton e-mail</label><input id="follow-email" name="email" type="email" required autocomplete="email" maxlength="200"></div>
+      <form class="form-stack" id="follow-form" data-alertes="abonner" data-compte="tous" data-suite="alertes/#suivre" data-compte-txt="Tes alertes sont reliées à ton compte : tu y vois aussi toutes les places signalées dans ton département.">
+        <div class="field"><label for="follow-email">Ton e-mail</label><input id="follow-email" name="email" type="email" required autocomplete="email" maxlength="200" data-email-compte></div>
         <div class="field"><label for="follow-dep">Département de l'examen</label>
           <select id="follow-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select>
         </div>
@@ -57,7 +57,7 @@
       {{faq_prix}}
       <details><summary>Comment réserver la place signalée ?</summary><p>Connecte-toi à RdvPermis avec ton compte candidat, comme d'habitude. Garde ton NEPH et ton accompagnateur déjà déclarés : tu gagneras de précieuses minutes.</p></details>
       <details><summary>Comment arrêter les alertes ?</summary><p>Chaque e-mail contient un lien « Ne plus recevoir d'alertes ». Un clic suffit, et si tu es abonné, l'abonnement s'arrête en même temps.</p></details>
-      <details><summary>Que faites-vous de mon e-mail ?</summary><p>Il sert uniquement à t'envoyer les alertes du département choisi. Il n'est ni vendu ni partagé. <a href="{{root}}confidentialite/">Confidentialité</a></p></details>
+      <details><summary>Que faites-vous de mon e-mail ?</summary><p>Il sert à te connecter à ton compte et à t'envoyer les alertes du département choisi. Il n'est ni vendu ni partagé. <a href="{{root}}confidentialite/">Confidentialité</a></p></details>
     </div>
   </section>
 

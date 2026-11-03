@@ -1,0 +1,197 @@
+<div class="wrap stack-lg page-pad compte" id="compte-page" data-prix-pro="{{prix_creno_pro}}">
+  <noscript><p class="notice">Ton compte a besoin de JavaScript. Active-le dans ton navigateur, puis recharge la page.</p></noscript>
+  <p class="notice" id="compte-off" hidden>Les comptes ouvrent très bientôt. Reviens dans quelques jours.</p>
+
+  <!-- Pas connecté : se connecter ou créer un compte -->
+  <section class="compte-hors" id="compte-hors" aria-labelledby="hors-titre" hidden>
+    <header class="view-head">
+      <h1 id="hors-titre">Mon compte Créno</h1>
+      <p class="lede" id="compte-lede">Connecte-toi pour retrouver ton pack, tes alertes et tes demandes. Pas encore de compte ? Il se crée en une minute, gratuitement.</p>
+    </header>
+    <p class="form-status" id="compte-hors-etat" role="status"></p>
+
+    <div class="compte-acces">
+      <div class="pro-tabs-liste" role="tablist" aria-label="Se connecter ou créer un compte">
+        <button class="pro-tab" type="button" role="tab" id="onglet-connexion" aria-controls="panneau-connexion" aria-selected="true">Se connecter</button>
+        <button class="pro-tab" type="button" role="tab" id="onglet-inscription" aria-controls="panneau-inscription" aria-selected="false" tabindex="-1">Créer un compte</button>
+      </div>
+
+      <div class="panel" id="panneau-connexion" role="tabpanel" aria-labelledby="onglet-connexion">
+        <form class="form-stack" id="connexion-form">
+          <div class="field"><label for="cx-email">E-mail</label><input id="cx-email" name="email" type="email" required autocomplete="email" maxlength="200"></div>
+          <div class="field"><label for="cx-mdp">Mot de passe</label><input id="cx-mdp" name="password" type="password" required autocomplete="current-password" maxlength="72"></div>
+          <div class="form-actions">
+            <button class="btn btn-signal" type="submit">Se connecter</button>
+            <p class="form-status" role="status"></p>
+          </div>
+        </form>
+        <details class="compte-oubli">
+          <summary>Mot de passe oublié ?</summary>
+          <form class="form-stack" id="oubli-form">
+            <div class="field"><label for="oubli-email">L'e-mail de ton compte</label><input id="oubli-email" name="email" type="email" required autocomplete="email" maxlength="200"></div>
+            <div class="form-actions">
+              <button class="btn" type="submit">M'envoyer un lien</button>
+              <p class="form-status" role="status"></p>
+            </div>
+          </form>
+        </details>
+      </div>
+
+      <div class="panel" id="panneau-inscription" role="tabpanel" aria-labelledby="onglet-inscription" hidden>
+        <form class="form-stack" id="inscription-form">
+          <fieldset class="crit">
+            <legend>Tu es</legend>
+            <label class="check-inline" for="ins-eleve"><input id="ins-eleve" type="radio" name="type" value="eleve" checked> Élève, ou parent d'élève</label>
+            <label class="check-inline" for="ins-pro"><input id="ins-pro" type="radio" name="type" value="pro"> Un pro : auto-école, moniteur ou loueur</label>
+          </fieldset>
+          <div class="field" id="ins-protype-champ" hidden><label for="ins-protype">Ton activité</label>
+            <select id="ins-protype" name="pro_type">
+              <option value="">Choisis</option>
+              <option value="auto-ecole">Auto-école</option>
+              <option value="moniteur">Moniteur rattaché à une auto-école</option>
+              <option value="loueur">Loueur de voitures à double commande</option>
+            </select>
+          </div>
+          <div class="field"><label for="ins-email">E-mail</label><input id="ins-email" name="email" type="email" required autocomplete="email" maxlength="200"></div>
+          <div class="field"><label for="ins-mdp">Mot de passe (8 caractères au moins)</label><input id="ins-mdp" name="password" type="password" required autocomplete="new-password" minlength="8" maxlength="72"></div>
+          <label class="check-inline" for="ins-ok"><input id="ins-ok" type="checkbox" required><span>J'ai lu la page <a href="{{root}}confidentialite/#compte">Confidentialité</a> : mon e-mail sert à me connecter et à recevoir ce que je demande. Rien n'est vendu ni partagé.</span></label>
+          <div class="form-actions">
+            <button class="btn btn-signal" type="submit">Créer mon compte</button>
+            <p class="form-status" role="status"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <ul class="compte-pourquoi">
+      <li><strong>Élèves</strong> : ton pack à retélécharger, tes alertes et les places signalées dans ton département, les réponses des pros à tes demandes.</li>
+      <li><strong>Pros</strong> : ton rang et ton badge, les élèves qui ont cliqué pour te contacter, tes réponses aux demandes, ton abonnement Créno Pro.</li>
+      <li>Pas besoin de compte pour comparer les auto-écoles ni pour les contacter.</li>
+    </ul>
+  </section>
+
+  <!-- Nouveau mot de passe (lien « Mot de passe oublié ») -->
+  <section class="panel compte-etroit" id="compte-nouveau-mdp" aria-labelledby="nouveau-titre" hidden>
+    <h1 id="nouveau-titre">Choisis un nouveau mot de passe</h1>
+    <form class="form-stack" id="nouveau-mdp-form">
+      <div class="field"><label for="nouveau-mdp">Nouveau mot de passe (8 caractères au moins)</label><input id="nouveau-mdp" name="password" type="password" required autocomplete="new-password" minlength="8" maxlength="72"></div>
+      <div class="form-actions">
+        <button class="btn btn-signal" type="submit">Enregistrer</button>
+        <p class="form-status" role="status"></p>
+      </div>
+    </form>
+  </section>
+
+  <!-- Connecté -->
+  <section class="stack-lg" id="compte-in" aria-labelledby="in-titre" hidden>
+    <header class="view-head">
+      <h1 id="in-titre">Gérer mon compte</h1>
+      <p class="lede">Connecté avec <strong id="compte-email"></strong> · <span id="compte-type"></span></p>
+      <p class="form-status" id="compte-etat" role="status"></p>
+    </header>
+
+    <div class="compte-grille" id="compte-eleve" hidden>
+      <section class="block panel" id="pack" aria-labelledby="pack-titre">
+        <h2 id="pack-titre">Mon Pack candidat libre</h2>
+        <div id="pack-zone"></div>
+      </section>
+      <section class="block panel" id="alertes" aria-labelledby="alertes-titre">
+        <h2 id="alertes-titre">Mes alertes</h2>
+        <div id="alertes-zone"></div>
+        <h3>Places signalées ces 30 derniers jours</h3>
+        <div class="field"><label for="places-dep">Département</label>
+          <select id="places-dep"><option value="">Choisis</option>{{options_departements}}</select>
+        </div>
+        <p class="small" id="places-etat" role="status"></p>
+        <ul class="compte-liste compte-liste-col" id="places-liste"></ul>
+      </section>
+      <section class="block panel compte-large" id="demandes" aria-labelledby="demandes-titre">
+        <h2 id="demandes-titre">Mes demandes aux pros</h2>
+        <div id="demandes-zone"></div>
+      </section>
+    </div>
+
+    <div class="compte-grille" id="compte-pro" hidden>
+      <section class="block panel compte-large" id="etablissement" aria-labelledby="etab-titre">
+        <h2 id="etab-titre">Mon établissement</h2>
+        <div id="liens-zone"></div>
+        <form class="form-grid" id="lier-form">
+          <h3 class="field-wide" id="lier-titre">Relier mon établissement</h3>
+          <div class="field"><label for="lier-type">Tu es</label>
+            <select id="lier-type" name="pro_type" required>
+              <option value="">Choisis</option>
+              <option value="auto-ecole">Une auto-école</option>
+              <option value="moniteur">Un moniteur rattaché à une auto-école</option>
+              <option value="loueur">Un loueur de voitures à double commande</option>
+            </select>
+          </div>
+          <div class="field"><label for="lier-dep">Département</label>
+            <select id="lier-dep" name="departement" required data-load-ecoles><option value="">Choisis</option>{{options_departements}}</select>
+          </div>
+          <div class="field field-wide" id="lier-ae" hidden><label for="lier-ecole">Ton auto-école</label>
+            <input id="lier-ecole" name="auto_ecole_nom" list="lier-ecoles" autocomplete="off" maxlength="160" placeholder="Choisis d'abord ton département">
+            <datalist id="lier-ecoles"></datalist>
+            <input type="hidden" name="auto_ecole_id" value="">
+          </div>
+          <div class="field field-wide" id="lier-nom-champ" hidden><label for="lier-nom" id="lier-nom-label">Nom de ton agence</label><input id="lier-nom" name="nom" maxlength="120" autocomplete="organization"></div>
+          <p class="small field-wide">On vérifie que tu représentes bien cet établissement (un appel ou un e-mail) avant d'afficher ses chiffres ici.</p>
+          <div class="form-actions field-wide">
+            <button class="btn btn-signal" type="submit">Relier</button>
+            <p class="form-status" role="status"></p>
+          </div>
+        </form>
+      </section>
+      <section class="block panel" id="creno-pro" aria-labelledby="cpro-titre">
+        <h2 id="cpro-titre">Créno Pro</h2>
+        <div id="cpro-zone"></div>
+      </section>
+      <section class="block panel" id="reponses" aria-labelledby="reponses-titre">
+        <h2 id="reponses-titre">Mes réponses aux élèves</h2>
+        <div id="reponses-zone"></div>
+      </section>
+    </div>
+
+    <div class="compte-grille">
+      <section class="block panel" id="infos" aria-labelledby="infos-titre">
+        <h2 id="infos-titre">Mes informations</h2>
+        <p>E-mail : <strong id="profil-email"></strong><span class="sub small" id="profil-cree"></span></p>
+        <form class="form-stack" id="profil-form">
+          <div class="field"><label for="profil-prenom">Prénom (facultatif)</label><input id="profil-prenom" name="prenom" maxlength="60" autocomplete="given-name"></div>
+          <div class="field"><label for="profil-tel">Téléphone (facultatif)</label><input id="profil-tel" name="telephone" type="tel" maxlength="20" autocomplete="tel" pattern="[0-9 +.\(\)\-]{6,20}"></div>
+          <div class="field"><label for="profil-dep">Département (facultatif)</label>
+            <select id="profil-dep" name="departement"><option value="">Choisis</option>{{options_departements}}</select>
+          </div>
+          <p class="small">Ton téléphone n'est jamais affiché ni donné à un pro sans ton accord : dans une demande, c'est toi qui choisis de le partager.</p>
+          <div class="form-actions">
+            <button class="btn" type="submit">Enregistrer</button>
+            <p class="form-status" role="status"></p>
+          </div>
+        </form>
+      </section>
+      <section class="block panel" id="securite" aria-labelledby="securite-titre">
+        <h2 id="securite-titre">Mot de passe</h2>
+        <form class="form-stack" id="mdp-form">
+          <div class="field"><label for="mdp-nouveau">Nouveau mot de passe (8 caractères au moins)</label><input id="mdp-nouveau" name="password" type="password" required autocomplete="new-password" minlength="8" maxlength="72"></div>
+          <div class="form-actions">
+            <button class="btn" type="submit">Changer mon mot de passe</button>
+            <p class="form-status" role="status"></p>
+          </div>
+        </form>
+        <h3>Se déconnecter</h3>
+        <p class="small">Sur un appareil partagé, pense à te déconnecter.</p>
+        <button class="btn btn-ghost" type="button" id="deconnexion">Se déconnecter</button>
+      </section>
+      <section class="block panel compte-danger" id="supprimer" aria-labelledby="supprimer-titre">
+        <h2 id="supprimer-titre">Supprimer mon compte</h2>
+        <p>Ton compte est supprimé tout de suite, avec tes informations, tes demandes aux pros et tes alertes. Si tu as Créno Pro, arrête d'abord ton abonnement.</p>
+        <form class="form-stack" id="supprimer-form">
+          <div class="field"><label for="supprimer-ok">Écris SUPPRIMER pour confirmer</label><input id="supprimer-ok" name="confirmation" required autocomplete="off" autocapitalize="characters" maxlength="12"></div>
+          <div class="form-actions">
+            <button class="btn btn-stop" type="submit">Supprimer mon compte</button>
+            <p class="form-status" role="status"></p>
+          </div>
+        </form>
+      </section>
+    </div>
+  </section>
+</div>

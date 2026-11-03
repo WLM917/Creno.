@@ -1,6 +1,7 @@
 // Créno : demandes d'élèves et formulaires des pros (fonction serveur Supabase, Deno).
 //
 // Le site appelle cette fonction en POST avec un JSON { action, ... } :
+// Les actions demande, repondre et les formulaires des pros demandent { jeton } : le jeton de connexion du compte.
 //   demande    { besoin, departement, ville?, disponibilites?, email, telephone?, partage_tel?, consentement }
 //              -> un élève publie sa demande. Elle apparaît chez les pros SANS son nom ni son contact.
 //   liste      { departement? }  -> demandes ouvertes, sans aucun contact (page « Demandes d'élèves » des pros)
@@ -38,7 +39,7 @@ const CORS = {
 const DEPARTEMENT = /^([0-9]{2,3}|2[AB])$/;
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const AGREMENT = /^[A-Z0-9]{6,20}$/;
+const AGREMENT = /^[A-Z0-9_]{6,24}$/;
 const BESOINS: Record<string, string> = {
   "examen-blanc": "une évaluation ou un examen blanc",
   "presentation-examen": "être présenté à l'examen par une auto-école",
@@ -164,6 +165,24 @@ async function prevenirAdmin(sujet: string, lignes: Array<[string, unknown]>) {
   });
 }
 
+// ---------------------------------------------------------------- comptes (Supabase Auth)
+type Utilisateur = { id: string; email: string; type: string };
+// Vérifie le jeton de connexion envoyé par le site. Renvoie null si absent ou expiré.
+async function utilisateur(jeton: unknown): Promise<Utilisateur | null> {
+  const t = String(jeton ?? "");
+  if (t.length < 20) return null;
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, { headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${t}` } });
+  if (!res.ok) return null;
+  const u = await res.json();
+  if (!u?.id) return null;
+  return { id: u.id, email: String(u.email ?? "").toLowerCase(), type: String(u.user_metadata?.type ?? "eleve") };
+}
+async function connecte(body: Record<string, unknown>, quoi: string) {
+  const u = await utilisateur(body.jeton);
+  if (!u) throw new Refus(`Connecte-toi à ton compte pour ${quoi}.`, 401);
+  return u;
+}
+
 // ---------------------------------------------------------------- vérification des pros
 async function autoEcoleOfficielle(dep: string, id: string) {
   if (!DEPARTEMENT.test(dep) || !AGREMENT.test(id)) return null;
@@ -184,7 +203,8 @@ async function loueurReference(nomSlug: string) {
 async function demande(body: Record<string, unknown>, req: Request) {
   const besoin = String(body.besoin ?? "");
   const departement = String(body.departement ?? "").toUpperCase();
-  const email = String(body.email ?? "").trim().toLowerCase();
+  const u = await connecte(body, "publier ta demande");
+  const email = String(body.email || u.email).trim().toLowerCase();
   const telephone = clean(body.telephone, 30);
   if (!BESOINS[besoin]) return reply(400, { erreur: "Choisis ce dont tu as besoin." });
   if (!DEPARTEMENT.test(departement)) return reply(400, { erreur: "Choisis un département." });
@@ -194,7 +214,7 @@ async function demande(body: Record<string, unknown>, req: Request) {
 
   const row = {
     besoin, departement, email, contact: email, telephone, partage_tel: body.partage_tel === true && !!telephone,
-    ville: clean(body.ville, 80), disponibilites: clean(body.disponibilites, 300), consentement: true,
+    ville: clean(body.ville, 80), disponibilites: clean(body.disponibilites, 300), consentement: true, user_id: u.id,
   };
   const { data } = await db("demandes_pros", { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify(row) });
   const d = data[0];
@@ -202,7 +222,8 @@ async function demande(body: Record<string, unknown>, req: Request) {
   await sendEmail({
     to: [email], subject: "Ta demande est en ligne sur Créno",
     html: layout("Ta demande est en ligne", `<p>Tu cherches ${esc(BESOINS[besoin])} dans le ${esc(departement)}${row.ville ? ` (${esc(row.ville)})` : ""}.</p>
-      <p>Les auto-écoles, moniteurs et loueurs vérifiés de Créno voient ta demande, <strong>sans ton nom ni ton e-mail</strong>. Quand l'un d'eux te répond, tu reçois son message ici, avec son contact. Tu choisis ensuite qui tu rappelles. Au plus ${MAX_REPONSES} réponses.</p>
+      <p>Les auto-écoles, moniteurs et loueurs vérifiés de Créno voient ta demande, <strong>sans ton nom ni ton e-mail</strong>. Quand l'un d'eux te répond, tu retrouves son message dans ton compte Créno (et ici par e-mail), avec son contact. Tu choisis ensuite qui tu rappelles. Au plus ${MAX_REPONSES} réponses.</p>
+      <p>${bouton(`${SITE_URL}/compte/`, "Voir mes demandes")}</p>
       <p style="color:#55606B;font-size:13px">Tu as trouvé ? <a href="${fermer}">Fermer ma demande</a>. Sinon, elle se ferme toute seule dans ${JOURS_OUVERTE} jours.</p>`),
     text: `Ta demande est en ligne sur Créno. Les pros te répondront par e-mail. Fermer ta demande : ${fermer}`,
   });
@@ -223,6 +244,7 @@ async function liste(body: Record<string, unknown>) {
 }
 
 async function repondre(body: Record<string, unknown>, req: Request) {
+  const u = await connecte(body, "répondre à un élève");
   const id = Number(body.demande);
   const type = String(body.pro_type ?? "");
   const contact = clean(body.contact, 200);
@@ -281,11 +303,13 @@ async function repondre(body: Record<string, unknown>, req: Request) {
       <p style="color:#55606B;font-size:13px">Tu as trouvé ? <a href="${fermer}">Fermer ma demande</a> : tu ne recevras plus de réponses.</p>`),
     text: `${quoi} te répond sur Créno : ${proNom}. ${message ?? ""} Pour lui répondre : ${contact}. Fermer ta demande : ${fermer}`,
   });
-  if (!envoye) return reply(503, { erreur: "Le message n'a pas pu partir. Réessaie dans quelques minutes." });
+  // Même si l'e-mail ne part pas (e-mails pas encore branchés), la réponse est gardée :
+  // l'élève la voit dans son compte, rubrique « Mes demandes ».
+  if (!envoye) console.error("Réponse gardée sans e-mail à l'élève", id);
 
   await db("reponses_demandes", {
     method: "POST", headers: { Prefer: "return=minimal" },
-    body: JSON.stringify({ demande_id: id, pro_type: type, pro_ref: proRef, pro_nom: proNom, departement_pro: depPro, contact, message, empreinte: emp }),
+    body: JSON.stringify({ demande_id: id, pro_type: type, pro_ref: proRef, pro_nom: proNom, departement_pro: depPro, contact, message, empreinte: emp, user_id: u.id }),
   });
   await db(`demandes_pros?id=eq.${id}`, { method: "PATCH", body: JSON.stringify({ nb_reponses: d.nb_reponses + 1 }) });
   await prevenirAdmin(`${proNom} a répondu à un élève`, [
@@ -303,29 +327,34 @@ async function fermer(body: Record<string, unknown>) {
 }
 
 // Formulaires des pros : champs acceptés pour chaque table
-const FORMULAIRES: Record<string, { table: string; champs: string[]; titre: string }> = {
-  pro: { table: "pros_proposes", titre: "Un pro propose ses services",
+const FORMULAIRES: Record<string, { table: string; champs: string[]; titre: string; compte?: boolean }> = {
+  pro: { table: "pros_proposes", titre: "Un pro propose ses services", compte: true,
     champs: ["type", "nom", "etablissement", "numero_agrement", "ville", "departement", "offres", "prix", "contact"] },
   contact_pro: { table: "contacts_pros", titre: "Nouveau message (page Nous contacter)",
     champs: ["type", "nom", "ville", "contact", "message", "auto_ecole_id"] },
-  tarifs: { table: "tarifs_proposes", titre: "Une auto-école envoie ses tarifs",
+  tarifs: { table: "tarifs_proposes", titre: "Une auto-école envoie ses tarifs", compte: true,
     champs: ["auto_ecole_id", "auto_ecole_nom", "departement", "forfait", "heures_forfait", "prix_heure", "frais_examen",
       "accelere", "accelere_details", "lien", "contact"] },
-  creno_pro: { table: "creno_pro_demandes", titre: "Une auto-école veut Créno Pro",
+  creno_pro: { table: "creno_pro_demandes", titre: "Une auto-école veut Créno Pro", compte: true,
     champs: ["auto_ecole_id", "auto_ecole_nom", "departement", "contact", "email", "message"] },
-  loueur: { table: "loueurs_proposes", titre: "Un loueur veut s'inscrire",
+  loueur: { table: "loueurs_proposes", titre: "Un loueur veut s'inscrire", compte: true,
     champs: ["nom", "ville", "departement", "adresse", "site", "contact", "email", "prix_heure", "boite", "formule"] },
 };
 
 async function formulaire(body: Record<string, unknown>, req: Request) {
   const f = FORMULAIRES[String(body.type_formulaire ?? "")];
   if (!f) return reply(400, { erreur: "Formulaire inconnu." });
+  const u = f.compte ? await connecte(body, "envoyer ce formulaire") : null;
   await limiter(await empreinte(req), "formulaire");
   const row: Record<string, unknown> = {};
   for (const c of f.champs) {
     const v = body[c];
     if (v === undefined || v === null || v === "") continue;
     row[c] = typeof v === "string" ? v.trim().slice(0, 1000) : v;
+  }
+  if (u) {
+    row.user_id = u.id;
+    if (f.champs.includes("email") && !row.email) row.email = u.email;
   }
   const { data } = await db(f.table, { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify(row) });
   await prevenirAdmin(f.titre, Object.entries(row));

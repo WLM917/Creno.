@@ -3,6 +3,7 @@
 // Le site appelle cette fonction en POST avec { session_id } (fourni par Stripe dans l'adresse de retour).
 // La fonction vérifie auprès de Stripe que le paiement est bien fait, puis renvoie un lien
 // temporaire (1 heure) vers le PDF rangé dans l'espace de stockage privé « pack ».
+// L'achat est noté dans achats_pack : l'élève retrouve son pack dans son compte (fonction « compte »).
 //
 // Secrets à définir dans Supabase > Edge Functions > Secrets :
 //   STRIPE_SECRET_KEY      clé secrète Stripe
@@ -46,6 +47,12 @@ Deno.serve(async (req) => {
     const fichier = env("PACK_FICHIER", "pack-candidat-libre.pdf");
     const headers: Record<string, string> = { apikey: SERVICE_KEY, "Content-Type": "application/json" };
     if (!SERVICE_KEY.startsWith("sb_")) headers.Authorization = `Bearer ${SERVICE_KEY}`;
+    // On garde l'achat (référence « pack-<compte> ») : l'élève retrouve son pack dans son compte Créno.
+    await fetch(`${SUPABASE_URL}/rest/v1/achats_pack?on_conflict=session_id`, {
+      method: "POST",
+      headers: { ...headers, Prefer: "resolution=ignore-duplicates,return=minimal" },
+      body: JSON.stringify({ session_id: id, ref: String(s.client_reference_id).slice(0, 80), montant: s.amount_total ?? 0 }),
+    }).catch((e) => console.error("Achat non gardé", e));
     const sign = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/pack/${encodeURIComponent(fichier)}`, {
       method: "POST",
       headers,

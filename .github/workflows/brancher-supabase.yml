@@ -6,6 +6,7 @@
 #   2. déploie les 4 fonctions serveur (alertes, pack, stats, pros), sans vérification JWT
 #   3. copie dans Supabase les secrets des fonctions réglés sur GitHub
 #   4. remplit assets/config.js (adresse du projet + clé publique) s'il est encore vide
+#   5. règle la connexion des comptes (Supabase Auth) : adresse du site, mot de passe, e-mails par Resend si branché
 # Le résultat de chaque étape (et l'erreur exacte s'il y en a une) s'affiche sur la page
 # « Summary » du lancement.
 #
@@ -14,7 +15,8 @@
 #   SUPABASE_PROJECT_ID     identifiant du projet (l'adresse https://xxxx.supabase.co marche aussi)
 #   ADMIN_CODE, ADMIN_EMAIL code du tableau de bord /admin/ et e-mail qui reçoit les demandes
 #   plus tard : RESEND_API_KEY, ALERTES_EXPEDITEUR, STRIPE_SECRET_KEY
-#   facultatifs : CRENO_SEL, ALERTES_LIEN_STRIPE (vide = alertes gratuites), PACK_MONTANT_CENTIMES
+#   facultatifs : CRENO_SEL, ALERTES_LIEN_STRIPE (vide = alertes gratuites), PACK_MONTANT_CENTIMES,
+#                 AUTH_CONFIRMER_EMAILS (oui = confirmer l'e-mail à l'inscription, seulement quand Resend marche)
 # Ces secrets restent cachés : personne ne peut les relire, pas même toi.
 name: Brancher Supabase
 
@@ -156,6 +158,40 @@ jobs:
           fi
           echo "Copiés dans Supabase :$noms"
           etape "3. Secrets des fonctions :$noms" supabase secrets set --project-ref "$PROJET" "${args[@]}"
+
+      - name: 5. Comptes (connexion)
+        if: always() && steps.verif.outputs.ok == 'oui'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERTES_EXPEDITEUR: ${{ secrets.ALERTES_EXPEDITEUR }}
+          AUTH_CONFIRMER_EMAILS: ${{ secrets.AUTH_CONFIRMER_EMAILS }}
+        run: |
+          . "$RUNNER_TEMP/etape.sh"
+          # Réglages de Supabase Auth : adresse du site, mot de passe de 8 caractères au moins.
+          # Sans e-mails branchés, pas de confirmation à l'inscription (sinon personne ne pourrait se connecter).
+          # Avec RESEND_API_KEY et ALERTES_EXPEDITEUR : Supabase envoie ses e-mails (mot de passe oublié) par Resend.
+          python3 - > "$RUNNER_TEMP/auth.json" <<'FIN'
+          import json, os, re
+          site = json.load(open("site.json"))["adresse_du_site"].rstrip("/")
+          c = {"site_url": site, "uri_allow_list": site + "/**", "external_email_enabled": True,
+               "disable_signup": False, "password_min_length": 8,
+               "mailer_autoconfirm": os.environ.get("AUTH_CONFIRMER_EMAILS", "").strip().lower() != "oui"}
+          cle, exp = os.environ.get("RESEND_API_KEY", "").strip(), os.environ.get("ALERTES_EXPEDITEUR", "").strip()
+          m = re.search(r"<([^>]+)>", exp)
+          adresse = m.group(1) if m else exp
+          if cle and "@" in adresse:
+              c.update({"smtp_host": "smtp.resend.com", "smtp_port": "465", "smtp_user": "resend", "smtp_pass": cle,
+                        "smtp_admin_email": adresse, "smtp_sender_name": "Créno"})
+          print(json.dumps(c))
+          FIN
+          rep="$RUNNER_TEMP/auth-reponse.json"
+          if ! etape "5. Comptes (connexion)" curl -sS --fail-with-body -X PATCH "https://api.supabase.com/v1/projects/$PROJET/config/auth" \
+               -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" --data @"$RUNNER_TEMP/auth.json" -o "$rep"; then
+            { echo '```'; head -c 600 "$rep" | fold -w 70 -s; echo; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            rm -f "$RUNNER_TEMP/auth.json" "$rep"
+            exit 1
+          fi
+          rm -f "$RUNNER_TEMP/auth.json" "$rep"
 
       - name: 4. Remplir assets/config.js
         if: always() && steps.verif.outputs.ok == 'oui'

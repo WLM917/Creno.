@@ -68,8 +68,8 @@ Les clés secrètes ne vont jamais dans le code, ni dans une conversation : seul
 ### 3. Lancer l'installation
 
 Onglet *Actions* du dépôt > « Brancher Supabase » > *Run workflow*. Ça crée les tables (par l'API
-Supabase, sans mot de passe), déploie les 4 fonctions (alertes, pack, stats, pros), copie les secrets
-dans Supabase et remplit `assets/config.js`. La page *Summary* du lancement affiche chaque étape
+Supabase, sans mot de passe), déploie les 5 fonctions (alertes, pack, stats, pros, compte), copie les secrets
+dans Supabase, règle la connexion aux comptes (étape « Comptes ») et remplit `assets/config.js`. La page *Summary* du lancement affiche chaque étape
 (✅ ou ❌ avec l'erreur exacte) : en cas de croix rouge, envoyer une capture de cette page à Claude.
 À relancer après chaque nouveau secret ajouté.
 
@@ -132,6 +132,25 @@ SUPABASE_URL=https://TON_PROJET.supabase.co SUPABASE_SERVICE_KEY=... python3 scr
   Elle apparaît dans « Mises en avant » en haut des pages de sa ville et de son département, avec
   « Partenaire payant ». Son rang ne change pas. Quand elle arrête de payer, retire-la.
 - **Loueur** : dans `data/loueurs.json`, passe sa `formule` de `"gratuit"` à `"partenaire"`, relance le build et pousse.
+
+## Comptes des élèves et des pros
+
+- Connexion par e-mail et mot de passe (Supabase Auth), page `/compte/` (icône en haut à droite).
+- Il faut un compte pour : acheter le pack, recevoir les alertes, publier une demande aux pros ; et un
+  compte **pro** pour donner ses tarifs, proposer ses services, inscrire une agence, prendre Créno Pro
+  et répondre aux demandes. Pas besoin de compte pour comparer, contacter une auto-école, signaler des
+  places, déclarer un prix ou nous écrire.
+- Tant que Resend n'est pas branché, les comptes sont activés sans e-mail de confirmation et
+  « Mot de passe oublié » ne peut pas envoyer d'e-mail. Une fois Resend et un domaine en place
+  (`RESEND_API_KEY` et `ALERTES_EXPEDITEUR`), relance « Brancher Supabase » : les e-mails des comptes
+  partent par Resend. Pour exiger la confirmation de l'adresse à l'inscription, ajoute le secret
+  `AUTH_CONFIRMER_EMAILS` = `oui`.
+- Un pro relie son compte à son auto-école ou à son agence depuis son compte. Tu reçois un e-mail et
+  une ligne dans « Comptes pros à vérifier » du tableau de bord : appelle l'établissement pour vérifier
+  que c'est bien lui, puis « Valider ». Il voit alors son rang, son badge, ses chiffres et son rapport.
+- « Gérer mon abonnement » (Créno Pro) : active le portail client dans Stripe (*Paramètres > Billing >
+  Portail client*), copie le « lien de connexion » (`https://billing.stripe.com/p/login/...`) et mets-le
+  dans `lienGererAbonnement` de `assets/config.js`.
 
 ## Tableau de bord et rapports des pros
 

@@ -1587,3 +1587,118 @@ textarea:focus-visible { border-color: var(--signal); }
 @media (prefers-reduced-motion: reduce) {
   .adm-col span { transition: none; }
 }
+
+/* ---------- Compte : icône de l'en-tête ---------- */
+.logo { margin-right: auto; }
+.compte-btn {
+  order: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  min-width: 44px;
+  justify-content: center;
+  padding: 0.35rem 0.7rem;
+  border: 2px solid var(--asphalt-2);
+  border-radius: 999px;
+  color: var(--asphalt-ink);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.98rem;
+  position: relative;
+}
+.compte-btn:hover { background: var(--asphalt-2); }
+.compte-btn[aria-current="page"] { background: var(--signal); border-color: var(--signal); color: var(--signal-ink); }
+.compte-btn.is-connecte::after {   /* pastille : connecté */
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 30px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--chantier);
+  box-shadow: 0 0 0 2px var(--asphalt);
+}
+.site-nav { order: 2; }
+@media (max-width: 1080px) {
+  .compte-btn { order: 1; }
+  .site-nav { order: 2; flex-basis: 100%; }
+}
+@media (max-width: 600px) {
+  .compte-btn { padding: 0.35rem; }
+  .compte-btn-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .compte-btn.is-connecte::after { left: 26px; top: 4px; }
+}
+
+/* ---------- Formulaires réservés aux comptes ---------- */
+.compte-gate {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--signal);
+  border-radius: var(--radius-field);
+  padding: 0.9rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 44rem;
+}
+.compte-gate p { margin: 0; }
+.compte-qui { font-size: 0.93rem; color: var(--muted); grid-column: 1 / -1; }
+.compte-qui strong { color: var(--ink); overflow-wrap: anywhere; }
+
+/* ---------- Page « Gérer mon compte » ---------- */
+.compte .sub { display: block; color: var(--muted); font-size: 0.9rem; }
+.compte-acces { max-width: 32rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.compte-oubli { margin-top: 1rem; border-top: 1px solid var(--line); padding-top: 0.8rem; }
+.compte-oubli summary { cursor: pointer; font-weight: 700; color: var(--link); }
+.compte-oubli form { margin-top: 0.8rem; }
+.compte-pourquoi { max-width: 44rem; color: var(--muted); display: grid; gap: 0.35rem; padding-left: 1.2rem; }
+.compte-pourquoi strong { color: var(--ink); }
+.compte-etroit { max-width: 32rem; }
+.compte-etroit h1 { font-size: var(--step-2); margin-bottom: 0.8rem; }
+#compte-email { overflow-wrap: anywhere; }
+.compte-grille {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+.compte-grille[hidden] { display: none; }
+.compte-grille .panel { display: flex; flex-direction: column; gap: 0.75rem; }
+.compte-grille .panel h2 { font-size: var(--step-1); margin: 0; }
+.compte-grille .panel h3 { font-size: 1.05rem; margin: 0.4rem 0 0; }
+.compte-large { grid-column: 1 / -1; }
+.compte-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.compte-liste > li { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 0.5rem; }
+.compte-liste > li:first-child { border-top: 0; padding-top: 0; }
+.compte-liste-col > li { flex-direction: column; align-items: flex-start; gap: 0.15rem; }
+.compte .dep-code { margin-block: 0; min-height: 2rem; min-width: 2.8rem; font-size: 1.05rem; border-radius: 4px; }
+.compte-reponses { list-style: none; margin: 0.3rem 0; padding: 0; display: grid; gap: 0.5rem; width: 100%; }
+.compte-reponses li { background: var(--paper); border-radius: var(--radius-field); padding: 0.6rem 0.75rem; }
+.compte-reponses p { margin: 0.2rem 0 0; overflow-wrap: anywhere; }
+.compte-etabs { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
+.compte-etab { background: var(--paper); display: flex; flex-direction: column; gap: 0.6rem; }
+.compte-etab h3 { margin: 0; font-size: 1.1rem; }
+.compte-etab .notice { margin: 0; font-weight: 400; }
+.compte-etab-detail { display: flex; flex-direction: column; gap: 0.7rem; align-items: flex-start; }
+.compte-rang { display: flex; align-items: center; gap: 0.75rem; margin: 0; }
+.compte-rang .rank-plate { flex: none; }
+.compte-facts { width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.compte-badge { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+.compte-badge img { max-width: 100%; height: auto; }
+#lier-form { border-top: 1px solid var(--line); padding-top: 0.9rem; }
+#lier-form h3 { margin: 0; }
+.compte-danger { border-color: var(--stop); }
+.btn-stop { background: var(--stop); border-color: var(--stop); color: var(--surface); align-self: flex-start; }
+.btn-stop:hover { background: transparent; color: var(--stop); }
+@media (max-width: 760px) {
+  .compte-grille { grid-template-columns: minmax(0, 1fr); }
+  .compte-facts { grid-template-columns: minmax(0, 1fr); }
+}
+.compte .btn-ghost, .compte-gate .btn-ghost { background: transparent; color: var(--ink); }
+.compte .btn-ghost:hover, .compte-gate .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+button.pro-tab { appearance: none; border: 0; background: transparent; cursor: pointer; }
+.compte-hors { display: flex; flex-direction: column; gap: 1.25rem; }
+#compte-hors-etat:empty { margin: 0; }

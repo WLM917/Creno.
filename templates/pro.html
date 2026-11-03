@@ -64,7 +64,7 @@
     <section class="block" id="tarifs" aria-labelledby="tarifs-title">
       <h2 id="tarifs-title">Donner mes tarifs (auto-écoles)</h2>
       <p>Tes prix s'affichent sur ta fiche, dans le classement de ton département et de ta ville. On les vérifie avant de les publier, avec ta page de tarifs ou par un appel.</p>
-      <form class="form-grid" id="tarifs-form" data-form-type="tarifs">
+      <form class="form-grid" id="tarifs-form" data-form-type="tarifs" data-compte="pro" data-compte-pro="auto-ecole" data-suite="pro/#tarifs" data-compte-txt="Ton compte pro te permet aussi de voir ton rang, ton badge et les élèves qui ont cliqué pour te contacter.">
         <div class="field"><label for="tar-dep">Département</label>
           <select id="tar-dep" name="departement" required data-load-ecoles><option value="">Choisis</option>{{options_departements}}</select>
         </div>
@@ -131,7 +131,7 @@
         </div>
       </div>
 
-      <form class="form-grid panel" id="creno-pro-form" data-form-type="creno_pro">
+      <form class="form-grid panel" id="creno-pro-form" data-form-type="creno_pro" data-compte="pro" data-compte-pro="auto-ecole" data-suite="pro/#creno-pro" data-compte-txt="Ton abonnement Créno Pro se suit et se gère depuis ton compte pro.">
         <h3 class="field-wide">Passer à Créno Pro</h3>
         <div class="field"><label for="cpro-dep">Département</label>
           <select id="cpro-dep" name="departement" required data-load-ecoles><option value="">Choisis</option>{{options_departements}}</select>
@@ -162,7 +162,7 @@
 
     <section class="block" id="proposer" aria-labelledby="proposer-title">
       <h2 id="proposer-title">Proposer mes services</h2>
-      <form class="form-grid" id="proposer-form" data-form-type="pro">
+      <form class="form-grid" id="proposer-form" data-form-type="pro" data-compte="pro" data-compte-pro="moniteur" data-suite="pro/#proposer" data-compte-txt="Ton compte pro te permet aussi de répondre aux demandes d'élèves et de retrouver tes réponses.">
         <div class="field"><label for="pro-type">Tu es</label>
           <select id="pro-type" name="type" required>
             <option value="">Choisis</option>
@@ -214,7 +214,7 @@
       </div>
       <p class="small">Créno Pro est facultatif et sans engagement : tu arrêtes quand tu veux. La mise en avant est toujours signalée aux élèves.</p>
 
-      <form class="form-grid panel" id="inscrire-agence" data-form-type="loueur">
+      <form class="form-grid panel" id="inscrire-agence" data-form-type="loueur" data-compte="pro" data-compte-pro="loueur" data-suite="pro/#inscrire-agence" data-compte-txt="Ton compte pro te montre ton agence telle qu'elle est affichée, et ton abonnement Créno Pro si tu le prends.">
         <h3 class="field-wide">Inscrire mon agence</h3>
         <fieldset class="field-wide crit">
           <legend>Ta formule</legend>

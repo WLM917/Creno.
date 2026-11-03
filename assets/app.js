@@ -66,16 +66,14 @@
       method: "POST", headers: supaHeaders(), body: JSON.stringify(body)
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
-        if (!r.ok) throw new Error(j.erreur || "Le service ne répond pas. Réessaie dans quelques minutes.");
+        if (!r.ok) {
+          var e = new Error(j.erreur || "Le service ne répond pas. Réessaie dans quelques minutes.");
+          e.status = r.status;
+          throw e;
+        }
         return j;
       });
     }, function () { throw new Error("Pas de connexion. Vérifie ton réseau et réessaie."); });
-  }
-  function uuid() {
-    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-      var r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16);
-    });
   }
   function setStatus(el, ok, text) {
     el.textContent = text;
@@ -85,6 +83,601 @@
   function queryParam(name) {
     var m = new RegExp("[?&]" + name + "=([^&#]*)").exec(location.search);
     return m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : "";
+  }
+
+  /* ---------- Compte : connexion par e-mail et mot de passe (Supabase Auth, sans bibliothèque) ---------- */
+  // La session est gardée sur l'appareil. Son jeton est envoyé aux fonctions serveur, qui vérifient elles-mêmes
+  // qui est connecté : le site ne lit jamais la base directement.
+  var SESSION = "creno-session";
+  var AUTH_ERREURS = {
+    invalid_credentials: "E-mail ou mot de passe incorrect.",
+    invalid_grant: "E-mail ou mot de passe incorrect.",
+    email_not_confirmed: "Confirme d'abord ton adresse : clique sur le lien reçu par e-mail.",
+    user_already_exists: "Un compte existe déjà avec cet e-mail. Connecte-toi (onglet « Se connecter »).",
+    email_exists: "Un compte existe déjà avec cet e-mail. Connecte-toi (onglet « Se connecter »).",
+    weak_password: "Mot de passe trop faible : 8 caractères au moins, avec des lettres et des chiffres.",
+    same_password: "Choisis un mot de passe différent de l'ancien.",
+    email_address_invalid: "Cette adresse e-mail n'est pas valide.",
+    validation_failed: "Vérifie ton e-mail et ton mot de passe.",
+    over_request_rate_limit: "Trop d'essais d'un coup. Attends quelques minutes puis réessaie.",
+    over_email_send_rate_limit: "Trop d'e-mails envoyés. Attends un peu puis réessaie.",
+    signup_disabled: "Les inscriptions sont fermées pour le moment.",
+    email_address_not_authorized: "L'envoi d'e-mails n'est pas encore branché. Écris-nous depuis la page Nous contacter, on t'aide.",
+    session_not_found: "Ta connexion a expiré : reconnecte-toi.",
+    refresh_token_not_found: "Ta connexion a expiré : reconnecte-toi.",
+    reauthentication_needed: "Pour changer ton mot de passe, reconnecte-toi d'abord."
+  };
+  function authFetch(path, body, jeton, method) {
+    var h = { "apikey": CONFIG.supabaseAnonKey, "Content-Type": "application/json" };
+    if (jeton) h.Authorization = "Bearer " + jeton;
+    else if (CONFIG.supabaseAnonKey.indexOf("sb_") !== 0) h.Authorization = "Bearer " + CONFIG.supabaseAnonKey;
+    return fetch(CONFIG.supabaseUrl.replace(/\/$/, "") + "/auth/v1/" + path, {
+      method: method || "POST", headers: h, body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (r.ok) return j;
+        var code = j.error_code || j.error || "";
+        if (!AUTH_ERREURS[code] && /already registered/i.test(j.msg || "")) code = "user_already_exists";
+        var e = new Error(AUTH_ERREURS[code] || (r.status === 429 ? AUTH_ERREURS.over_request_rate_limit
+          : "Ça n'a pas marché. Vérifie tes réponses et réessaie."));
+        e.code = code; e.status = r.status;
+        throw e;
+      });
+    }, function () { throw new Error("Pas de connexion. Vérifie ton réseau et réessaie."); });
+  }
+  var rafraichir = null;
+  var auth = {
+    session: function () {
+      var s = store.get(SESSION, null);
+      return s && s.access_token && s.user && s.user.id ? s : null;
+    },
+    garder: function (j, user) {
+      var u = user || j.user;
+      var s = {
+        access_token: j.access_token, refresh_token: j.refresh_token,
+        expires_at: Number(j.expires_at) || Math.floor(Date.now() / 1000) + (Number(j.expires_in) || 3600),
+        user: { id: u.id, email: u.email, type: (u.user_metadata || {}).type === "pro" ? "pro" : "eleve", pro_type: (u.user_metadata || {}).pro_type || "" }
+      };
+      store.set(SESSION, s);
+      majIconeCompte();
+      return s;
+    },
+    oublier: function () {
+      try { window.localStorage.removeItem(SESSION); } catch (e) { /* rien */ }
+      majIconeCompte();
+    },
+    // Un jeton valable (renouvelé tout seul quand il expire), ou null si personne n'est connecté.
+    jeton: function () {
+      var s = auth.session();
+      if (!s) return Promise.resolve(null);
+      if (s.expires_at - 60 > Date.now() / 1000) return Promise.resolve(s.access_token);
+      if (!rafraichir) {
+        rafraichir = authFetch("token?grant_type=refresh_token", { refresh_token: s.refresh_token }).then(function (j) {
+          rafraichir = null;
+          return auth.garder(j).access_token;
+        }, function (e) {
+          rafraichir = null;
+          if (e.status && e.status < 500) { auth.oublier(); return null; }
+          throw e;
+        });
+      }
+      return rafraichir;
+    },
+    connexion: function (email, mdp) {
+      return authFetch("token?grant_type=password", { email: email, password: mdp }).then(function (j) { return auth.garder(j); });
+    },
+    // Renvoie la session, ou null si un e-mail de confirmation doit d'abord être ouvert.
+    inscription: function (email, mdp, donnees, retour) {
+      return authFetch("signup?redirect_to=" + encodeURIComponent(retour), { email: email, password: mdp, data: donnees }).then(function (j) {
+        return j.access_token ? auth.garder(j) : null;
+      });
+    },
+    depuisLien: function (p) {
+      return authFetch("user", null, p.access_token, "GET").then(function (u) { return auth.garder(p, u); });
+    },
+    oubli: function (email, retour) {
+      return authFetch("recover?redirect_to=" + encodeURIComponent(retour), { email: email });
+    },
+    motDePasse: function (mdp) {
+      return auth.jeton().then(function (t) {
+        if (!t) throw new Error(AUTH_ERREURS.session_not_found);
+        return authFetch("user", { password: mdp }, t, "PUT");
+      });
+    },
+    deconnexion: function () {
+      var s = auth.session();
+      auth.oublier();
+      if (s) authFetch("logout", {}, s.access_token).catch(function () { /* la session est déjà oubliée ici */ });
+    }
+  };
+  // Appelle une fonction serveur avec le jeton du compte. Sans connexion (ou connexion expirée) : erreur 401.
+  function callFnCompte(name, body) {
+    return auth.jeton().then(function (t) {
+      if (!t) { var e = new Error("Connecte-toi à ton compte pour continuer."); e.status = 401; throw e; }
+      body.jeton = t;
+      return callFn(name, body);
+    }).catch(function (e) {
+      if (e.status === 401) auth.oublier();
+      throw e;
+    });
+  }
+  // Icône du compte (en haut à droite) : « Se connecter » ou « Gérer mon compte »
+  function majIconeCompte() {
+    var s = auth.session();
+    $all("[data-compte-btn]").forEach(function (a) {
+      a.classList.toggle("is-connecte", !!s);
+      a.setAttribute("aria-label", s ? "Gérer mon compte (connecté)" : "Se connecter ou créer un compte");
+      a.title = s ? "Gérer mon compte" : "Se connecter";
+    });
+  }
+  // Adresse du compte, avec la page où revenir ensuite (chemin interne seulement)
+  function suiteValide(s) { return !!s && /^[a-z0-9\-\/]+(#[a-z0-9\-]+)?$/.test(s) && s.indexOf("//") === -1; }
+  function lienCompte(suite, extra) {
+    return link("compte/") + "?suite=" + encodeURIComponent(suite || "") + (extra || "");
+  }
+
+  /* ---------- Formulaires réservés aux comptes (pack, alertes, demandes, espace pros) ---------- */
+  // data-compte="tous" (élève ou pro) ou "pro" ; data-suite = où revenir après la connexion ;
+  // data-compte-txt = pourquoi il faut un compte ; data-compte-pro = activité préchoisie à l'inscription.
+  function initGates() {
+    var forms = $all("form[data-compte]");
+    if (!forms.length || !supabaseReady()) return;
+    var s = auth.session();
+    forms.forEach(function (form) {
+      var qui = form.getAttribute("data-compte");
+      var suite = form.getAttribute("data-suite") || "";
+      var pro = form.getAttribute("data-compte-pro") || "";
+      var extra = qui === "pro" ? "&type=pro" + (pro ? "&pro=" + pro : "") : "";
+      var box = document.createElement("div");
+      box.className = "compte-gate";
+      if (!s || (qui === "pro" && s.user.type !== "pro")) {
+        if (!s) {
+          box.innerHTML = '<p><strong>' + (qui === "pro" ? "Connecte-toi à ton compte pro pour continuer." : "Connecte-toi pour continuer.") +
+            "</strong> " + esc(form.getAttribute("data-compte-txt") || "") + "</p>" +
+            '<div class="rank-actions"><a class="btn btn-signal btn-small" href="' + esc(lienCompte(suite, extra)) + '">Se connecter</a>' +
+            '<a class="btn btn-ghost btn-small" href="' + esc(lienCompte(suite, extra + "&onglet=inscription")) + '">Créer un compte</a></div>';
+        } else {
+          box.innerHTML = "<p><strong>Ce formulaire est réservé aux comptes pros.</strong> Tu es connecté avec un compte élève (" +
+            esc(s.user.email) + "). Pour ton établissement, crée un compte pro avec une autre adresse e-mail.</p>" +
+            '<div class="rank-actions"><button class="btn btn-ghost btn-small" type="button" data-sortir>Me déconnecter et créer un compte pro</button></div>';
+          $("[data-sortir]", box).addEventListener("click", function () {
+            auth.deconnexion();
+            location.href = lienCompte(suite, extra + "&onglet=inscription");
+          });
+        }
+        form.parentNode.insertBefore(box, form);
+        form.hidden = true;
+        return;
+      }
+      remplirCompte(form);
+      box.className = "compte-qui";
+      box.innerHTML = "Connecté : <strong>" + esc(s.user.email) + '</strong> · <a href="' + esc(link("compte/")) + '">Gérer mon compte</a>';
+      var titre = form.firstElementChild && /^H[23]$/.test(form.firstElementChild.tagName) ? form.firstElementChild : null;
+      form.insertBefore(box, titre ? titre.nextSibling : form.firstChild);
+    });
+  }
+  // Connecté : l'e-mail du compte est prérempli (ou fixé, pour les alertes). Aussi après chaque envoi (form.reset()).
+  function remplirCompte(form) {
+    var s = auth.session();
+    if (!s || !form.hasAttribute("data-compte")) return;
+    $all("input[type=email][name=email]", form).forEach(function (f) {
+      if (!f.value) f.value = s.user.email;
+      if (f.hasAttribute("data-email-compte")) {
+        f.required = false;
+        f.closest(".field").hidden = true;
+      }
+    });
+  }
+
+  /* ---------- Page « Gérer mon compte » ---------- */
+  var PRO_TYPES = { "auto-ecole": "Auto-école", moniteur: "Moniteur", loueur: "Loueur de voitures à double commande" };
+  var SUITE_TXT = {
+    "pack-candidat-libre": "Pour acheter le pack, connecte-toi ou crée ton compte. Ton PDF y restera : tu pourras le retélécharger quand tu veux.",
+    "alertes": "Pour recevoir les alertes, connecte-toi ou crée ton compte. Tu y verras aussi toutes les places signalées dans ton département.",
+    "moniteurs": "Pour publier ta demande, connecte-toi ou crée ton compte : les réponses des pros s'y afficheront aussi.",
+    "pro": "Pour cette démarche, connecte-toi à ton compte pro, ou crée-le en une minute. C'est gratuit."
+  };
+  function jourTxt(iso) { return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }); }
+
+  function initCompte() {
+    var page = $("#compte-page");
+    if (!page) return;
+    if (!supabaseReady()) { $("#compte-off").hidden = false; return; }
+    var hors = $("#compte-hors"), dedans = $("#compte-in"), nouveau = $("#compte-nouveau-mdp");
+    var retour = (($("link[rel=canonical]") || {}).href || location.href).replace(/[?#].*$/, "");
+    var suite = queryParam("suite");
+    if (!suiteValide(suite)) suite = "";
+
+    function apresConnexion(depuisEmail) {
+      var s = suite;
+      if (depuisEmail) { s = store.get("creno-suite", ""); }
+      store.set("creno-suite", "");
+      if (suiteValide(s)) { location.href = link(s); return; }
+      charger();
+    }
+
+    /* --- pas connecté : se connecter / créer un compte --- */
+    function afficherHors(message) {
+      dedans.hidden = true; nouveau.hidden = true; hors.hidden = false;
+      var cle = suite.split("/")[0];
+      if (SUITE_TXT[cle]) $("#compte-lede").textContent = SUITE_TXT[cle];
+      if (message) setStatus($("#compte-hors-etat"), false, message);
+      var type = queryParam("type") === "pro" ? "pro" : "eleve";
+      var radio = $('#inscription-form input[name=type][value="' + type + '"]');
+      if (radio) radio.checked = true;
+      var pt = $("#ins-protype");
+      if (PRO_TYPES[queryParam("pro")]) pt.value = queryParam("pro");
+      majTypeInscription();
+      onglet(queryParam("onglet") === "inscription" ? 1 : 0, false);
+    }
+    var tabs = $all("#compte-hors [role=tab]");
+    function onglet(i, focus) {
+      tabs.forEach(function (t, k) {
+        var on = k === i;
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+      });
+      if (focus) tabs[i].focus();
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { onglet(i, false); });
+      t.addEventListener("keydown", function (ev) {
+        if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+        ev.preventDefault();
+        onglet(1 - i, true);
+      });
+    });
+    function majTypeInscription() {
+      var pro = ($("#inscription-form input[name=type]:checked") || {}).value === "pro";
+      $("#ins-protype-champ").hidden = !pro;
+      $("#ins-protype").required = pro;
+    }
+    $all("#inscription-form input[name=type]").forEach(function (r) { r.addEventListener("change", majTypeInscription); });
+
+    function envoi(form, promesse, ok) {
+      var statusEl = $(".form-status", form), button = $("button[type=submit]", form);
+      button.disabled = true;
+      statusEl.textContent = "Un instant…"; statusEl.className = "form-status";
+      return promesse().then(function (r) {
+        button.disabled = false;
+        statusEl.textContent = "";
+        ok(r, statusEl);
+      }, function (e) {
+        button.disabled = false;
+        setStatus(statusEl, false, e.message);
+      });
+    }
+    $("#connexion-form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var f = ev.target;
+      envoi(f, function () { return auth.connexion(f.email.value.trim(), f.password.value); }, function () {
+        f.reset();
+        apresConnexion(false);
+      });
+    });
+    $("#inscription-form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var f = ev.target;
+      var type = ($("input[name=type]:checked", f) || {}).value === "pro" ? "pro" : "eleve";
+      var meta = { type: type };
+      if (type === "pro") meta.pro_type = f.pro_type.value;
+      if (suite) store.set("creno-suite", suite);
+      envoi(f, function () { return auth.inscription(f.email.value.trim(), f.password.value, meta, retour); }, function (s, statusEl) {
+        if (s) { f.reset(); apresConnexion(false); return; }
+        setStatus(statusEl, true, "Presque fini : ouvre l'e-mail qu'on vient de t'envoyer et clique sur le lien pour activer ton compte.");
+      });
+    });
+    $("#oubli-form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var f = ev.target;
+      envoi(f, function () { return auth.oubli(f.email.value.trim(), retour); }, function (r, statusEl) {
+        setStatus(statusEl, true, "Si un compte existe avec cette adresse, tu vas recevoir un e-mail avec un lien pour choisir un nouveau mot de passe. Pense à regarder dans les spams.");
+      });
+    });
+    $("#nouveau-mdp-form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var f = ev.target;
+      envoi(f, function () { return auth.motDePasse(f.password.value); }, function () {
+        f.reset();
+        nouveau.hidden = true;
+        charger("Ton nouveau mot de passe est enregistré.");
+      });
+    });
+
+    /* --- connecté --- */
+    function charger(message) {
+      hors.hidden = true; nouveau.hidden = true; dedans.hidden = false;
+      var s = auth.session();
+      $("#compte-email").textContent = s ? s.user.email : "";
+      var etat = $("#compte-etat");
+      etat.textContent = "Chargement de ton compte…"; etat.className = "form-status";
+      callFnCompte("compte", { action: "moi" }).then(function (j) {
+        if (message) setStatus(etat, true, message); else { etat.textContent = ""; etat.className = "form-status"; }
+        afficher(j);
+      }).catch(function (e) {
+        if (e.status === 401) { afficherHors(e.message); return; }
+        setStatus(etat, false, e.message);
+      });
+    }
+    function afficher(j) {
+      var p = j.profil || {};
+      var pro = p.type === "pro";
+      $("#compte-type").textContent = pro ? "Compte pro" + (p.pro_type ? " · " + (PRO_TYPES[p.pro_type] || p.pro_type) : "") : "Compte élève";
+      $("#compte-eleve").hidden = pro;
+      $("#compte-pro").hidden = !pro;
+      // Mes informations
+      var f = $("#profil-form");
+      f.prenom.value = p.prenom || "";
+      f.telephone.value = p.telephone || "";
+      f.departement.value = p.departement || "";
+      $("#profil-email").textContent = j.user.email;
+      $("#profil-cree").textContent = j.user.cree ? "Compte créé le " + jourTxt(j.user.cree) + "." : "";
+      if (!pro) afficherEleve(j); else afficherPro(j);
+      // Arrivée sur une partie précise (#pack, #alertes...) une fois le contenu en place
+      var cible = location.hash && document.getElementById(location.hash.slice(1));
+      if (cible && dedans.contains(cible)) setTimeout(function () { cible.scrollIntoView({ block: "start" }); }, 0);
+    }
+
+    function afficherEleve(j) {
+      // Mon pack
+      var zp = $("#pack-zone");
+      if (j.pack && j.pack.achete) {
+        zp.innerHTML = "<p>Acheté le " + esc(jourTxt(j.pack.date)) + ". Le lien de téléchargement marche pendant une heure : redemande-le ici quand tu veux.</p>" +
+          '<div class="rank-actions"><button class="btn btn-signal btn-small" type="button" id="pack-dl">Télécharger le PDF</button>' +
+          '<button class="btn btn-ghost btn-small" type="button" id="pack-mail">Me l\'envoyer par e-mail</button></div>' +
+          '<p class="form-status" role="status" id="pack-etat"></p>';
+        $("#pack-dl").addEventListener("click", function () {
+          var b = this, st = $("#pack-etat");
+          b.disabled = true; st.textContent = "Préparation du lien…"; st.className = "form-status";
+          callFnCompte("compte", { action: "pack" }).then(function (r) {
+            b.disabled = false;
+            st.innerHTML = 'C\'est prêt. <a href="' + esc(r.url) + '" target="_blank" rel="noopener">Ouvrir le Pack candidat libre (PDF)</a>';
+            st.className = "form-status is-ok";
+            window.open(r.url, "_blank", "noopener");
+          }).catch(function (e) { b.disabled = false; setStatus(st, false, e.message); });
+        });
+        $("#pack-mail").addEventListener("click", function () {
+          var b = this, st = $("#pack-etat");
+          b.disabled = true; st.textContent = "Envoi…"; st.className = "form-status";
+          callFnCompte("compte", { action: "pack_email" }).then(function () {
+            b.disabled = false;
+            setStatus(st, true, "C'est envoyé à " + j.user.email + ". Le lien marche pendant 7 jours.");
+          }).catch(function (e) { b.disabled = false; setStatus(st, false, e.message); });
+        });
+      } else {
+        zp.innerHTML = "<p>Tu n'as pas encore le pack. Il te guide du dossier jusqu'au jour J, en boîte manuelle ou automatique.</p>" +
+          '<a class="link-strong" href="' + esc(link("pack-candidat-libre/")) + '">Découvrir le pack</a>' +
+          '<p class="small">Tu l\'as acheté avant d\'avoir un compte ? Utilise le lien reçu après ton paiement, ou écris-nous : on le relie à ton compte.</p>';
+      }
+      // Mes alertes
+      var za = $("#alertes-zone");
+      var al = j.alertes || [];
+      za.innerHTML = al.length ? '<ul class="compte-liste">' + al.map(function (a) {
+        var etat = a.statut === "actif" ? "Active" + (a.expire_le ? " jusqu'au " + jourTxt(a.expire_le) : "")
+          : a.statut === "en_attente" ? (j.emails ? "À confirmer : clique sur le lien reçu par e-mail" : "Enregistrée : les e-mails d'alerte arrivent bientôt. En attendant, les places signalées s'affichent ici.")
+          : "Arrêtée";
+        return '<li><span class="dep-code">' + esc(a.departement) + "</span><span>" + esc(etat) + "</span></li>";
+      }).join("") + "</ul>" : '<p>Tu ne suis aucun département pour l\'instant.</p>';
+      za.innerHTML += '<a class="link-strong" href="' + esc(link("alertes/")) + '#suivre">' + (al.length ? "Suivre un autre département" : "Recevoir les alertes") + "</a>";
+      var depSel = $("#places-dep");
+      var depDefaut = (al[0] && al[0].departement) || (j.profil && j.profil.departement) || "";
+      if (depDefaut && !depSel.value) depSel.value = depDefaut;
+      chargerPlaces();
+      // Mes demandes aux pros
+      var zd = $("#demandes-zone");
+      var dm = j.demandes || [];
+      zd.innerHTML = dm.length ? '<ul class="demandes">' + dm.map(function (d) {
+        var ouverte = d.statut === "ouverte";
+        return '<li class="demande"><div class="demande-head"><span class="dep-code">' + esc(d.departement) + "</span><strong>" +
+          esc(BESOINS[d.besoin] || d.besoin) + "</strong></div>" +
+          "<p>" + esc(d.ville || "Ville non précisée") + " · publiée le " + esc(jourTxt(d.created_at)) + " · " + (ouverte ? "ouverte" : "fermée") + "</p>" +
+          (d.reponses && d.reponses.length ? '<ul class="compte-reponses">' + d.reponses.map(function (r) {
+            return "<li><strong>" + esc(r.pro_nom) + "</strong> <span class=\"small\">(" + esc(PRO_TYPES[r.pro_type] || r.pro_type) + ", le " + esc(jourTxt(r.created_at)) + ")</span>" +
+              (r.message ? "<p>« " + esc(r.message) + " »</p>" : "") +
+              '<p>Pour lui répondre : <strong>' + esc(r.contact) + "</strong></p></li>";
+          }).join("") + "</ul>" : '<p class="small">Pas encore de réponse. Les pros de ton département la voient sur Créno.</p>') +
+          (ouverte ? '<a class="btn btn-ghost btn-small" href="' + esc(link("pro/demandes/fermer/")) + "?t=" + encodeURIComponent(d.token) + '">J\'ai trouvé : fermer ma demande</a>' : "") +
+          "</li>";
+      }).join("") + "</ul>" : "<p>Tu n'as publié aucune demande. Besoin d'un examen blanc, d'heures avec un moniteur ou d'une voiture à double commande ?</p>";
+      zd.innerHTML += '<a class="link-strong" href="' + esc(link("moniteurs/")) + '#demande">Publier une demande</a>';
+    }
+    function chargerPlaces() {
+      var dep = $("#places-dep").value;
+      var ul = $("#places-liste"), st = $("#places-etat");
+      ul.innerHTML = "";
+      if (!dep) { st.textContent = "Choisis un département pour voir les places signalées."; return; }
+      st.textContent = "Chargement…";
+      callFnCompte("compte", { action: "places", departement: dep }).then(function (r) {
+        var pl = r.places || [];
+        st.textContent = pl.length ? plural(pl.length, "signalement", "signalements") + " dans le " + dep + " ces 30 derniers jours. Une place signalée peut déjà être prise."
+          : "Aucune place signalée dans le " + dep + " ces 30 derniers jours.";
+        ul.innerHTML = pl.map(function (x) {
+          return "<li><span><strong>" + esc(x.centre) + "</strong>" + (x.creneau ? " · " + esc(x.creneau) : "") + "</span>" +
+            '<span class="sub">' + esc(ilYa(x.created_at)) + (x.details ? " · " + esc(x.details) : "") + "</span></li>";
+        }).join("");
+      }).catch(function (e) { st.textContent = e.message; });
+    }
+    $("#places-dep").addEventListener("change", chargerPlaces);
+
+    function afficherPro(j) {
+      var p = j.profil || {};
+      var liens = j.liens || [];
+      var zl = $("#liens-zone");
+      var lf = $("#lier-form");
+      if (!lf.pro_type.value && p.pro_type) lf.pro_type.value = p.pro_type;
+      majLier();
+      $("#lier-titre").textContent = liens.length ? "Ajouter un autre établissement" : "Relier mon établissement";
+      if (!liens.length) {
+        zl.innerHTML = "<p>Relie ton compte à ton auto-école ou à ton agence : tu verras ton rang, ton badge, les élèves qui ont cliqué pour te contacter et ton abonnement Créno Pro.</p>";
+        $("#cpro-zone").innerHTML = "<p>Relie d'abord ton établissement, juste au-dessus.</p>";
+      } else {
+        zl.innerHTML = '<ul class="compte-etabs">' + liens.map(function (l, i) {
+          return '<li class="panel compte-etab" data-lien="' + i + '"><h3>' + esc(l.nom) + "</h3>" +
+            '<p class="small">' + esc(l.departement ? "Département " + l.departement : "") + "</p>" +
+            (l.statut === "verifie" ? '<div class="compte-etab-detail">Chargement…</div>'
+              : l.statut === "refuse" ? '<p class="form-status is-error">Nous n\'avons pas pu vérifier que tu représentes cet établissement. Écris-nous si c\'est une erreur.</p>'
+              : '<p class="notice">En attente de vérification. On t\'appelle ou on t\'écrit pour vérifier que c\'est bien toi, puis tes chiffres s\'affichent ici.</p>') +
+            "</li>";
+        }).join("") + "</ul>";
+        Promise.all([fetchJSON("data/badges.json").catch(function () { return { top: {}, deps: {} }; }),
+                     fetchJSON("data/partenaires.json").catch(function () { return {}; }), chargerLoueurs()]).then(function (r) {
+          var badges = r[0], partenaires = (r[1] && r[1].auto_ecoles) || {}, loueurs = r[2];
+          var cpro = [];
+          liens.forEach(function (l, i) {
+            var zone = $('[data-lien="' + i + '"] .compte-etab-detail', zl);
+            var ae = l.pro_ref.indexOf("ae-") === 0;
+            var id = ae ? l.pro_ref.slice(3) : "";
+            var loueur = l.pro_ref.indexOf("loueur-") === 0 ? loueurs.filter(function (x) { return "loueur-" + slugJS(x.nom) === l.pro_ref; })[0] : null;
+            if (l.statut === "verifie") {
+              cpro.push({ nom: l.nom, ae: ae, actif: ae ? !!partenaires[id] : !!(loueur && loueur.formule === "partenaire"),
+                          depuis: ae && partenaires[id] ? partenaires[id].depuis : "", id: id, pro_ref: l.pro_ref });
+            }
+            if (!zone) return;
+            detailEtab(zone, l, ae, id, loueur, badges);
+          });
+          afficherCrenoPro(cpro, j.user.email);
+        });
+      }
+      // Mes réponses aux élèves
+      var rz = $("#reponses-zone");
+      var env = j.reponses_envoyees || [];
+      rz.innerHTML = (env.length ? '<ul class="compte-liste compte-liste-col">' + env.map(function (r) {
+        var d = r.demandes_pros || {};
+        return "<li><strong>" + esc(BESOINS[d.besoin] || d.besoin || "Demande") + "</strong>" +
+          '<span class="sub">' + esc([d.ville, d.departement].filter(Boolean).join(", ")) + " · le " + esc(jourTxt(r.created_at)) +
+          (d.statut && d.statut !== "ouverte" ? " · demande fermée" : "") + "</span>" +
+          (r.message ? '<span class="sub">Ton message : « ' + esc(r.message) + " »</span>" : "") + "</li>";
+      }).join("") + "</ul>" : "<p>Tu n'as encore répondu à aucune demande.</p>") +
+        '<p class="small">L\'élève reçoit ta réponse par e-mail, avec ton contact : il te répond directement, par e-mail ou par téléphone.</p>' +
+        '<a class="link-strong" href="' + esc(link("pro/demandes/")) + '">Voir les demandes d\'élèves</a>';
+    }
+    function detailEtab(zone, l, ae, id, loueur, badges) {
+      var mois = (l.mois || []).slice().sort(function (a, b) { return a.mois < b.mois ? 1 : -1; });
+      var dernier = mois[0];
+      var total = mois.reduce(function (t, m) { return t + (m.personnes_action || 0); }, 0);
+      var chiffres = '<dl class="facts compte-facts">' +
+        "<div><dt>" + intFmt.format(dernier ? dernier.personnes_action : 0) + "</dt><dd>élèves ont cliqué pour te contacter" +
+        (dernier ? " en " + esc(moisTxt(dernier.mois)) : " ce mois-ci") + "</dd></div>" +
+        "<div><dt>" + intFmt.format(total) + "</dt><dd>depuis le début</dd></div>" +
+        "<div><dt>" + intFmt.format(l.reponses_demandes || 0) + "</dt><dd>élèves contactés grâce aux demandes</dd></div></dl>" +
+        (l.rapport ? '<a class="link-strong" href="' + esc(l.rapport) + '">Voir mon rapport complet</a>' : "");
+      if (!ae) {
+        zone.innerHTML = (loueur ? "<p>Ton agence est affichée sur Créno (" + esc(loueur.ville) + ")" +
+          (loueur.formule === "partenaire" ? ", en tête de liste avec Créno Pro." : ", avec l'inscription gratuite.") + "</p>"
+          : l.pro_ref.indexOf("loueur-") === 0 ? '<p>Ton agence n\'est pas encore affichée sur Créno. <a href="' + esc(link("pro/")) + '#inscrire-agence">Inscris-la</a> (gratuit).</p>' : "") +
+          chiffres;
+        return;
+      }
+      fetchJSON("data/rangs/" + encodeURIComponent(l.departement) + ".json").catch(function () { return {}; }).then(function (rangs) {
+        var r = rangs[id];
+        var fiche = badges.deps && badges.deps[l.departement] ? link(badges.deps[l.departement]) + "#ae-" + encodeURIComponent(id) : "";
+        var rangTxt = r ? '<p class="compte-rang"><span class="rank-plate">' + r[0] + "</span> <span><strong>" + r[0] + (r[0] === 1 ? "re" : "e") +
+          " sur " + intFmt.format(r[1]) + "</strong> auto-écoles classées dans le " + esc(l.departement) + " (indice " + r[2] + " sur 100)</span></p>"
+          : "<p>Ton auto-école n'a pas encore de taux de réussite publié : elle est listée à part, sans rang. Elle sera classée dès que la Sécurité routière publiera son taux.</p>";
+        var badge = badges.top && badges.top[id] ? '<div class="compte-badge"><img src="' + esc(ROOT + "badges/" + id + ".svg") + '" alt="Badge Créno : top 10 du département" width="200" loading="lazy">' +
+          '<a class="link-strong" href="' + esc(link("pro/")) + '#badge">Mettre le badge sur mon site</a></div>' : "";
+        zone.innerHTML = rangTxt + (fiche ? '<a class="link-strong" href="' + esc(fiche) + '">Voir ma fiche dans le classement</a>' : "") + badge + chiffres;
+      });
+    }
+    function afficherCrenoPro(liste, email) {
+      var z = $("#cpro-zone");
+      if (!liste.length) { z.innerHTML = "<p>Ton abonnement s'affiche ici dès que ton établissement est vérifié.</p>"; return; }
+      var gerer = CONFIG.lienGererAbonnement
+        ? '<a class="btn btn-ghost btn-small" href="' + esc(CONFIG.lienGererAbonnement) + (email ? "?prefilled_email=" + encodeURIComponent(email) : "") +
+          '" target="_blank" rel="noopener">Gérer mon abonnement (factures, carte, arrêt)</a>'
+        : '<a class="btn btn-ghost btn-small" href="' + esc(link("contact/")) + '">Arrêter ou modifier : écris-nous</a>';
+      z.innerHTML = '<ul class="compte-liste compte-liste-col">' + liste.map(function (c) {
+        return "<li><strong>" + esc(c.nom) + "</strong><span class=\"sub\">" + (c.actif ? "Créno Pro actif" + (c.depuis ? " depuis le " + esc(jourTxt(c.depuis)) : "") +
+          " : mis en avant, avec la mention « Partenaire payant ». Ton rang ne change pas." : "Pas d'abonnement Créno Pro (facultatif).") + "</span>" +
+          (c.actif ? "" : '<a class="link-strong" href="' + esc(link("pro/")) + (c.ae ? "#creno-pro" : "#inscrire-agence") + '">Passer à Créno Pro (' +
+            esc(page.getAttribute("data-prix-pro") || "") + " par mois)</a>") + "</li>";
+      }).join("") + "</ul>" +
+        (liste.some(function (c) { return c.actif; }) ? '<div class="rank-actions">' + gerer + "</div>" : "");
+    }
+    // Relier un établissement
+    var lf = $("#lier-form");
+    initSchoolPicker(lf);
+    function majLier() {
+      var t = lf.pro_type.value;
+      $("#lier-ae").hidden = t !== "auto-ecole";
+      $("#lier-nom-champ").hidden = !(t === "loueur" || t === "moniteur");
+      $("#lier-ecole").required = t === "auto-ecole";
+      $("#lier-nom").required = t === "loueur" || t === "moniteur";
+      $("#lier-nom-label").textContent = t === "loueur" ? "Nom de ton agence" : "Ton nom et ton auto-école de rattachement";
+    }
+    lf.pro_type.addEventListener("change", majLier);
+    lf.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var corps = { action: "lier", pro_type: lf.pro_type.value, departement: lf.departement.value };
+      if (corps.pro_type === "auto-ecole") {
+        corps.auto_ecole_id = lf.auto_ecole_id.value;
+        if (!corps.auto_ecole_id) { setStatus($(".form-status", lf), false, "Choisis ton auto-école dans la liste qui s'affiche quand tu tapes son nom."); return; }
+      } else corps.nom = lf.nom.value.trim();
+      envoi(lf, function () { return callFnCompte("compte", corps); }, function () {
+        lf.reset();
+        charger("C'est envoyé. On vérifie que tu représentes bien cet établissement, puis tes chiffres s'affichent ici.");
+      });
+    });
+    // Mes informations
+    $("#profil-form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var f = ev.target;
+      envoi(f, function () {
+        return callFnCompte("compte", { action: "profil", prenom: f.prenom.value.trim(), telephone: f.telephone.value.trim(), departement: f.departement.value });
+      }, function (r, statusEl) { setStatus(statusEl, true, "C'est enregistré."); });
+    });
+    $("#mdp-form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var f = ev.target;
+      envoi(f, function () { return auth.motDePasse(f.password.value); }, function (r, statusEl) {
+        f.reset();
+        setStatus(statusEl, true, "Ton nouveau mot de passe est enregistré.");
+      });
+    });
+    $("#deconnexion").addEventListener("click", function () {
+      auth.deconnexion();
+      afficherHors();
+      setStatus($("#compte-hors-etat"), true, "Tu es déconnecté.");
+      window.scrollTo(0, 0);
+    });
+    $("#supprimer-form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var f = ev.target;
+      if (f.confirmation.value.trim() !== "SUPPRIMER") { setStatus($(".form-status", f), false, "Écris SUPPRIMER en majuscules pour confirmer."); return; }
+      envoi(f, function () { return callFnCompte("compte", { action: "supprimer", confirmation: "SUPPRIMER" }); }, function () {
+        auth.oublier();
+        dedans.hidden = true;
+        hors.hidden = false;
+        setStatus($("#compte-hors-etat"), true, "Ton compte est supprimé, avec tes demandes et tes alertes. À bientôt sur la route !");
+        onglet(0, false);
+      });
+    });
+
+    /* --- démarrage : retour d'un lien e-mail (#access_token=...), sinon session de l'appareil --- */
+    var h = location.hash.slice(1);
+    if (/(^|&)(access_token|error_description)=/.test(h)) {
+      var p = {};
+      h.split("&").forEach(function (kv) {
+        var i = kv.indexOf("=");
+        if (i > 0) p[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1).replace(/\+/g, " "));
+      });
+      if (history.replaceState) history.replaceState(null, "", location.pathname + location.search);
+      if (p.error_description || !p.access_token) {
+        afficherHors("Ce lien ne marche plus : il a peut-être expiré ou déjà servi. Connecte-toi, ou redemande un lien avec « Mot de passe oublié ».");
+        return;
+      }
+      auth.depuisLien(p).then(function () {
+        if (p.type === "recovery") {
+          hors.hidden = true; dedans.hidden = true; nouveau.hidden = false;
+          $("#nouveau-mdp").focus();
+          return;
+        }
+        apresConnexion(true);
+      }).catch(function (e) { afficherHors(e.message); });
+      return;
+    }
+    if (auth.session()) charger(); else afficherHors();
   }
 
   /* ---------- Recherche de ville ---------- */
@@ -395,7 +988,7 @@
   var VIA_PROS = { demande_pro: true, pro: true, contact_pro: true, tarifs: true, loueur: true, creno_pro: true };
   var MERCI = {
     declaration: "Merci, ta réponse est envoyée.",
-    demande_pro: "C'est en ligne ! On t'a envoyé un e-mail. Les pros qui peuvent t'aider te répondront par e-mail.",
+    demande_pro: "C'est en ligne ! Les pros qui peuvent t'aider te répondront : leurs réponses s'affichent dans ton compte (Gérer mon compte), et par e-mail.",
     pro: "Merci, on vérifie tes informations et on revient vers toi.",
     contact_pro: "Merci, ton message est envoyé. On te répond vite.",
     tarifs: "Merci ! On vérifie tes tarifs (avec ta page de tarifs ou par téléphone) avant de les afficher sur ta fiche.",
@@ -452,7 +1045,7 @@
           statusEl.textContent = text;
           statusEl.className = "form-status " + (ok ? "is-ok" : "is-error");
           button.disabled = false;
-          if (ok) form.reset();
+          if (ok) { form.reset(); remplirCompte(form); }
         }
 
         var req = null;
@@ -462,18 +1055,26 @@
           if (type === "demande_pro") corps.action = "demande";
           else { corps.action = "formulaire"; corps.type_formulaire = type; }
           button.disabled = true;
-          callFn("pros", corps).then(function (j) {
+          (form.hasAttribute("data-compte") ? callFnCompte : callFn)("pros", corps).then(function (j) {
             // Créno Pro (auto-école, ou loueur qui choisit Créno Pro) : direction le paiement Stripe
             var pro = type === "creno_pro" || (type === "loueur" && row.formule === "partenaire");
             // Deux produits Stripe : un pour les auto-écoles, un pour les loueurs (sinon le même lien).
             var lien = type === "creno_pro" ? CONFIG.lienCrenoPro : (CONFIG.lienCrenoProLoueur || CONFIG.lienCrenoPro);
             if (pro && lien && j.id) {
+              var mail = row.email || (auth.session() || { user: {} }).user.email;
               location.href = lien + (lien.indexOf("?") === -1 ? "?" : "&") + "client_reference_id=pro-" +
-                (type === "creno_pro" ? "ae-" : "loueur-") + j.id + (row.email ? "&prefilled_email=" + encodeURIComponent(row.email) : "");
+                (type === "creno_pro" ? "ae-" : "loueur-") + j.id + (mail ? "&prefilled_email=" + encodeURIComponent(mail) : "");
               return;
             }
             done(true, MERCI[type === "loueur" && pro ? "loueur_pro" : type] || "Merci, c'est envoyé.");
-          }).catch(function (e) { done(false, e.message); });
+          }).catch(function (e) {
+            if (e.status === 401 && form.hasAttribute("data-compte")) {
+              done(false, e.message);
+              location.href = lienCompte(form.getAttribute("data-suite") || "", form.getAttribute("data-compte") === "pro" ? "&type=pro" : "");
+              return;
+            }
+            done(false, e.message);
+          });
           return;
         }
         if (supabaseReady()) {
@@ -542,16 +1143,19 @@
         button.disabled = true;
         statusEl.textContent = "Envoi…";
         statusEl.className = "form-status";
-        callFn("alertes", body).then(function (j) {
+        (form.hasAttribute("data-compte") ? callFnCompte : callFn)("alertes", body).then(function (j) {
           if (j.paiement) { location.href = j.paiement; return; }
           if (j.continuer) { location.href = j.continuer; return; }
           button.disabled = false;
           if (j.deja) {
             setStatus(statusEl, true, "Tu suis déjà le " + j.departement + " : tes alertes sont actives jusqu'au " + j.expire_txt + ".");
+          } else if (j.compte && !j.confirmation) {
+            setStatus(statusEl, true, "C'est noté : tu suis le " + j.departement + ". Les places signalées s'affichent dans ton compte (Gérer mon compte), et les e-mails d'alerte arrivent très bientôt.");
           } else if (j.confirmation) {
             setStatus(statusEl, true, "C'est presque fini : on t'a envoyé un e-mail. Clique sur le lien pour activer " +
               (j.payant ? "ton essai gratuit de " + j.essai_jours + " jours." : "tes alertes."));
             form.reset();
+            remplirCompte(form);
           } else if (action === "signaler") {
             setStatus(statusEl, true, j.prevenus
               ? "Merci ! " + plural(j.prevenus, "candidat a été prévenu", "candidats ont été prévenus") + "."
@@ -561,6 +1165,7 @@
         }).catch(function (e) {
           button.disabled = false;
           setStatus(statusEl, false, e.message);
+          if (e.status === 401 && form.hasAttribute("data-compte")) location.href = lienCompte(form.getAttribute("data-suite") || "");
         });
       });
     });
@@ -585,7 +1190,7 @@
         a.textContent = "Télécharger le Pack candidat libre (PDF)";
         $("#etat-actions").hidden = false;
         var note = $("#etat-note");
-        note.textContent = "Le lien de téléchargement marche pendant une heure. Ensuite, reviens sur cette page depuis le même appareil pour en obtenir un nouveau.";
+        note.textContent = "Le lien de téléchargement marche pendant une heure. Ensuite, retrouve ton pack dans ton compte (icône en haut à droite, « Gérer mon compte ») : tu peux le retélécharger quand tu veux.";
         note.hidden = false;
       }).catch(function (e) { show(false, e.message); });
       return;
@@ -626,10 +1231,27 @@
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
       var statusEl = $(".form-status", form);
+      var button = $("button[type=submit]", form);
       if (!CONFIG.lienPaiementPack) { setStatus(statusEl, false, "Le paiement ouvre très bientôt. Reviens dans quelques jours."); return; }
-      var url = CONFIG.lienPaiementPack + (CONFIG.lienPaiementPack.indexOf("?") === -1 ? "?" : "&") +
-        "client_reference_id=pack-" + uuid();
-      location.href = url;
+      var s = auth.session();
+      if (!s) { location.href = lienCompte("pack-candidat-libre/#acheter"); return; }
+      button.disabled = true;
+      statusEl.textContent = "Un instant…"; statusEl.className = "form-status";
+      // Le paiement est relié au compte : le PDF se retrouve ensuite dans « Gérer mon compte ».
+      callFnCompte("compte", { action: "moi" }).then(function (j) {
+        if (j.pack && j.pack.achete) {
+          button.disabled = false;
+          statusEl.innerHTML = 'Tu as déjà le pack sur ce compte. <a href="' + esc(link("compte/")) + '#pack">Le télécharger depuis ton compte</a>';
+          statusEl.className = "form-status is-ok";
+          return;
+        }
+        location.href = CONFIG.lienPaiementPack + (CONFIG.lienPaiementPack.indexOf("?") === -1 ? "?" : "&") +
+          "client_reference_id=pack-" + s.user.id + "&prefilled_email=" + encodeURIComponent(s.user.email);
+      }).catch(function (e) {
+        button.disabled = false;
+        if (e.status === 401) { location.href = lienCompte("pack-candidat-libre/#acheter"); return; }
+        setStatus(statusEl, false, e.message);
+      });
     });
   }
 
@@ -1156,7 +1778,10 @@
     var at = j.a_traiter || {};
     function fact(n, txt) { return "<div><dt>" + n + "</dt><dd>" + txt + "</dd></div>"; }
     function date(iso) { return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }); }
-    $("#admin-dem-faits").innerHTML = fact(intFmt.format(dm.ouvertes || 0), "demandes ouvertes") +
+    var cpt = j.comptes || {};
+    $("#admin-dem-faits").innerHTML = fact(intFmt.format(cpt.eleves || 0), "comptes élèves") +
+      fact(intFmt.format(cpt.pros || 0), "comptes pros") +
+      fact(intFmt.format(dm.ouvertes || 0), "demandes ouvertes") +
       fact(intFmt.format(dm.recues_30j || 0), "demandes reçues ces 30 jours") +
       fact(intFmt.format((dm.reponses || []).length), "réponses de pros (50 dernières)");
     $("#admin-reponses").innerHTML = (dm.reponses || []).map(function (r) {
@@ -1167,6 +1792,15 @@
     }).join("") || '<tr><td colspan="3">Aucune réponse de pro pour l\'instant.</td></tr>';
 
     var blocs = [
+      ["liens", "Comptes pros à vérifier", "Valider", function (x) {
+        var ae = String(x.pro_ref || "").indexOf("ae-") === 0;
+        return "<strong>" + esc(x.nom) + "</strong>" + (x.departement ? " (" + esc(x.departement) + ")" : "") +
+          " · " + esc(PRO_TYPES[x.pro_type] || (ae ? "Auto-école" : x.pro_ref)) +
+          '<span class="sub">Compte : ' + esc([x.email, x.telephone].filter(Boolean).join(" · ") || "contact inconnu") + "</span>" +
+          '<span class="sub">' + (ae ? "Appelle l'auto-école (numéro sur sa fiche Google) et demande si cette personne en fait partie. Agrément " + esc(String(x.pro_ref).slice(3)) + "."
+            : "Vérifie que cette personne représente bien l'établissement (site, appel).") +
+          " « Valider » lui montre ses chiffres ; « Supprimer » refuse le lien.</span>";
+      }],
       ["creno_pro", "Auto-écoles qui veulent Créno Pro", "C'est fait", function (x) {
         return "<strong>" + esc(x.auto_ecole_nom) + "</strong>" + (x.departement ? " (" + esc(x.departement) + ")" : "") +
           '<span class="sub">' + esc([x.contact, x.email].filter(Boolean).join(" · ")) + "</span>" +
@@ -1215,7 +1849,8 @@
       callFn("stats", { action: "traiter", code: code, quoi: b.getAttribute("data-traiter"), id: Number(b.getAttribute("data-id")), decision: decision })
         .then(function () {
           var li = b.closest("li");
-          li.innerHTML = '<p class="form-status is-ok">' + (decision === "supprimer" ? "Supprimé." :
+          li.innerHTML = '<p class="form-status is-ok">' + (decision === "supprimer" ? (b.getAttribute("data-traiter") === "liens" ? "Refusé." : "Supprimé.") :
+            b.getAttribute("data-traiter") === "liens" ? "Validé : le pro voit maintenant ses chiffres dans son compte." :
             b.getAttribute("data-traiter") === "tarifs" ? "Validé : les prix s'afficheront sur sa fiche à la prochaine mise à jour du site." : "C'est noté.") + "</p>";
         }).catch(function (e) { b.disabled = false; alertStatus(b, e.message); });
     });
@@ -1339,6 +1974,24 @@
       var b = ev.target.closest && ev.target.closest("[data-repondre]");
       if (!b) return;
       var li = b.closest("li");
+      var sess = auth.session();
+      if (!sess) { location.href = lienCompte("pro/demandes/", "&type=pro"); return; }
+      if (sess.user.type !== "pro") {
+        var msgEl = $(".compte-gate", li) || document.createElement("p");
+        msgEl.className = "compte-gate";
+        msgEl.innerHTML = "Pour répondre, il faut un compte pro. Tu es connecté avec un compte élève. " +
+          '<a href="' + esc(link("compte/")) + '">Gérer mon compte</a>';
+        li.appendChild(msgEl);
+        return;
+      }
+      if (!$("#rep-contact", form).value) $("#rep-contact", form).value = sess.user.email;
+      if (!typeSel.value && sess.user.pro_type) { typeSel.value = sess.user.pro_type; majType(); }
+      if (!$(".compte-qui", form)) {
+        var qui = document.createElement("p");
+        qui.className = "compte-qui";
+        qui.innerHTML = "Connecté : <strong>" + esc(sess.user.email) + '</strong> · <a href="' + esc(link("compte/")) + '">Gérer mon compte</a>';
+        form.insertBefore(qui, form.firstElementChild.nextSibling);
+      }
       var d = demandes.filter(function (x) { return String(x.id) === b.getAttribute("data-repondre"); })[0];
       form.elements.demande.value = d.id;
       if (!form.elements.message.value) {
@@ -1371,14 +2024,14 @@
       corps.demande = Number(corps.demande);
       button.disabled = true;
       statusEl.textContent = "Envoi…"; statusEl.className = "form-status";
-      callFn("pros", corps).then(function (j) {
+      callFnCompte("pros", corps).then(function (j) {
         button.disabled = false;
         repondues[corps.demande] = true;
         store.set("creno-reponses", repondues);
         var li = form.closest("li");
         form.hidden = true;
         document.querySelector("main") ? $("main").appendChild(form) : document.body.appendChild(form);
-        var msg = "C'est envoyé : l'élève a reçu ton message par e-mail, avec ton contact." +
+        var msg = "C'est envoyé : l'élève reçoit ton message avec ton contact, et te répond directement. Tes réponses sont dans ton compte." +
           (j.telephone ? " Il accepte aussi d'être appelé : " + j.telephone + "." : "");
         if (li) {
           var ok = document.createElement("p");
@@ -1388,7 +2041,11 @@
           if (btn) btn.replaceWith(ok); else li.appendChild(ok);
         }
         form.elements.message.value = "";
-      }).catch(function (e) { button.disabled = false; setStatus(statusEl, false, e.message); });
+      }).catch(function (e) {
+        button.disabled = false;
+        setStatus(statusEl, false, e.message);
+        if (e.status === 401) location.href = lienCompte("pro/demandes/", "&type=pro");
+      });
     });
     charger();
   }
@@ -1458,6 +2115,9 @@
 
   /* ---------- Démarrage ---------- */
   function start() {
+    majIconeCompte();
+    initGates();
+    initCompte();
     $all("form[data-finder]").forEach(initFinder);
     initRanking();
     initCalc();

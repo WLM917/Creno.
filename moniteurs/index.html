@@ -35,6 +35,10 @@
       </svg>
       <span class="logo-word">créno</span>
     </a>
+    <a class="compte-btn" href="../compte/" data-compte-btn aria-label="Se connecter ou créer un compte" title="Se connecter">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="compte-btn-txt">Compte</span>
+    </a>
     <nav class="site-nav" aria-label="Sections"><a href="../auto-ecoles/">Auto-écoles</a><a href="../candidat-libre/">Candidat libre</a><a href="../alertes/">Alertes places</a><a href="../pack-candidat-libre/">Le pack</a><a href="../pro/">Espace pros</a><a href="../contact/">Nous contacter</a></nav>
   </div>
 </header>
@@ -77,7 +81,7 @@
   <section class="block" id="demande" aria-labelledby="demande-title">
     <h2 id="demande-title">Trouver un pro près de chez toi</h2>
     <p class="lede">Dis ce dont tu as besoin : ta demande apparaît chez les pros de Créno, sans ton nom ni ton contact. Ceux qui peuvent t'aider te répondent par e-mail, avec leur prix. Trois réponses au plus.</p>
-    <form class="form-grid" id="demande-form" data-form-type="demande_pro">
+    <form class="form-grid" id="demande-form" data-form-type="demande_pro" data-compte="tous" data-suite="moniteurs/#demande" data-compte-txt="Les réponses des pros s'affichent dans ton compte, et t'arrivent aussi par e-mail.">
       <div class="field"><label for="dem-besoin">Ce dont tu as besoin</label>
         <select id="dem-besoin" name="besoin" required>
           <option value="">Choisis</option>

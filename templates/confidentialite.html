@@ -5,6 +5,12 @@
     <p class="lede">Ce que Créno garde quand tu utilises le site, pourquoi, et combien de temps.</p>
   </header>
 
+  <section class="block" id="compte" aria-labelledby="c-compte">
+    <h2 id="c-compte">Quand tu crées un compte</h2>
+    <p>On garde ton e-mail, ton mot de passe (chiffré : personne ne peut le lire, pas même nous), la date de création du compte et ton choix élève ou pro. Si tu les ajoutes, on garde aussi ton prénom, ton téléphone et ton département : ils sont facultatifs. Ton compte sert à te connecter et à retrouver ce que tu as fait sur Créno : ton pack, tes alertes, tes demandes aux pros, et pour un pro son établissement et ses chiffres. Ta connexion est gardée sur ton appareil jusqu'à ce que tu te déconnectes. Les comptes sont gérés par notre hébergeur de données, Supabase.</p>
+    <p>Ton téléphone n'est jamais affiché ni donné à un pro par ton compte : dans une demande, c'est toi qui choisis de le partager. Tu peux supprimer ton compte à tout moment dans « Gérer mon compte » : il est effacé tout de suite, avec tes informations, tes demandes et tes alertes. Il n'y a pas besoin de compte pour comparer ou contacter les auto-écoles.</p>
+  </section>
+
   <section class="block" aria-labelledby="c-prix">
     <h2 id="c-prix">Quand tu déclares ton prix</h2>
     <p>On garde l'auto-école, le département, les prix, les heures et ton résultat. On ne demande ni ton nom ni ton e-mail : ta déclaration est anonyme. Elle sert uniquement à calculer le coût réel affiché dans le classement.</p>
@@ -12,7 +18,7 @@
 
   <section class="block" aria-labelledby="c-alerte">
     <h2 id="c-alerte">Quand tu suis les alertes</h2>
-    <p>On garde ton e-mail, le département choisi, la date de fin de ton essai ou de ton abonnement et, si tu t'abonnes, l'identifiant de ton abonnement chez Stripe. Ils servent uniquement à t'envoyer les alertes, à te prévenir de la fin de ton essai et à gérer ton abonnement. Ton e-mail n'est ni vendu ni partagé. Chaque e-mail contient un lien pour te désabonner. Les e-mails partent par le service Resend.</p>
+    <p>On garde ton e-mail (celui de ton compte), le département choisi, la date de fin de ton essai ou de ton abonnement et, si tu t'abonnes, l'identifiant de ton abonnement chez Stripe. Ils servent uniquement à t'envoyer les alertes, à te prévenir de la fin de ton essai et à gérer ton abonnement. Ton e-mail n'est ni vendu ni partagé. Chaque e-mail contient un lien pour te désabonner. Les e-mails partent par le service Resend.</p>
   </section>
 
   <section class="block" aria-labelledby="c-signal">
@@ -22,8 +28,8 @@
 
   <section class="block" aria-labelledby="c-pro">
     <h2 id="c-pro">Quand tu publies une demande (moniteur, examen blanc, voiture)</h2>
-    <p>Ton besoin, ton département, ta ville et tes disponibilités sont visibles par les pros sur Créno, sans ton nom ni ton contact. Ton e-mail sert à t'envoyer les réponses des pros. Ton téléphone n'est donné qu'aux pros qui te répondent, et seulement si tu l'as accepté. Tu peux fermer ta demande à tout moment avec le lien reçu par e-mail ; sinon elle se ferme au bout de 30 jours.</p>
-    <p>Quand un pro te répond, on garde son nom, son contact et son message, et on te les envoie.</p>
+    <p>Ton besoin, ton département, ta ville et tes disponibilités sont visibles par les pros sur Créno, sans ton nom ni ton contact. Ton e-mail sert à t'envoyer les réponses des pros. Ton téléphone n'est donné qu'aux pros qui te répondent, et seulement si tu l'as accepté. Tu peux fermer ta demande à tout moment depuis ton compte ou avec le lien reçu par e-mail ; sinon elle se ferme au bout de 30 jours.</p>
+    <p>Quand un pro te répond, on garde son nom, son contact et son message : tu les retrouves dans ton compte, et on te les envoie par e-mail.</p>
   </section>
 
   <section class="block" aria-labelledby="c-ecrire">
@@ -33,12 +39,12 @@
 
   <section class="block" aria-labelledby="c-achat">
     <h2 id="c-achat">Quand tu achètes</h2>
-    <p>Le paiement se fait chez Stripe, qui garde ton e-mail et les informations de paiement. Créno ne voit jamais ta carte bancaire. On utilise seulement la confirmation du paiement pour te donner accès au pack ou activer tes alertes.</p>
+    <p>Le paiement se fait chez Stripe, qui garde ton e-mail et les informations de paiement. Créno ne voit jamais ta carte bancaire. On utilise seulement la confirmation du paiement, reliée à ton compte, pour te donner accès au pack (tu peux le retélécharger depuis ton compte) ou activer Créno Pro.</p>
   </section>
 
   <section class="block" aria-labelledby="c-loueur">
     <h2 id="c-loueur">Quand un pro propose ses services</h2>
-    <p>On garde les informations du formulaire (ses services, ses tarifs, son contact) pour vérifier le pro avant de l'ajouter à l'annuaire ou d'afficher ses prix, et pour lui répondre.</p>
+    <p>On garde les informations du formulaire (ses services, ses tarifs, son contact) pour vérifier le pro avant de l'ajouter à l'annuaire ou d'afficher ses prix, et pour lui répondre. Quand un pro relie son compte à son établissement, on vérifie qu'il le représente (par un appel ou un e-mail) avant de lui montrer ses chiffres.</p>
   </section>
 
   <section class="block" aria-labelledby="c-stats">
@@ -48,16 +54,16 @@
 
   <section class="block" aria-labelledby="c-local">
     <h2 id="c-local">Sur ton téléphone</h2>
-    <p>Tes filtres, ton calcul de coût et ta checklist du jour J restent enregistrés dans ton navigateur. Ils ne sont pas envoyés.</p>
+    <p>Tes filtres, ton calcul de coût et ta checklist du jour J restent enregistrés dans ton navigateur. Ils ne sont pas envoyés. Si tu te connectes, ta connexion est aussi gardée dans ton navigateur (pas de cookie publicitaire) : « Se déconnecter » l'efface.</p>
   </section>
 
   <section class="block" aria-labelledby="c-duree">
     <h2 id="c-duree">Combien de temps</h2>
-    <p>Les déclarations de prix sont gardées tant qu'elles servent au classement. Les e-mails d'alerte sont supprimés au plus tard un an après la fin de l'abonnement. Les demandes de moniteur, un an après leur envoi.</p>
+    <p>Les déclarations de prix sont gardées tant qu'elles servent au classement. Les e-mails d'alerte sont supprimés au plus tard un an après la fin de l'abonnement. Les demandes de moniteur, un an après leur envoi. Ton compte est gardé tant que tu ne le supprimes pas.</p>
   </section>
 
   <section class="block" aria-labelledby="c-droits">
     <h2 id="c-droits">Tes droits</h2>
-    <p>Tu peux demander à voir, corriger ou supprimer les informations qui te concernent. {{contact}} Tu peux aussi saisir la CNIL.</p>
+    <p>Tu peux voir et corriger tes informations, et supprimer ton compte, dans « Gérer mon compte » (icône en haut à droite). Pour tout le reste, tu peux demander à voir, corriger ou supprimer les informations qui te concernent. {{contact}} Tu peux aussi saisir la CNIL.</p>
   </section>
 </div>

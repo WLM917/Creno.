@@ -31,8 +31,8 @@ const CORS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const PRO = /^(ae-[A-Z0-9]{6,20}|loueur-[a-z0-9-]{2,60})$/;
-const CIBLE = /^(ae-[A-Z0-9]{6,20}|loueur-[a-z0-9-]{2,60})-(ouvert|carte|site|email|message|reserver)$/;
+const PRO = /^(ae-[A-Z0-9_]{6,24}|loueur-[a-z0-9-]{2,60})$/;
+const CIBLE = /^(ae-[A-Z0-9_]{6,24}|loueur-[a-z0-9-]{2,60})-(ouvert|carte|site|email|message|reserver)$/;
 const DEPARTEMENT = /^([0-9]{2,3}|2[AB])$/;
 const ROBOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|headless|lighthouse|python|curl|wget/i;
 
@@ -244,6 +244,25 @@ async function admin(body: Record<string, unknown>) {
       compte(`demandes_pros?email=not.is.null&select=id`),
       db("creno_pro_demandes?traite=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
     ]);
+  // Comptes : élèves, pros, et pros qui attendent ta vérification (pour voir leurs chiffres)
+  const [comptesEleves, comptesPros, liens] = await Promise.all([
+    compte("profils?type=eq.eleve&select=user_id").catch(() => 0),
+    compte("profils?type=eq.pro&select=user_id").catch(() => 0),
+    db("liens_pros?statut=eq.en_attente&select=id,created_at,user_id,pro_ref,nom,departement&order=created_at&limit=50")
+      .then((r) => r.data ?? []).catch(() => []),
+  ]);
+  // Pour vérifier un pro, il te faut de quoi le joindre : l'e-mail de son compte et son téléphone s'il l'a donné.
+  await Promise.all((liens as Record<string, unknown>[]).map(async (l) => {
+    const [u, pr] = await Promise.all([
+      fetch(`${SUPABASE_URL}/auth/v1/admin/users/${l.user_id}`, { headers: authHeaders() })
+        .then((r) => r.ok ? r.json() : null).catch(() => null),
+      db(`profils?user_id=eq.${l.user_id}&select=telephone,pro_type`).then((r) => r.data?.[0] ?? null).catch(() => null),
+    ]);
+    l.email = u?.email ?? null;
+    l.telephone = pr?.telephone ?? null;
+    l.pro_type = pr?.pro_type ?? null;
+    delete l.user_id;
+  }));
 
   const now = new Date().toISOString();
   const [essais, abonnes, enAttente, signalements, signalements7, ventes] = await Promise.all([
@@ -263,12 +282,16 @@ async function admin(body: Record<string, unknown>) {
       signalements_30j: signalements, signalements_7j: signalements7, revenu_mensuel: abonnes * centimes / 100,
     },
     demandes: { ouvertes: demandesOuvertes, recues_30j: demandes30, recues_7j: demandes7, recues_tout: demandesTout, liste: demandes, reponses },
-    a_traiter: { creno_pro: crenoPro, tarifs, pros: prosProposes, loueurs, messages },
+    comptes: { eleves: comptesEleves, pros: comptesPros },
+    a_traiter: { liens, creno_pro: crenoPro, tarifs, pros: prosProposes, loueurs, messages },
   });
 }
 
 // Traiter un formulaire depuis le tableau de bord
-const TRAITEMENTS: Record<string, { table: string; champ: string }> = {
+// valeur : ce qu'on écrit pour « Publier / C'est fait / Valider » (true par défaut).
+// refus : ce qu'on écrit pour « Supprimer » au lieu d'effacer la ligne.
+const TRAITEMENTS: Record<string, { table: string; champ: string; valeur?: unknown; refus?: unknown }> = {
+  liens: { table: "liens_pros", champ: "statut", valeur: "verifie", refus: "refuse" },
   tarifs: { table: "tarifs_proposes", champ: "valide" },
   pros: { table: "pros_proposes", champ: "verifie" },
   loueurs: { table: "loueurs_proposes", champ: "verifie" },
@@ -282,9 +305,10 @@ async function traiter(body: Record<string, unknown>) {
   const id = Number(body.id);
   if (!t || !Number.isInteger(id) || id <= 0) return reply(400, { erreur: "Demande invalide." });
   if (body.decision === "supprimer") {
-    await db(`${t.table}?id=eq.${id}`, { method: "DELETE" });
+    if (t.refus !== undefined) await db(`${t.table}?id=eq.${id}`, { method: "PATCH", body: JSON.stringify({ [t.champ]: t.refus }) });
+    else await db(`${t.table}?id=eq.${id}`, { method: "DELETE" });
   } else {
-    await db(`${t.table}?id=eq.${id}`, { method: "PATCH", body: JSON.stringify({ [t.champ]: true }) });
+    await db(`${t.table}?id=eq.${id}`, { method: "PATCH", body: JSON.stringify({ [t.champ]: t.valeur ?? true }) });
   }
   return reply(200, { ok: true });
 }

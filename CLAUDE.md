@@ -39,7 +39,7 @@ site.json                         réglages : adresse du site (canonical, sitema
                                   editeur (mentions légales) et mediateur_consommation (CGV)
 templates/*.html                  contenu des pages fixes (accueil, candidat-libre, examen, methode,
                                   cout-du-permis, confidentialite, alertes, pack, moniteurs, pro,
-                                  mentions-legales, cgv, etat = pages de retour, alertes-continuer, admin, rapport),
+                                  mentions-legales, cgv, etat = pages de retour, alertes-continuer, admin, rapport, compte),
                                   avec des {{variables}}
 scripts/build_site.py             génère toutes les pages + sitemap.xml, robots.txt, 404.html, data/recherche.json,
                                   badges/<agrément>.svg (top 10 de chaque département) et data/badges.json
@@ -53,19 +53,24 @@ supabase/migrations/*.sql         tables + sécurité. Toujours REJOUABLES (if n
                                   fonctions), pros_proposes, demandes_pros, contacts_pros, clics (insertion
                                   seule), espace de stockage privé « pack ». Puis creno_pro_demandes
                                   (demandes d'abonnement Créno Pro des auto-écoles, aucun accès public).
-                                  Dernière : stats_boutons(depuis) et stats_jours(depuis) pour le tableau de bord
+                                  Puis stats_boutons(depuis) et stats_jours(depuis) pour le tableau de bord.
+                                  Dernière : comptes (profils, liens_pros, achats_pack, colonne user_id des formulaires)
 supabase/functions/alertes/       fonction serveur (Deno) : abonnement, paiement Stripe, confirmation,
                                   désabonnement, signalement de places + envoi des e-mails (Resend)
 supabase/functions/pack/          fonction serveur : vérifie le paiement Stripe, renvoie un lien de 1 h vers le PDF
 supabase/functions/stats/         fonction serveur : compteur des contacts envoyés aux pros, rapports des pros,
                                   tableau de bord (protégé par ADMIN_CODE), boutons « Publier / C'est fait » du tableau de bord
+supabase/functions/compte/        fonction serveur : « Gérer mon compte » (moi, profil, pack, pack_email, places, lier,
+                                  supprimer) ; reçoit le jeton de connexion { jeton } et ne renvoie que ce qui est au compte
 supabase/functions/pros/          fonction serveur : demandes d'élèves (publication, liste sans contact, réponses
                                   des pros, fermeture) et formulaires des pros (tarifs, services, messages, inscription
                                   des loueurs, demande Créno Pro), avec un e-mail à William (ADMIN_EMAIL) pour chaque envoi
 .github/workflows/                brancher-supabase.yml : à chaque changement de supabase/ (ou Run workflow), crée les
                                   tables (scripts/migrer_supabase.py, par l'API Supabase avec le jeton, sans mot de
-                                  passe), déploie les 4 fonctions sans JWT, copie les secrets GitHub dans
-                                  Supabase, remplit config.js s'il est vide. William n'a pas d'ordinateur (iPad) :
+                                  passe), déploie les 5 fonctions sans JWT, copie les secrets GitHub dans
+                                  Supabase, règle Supabase Auth (étape 5 « Comptes » : adresse du site, mot de passe
+                                  de 8 caractères, autoconfirmation tant qu'il n'y a pas de SMTP, SMTP Resend si
+                                  RESEND_API_KEY), remplit config.js s'il est vide. William n'a pas d'ordinateur (iPad) :
                                   tout le branchement Supabase passe par là.
                                   mise-a-jour-prix.yml : chaque jour, lit Supabase (sync_prix.py), régénère et publie.
                                   Secrets GitHub : SUPABASE_ACCESS_TOKEN, SUPABASE_PROJECT_ID, ADMIN_CODE,
@@ -74,12 +79,14 @@ supabase/functions/pros/          fonction serveur : demandes d'élèves (public
 scripts/cle_supabase.py           trouve la clé publique / service_role dans `supabase projects api-keys -o json`
                                   (pour les workflows, jamais affichée)
 assets/style.css                  styles (tokens de couleur en haut, thème clair et sombre)
-assets/app.js                     recherche de ville, filtres des pages département, calculateur,
+assets/app.js                     comptes (connexion Supabase Auth en REST, sans bibliothèque ; formulaires data-compte),
+                                  recherche de ville, filtres des pages département, calculateur,
                                   formulaires (Supabase), checklist, alertes, achat et accès au pack,
                                   outil badge de l'espace pros, comptage des clics vers les partenaires
 assets/config.js                  supabaseUrl + supabaseAnonKey (clé publique), lienPaiementPack (Stripe),
                                   lienCrenoPro (abonnement Stripe 19,99 €/mois des auto-écoles),
-                                  lienCrenoProLoueur (celui des loueurs ; vide = lienCrenoPro), formEndpoint de secours
+                                  lienCrenoProLoueur (celui des loueurs ; vide = lienCrenoPro), lienGererAbonnement
+                                  (portail client Stripe, vide pour l'instant), formEndpoint de secours
 assets/og.png                     image de partage (réseaux sociaux)
 data/index.json                   départements (code, nom, nb, moyenne), date d'import
 data/departements/<code>.json     auto-écoles d'un département (id = numéro d'agrément raf_numero)
@@ -93,6 +100,7 @@ data/partenaires.json             auto-écoles abonnées à Créno Pro (par num�
 data/pros.json                    annuaire des moniteurs / auto-écoles pour examen blanc (vide, à remplir
                                   à la main après vérification de chaque pro)
 data/recherche.json               index de recherche des villes (généré)
+data/rangs/<code>.json            rang de chaque auto-école classée {agrément: [rang, nb, indice]} (généré, pour le compte des pros)
 .vercelignore                     fichiers du dépôt à ne pas mettre en ligne (scripts, modèles, supabase...)
 
 Pages générées (ne pas éditer) :
@@ -108,6 +116,7 @@ alertes/confirmer/, alertes/merci/, alertes/desabonner/, pack-candidat-libre/acc
 alertes/continuer/                abonnement après l'essai (lien envoyé par e-mail), noindex
 pro/demandes/fermer/              l'élève ferme sa demande (lien envoyé par e-mail), noindex
 admin/                            tableau de bord privé de William (code ADMIN_CODE), noindex
+compte/                           « Gérer mon compte » (connexion, inscription élève/pro, espace élève, espace pro), noindex
 rapport/?p=...&d=...&k=...        rapport d'un pro (lien secret à lui envoyer), noindex
 ```
 
@@ -213,9 +222,33 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
     puis "formule": "partenaire" dans data/loueurs.json : affiché en premier, mention « Partenaire »,
     bouton Réserver, code Créno.
 
+## Comptes (/compte/, icône en haut à droite)
+
+- Supabase Auth (e-mail + mot de passe), appelé en REST depuis app.js (pas de bibliothèque, règle 5).
+  Session dans localStorage (`creno-session`), jeton renouvelé tout seul. Le jeton part dans le corps
+  `{ jeton }` des fonctions serveur, qui vérifient la personne avec /auth/v1/user.
+- Deux types choisis à l'inscription (user_metadata) : élève, ou pro (auto-école, moniteur, loueur).
+  Table profils (prénom, téléphone, département : facultatifs).
+- Compte obligatoire (formulaires `data-compte` : encadré « Se connecter / Créer un compte » sinon,
+  retour à la page grâce à `?suite=`) : achat du pack, alertes (recevoir), demande aux pros. Compte **pro**
+  obligatoire : tarifs, proposer ses services, inscrire une agence, Créno Pro, répondre aux demandes.
+  Sans compte : classement, contacter une auto-école, signaler des places, déclarer un prix, Nous contacter.
+- Tout ce qui est privé est rattaché à user_id, jamais à une adresse e-mail seule (les e-mails ne sont
+  pas confirmés tant qu'il n'y a pas de SMTP : mailer_autoconfirm).
+- Pack : client_reference_id = pack-<id du compte> ; la fonction pack note l'achat dans achats_pack ;
+  le compte le retrouve (sinon il cherche chez Stripe) et redonne un lien de 1 h (ou par e-mail, 7 jours).
+- Élève : pack, alertes + places signalées 30 jours dans le département, demandes avec les réponses des
+  pros (et « fermer ma demande »). Pas de messagerie dans le site : l'élève répond au pro par e-mail ou
+  téléphone (le contact du pro est dans sa réponse).
+- Pro : relie son établissement (liens_pros, 5 au plus). William vérifie (« Comptes pros à vérifier »,
+  bouton Valider) avant que le pro voie son rang (data/rangs), son badge, ses chiffres (stats_pro),
+  son lien de rapport, ses réponses envoyées et son statut Créno Pro (partenaires.json / loueurs.json).
+- Supprimer son compte efface tout de suite le compte, le profil, les liens, ses demandes et ses alertes.
+
 ## Moniteurs (/moniteurs/) et espace pros (/pro/)
 
-- Menu du haut (NAV) : Auto-écoles, Candidat libre, Alertes places, Le pack, Espace pros, Nous contacter.
+- Menu du haut (NAV) : Auto-écoles, Candidat libre, Alertes places, Le pack, Espace pros, Nous contacter,
+  puis l'icône du compte (petit bonhomme, à droite ; pastille jaune quand on est connecté).
 - /pro/ : trois onglets (auto-écoles : présentation, « Donner mes tarifs », « Trouver mon badge » ;
   moniteurs : présentation, « Proposer mes services » ; loueurs : inscription gratuite et Créno Pro).
   L'onglet auto-écoles contient aussi la section #creno-pro (explication + formulaire).
@@ -331,8 +364,8 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
    hébergeable gratuitement (GitHub Pages, Vercel, Netlify).
 6. Qualité minimale : lisible sur téléphone (390 px), pas de défilement horizontal,
    thème clair et sombre, focus clavier visible, `prefers-reduced-motion` respecté.
-7. Données personnelles : on ne demande pas de nom pour les déclarations. Toute nouvelle
-   collecte doit être expliquée sur la page Confidentialité.
+7. Données personnelles : on ne demande pas de nom pour les déclarations (ni de compte). Toute nouvelle
+   collecte doit être expliquée sur la page Confidentialité (les comptes : section #compte).
 8. **Pas d'accompagnement payant le jour de l'examen** pour un candidat libre (voir Moniteurs).
 9. **Aucun secret dans le dépôt** : clé service_role, clé secrète Stripe, clé Resend, jeton d'accès
    Supabase vont uniquement dans les secrets GitHub Actions (recopiés dans Supabase par
@@ -365,7 +398,9 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
 5. ~~Pages par ville et par département pour Google~~ : fait (1 892 pages).
    Idées suivantes : pages « location voiture double commande <département> »,
    « permis candidat libre <département> ».
-6. **Comptes élèves** (plus tard) : budget, heures, checklist sur plusieurs appareils.
+6. ~~Comptes élèves et pros~~ : faits (novembre 2026). Reste : brancher Resend (confirmation de l'adresse,
+   mot de passe oublié, pack par e-mail), portail client Stripe (lienGererAbonnement), puis budget, heures
+   et checklist synchronisés.
 7. **Monétisation** : pack candidat libre (14,99 €, paiement unique) et Créno Pro (19,99 €/mois, un produit
    auto-écoles et un produit loueurs) branchés sur Stripe le 3 novembre 2026 (compte Stripe partagé avec
    Oralixia/Preporal, libellés « Creno » / « Creno Pro », clé restreinte Checkout Sessions en lecture). Alertes gratuites pour l'instant (mode 9,99 €/mois prêt).

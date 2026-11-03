@@ -34,7 +34,8 @@ ou le générateur, puis relance `python3 scripts/build_site.py` (Python 3.12 ou
 site.json                         réglages : adresse du site (canonical, sitemap), département par défaut,
                                   e-mail de contact, nb minimum de déclarations, code Google Search Console,
                                   prix du pack, prix_alertes (par mois) et essai_alertes_jours, alertes_payantes (false :
-                                  alertes gratuites), prix_creno_pro (19,99 € par mois), vercel_analytics,
+                                  alertes gratuites), prix_creno_pro (19,99 € par mois), filtre_budget (false : barre « Budget maximum »
+                                  masquée tant qu'on ne connaît pas les prix des auto-écoles), vercel_analytics,
                                   editeur (mentions légales) et mediateur_consommation (CGV)
 templates/*.html                  contenu des pages fixes (accueil, candidat-libre, examen, methode,
                                   cout-du-permis, confidentialite, alertes, pack, moniteurs, pro,
@@ -50,8 +51,9 @@ supabase/migrations/*.sql         tables + sécurité. Toujours REJOUABLES (if n
                                   testées sur un vrai Postgres 16 local (/usr/lib/postgresql/16/bin). 1re migration : formulaires (insertion seule pour le site).
                                   2e : abonnes_alertes et signalements (aucun accès public, seulement les
                                   fonctions), pros_proposes, demandes_pros, contacts_pros, clics (insertion
-                                  seule), espace de stockage privé « pack ». Dernière : creno_pro_demandes
-                                  (demandes d'abonnement Créno Pro des auto-écoles, aucun accès public)
+                                  seule), espace de stockage privé « pack ». Puis creno_pro_demandes
+                                  (demandes d'abonnement Créno Pro des auto-écoles, aucun accès public).
+                                  Dernière : stats_boutons(depuis) et stats_jours(depuis) pour le tableau de bord
 supabase/functions/alertes/       fonction serveur (Deno) : abonnement, paiement Stripe, confirmation,
                                   désabonnement, signalement de places + envoi des e-mails (Resend)
 supabase/functions/pack/          fonction serveur : vérifie le paiement Stripe, renvoie un lien de 1 h vers le PDF
@@ -133,7 +135,8 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   affiché seulement à partir de `min_declarations_prix` déclarations (site.json, 3 par défaut).
 - Prix non déclaré : note de prix neutre de 50 en attendant.
 - Aucun prix déclaré dans tout le département : indice = réussite seule, colonne coût masquée,
-  filtre budget désactivé.
+  filtre budget désactivé. Pour l'instant la barre « Budget maximum » et la case « Garder les auto-écoles dont le
+  prix n'est pas encore déclaré » sont masquées partout (site.json filtre_budget: false, choix de William).
 - Si la formule change, mettre à jour templates/methode.html en même temps.
 
 ## Prix affichés et formation accélérée
@@ -277,8 +280,15 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   gonfler les chiffres. L'ouverture automatique par un lien #ae-... n'est pas comptée.
 - Loueurs : mêmes boutons (Réserver ou Voir le site, Téléphone et itinéraire, message tout prêt,
   « dis que tu viens de Créno » ou leur code promo), comptés en loueur-<nom>-<bouton>.
-- **Tableau de bord** /admin/ (code ADMIN_CODE) : élèves envoyés à chaque pro (30 jours et depuis le
-  début), abonnés aux alertes, revenu mensuel, et le lien du rapport de chaque pro.
+- **Tableau de bord** /admin/ (code ADMIN_CODE), période 7 jours / 30 jours / depuis le début :
+  l'essentiel (élèves envoyés, fiches ouvertes, taux de contact, ventes, demandes, abonnés aux alertes),
+  total de chaque bouton, courbe des élèves envoyés jour par jour (30 jours, couleur --chart validée
+  clair/sombre, détail au toucher, tableau des chiffres), tableau des auto-écoles avec un compteur par
+  bouton (fiches ouvertes, Téléphone et itinéraire, site, e-mail, message copié, élèves envoyés, tri,
+  recherche, lien du rapport), loueurs, départements d'où viennent les élèves, ventes lues chez Stripe
+  (sessions Checkout dont la référence commence par pack-, pro-ae-, pro-loueur- ; clé restreinte en
+  lecture), Créno Pro affichés (data/partenaires.json + loueurs partenaires), alertes, demandes, à traiter.
+  Les visites sont dans Vercel Analytics.
 - **Rapport d'un pro** /rapport/?p=<pro>&d=<dép.>&k=<clé> : la clé est un hachage de CRENO_SEL et du pro,
   donc un pro ne voit que ses chiffres. Toujours dire « ont cliqué pour vous contacter », jamais
   « se sont inscrits » : on mesure des clics, pas des inscriptions. Rapport au vouvoiement (adressé à un pro).

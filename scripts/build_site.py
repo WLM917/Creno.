@@ -48,6 +48,8 @@ PRIX_ALERTES = CFG.get("prix_alertes", "9,99 €")
 ESSAI_ALERTES = int(CFG.get("essai_alertes_jours", 15))
 PRIX_CRENO_PRO = CFG.get("prix_creno_pro", "19,99 €")
 ALERTES_PAYANTES = bool(CFG.get("alertes_payantes", False))
+# Barre « Budget maximum » des classements : masquée tant qu'on ne connaît pas les prix des auto-écoles.
+FILTRE_BUDGET = bool(CFG.get("filtre_budget", False))
 ANALYTICS = bool(CFG.get("vercel_analytics", False))
 EDITEUR = CFG.get("editeur") or {}
 MEDIATEUR = (CFG.get("mediateur_consommation") or "").strip()
@@ -872,6 +874,16 @@ def build(out_dir=ROOT, explicit=False, only=None):
         nb_acc = sum(1 for r in rows if accelere(r["e"]) is not None)
         acc_attr = "" if nb_acc else " disabled"
         acc_note = "" if nb_acc else ' <span class="small">(pas encore d\'info dans ce département)</span>'
+        champ_budget = garder_inconnus = ""
+        if FILTRE_BUDGET:
+            champ_budget = ('        <div class="field">\n'
+                            '          <label for="f-budget">Budget maximum : <output id="f-budget-out" for="f-budget">pas de limite</output></label>\n'
+                            '          <input id="f-budget" type="range" min="800" max="3000" step="50" value="3000">\n'
+                            '        </div>\n')
+            garder_inconnus = ('        <label class="check-inline crit-unknown" for="f-unknown">\n'
+                               '          <input id="f-unknown" type="checkbox" checked>\n'
+                               "          Garder les auto-écoles dont le prix n'est pas encore déclaré\n"
+                               '        </label>\n')
         unranked = ""
         if sans_taux:
             items = "".join(f'<li data-q="{esc(norm(e["nom"] + " " + ville_affichee(e["ville"]) + " " + e["cp"]))}"><strong>{esc(e["nom"])}</strong><span>{esc(ville_affichee(e["ville"]))}</span></li>'
@@ -908,11 +920,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
           <label for="f-zone">Département</label>
           <select id="f-zone">{dep_options}</select>
         </div>
-        <div class="field">
-          <label for="f-budget">Budget maximum : <output id="f-budget-out" for="f-budget">pas de limite</output></label>
-          <input id="f-budget" type="range" min="800" max="3000" step="50" value="3000">
-        </div>
-        <div class="field">
+{champ_budget}        <div class="field">
           <label for="f-sort">Trier par</label>
           <select id="f-sort">
             <option value="indice">Indice Créno</option>
@@ -927,11 +935,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
           <label class="check-inline" for="f-aac"><input id="f-aac" type="checkbox" data-label="aac"> La conduite accompagnée</label>
           <label class="check-inline" for="f-acc"><input id="f-acc" type="checkbox" data-label="accelere"{acc_attr}> La formation accélérée{acc_note}</label>
         </fieldset>
-        <label class="check-inline crit-unknown" for="f-unknown">
-          <input id="f-unknown" type="checkbox" checked>
-          Garder les auto-écoles dont le prix n'est pas encore déclaré
-        </label>
-      </div>
+{garder_inconnus}      </div>
     </details>
   </form>
 
@@ -944,7 +948,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
   <ol class="ranking" id="ranking" data-dynamic>
     {"".join(ligne(r, res["moyenne"], "complet", avec_prix=res["avec_prix"]) for r in rows)}
   </ol>
-  <p class="empty" id="ranking-empty" hidden>Aucune auto-école ne correspond. Retire un filtre ou monte ton budget.</p>
+  <p class="empty" id="ranking-empty" hidden>Aucune auto-école ne correspond. Retire un filtre{" ou monte ton budget" if FILTRE_BUDGET else ""}.</p>
   <button class="btn btn-ghost" type="button" id="ranking-more" hidden>Afficher plus</button>
   {unranked}
   {villes_block}
@@ -1128,7 +1132,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
                     f'Aucun engagement de durée.</p></details>')
     else:
         offre_alertes = "<strong>Gratuit.</strong> Tu confirmes ton e-mail en un clic, et c'est parti."
-        bouton_alertes = "Recevoir les alertes gratuitement"
+        bouton_alertes = "Recevoir les alertes"
         faq_prix = ('<details><summary>C\'est vraiment gratuit ?</summary><p>Oui. Si un jour les alertes deviennent payantes, '
                     'tu seras prévenu par e-mail à l\'avance, et rien ne sera jamais prélevé sans ton accord.</p></details>')
     if ALERTES_PAYANTES:
@@ -1202,7 +1206,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         L = Links(depuis(path), explicit)
         body = fill((TPL / tpl).read_text(encoding="utf-8"), {
             **common, "root": L.root, "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
-            "contact": contact_txt})
+            "prix_creno_pro": esc(PRIX_CRENO_PRO), "contact": contact_txt})
         write(path, page(L, path, "prive", f"{titre} | Créno", desc, body, noindex=True), sitemap=False)
 
     # --- pages de confirmation (alertes, accès au pack) : pas dans Google

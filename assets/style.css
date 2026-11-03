@@ -21,6 +21,7 @@
   --plate: #FFFFFF;          /* panneau blanc des directions locales */
   --plate-ink: #1A1F25;
   --target: #FCEFC2;
+  --chart: #1B66B3;           /* barres des graphiques (contraste 3:1 sur --surface) */
 
   --font-display: "Overpass", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Atkinson Hyperlegible", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -59,6 +60,7 @@
     --plate: #ECEFEC;
     --plate-ink: #14171A;
     --target: #3A3216;
+    --chart: #4A90DA;
     color-scheme: dark;
   }
 }
@@ -83,6 +85,7 @@
   --plate: #ECEFEC;
   --plate-ink: #14171A;
   --target: #3A3216;
+  --chart: #4A90DA;
   color-scheme: dark;
 }
 
@@ -1534,3 +1537,53 @@ textarea:focus-visible { border-color: var(--signal); }
 .une-liste a { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
 .une-liste span { color: var(--muted); font-size: 0.92rem; }
 .une-liste .promo { color: var(--ink); }
+
+/* ---------- Tableau de bord ---------- */
+.adm-barre { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.25rem; position: sticky; top: 0; z-index: 5; background: var(--paper); padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
+.adm-periodes { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.adm-per { min-height: 44px; padding: 0.4rem 0.95rem; border: 2px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
+.adm-per[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.adm-maj { margin: 0; display: flex; align-items: center; gap: 0.6rem; }
+.adm-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.adm-kpis dt { font-size: 2rem; }
+.adm-boutons { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.facts dd .sub { display: block; font-size: 0.85rem; }
+.adm-chart-wrap { position: relative; margin-top: 0.5rem; }
+.adm-chart-max { margin: 0 0 0.25rem; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.adm-chart { display: flex; align-items: stretch; gap: 2px; height: 170px; border-top: 1px dashed var(--line); border-bottom: 2px solid var(--ink); }
+.adm-col { flex: 1 1 0; min-width: 0; height: 100%; display: flex; align-items: flex-end; justify-content: center; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.adm-col span { display: block; width: 100%; max-width: 24px; background: var(--chart); border-radius: 4px 4px 0 0; }
+.adm-col:hover span, .adm-col:focus-visible span { filter: brightness(1.15); }
+.adm-col:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+.adm-chart-x { display: flex; justify-content: space-between; margin-top: 0.3rem; font-size: 0.85rem; color: var(--muted); }
+.adm-tip { position: absolute; top: 1.4rem; min-width: 11rem; padding: 0.5rem 0.7rem; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 4px 14px rgb(0 0 0 / 0.18); pointer-events: none; display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.9rem; }
+.adm-tip[hidden] { display: none; }
+.adm-tip strong { font-family: var(--font-display); font-size: 1.05rem; }
+.adm-tip span { color: var(--muted); }
+.adm-details { margin-top: 0.9rem; }
+.adm-details summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+.adm-outils { display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; margin: 0.75rem 0; }
+.adm-outils .field { flex: 1 1 14rem; }
+.adm-table { min-width: 46rem; }
+.adm-table td.num, .adm-table th.num { font-variant-numeric: tabular-nums; }
+.adm-fort { font-weight: 800; }
+.adm-table .chip { margin-left: 0.3rem; vertical-align: middle; }
+.adm-deps { list-style: none; margin: 0.75rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
+.adm-deps li { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr) 7.5rem; align-items: center; gap: 0.75rem; }
+.adm-dep-nom { font-family: var(--font-display); font-weight: 900; }
+.adm-dep-piste { height: 12px; background: color-mix(in srgb, var(--chart) 14%, transparent); border-radius: 0 4px 4px 0; }
+.adm-dep-barre { display: block; height: 100%; min-width: 4px; background: var(--chart); border-radius: 0 4px 4px 0; }
+.adm-dep-val { font-variant-numeric: tabular-nums; color: var(--muted); text-align: right; }
+@media (max-width: 960px) {
+  .adm-boutons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .adm-kpis, .adm-boutons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .adm-kpis dt { font-size: 1.6rem; }
+  .adm-table { min-width: 0; }
+  .adm-barre { position: static; }
+  .adm-deps li { grid-template-columns: 2.8rem minmax(0, 1fr) 6.2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .adm-col span { transition: none; }
+}

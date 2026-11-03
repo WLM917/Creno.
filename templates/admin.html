@@ -1,7 +1,7 @@
 <div class="wrap stack-lg page-pad">
   <header class="view-head">
     <h1>Tableau de bord</h1>
-    <p class="lede">Les élèves envoyés aux auto-écoles et aux loueurs, et tes abonnés aux alertes. Page privée : elle n'apparaît pas sur Google et demande ton code.</p>
+    <p class="lede">Les élèves que Créno envoie aux auto-écoles et aux loueurs, bouton par bouton, tes ventes et tes demandes d'élèves. Page privée : elle n'apparaît pas sur Google et demande ton code.</p>
   </header>
 
   <form class="form-stack admin-login" id="admin-form">
@@ -12,24 +12,101 @@
     </div>
   </form>
 
-  <div class="stack-lg" id="admin-board" hidden>
+  <div class="stack-lg" id="admin-board" data-prix-pro="{{prix_creno_pro}}" hidden>
+    <div class="adm-barre">
+      <div class="adm-periodes" role="group" aria-label="Période des chiffres">
+        <button class="adm-per" type="button" data-per="j7" aria-pressed="false">7 jours</button>
+        <button class="adm-per" type="button" data-per="j30" aria-pressed="true">30 jours</button>
+        <button class="adm-per" type="button" data-per="tout" aria-pressed="false">Depuis le début</button>
+      </div>
+      <p class="small adm-maj"><span id="adm-maj"></span> <button class="btn btn-small btn-ghost" type="button" id="adm-actualiser">Actualiser</button></p>
+    </div>
+
+    <section class="block" aria-labelledby="adm-essentiel">
+      <h2 id="adm-essentiel">L'essentiel</h2>
+      <dl class="facts adm-kpis" id="adm-kpis"></dl>
+    </section>
+
+    <section class="block" aria-labelledby="adm-boutons-titre">
+      <h2 id="adm-boutons-titre">Les clics dans « Contacter »</h2>
+      <p class="small">Toutes les auto-écoles et tous les loueurs ensemble. Une personne compte une fois par jour et par bouton, même si elle clique plusieurs fois. Les robots ne sont pas comptés.</p>
+      <dl class="facts adm-boutons" id="adm-boutons"></dl>
+    </section>
+
+    <section class="block" aria-labelledby="adm-courbe-titre">
+      <h2 id="adm-courbe-titre">Élèves envoyés, jour par jour</h2>
+      <p class="small">Les 30 derniers jours. Touche une barre pour voir le détail du jour.</p>
+      <div class="adm-chart-wrap">
+        <p class="adm-chart-max" id="adm-chart-max" aria-hidden="true"></p>
+        <div class="adm-chart" id="adm-chart"></div>
+        <div class="adm-chart-x" id="adm-chart-x" aria-hidden="true"></div>
+        <div class="adm-tip" id="adm-tip" role="status" hidden></div>
+      </div>
+      <details class="adm-details">
+        <summary>Voir les chiffres jour par jour</summary>
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead><tr><th scope="col">Jour</th><th scope="col" class="num">Élèves envoyés</th><th scope="col" class="num">Fiches ouvertes</th></tr></thead>
+            <tbody id="adm-jours"></tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <section class="block" aria-labelledby="adm-ae-titre">
+      <h2 id="adm-ae-titre">Auto-écoles</h2>
+      <p class="small">Le détail de chaque bouton du volet « Contacter ». « Élèves envoyés » compte les personnes qui ont cliqué sur au moins un bouton de contact. Copie le lien du rapport et envoie-le à l'auto-école : elle ne voit que ses propres chiffres.</p>
+      <div class="adm-outils">
+        <div class="field"><label for="adm-ae-q">Chercher</label><input id="adm-ae-q" type="search" placeholder="Nom, ville ou département" autocomplete="off"></div>
+        <div class="field"><label for="adm-ae-tri">Trier par</label>
+          <select id="adm-ae-tri">
+            <option value="action">Élèves envoyés</option>
+            <option value="ouvert">Fiches ouvertes</option>
+            <option value="carte">Téléphone et itinéraire</option>
+            <option value="site">Site web</option>
+            <option value="email">E-mail</option>
+            <option value="message">Message tout prêt copié</option>
+            <option value="nom">Nom</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table stack adm-table">
+          <thead><tr><th scope="col">Auto-école</th><th scope="col" class="num">Fiches ouvertes</th><th scope="col" class="num">Téléphone et itinéraire</th><th scope="col" class="num">Site web</th><th scope="col" class="num">E‑mail</th><th scope="col" class="num">Message copié</th><th scope="col" class="num">Élèves envoyés</th><th scope="col">Rapport</th></tr></thead>
+          <tbody id="adm-ae"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="adm-ae-vide" hidden>Aucun clic sur une auto-école pendant cette période.</p>
+      <button class="btn btn-ghost" type="button" id="adm-ae-plus" hidden>Afficher plus</button>
+    </section>
+
+    <section class="block" aria-labelledby="adm-lou-titre">
+      <h2 id="adm-lou-titre">Loueurs</h2>
+      <div class="table-scroll">
+        <table class="data-table stack adm-table">
+          <thead><tr><th scope="col">Loueur</th><th scope="col" class="num">Fiches ouvertes</th><th scope="col" class="num">Réserver ou site</th><th scope="col" class="num">Téléphone et itinéraire</th><th scope="col" class="num">Message copié</th><th scope="col" class="num">Élèves envoyés</th><th scope="col">Rapport</th></tr></thead>
+          <tbody id="adm-lou"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="adm-lou-vide" hidden>Aucun clic sur un loueur pendant cette période.</p>
+    </section>
+
+    <section class="block" aria-labelledby="adm-dep-titre">
+      <h2 id="adm-dep-titre">D'où viennent les élèves</h2>
+      <p class="small">Les départements où Créno envoie le plus d'élèves : c'est là qu'il vaut le mieux démarcher des auto-écoles et des loueurs.</p>
+      <ol class="adm-deps" id="adm-deps"></ol>
+      <p class="empty" id="adm-deps-vide" hidden>Pas encore de chiffres pour cette période.</p>
+    </section>
+
+    <section class="block" aria-labelledby="adm-ventes-titre">
+      <h2 id="adm-ventes-titre">Ventes</h2>
+      <dl class="facts" id="adm-ventes"></dl>
+      <p class="small" id="adm-ventes-note"></p>
+    </section>
+
     <section class="block" aria-labelledby="adm-alertes">
       <h2 id="adm-alertes">Alertes places</h2>
       <dl class="facts" id="admin-alertes"></dl>
-    </section>
-
-    <section class="block" aria-labelledby="adm-contacts">
-      <h2 id="adm-contacts">Élèves envoyés aux pros</h2>
-      <dl class="facts" id="admin-totaux"></dl>
-      <p class="small">Une personne compte une fois par jour pour chaque auto-école ou loueur, même si elle clique plusieurs fois. Les robots ne sont pas comptés. Pour chaque pro, copie le lien de son rapport et envoie-le lui : il ne voit que ses propres chiffres.</p>
-      <div class="field admin-filter"><label for="admin-filtre">Chercher</label><input id="admin-filtre" type="search" placeholder="Nom, ville ou département" autocomplete="off"></div>
-      <div class="table-scroll">
-        <table class="data-table stack">
-          <thead><tr><th scope="col">Auto-école ou loueur</th><th scope="col">30 derniers jours</th><th scope="col">Depuis le début</th><th scope="col">Rapport à envoyer</th></tr></thead>
-          <tbody id="admin-rows"></tbody>
-        </table>
-      </div>
-      <p class="empty" id="admin-vide" hidden>Aucun contact compté pour l'instant. Les chiffres apparaissent dès que des élèves cliquent sur « Contacter ».</p>
     </section>
 
     <section class="block" id="admin-demandes" aria-labelledby="adm-dem" hidden>
@@ -49,5 +126,7 @@
       <p class="small">Tout ce que les pros envoient depuis le site arrive ici (et dans ta boîte e-mail). « Publier » met les tarifs sur la fiche de l'auto-école à la prochaine mise à jour automatique du site.</p>
       <div id="admin-a-traiter"></div>
     </section>
+
+    <p class="small">Le nombre de visiteurs et les pages les plus vues sont dans Vercel : ton projet, onglet <strong>Analytics</strong>.</p>
   </div>
 </div>

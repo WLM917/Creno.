@@ -239,28 +239,30 @@
       };
     });
     var avecPrix = rows.some(function (r) { return r.cout != null; });
+    // La barre « Budget maximum » n'existe que si filtre_budget vaut true dans site.json.
+    var fBudget = $("#f-budget"), fUnknown = $("#f-unknown");
     var unranked = $all("#unranked li[data-q]");
     var crits = $all("#filters input[data-label]");
     var saved = store.get("creno-filtres", null) || {};
     var state = {
       search: queryParam("q") || "",
-      budget: saved.budget || BUDGET_MAX,
+      budget: fBudget ? saved.budget || BUDGET_MAX : BUDGET_MAX,
       sort: saved.sort || "indice",
-      unknown: typeof saved.unknown === "boolean" ? saved.unknown : true,
+      unknown: fUnknown && typeof saved.unknown === "boolean" ? saved.unknown : true,
       crit: saved.crit || {},
       limit: PAGE
     };
 
     $("#f-search").value = state.search;
-    $("#f-budget").value = state.budget;
+    if (fBudget) fBudget.value = state.budget;
     $("#f-sort").value = state.sort;
-    $("#f-unknown").checked = state.unknown;
+    if (fUnknown) fUnknown.checked = state.unknown;
     crits.forEach(function (c) {
       if (c.disabled) state.crit[c.getAttribute("data-label")] = false;
       c.checked = !!state.crit[c.getAttribute("data-label")];
     });
-    $("#f-budget").disabled = !avecPrix;
-    $("#f-unknown").disabled = !avecPrix;
+    if (fBudget) fBudget.disabled = !avecPrix;
+    if (fUnknown) fUnknown.disabled = !avecPrix;
     if (window.matchMedia && window.matchMedia("(max-width: 600px)").matches) $(".more-filters").open = false;
 
     // Arrivée depuis un lien vers une auto-école précise (#ae-...) : on la montre.
@@ -324,16 +326,16 @@
       var empty = $("#ranking-empty");
       empty.textContent = q && !shown.length && nbSans
         ? "Aucune auto-école classée ici, mais " + plural(nbSans, "auto-école sans taux publié correspond", "auto-écoles sans taux publié correspondent") + " : elles sont listées plus bas."
-        : "Aucune auto-école ne correspond. Retire un filtre ou monte ton budget.";
-      $("#f-budget-out").textContent = state.budget >= BUDGET_MAX ? "pas de limite" : eur(state.budget);
+        : "Aucune auto-école ne correspond. Retire un filtre" + (fBudget ? " ou monte ton budget." : ".");
+      if (fBudget) $("#f-budget-out").textContent = state.budget >= BUDGET_MAX ? "pas de limite" : eur(state.budget);
     }
 
     function update() { state.limit = PAGE; target = ""; render(); save(); }
 
     $("#f-search").addEventListener("input", function (ev) { state.search = ev.target.value; update(); });
-    $("#f-budget").addEventListener("input", function (ev) { state.budget = Number(ev.target.value); update(); });
+    if (fBudget) fBudget.addEventListener("input", function (ev) { state.budget = Number(ev.target.value); update(); });
     $("#f-sort").addEventListener("change", function (ev) { state.sort = ev.target.value; update(); });
-    $("#f-unknown").addEventListener("change", function (ev) { state.unknown = ev.target.checked; update(); });
+    if (fUnknown) fUnknown.addEventListener("change", function (ev) { state.unknown = ev.target.checked; update(); });
     crits.forEach(function (c) {
       c.addEventListener("change", function () { state.crit[c.getAttribute("data-label")] = c.checked; update(); });
     });
@@ -896,52 +898,248 @@
     var form = $("#admin-form");
     if (!form) return;
     var statusEl = $(".form-status", form);
+    var board = $("#admin-board");
     var saved = "";
     try { saved = window.sessionStorage.getItem("creno-admin") || ""; } catch (e) { saved = ""; }
     if (saved) $("#admin-code").value = saved;
+    var prixPro = parseFloat(String(board.getAttribute("data-prix-pro") || "").replace(/[^0-9,.]/g, "").replace(",", ".")) || 19.99;
+    var etat = { per: "j30", code: "", j: null, noms: {}, cles: {}, limite: 50, partenaires: {}, loueursPro: 0 };
+    try { etat.per = window.sessionStorage.getItem("creno-admin-per") || "j30"; } catch (e) { etat.per = "j30"; }
+    var PER = { j7: "ces 7 derniers jours", j30: "ces 30 derniers jours", tout: "depuis le début" };
+    var eur2 = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
 
-    function fact(n, txt) { return "<div><dt>" + n + "</dt><dd>" + txt + "</dd></div>"; }
+    // Textes fixes et nombres seulement : les noms (données) passent toujours par esc().
+    function fact(n, txt, sub) { return "<div><dt>" + n + "</dt><dd>" + txt + (sub ? '<span class="sub">' + sub + "</span>" : "") + "</dd></div>"; }
+    function somme(rows, k) { return rows.reduce(function (s, r) { return s + (Number(r[k]) || 0); }, 0); }
+    function pct(a, b) { return b ? Math.round(100 * a / b) + " %" : "—"; }
+    function jourIso(decalage) { return new Date(Date.now() - decalage * 86400000).toLocaleDateString("en-CA", { timeZone: "Europe/Paris" }); }
+    function jourLong(iso) { return new Date(iso + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }); }
+    function jourCourt(iso) { return new Date(iso + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" }); }
+
+    function lienRapport(p, dep) {
+      return baseSite() + "rapport/?p=" + encodeURIComponent(p) + (dep ? "&d=" + encodeURIComponent(dep) : "") + "&k=" + (etat.cles[p] || "");
+    }
+    function actionsRapport(p, dep) {
+      var url = lienRapport(p, dep);
+      return '<div class="rap-actions"><button class="btn btn-small btn-ghost" type="button" data-copier="' + esc(url) + '">Copier le lien</button>' +
+        '<a class="btn btn-small btn-ghost" href="' + esc(url) + '" target="_blank" rel="noopener">Voir</a></div>';
+    }
+    function num(v, label) { return '<td class="num" data-label="' + label + '">' + intFmt.format(v || 0) + "</td>"; }
+
+    function lignes() { return (etat.j && etat.j.periodes && etat.j.periodes[etat.per]) || []; }
+
+    function afficher() {
+      var j = etat.j, rows = lignes();
+      $all(".adm-per").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-per") === etat.per ? "true" : "false"); });
+      var ae = rows.filter(function (r) { return String(r.p).indexOf("ae-") === 0; });
+      var lou = rows.filter(function (r) { return String(r.p).indexOf("loueur-") === 0; });
+      var envoyes = somme(rows, "action"), personnes = somme(rows, "personnes");
+
+      // L'essentiel
+      var v = j.ventes || {};
+      var ventesEur = v.ok ? ["pack", "pro_ae", "pro_loueur"].reduce(function (s, k) { return s + ((v[k] && v[k][etat.per] && v[k][etat.per].eur) || 0); }, 0) : null;
+      var dm = j.demandes || {};
+      var demandes = etat.per === "j7" ? dm.recues_7j : etat.per === "j30" ? dm.recues_30j : dm.recues_tout;
+      var a = j.alertes || {};
+      $("#adm-kpis").innerHTML =
+        fact(intFmt.format(envoyes), "élèves envoyés aux pros " + PER[etat.per], "une personne qui clique pour contacter un pro, une fois par jour") +
+        fact(intFmt.format(somme(rows, "ouvert")), "fiches « Contacter » ouvertes") +
+        fact(pct(envoyes, personnes), "des personnes qui ouvrent une fiche cliquent ensuite pour contacter") +
+        fact(ventesEur == null ? "—" : eur2.format(ventesEur), "de ventes " + PER[etat.per], v.ok ? "pack et Créno Pro, avant frais Stripe" : "ventes indisponibles") +
+        fact(intFmt.format(demandes || 0), "demandes d'élèves reçues") +
+        fact(intFmt.format(a.actifs || 0), "abonnés aux alertes places", "en ce moment");
+
+      // Les clics par bouton
+      $("#adm-boutons").innerHTML =
+        fact(intFmt.format(somme(rows, "ouvert")), "fiches ouvertes") +
+        fact(intFmt.format(somme(rows, "carte")), "Téléphone et itinéraire") +
+        fact(intFmt.format(somme(rows, "site")), "Site web") +
+        fact(intFmt.format(somme(rows, "email")), "E-mail", "auto-écoles") +
+        fact(intFmt.format(somme(rows, "message")), "Message tout prêt copié") +
+        fact(intFmt.format(somme(rows, "reserver")), "Réserver", "loueurs");
+
+      tableAe(ae);
+      tableLoueurs(lou);
+      departements(rows);
+      ventes(v);
+      var sig = etat.per === "j7" ? a.signalements_7j : a.signalements_30j;
+      $("#admin-alertes").innerHTML =
+        fact(intFmt.format(a.actifs || 0), "abonnés actifs") +
+        fact(intFmt.format(a.en_attente || 0), "en attente de confirmation par e-mail") +
+        fact(intFmt.format(sig || 0), "places signalées " + (etat.per === "j7" ? PER.j7 : PER.j30)) +
+        (a.payantes ? fact(intFmt.format(a.abonnes || 0), "abonnés payants") + fact(eur(a.revenu_mensuel || 0), "par mois (avant frais Stripe)") : "");
+    }
+
+    function nomDe(r) { return (etat.noms[r.p] || {}).nom || r.p; }
+    function tableAe(ae) {
+      var q = norm($("#adm-ae-q").value), tri = $("#adm-ae-tri").value;
+      var liste = ae.filter(function (r) {
+        var d = etat.noms[r.p] || {};
+        return !q || norm((d.nom || "") + " " + (d.lieu || "") + " " + (r.departement || "")).indexOf(q) !== -1;
+      });
+      liste.sort(tri === "nom"
+        ? function (x, y) { return nomDe(x).localeCompare(nomDe(y), "fr"); }
+        : function (x, y) { return (y[tri] || 0) - (x[tri] || 0) || (y.action || 0) - (x.action || 0); });
+      var pros = {};
+      ((etat.j && etat.j.pros) || []).forEach(function (p) { pros[p.p] = p; });
+      var dem = etat.per === "j7" ? "demandes_7j" : etat.per === "j30" ? "demandes_30j" : "demandes";
+      $("#adm-ae").innerHTML = liste.slice(0, etat.limite).map(function (r) {
+        var d = etat.noms[r.p] || {}, p = pros[r.p] || {};
+        var id = String(r.p).slice(3);
+        return '<tr><td class="cell-titre"><strong>' + esc(d.nom || r.p) + "</strong>" +
+          (etat.partenaires[id] ? ' <span class="chip chip-flag">Créno Pro</span>' : "") +
+          '<span class="sub">' + esc(d.lieu || "") + "</span>" +
+          (p[dem] ? '<span class="sub">' + plural(p[dem], "élève contacté", "élèves contactés") + " via les demandes</span>" : "") + "</td>" +
+          num(r.ouvert, "Fiches ouvertes") + num(r.carte, "Téléphone et itinéraire") + num(r.site, "Site web") +
+          num(r.email, "E-mail") + num(r.message, "Message copié") +
+          '<td class="num adm-fort" data-label="Élèves envoyés">' + intFmt.format(r.action || 0) + "</td>" +
+          '<td data-label="Rapport">' + actionsRapport(r.p, r.departement) + "</td></tr>";
+      }).join("");
+      $("#adm-ae-vide").hidden = liste.length > 0;
+      var reste = liste.length - etat.limite, plus = $("#adm-ae-plus");
+      plus.hidden = reste <= 0;
+      if (reste > 0) plus.textContent = "Afficher " + Math.min(50, reste) + " de plus (" + intFmt.format(reste) + " restantes)";
+    }
+
+    function tableLoueurs(lou) {
+      lou = lou.slice().sort(function (x, y) { return (y.action || 0) - (x.action || 0); });
+      $("#adm-lou").innerHTML = lou.map(function (r) {
+        var d = etat.noms[r.p] || {};
+        return '<tr><td class="cell-titre"><strong>' + esc(d.nom || r.p) + '</strong><span class="sub">' + esc(d.lieu || "") + "</span></td>" +
+          num(r.ouvert, "Fiches ouvertes") + num((r.reserver || 0) + (r.site || 0), "Réserver ou site") +
+          num(r.carte, "Téléphone et itinéraire") + num(r.message, "Message copié") +
+          '<td class="num adm-fort" data-label="Élèves envoyés">' + intFmt.format(r.action || 0) + "</td>" +
+          '<td data-label="Rapport">' + actionsRapport(r.p, r.departement) + "</td></tr>";
+      }).join("");
+      $("#adm-lou-vide").hidden = lou.length > 0;
+    }
+
+    function departements(rows) {
+      var par = {};
+      rows.forEach(function (r) { if (r.departement && r.action) par[r.departement] = (par[r.departement] || 0) + r.action; });
+      var liste = Object.keys(par).map(function (k) { return { dep: k, n: par[k] }; }).sort(function (a, b) { return b.n - a.n; }).slice(0, 10);
+      var max = liste.length ? liste[0].n : 0;
+      var ol = $("#adm-deps");
+      ol.textContent = "";
+      liste.forEach(function (x) {
+        var li = document.createElement("li");
+        var nom = document.createElement("span"); nom.className = "adm-dep-nom"; nom.textContent = x.dep;
+        var piste = document.createElement("span"); piste.className = "adm-dep-piste";
+        var barre = document.createElement("span"); barre.className = "adm-dep-barre"; barre.style.width = (100 * x.n / max) + "%";
+        piste.appendChild(barre);
+        var val = document.createElement("span"); val.className = "adm-dep-val"; val.textContent = plural(x.n, "élève", "élèves");
+        li.appendChild(nom); li.appendChild(piste); li.appendChild(val);
+        ol.appendChild(li);
+      });
+      $("#adm-deps-vide").hidden = liste.length > 0;
+    }
+
+    function ventes(v) {
+      var actifsAe = Object.keys(etat.partenaires).length, actifs = actifsAe + etat.loueursPro;
+      var html = "";
+      if (v.ok) {
+        var per = function (k) { return (v[k] && v[k][etat.per]) || { n: 0, eur: 0 }; };
+        html += fact(intFmt.format(per("pack").n), "packs vendus " + PER[etat.per], eur2.format(per("pack").eur)) +
+          fact(intFmt.format(per("pro_ae").n), "paiements Créno Pro d'auto-écoles", eur2.format(per("pro_ae").eur)) +
+          fact(intFmt.format(per("pro_loueur").n), "paiements Créno Pro de loueurs", eur2.format(per("pro_loueur").eur));
+      }
+      html += fact(intFmt.format(actifs), "pros Créno Pro affichés sur le site", plural(actifsAe, "auto-école", "auto-écoles") + ", " + plural(etat.loueursPro, "loueur", "loueurs")) +
+        fact(eur2.format(actifs * prixPro), "par mois avec ces abonnements Créno Pro");
+      $("#adm-ventes").innerHTML = html;
+      $("#adm-ventes-note").textContent = v.ok
+        ? "Montants lus chez Stripe, avant frais, remboursements non déduits. Seuls les paiements de Créno sont comptés (pas ceux de tes autres sites)."
+        : "Ventes Stripe indisponibles : " + (v.raison || "erreur inconnue") + " Vérifie le secret STRIPE_SECRET_KEY sur GitHub, puis relance le robot.";
+    }
+
+    // Courbe des 30 derniers jours : une barre par jour, détail au toucher ou au clavier.
+    function courbe(jours) {
+      var box = $("#adm-chart"), axe = $("#adm-chart-x"), tip = $("#adm-tip"), tbody = $("#adm-jours");
+      var parJour = {};
+      (jours || []).forEach(function (d) { parJour[d.jour] = d; });
+      var liste = [];
+      for (var i = 29; i >= 0; i--) {
+        var iso = jourIso(i), x = parJour[iso] || {};
+        liste.push({ iso: iso, eleves: Number(x.eleves) || 0, fiches: Number(x.fiches) || 0 });
+      }
+      var max = Math.max.apply(null, liste.map(function (l) { return l.eleves; }));
+      $("#adm-chart-max").textContent = max ? "max. " + intFmt.format(max) : "Aucun élève envoyé pour l'instant";
+      box.textContent = "";
+      function montrer(l, b) {
+        tip.textContent = "";
+        var fort = document.createElement("strong"); fort.textContent = plural(l.eleves, "élève envoyé", "élèves envoyés");
+        var jour = document.createElement("span"); jour.textContent = jourLong(l.iso);
+        var fi = document.createElement("span"); fi.textContent = plural(l.fiches, "fiche ouverte", "fiches ouvertes");
+        tip.appendChild(fort); tip.appendChild(jour); tip.appendChild(fi);
+        tip.hidden = false;
+        var centre = b.offsetLeft + b.offsetWidth / 2, w = tip.offsetWidth, W = box.parentNode.offsetWidth;
+        tip.style.left = Math.max(0, Math.min(W - w, centre - w / 2)) + "px";
+      }
+      liste.forEach(function (l) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "adm-col";
+        b.setAttribute("aria-label", jourLong(l.iso) + " : " + plural(l.eleves, "élève envoyé", "élèves envoyés") + ", " + plural(l.fiches, "fiche ouverte", "fiches ouvertes"));
+        var barre = document.createElement("span");
+        barre.style.height = max ? (100 * l.eleves / max) + "%" : "0";
+        b.appendChild(barre);
+        ["pointerenter", "focus", "click"].forEach(function (ev) { b.addEventListener(ev, function () { montrer(l, b); }); });
+        ["pointerleave", "blur"].forEach(function (ev) { b.addEventListener(ev, function () { tip.hidden = true; }); });
+        box.appendChild(b);
+      });
+      axe.textContent = "";
+      [liste[0], liste[15], liste[29]].forEach(function (l, k) {
+        var s = document.createElement("span"); s.textContent = k === 2 ? "aujourd'hui" : jourCourt(l.iso); axe.appendChild(s);
+      });
+      tbody.textContent = "";
+      liste.slice().reverse().forEach(function (l) {
+        var tr = document.createElement("tr");
+        [jourLong(l.iso), intFmt.format(l.eleves), intFmt.format(l.fiches)].forEach(function (t, k) {
+          var td = document.createElement("td"); td.textContent = t; if (k) td.className = "num"; tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
     function charger(code) {
       if (!supabaseReady()) { setStatus(statusEl, false, "Supabase n'est pas encore branché (assets/config.js)."); return; }
       statusEl.textContent = "Chargement…"; statusEl.className = "form-status";
+      $("#adm-maj").textContent = "Chargement…";
       callFn("stats", { action: "admin", code: code }).then(function (j) {
         try { window.sessionStorage.setItem("creno-admin", code); } catch (e) { /* sans importance */ }
+        etat.code = code; etat.j = j;
         statusEl.textContent = "";
         form.hidden = true;
-        $("#admin-board").hidden = false;
-        var a = j.alertes || {};
-        $("#admin-alertes").innerHTML =
-          fact(intFmt.format(a.abonnes || 0), "abonnés payants") +
-          fact(eur(a.revenu_mensuel || 0), "par mois avec ces abonnés (avant frais Stripe)") +
-          fact(intFmt.format(a.essais || 0), "essais gratuits en cours") +
-          fact(intFmt.format(a.signalements_30j || 0), "places signalées ces 30 derniers jours");
-        var pros = j.pros || [];
-        var t30 = 0, tout = 0;
-        pros.forEach(function (p) { t30 += p.j30; tout += p.total; });
-        $("#admin-totaux").innerHTML = fact(intFmt.format(t30), "élèves envoyés ces 30 derniers jours") +
-          fact(intFmt.format(tout), "élèves envoyés depuis le début") + fact(intFmt.format(pros.length), "auto-écoles et loueurs contactés");
-        $("#admin-vide").hidden = pros.length > 0;
-        var base = baseSite();
-        Promise.all(pros.map(function (p) { return decrirePro(p.p, p.departement).then(function (d) { p.d = d; return p; }); })).then(function () {
-          $("#admin-rows").innerHTML = pros.map(function (p, i) {
-            var url = base + "rapport/?p=" + encodeURIComponent(p.p) + (p.departement ? "&d=" + encodeURIComponent(p.departement) : "") + "&k=" + p.k;
-            p.q = norm(p.d.nom + " " + p.d.lieu + " " + (p.departement || ""));
-            return '<tr data-i="' + i + '"><td class="cell-titre"><strong>' + esc(p.d.nom) + '</strong><span class="sub">' + esc((p.d.type === "loueur" ? "Loueur · " : "Auto-école · ") + p.d.lieu) + '</span>' +
-              (p.demandes ? '<span class="sub">' + plural(p.demandes, "élève contacté", "élèves contactés") + ' via les demandes</span>' : "") + '</td>' +
-              '<td data-label="30 derniers jours"><span>' + intFmt.format(p.j30) + '<span class="sub">dont ' + intFmt.format(p.j30_action) + ' avec un clic de contact</span></span></td>' +
-              '<td data-label="Depuis le début"><span>' + intFmt.format(p.total) + '<span class="sub">dont ' + intFmt.format(p.total_action) + ' avec un clic de contact</span></span></td>' +
-              '<td data-label="Rapport"><div class="rap-actions"><button class="btn btn-small btn-ghost" type="button" data-copier="' + esc(url) + '">Copier le lien</button>' +
-              '<a class="btn btn-small btn-ghost" href="' + esc(url) + '" target="_blank" rel="noopener">Voir</a></div></td></tr>';
-          }).join("");
+        board.hidden = false;
+        (j.pros || []).forEach(function (p) { etat.cles[p.p] = p.k; });
+        var tous = ((j.periodes && j.periodes.tout) || []).concat(j.pros || []);
+        var vus = {};
+        var noms = tous.filter(function (r) { if (vus[r.p]) return false; vus[r.p] = 1; return true; }).map(function (r) {
+          return decrirePro(r.p, r.departement).then(function (d) { etat.noms[r.p] = d; });
         });
-        afficherDemandes(j, code);
-        $("#admin-filtre").addEventListener("input", function (ev) {
-          var q = norm(ev.target.value);
-          $all("#admin-rows tr").forEach(function (tr) { var p = pros[Number(tr.getAttribute("data-i"))]; tr.hidden = !!q && (p.q || "").indexOf(q) === -1; });
+        var part = fetchJSON("data/partenaires.json").then(function (x) { etat.partenaires = (x && x.auto_ecoles) || {}; }).catch(function () { etat.partenaires = {}; });
+        var lpro = chargerLoueurs().then(function (ls) {
+          etat.loueursPro = ls.filter(function (l) { return l.formule === "partenaire" || l.partenaire; }).length;
         });
-      }).catch(function (e) { setStatus(statusEl, false, e.message); });
+        return Promise.all(noms.concat([part, lpro])).then(function () {
+          courbe(j.jours);
+          afficher();
+          afficherDemandes(j, code);
+          $("#adm-maj").textContent = "Mis à jour à " + new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) + ".";
+        });
+      }).catch(function (e) { setStatus(statusEl, false, e.message); $("#adm-maj").textContent = ""; });
     }
+
     form.addEventListener("submit", function (ev) { ev.preventDefault(); charger($("#admin-code").value.trim()); });
+    $all(".adm-per").forEach(function (b) {
+      b.addEventListener("click", function () {
+        etat.per = b.getAttribute("data-per"); etat.limite = 50;
+        try { window.sessionStorage.setItem("creno-admin-per", etat.per); } catch (e) { /* sans importance */ }
+        if (etat.j) afficher();
+      });
+    });
+    $("#adm-actualiser").addEventListener("click", function () { if (etat.code) charger(etat.code); });
+    $("#adm-ae-q").addEventListener("input", function () { etat.limite = 50; if (etat.j) tableAe(lignes().filter(function (r) { return String(r.p).indexOf("ae-") === 0; })); });
+    $("#adm-ae-tri").addEventListener("change", function () { if (etat.j) tableAe(lignes().filter(function (r) { return String(r.p).indexOf("ae-") === 0; })); });
+    $("#adm-ae-plus").addEventListener("click", function () { etat.limite += 50; tableAe(lignes().filter(function (r) { return String(r.p).indexOf("ae-") === 0; })); });
     document.addEventListener("click", function (ev) {
       var b = ev.target.closest && ev.target.closest("[data-copier]");
       if (!b) return;

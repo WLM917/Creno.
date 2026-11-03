@@ -6,8 +6,9 @@
 //   total   {}                     -> nombre total de contacts envoyés (affiché sur l'espace pros)
 //   rapport { p, k }               -> chiffres d'une auto-école ou d'un loueur. k est une clé secrète propre
 //                                    à chaque pro : seul celui qui a le lien du rapport peut le voir.
-//   admin   { code }               -> tableau de bord : tous les pros, liens de leurs rapports, abonnés aux alertes,
-//                                    réponses des pros aux demandes d'élèves, formulaires à traiter
+//   admin   { code }               -> tableau de bord : clics par pro et par bouton (7 jours, 30 jours, depuis le début),
+//                                    courbe jour par jour, ventes Stripe, abonnés aux alertes, demandes d'élèves,
+//                                    réponses des pros, liens des rapports, formulaires à traiter
 //   traiter { code, quoi, id, decision } -> publier des tarifs, marquer un pro / un loueur / un message comme traité
 //
 // Vie privée : on ne garde jamais l'adresse IP. L'empreinte est calculée à partir de l'IP, du navigateur,
@@ -143,68 +144,125 @@ async function codeOk(body: Record<string, unknown>) {
   return false;
 }
 
+// Ventes lues chez Stripe (pack, Créno Pro). Le compte Stripe sert aussi à d'autres sites :
+// on ne garde que les paiements dont la référence commence par pack-, pro-ae- ou pro-loueur-.
+// La clé restreinte « Checkout Sessions : lecture » suffit. Les remboursements ne sont pas déduits.
+type Vente = { n: number; eur: number };
+async function ventesStripe() {
+  const key = env("STRIPE_SECRET_KEY");
+  if (!key) return { ok: false, raison: "La clé Stripe n'est pas réglée." };
+  const maintenant = Date.now() / 1000;
+  const vide = () => ({ j7: { n: 0, eur: 0 }, j30: { n: 0, eur: 0 }, tout: { n: 0, eur: 0 } } as Record<string, Vente>);
+  const res: Record<string, Record<string, Vente>> = { pack: vide(), pro_ae: vide(), pro_loueur: vide() };
+  let apres = "";
+  for (let page = 0; page < 10; page++) {
+    const r = await fetch("https://api.stripe.com/v1/checkout/sessions?limit=100" + (apres ? `&starting_after=${apres}` : ""),
+      { headers: { Authorization: `Bearer ${key}` } });
+    if (!r.ok) return { ok: false, raison: `Stripe a refusé la lecture (${r.status}).` };
+    const j = await r.json();
+    const liste = (j.data ?? []) as Record<string, unknown>[];
+    for (const x of liste) {
+      const ref = String(x.client_reference_id ?? "");
+      const type = ref.startsWith("pack-") ? "pack" : ref.startsWith("pro-ae-") ? "pro_ae" : ref.startsWith("pro-loueur-") ? "pro_loueur" : "";
+      if (!type || x.status !== "complete" || x.payment_status !== "paid") continue;
+      const eur = n(x.amount_total) / 100;
+      const age = (maintenant - n(x.created)) / 86400;
+      for (const [cle, max] of [["j7", 7], ["j30", 30], ["tout", Infinity]] as [string, number][]) {
+        if (age <= max) { res[type][cle].n++; res[type][cle].eur += eur; }
+      }
+    }
+    if (!j.has_more || !liste.length) break;
+    apres = String(liste[liste.length - 1].id);
+  }
+  return { ok: true, ...res };
+}
+
+const boutons = (r: Record<string, unknown>) => ({
+  p: r.pro, departement: r.departement, ouvert: n(r.ouvert), carte: n(r.carte), site: n(r.site), email: n(r.email),
+  message: n(r.message), reserver: n(r.reserver), personnes: n(r.personnes), action: n(r.personnes_action), dernier: r.dernier,
+});
+
 async function admin(body: Record<string, unknown>) {
   if (!await codeOk(body)) return reply(403, { erreur: "Code incorrect." });
+  const il7 = jourParis(new Date(Date.now() - 6 * 86400000));
   const il30 = jourParis(new Date(Date.now() - 29 * 86400000));
-  const [tout, recent] = await Promise.all([rpc("stats_pros", { depuis: "2000-01-01" }), rpc("stats_pros", { depuis: il30 })]);
-  const recents = new Map((recent ?? []).map((r: Record<string, unknown>) => [r.pro, r]));
-  const pros = await Promise.all((tout ?? []).map(async (r: Record<string, unknown>) => {
-    const r30 = (recents.get(r.pro) ?? {}) as Record<string, unknown>;
+  const [tout, j30, j7, jours] = await Promise.all([
+    rpc("stats_boutons", { depuis: "2000-01-01" }), rpc("stats_boutons", { depuis: il30 }),
+    rpc("stats_boutons", { depuis: il7 }), rpc("stats_jours", { depuis: il30 }),
+  ]);
+  const periodes = {
+    j7: (j7 ?? []).map(boutons), j30: (j30 ?? []).map(boutons), tout: (tout ?? []).map(boutons),
+  };
+  const recents = new Map(periodes.j30.map((r: Record<string, unknown>) => [r.p, r]));
+  // Un pro = une ligne, avec la clé de son rapport
+  const pros = await Promise.all(periodes.tout.map(async (r: Record<string, unknown>) => {
+    const r30 = (recents.get(r.p) ?? {}) as Record<string, unknown>;
     return {
-      p: r.pro, departement: r.departement, k: await cle(String(r.pro)),
-      total: n(r.personnes), total_action: n(r.personnes_action),
-      j30: n(r30.personnes), j30_action: n(r30.personnes_action), dernier: r.dernier,
-    };
+      p: r.p, departement: r.departement, k: await cle(String(r.p)),
+      total: n(r.personnes), total_action: n(r.action), j30: n(r30.personnes), j30_action: n(r30.action), dernier: r.dernier,
+    } as Record<string, unknown>;
   }));
   // Réponses des pros aux demandes d'élèves : ajoutées à chaque pro
   const il30iso = new Date(Date.now() - 30 * 86400000).toISOString();
+  const il7iso = new Date(Date.now() - 7 * 86400000).toISOString();
   const { data: toutesReponses } = await db(
     "reponses_demandes?select=pro_ref,pro_nom,departement_pro,created_at&order=created_at.desc&limit=10000");
-  const parPro = new Map<string, { total: number; j30: number; dep: string | null }>();
+  const parPro = new Map<string, { total: number; j30: number; j7: number; dep: string | null }>();
   for (const r of toutesReponses ?? []) {
-    const x = parPro.get(r.pro_ref) ?? { total: 0, j30: 0, dep: r.departement_pro };
+    const x = parPro.get(r.pro_ref) ?? { total: 0, j30: 0, j7: 0, dep: r.departement_pro };
     x.total++;
     if (r.created_at >= il30iso) x.j30++;
+    if (r.created_at >= il7iso) x.j7++;
     parPro.set(r.pro_ref, x);
   }
   const index = new Map(pros.map((x) => [x.p, x]));
   for (const [ref, x] of parPro) {
-    let pro = index.get(ref) as Record<string, unknown> | undefined;
+    let pro = index.get(ref);
     if (!pro) {
       pro = { p: ref, departement: x.dep, k: await cle(ref), total: 0, total_action: 0, j30: 0, j30_action: 0, dernier: null };
-      pros.push(pro as typeof pros[number]);
+      pros.push(pro);
     }
     pro.demandes = x.total;
     pro.demandes_30j = x.j30;
+    pro.demandes_7j = x.j7;
   }
-  pros.sort((a, b) => b.j30 - a.j30 || b.total - a.total);
+  pros.sort((a, b) => n(b.j30) - n(a.j30) || n(b.total) - n(a.total));
 
-  const [reponses, demandes, tarifs, prosProposes, loueurs, messages, demandesOuvertes, demandes30, crenoPro] = await Promise.all([
-    db("reponses_demandes?select=created_at,pro_type,pro_ref,pro_nom,contact,message,demandes_pros(besoin,departement,ville)" +
-      "&order=created_at.desc&limit=50").then((r) => r.data ?? []),
-    db("demandes_pros?select=id,created_at,besoin,departement,ville,disponibilites,nb_reponses,statut&email=not.is.null" +
-      "&order=created_at.desc&limit=50").then((r) => r.data ?? []),
-    db("tarifs_proposes?valide=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
-    db("pros_proposes?verifie=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
-    db("loueurs_proposes?verifie=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
-    db("contacts_pros?traite=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
-    compte(`demandes_pros?statut=eq.ouverte&email=not.is.null&created_at=gte.${il30iso}&select=id`),
-    compte(`demandes_pros?email=not.is.null&created_at=gte.${il30iso}&select=id`),
-    db("creno_pro_demandes?traite=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
-  ]);
+  const [reponses, demandes, tarifs, prosProposes, loueurs, messages, demandesOuvertes, demandes30, demandes7, demandesTout, crenoPro] =
+    await Promise.all([
+      db("reponses_demandes?select=created_at,pro_type,pro_ref,pro_nom,contact,message,demandes_pros(besoin,departement,ville)" +
+        "&order=created_at.desc&limit=50").then((r) => r.data ?? []),
+      db("demandes_pros?select=id,created_at,besoin,departement,ville,disponibilites,nb_reponses,statut&email=not.is.null" +
+        "&order=created_at.desc&limit=50").then((r) => r.data ?? []),
+      db("tarifs_proposes?valide=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
+      db("pros_proposes?verifie=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
+      db("loueurs_proposes?verifie=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
+      db("contacts_pros?traite=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
+      compte(`demandes_pros?statut=eq.ouverte&email=not.is.null&created_at=gte.${il30iso}&select=id`),
+      compte(`demandes_pros?email=not.is.null&created_at=gte.${il30iso}&select=id`),
+      compte(`demandes_pros?email=not.is.null&created_at=gte.${il7iso}&select=id`),
+      compte(`demandes_pros?email=not.is.null&select=id`),
+      db("creno_pro_demandes?traite=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
+    ]);
 
   const now = new Date().toISOString();
-  const [essais, abonnes, enAttente, signalements] = await Promise.all([
+  const [essais, abonnes, enAttente, signalements, signalements7, ventes] = await Promise.all([
     compte(`abonnes_alertes?statut=eq.actif&plan=eq.essai&expire_le=gt.${now}&select=id`),
     compte(`abonnes_alertes?statut=eq.actif&plan=eq.abonne&select=id`),
     compte(`abonnes_alertes?statut=eq.en_attente&select=id`),
     compte(`signalements?created_at=gte.${il30}&select=id`),
+    compte(`signalements?created_at=gte.${il7}&select=id`),
+    ventesStripe().catch(() => ({ ok: false, raison: "Stripe ne répond pas." })),
   ]);
   const centimes = Number(env("ALERTES_MONTANT_CENTIMES", "999")) || 999;
   return reply(200, {
-    ok: true, pros,
-    alertes: { essais, abonnes, en_attente: enAttente, signalements_30j: signalements, revenu_mensuel: abonnes * centimes / 100 },
-    demandes: { ouvertes: demandesOuvertes, recues_30j: demandes30, liste: demandes, reponses },
+    ok: true, pros, periodes, jours: (jours ?? []).map((j: Record<string, unknown>) => ({ jour: j.jour, fiches: n(j.fiches), eleves: n(j.eleves) })),
+    ventes,
+    alertes: {
+      payantes: !!env("ALERTES_LIEN_STRIPE"), actifs: essais + abonnes, essais, abonnes, en_attente: enAttente,
+      signalements_30j: signalements, signalements_7j: signalements7, revenu_mensuel: abonnes * centimes / 100,
+    },
+    demandes: { ouvertes: demandesOuvertes, recues_30j: demandes30, recues_7j: demandes7, recues_tout: demandesTout, liste: demandes, reponses },
     a_traiter: { creno_pro: crenoPro, tarifs, pros: prosProposes, loueurs, messages },
   });
 }

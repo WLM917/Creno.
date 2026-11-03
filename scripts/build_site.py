@@ -1080,7 +1080,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
          "Sois prévenu par e-mail quand un candidat signale des places d'examen du permis dans ton département. Signale toi aussi les places que tu vois.",
          "Alertes places", 0.8),
         ("pack-candidat-libre/", "pack.html", "pack", "Pack candidat libre : le guide complet pour passer le permis sans auto-école | Créno",
-         "Dossier, accompagnateur, voiture double commande, programme en 12 séances, examen blanc sur 31 points, jour J : tout le parcours du candidat libre.",
+         "Dossier, accompagnateur, voiture double commande, programme en 12 séances en boîte manuelle ou automatique, examen blanc sur 31 points, jour J.",
          "Pack candidat libre", 0.8),
         ("moniteurs/", "moniteurs.html", None, "Moniteur pour examen blanc ou présentation à l'examen du permis | Créno",
          "Faire appel à un moniteur dans les règles : examen blanc, heures à l'unité, présentation à l'examen par une auto-école agréée.",

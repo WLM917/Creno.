@@ -1724,3 +1724,5 @@ button.pro-tab { appearance: none; border: 0; background: transparent; cursor: p
 }
 .mdp-oeil:hover, .mdp-oeil[aria-pressed="true"] { color: var(--ink); }
 .mdp-oeil:focus-visible { outline-offset: -3px; }
+.compte-sortie { border-top: 1px solid var(--line); padding-top: 0.9rem; margin-top: 0.4rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.compte-sortie p { margin: 0; }

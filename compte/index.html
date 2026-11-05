@@ -214,7 +214,7 @@
         </form>
       </section>
       <section class="block panel" id="securite" aria-labelledby="securite-titre">
-        <h2 id="securite-titre">Mot de passe</h2>
+        <h2 id="securite-titre">Mot de passe et connexion</h2>
         <form class="form-stack" id="mdp-form">
           <div class="field"><label for="mdp-nouveau">Nouveau mot de passe (8 caractères au moins)</label><input id="mdp-nouveau" name="password" type="password" required autocomplete="new-password" minlength="8" maxlength="72"></div>
           <div class="form-actions">
@@ -222,9 +222,10 @@
             <p class="form-status" role="status"></p>
           </div>
         </form>
-        <h3>Se déconnecter</h3>
-        <p class="small">Sur un appareil partagé, pense à te déconnecter.</p>
-        <button class="btn btn-ghost" type="button" id="deconnexion">Se déconnecter</button>
+        <div class="compte-sortie">
+          <p class="small">Sur un appareil partagé, pense à te déconnecter.</p>
+          <button class="btn btn-ghost" type="button" id="deconnexion">Se déconnecter</button>
+        </div>
       </section>
       <section class="block panel compte-danger" id="supprimer" aria-labelledby="supprimer-titre">
         <h2 id="supprimer-titre">Supprimer mon compte</h2>

@@ -269,6 +269,40 @@
     });
   }
 
+  /* ---------- Bouton « œil » des mots de passe : voir ce qu'on tape ---------- */
+  var OEIL = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+  var OEIL_BARRE = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 20 20 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  function initMotsDePasse() {
+    $all('input[type="password"]').forEach(function (input) {
+      var boite = document.createElement("div");
+      boite.className = "mdp-champ";
+      input.parentNode.insertBefore(boite, input);
+      boite.appendChild(input);
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "mdp-oeil";
+      b.setAttribute("aria-controls", input.id);
+      boite.appendChild(b);
+      function montrer(oui) {
+        input.type = oui ? "text" : "password";
+        b.setAttribute("aria-pressed", oui ? "true" : "false");
+        b.setAttribute("aria-label", oui ? "Masquer le mot de passe" : "Afficher le mot de passe");
+        b.title = oui ? "Masquer" : "Afficher";
+        b.innerHTML = oui ? OEIL_BARRE : OEIL;
+      }
+      montrer(false);
+      b.addEventListener("click", function () {
+        montrer(input.type === "password");
+        input.focus();
+      });
+      // Avant l'envoi, le mot de passe redevient masqué (le navigateur peut alors proposer de l'enregistrer)
+      if (input.form) {
+        input.form.addEventListener("submit", function () { montrer(false); }, true);
+        input.form.addEventListener("reset", function () { montrer(false); });
+      }
+    });
+  }
+
   /* ---------- Page « Gérer mon compte » ---------- */
   var PRO_TYPES = { "auto-ecole": "Auto-école", moniteur: "Moniteur", loueur: "Loueur de voitures à double commande" };
   var SUITE_TXT = {
@@ -2117,6 +2151,7 @@
   function start() {
     majIconeCompte();
     initGates();
+    initMotsDePasse();
     initCompte();
     $all("form[data-finder]").forEach(initFinder);
     initRanking();

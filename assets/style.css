@@ -1702,3 +1702,25 @@ textarea:focus-visible { border-color: var(--signal); }
 button.pro-tab { appearance: none; border: 0; background: transparent; cursor: pointer; }
 .compte-hors { display: flex; flex-direction: column; gap: 1.25rem; }
 #compte-hors-etat:empty { margin: 0; }
+
+/* ---------- Mot de passe : bouton « œil » pour voir ce qu'on tape ---------- */
+.mdp-champ { position: relative; }
+.mdp-champ input { padding-right: 3.25rem; }
+.mdp-oeil {
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-field);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.mdp-oeil:hover, .mdp-oeil[aria-pressed="true"] { color: var(--ink); }
+.mdp-oeil:focus-visible { outline-offset: -3px; }

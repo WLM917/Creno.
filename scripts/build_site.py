@@ -713,8 +713,9 @@ def page(L, path, kind, title, description, body, jsonld=None, section=None, dep
 <meta property="og:image" content="{esc(SITE_URL)}/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2A2F35">
-<link rel="icon" href="{root_attr}assets/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="{root_attr}assets/apple-touch-icon.png">
+<link rel="icon" href="{root_attr}assets/icone-creno.svg" type="image/svg+xml">
+<link rel="icon" href="{root_attr}assets/icone-creno-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="{root_attr}assets/icone-creno-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Overpass:wght@500;700;800;900&display=swap">

@@ -88,7 +88,8 @@ assets/config.js                  supabaseUrl + supabaseAnonKey (clé publique),
                                   lienCrenoProLoueur (celui des loueurs ; vide = lienCrenoPro), lienGererAbonnement
                                   (portail client Stripe, rempli le 4 novembre 2026), formEndpoint de secours
 assets/og.png                     image de partage (réseaux sociaux), avec le logo
-assets/favicon.svg, apple-touch-icon.png  icône d'onglet et icône d'écran d'accueil (iPhone, iPad)
+assets/icone-creno.svg, icone-creno-32.png, icone-creno-180.png, favicon.ico (racine)  icône d'onglet et d'écran
+                                  d'accueil (iPhone, iPad). Nouveau logo = nouveaux noms de fichiers (Safari garde les anciennes icônes)
 data/index.json                   départements (code, nom, nb, moyenne), date d'import
 data/departements/<code>.json     auto-écoles d'un département (id = numéro d'agrément raf_numero)
 data/prix.json                    prix déclarés par les élèves, par numéro d'agrément (vide pour l'instant)
@@ -377,7 +378,7 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 
 Logo (choisi par William le 5 novembre 2026, piste B) : une roue dont le pneu forme le C de Créno, dans
 un panneau d'indication bleu à bord blanc, moyeu jaune. Le même dessin (viewBox 64) est dans l'en-tête
-(build_site.py, couleurs en variables CSS), assets/favicon.svg, assets/apple-touch-icon.png, assets/og.png et
+(build_site.py, couleurs en variables CSS), les icônes assets/icone-creno*, favicon.ico, assets/og.png et
 la couverture du PDF du pack. Le changer partout à la fois.
 Univers de la signalisation routière : bandeau « asphalte » sombre, panneaux d'indication
 bleus avec flèches, panneau blanc pour la recherche de ville, poteau de direction vers les

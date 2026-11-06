@@ -340,7 +340,11 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Chaque page a un titre, une description, une URL canonique, des balises Open Graph,
   un fil d'Ariane et des données structurées (BreadcrumbList, ItemList de DrivingSchool).
   Ne jamais ajouter de note (aggregateRating) : nos indices ne sont pas des avis clients.
-- Hébergement : Vercel (https://creno-tan.vercel.app), déploiement automatique à chaque push sur main.
+- Hébergement : Vercel, déploiement automatique à chaque push sur main. Domaine depuis le 6 novembre 2026 :
+  crénopermis.fr (écrit https://www.xn--crnopermis-c7a.fr dans site.json), acheté chez OVH, DNS chez OVH
+  (A + CNAME www vers Vercel), version sans www redirigée vers www. Propriété « Domaine » dans Search Console.
+  https://creno-tan.vercel.app marche toujours : les fonctions Supabase (SITE_URL) et les liens Stripe s'en servent encore.
+  Prévu : acheter crenopermis.fr sans accent, en faire l'adresse principale (site.json + Vercel + Search Console).
 - sitemap.xml et robots.txt utilisent `adresse_du_site` de site.json : à changer si le site
   déménage (domaine perso, Vercel...), puis relancer build_site.py.
 - Google Search Console : coller le code de vérification dans `google_site_verification`

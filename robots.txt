@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://creno-tan.vercel.app/sitemap.xml
+Sitemap: https://www.xn--crnopermis-c7a.fr/sitemap.xml

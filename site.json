@@ -1,6 +1,6 @@
 {
   "_aide": "Réglages du générateur de pages (scripts/build_site.py). Après une modification, relance : python3 scripts/build_site.py. Alertes : gratuites tant que alertes_payantes vaut false (sinon essai gratuit de essai_alertes_jours jours, puis prix_alertes par mois). prix_creno_pro : l'abonnement des pros qui veulent être mis en avant. filtre_budget : true pour afficher la barre « Budget maximum » des classements (à remettre quand on connaîtra les prix des auto-écoles). alertes_payantes doit correspondre au secret ALERTES_LIEN_STRIPE de Supabase (rempli = payant, vide = gratuit pendant le lancement). editeur et mediateur_consommation : à remplir avant de vendre quoi que ce soit (mentions légales et conditions de vente).",
-  "adresse_du_site": "https://creno-tan.vercel.app",
+  "adresse_du_site": "https://www.xn--crnopermis-c7a.fr",
   "departement_par_defaut": "91",
   "email_contact": "",
   "min_declarations_prix": 3,

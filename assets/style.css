@@ -1768,3 +1768,6 @@ button.pro-tab { appearance: none; border: 0; background: transparent; cursor: p
   }
   .js-menu .menu-ouvert .site-nav a[aria-current="page"] { border-radius: 6px; border-bottom-color: transparent; }
 }
+
+/* ---------- Piège à robots : champ invisible pour les gens ---------- */
+.piege { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }

@@ -291,6 +291,10 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   contactés via les demandes » par pro) et rapport du pro (« N élèves contactés grâce aux demandes »).
 - Limites anti-abus : table limites (empreinte du jour) ; 3 demandes par heure, 30 réponses par jour,
   6 formulaires par heure et par appareil.
+- Piège à robots (11 novembre 2026, après un spam sur Nous contacter) : app.js pose dans chaque formulaire
+  public un champ invisible sans nom (data-piege) et envoie _hp (son contenu) et _t (ms passées sur la page).
+  Les fonctions pros (formulaires, demandes) et alertes (signaler) ignorent en silence l'envoi si _hp est rempli
+  ou si _t < 2000 (réponse « ok », rien d'enregistré, pas d'e-mail). Déclaration de prix : bloquée côté site.
 
 ## Loueurs : inscription gratuite, Créno Pro en option
 

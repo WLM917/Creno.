@@ -1058,10 +1058,33 @@
     }
   }
 
+  /* ---------- Piège à robots des formulaires ---------- */
+  // Un champ invisible (les robots le remplissent, pas les gens) et le temps passé sur la page :
+  // un robot envoie le formulaire en moins de 2 secondes. Le serveur ignore alors l'envoi sans le dire.
+  var DEBUT_PAGE = Date.now();
+  function poserPiege(form) {
+    if ($("[data-piege]", form)) return;
+    var d = document.createElement("div");
+    d.className = "piege";
+    d.setAttribute("aria-hidden", "true");
+    d.innerHTML = '<label>Laisse ce champ vide <input type="text" data-piege tabindex="-1" autocomplete="off"></label>';
+    form.appendChild(d);
+  }
+  function piegeRempli(form) {
+    var i = $("[data-piege]", form);
+    return !!(i && i.value.trim());
+  }
+  function antiRobot(form, corps) {
+    corps._hp = ($("[data-piege]", form) || { value: "" }).value;
+    corps._t = Date.now() - DEBUT_PAGE;
+    return corps;
+  }
+
   function initForms() {
     $all("form[data-form-type]").forEach(function (form) {
       var type = form.getAttribute("data-form-type");
       initSchoolPicker(form);
+      poserPiege(form);
       form.addEventListener("submit", function (ev) {
         ev.preventDefault();
         var statusEl = $(".form-status", form);
@@ -1088,6 +1111,7 @@
           for (var k in row) corps[k] = row[k];
           if (type === "demande_pro") corps.action = "demande";
           else { corps.action = "formulaire"; corps.type_formulaire = type; }
+          antiRobot(form, corps);
           button.disabled = true;
           (form.hasAttribute("data-compte") ? callFnCompte : callFn)("pros", corps).then(function (j) {
             // Créno Pro (auto-école, ou loueur qui choisit Créno Pro) : direction le paiement Stripe
@@ -1111,6 +1135,7 @@
           });
           return;
         }
+        if (piegeRempli(form)) { done(true, MERCI[type] || "Merci, c'est envoyé."); return; }
         if (supabaseReady()) {
           req = supaInsert(TABLES[type], row);
         } else if (CONFIG.formEndpoint) {
@@ -1168,12 +1193,14 @@
     }
     forms.forEach(function (form) {
       var action = form.getAttribute("data-alertes");
+      if (action === "signaler") poserPiege(form);
       form.addEventListener("submit", function (ev) {
         ev.preventDefault();
         var statusEl = $(".form-status", form);
         var button = $("button[type=submit]", form);
         var body = { action: action };
         $all("input[name], select[name]", form).forEach(function (f) { body[f.name] = f.value.trim(); });
+        if (action === "signaler") antiRobot(form, body);
         button.disabled = true;
         statusEl.textContent = "Envoi…";
         statusEl.className = "form-status";

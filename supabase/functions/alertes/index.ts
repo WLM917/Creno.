@@ -336,7 +336,20 @@ async function desabonner(body: Record<string, unknown>) {
   return reply(200, { ok: true, abonnement: avaitAbonnement, resilie });
 }
 
+// Piège à robots : un champ invisible (_hp) que seuls les robots remplissent, et le temps passé
+// sur la page avant l'envoi (_t, en millisecondes) : un robot envoie en moins de 2 secondes.
+// Le robot reçoit une réponse « ok » pour ne pas comprendre qu'il est bloqué ; rien n'est enregistré.
+function robot(body: Record<string, unknown>) {
+  if (String(body._hp ?? "").trim() !== "") return true;
+  const t = Number(body._t);
+  return body._t !== undefined && body._t !== null && Number.isFinite(t) && t < 2000;
+}
+
 async function signaler(body: Record<string, unknown>, req: Request) {
+  if (robot(body)) {
+    console.log("Robot ignoré : signalement");
+    return reply(200, { ok: true, prevenus: 0 });
+  }
   const departement = String(body.departement ?? "").toUpperCase();
   const centre = clean(body.centre, 120);
   const creneau = clean(body.creneau, 120);

@@ -201,6 +201,10 @@ async function loueurReference(nomSlug: string) {
 
 // ---------------------------------------------------------------- actions
 async function demande(body: Record<string, unknown>, req: Request) {
+  if (robot(body)) {
+    console.log("Robot ignoré : demande");
+    return reply(200, { ok: true });
+  }
   const besoin = String(body.besoin ?? "");
   const departement = String(body.departement ?? "").toUpperCase();
   const u = await connecte(body, "publier ta demande");
@@ -326,6 +330,15 @@ async function fermer(body: Record<string, unknown>) {
   return reply(200, { ok: true });
 }
 
+// Piège à robots : un champ invisible (_hp) que seuls les robots remplissent, et le temps passé
+// sur la page avant l'envoi (_t, en millisecondes) : un robot envoie en moins de 2 secondes.
+// Le robot reçoit une réponse « ok » pour ne pas comprendre qu'il est bloqué ; rien n'est enregistré.
+function robot(body: Record<string, unknown>) {
+  if (String(body._hp ?? "").trim() !== "") return true;
+  const t = Number(body._t);
+  return body._t !== undefined && body._t !== null && Number.isFinite(t) && t < 2000;
+}
+
 // Formulaires des pros : champs acceptés pour chaque table
 const FORMULAIRES: Record<string, { table: string; champs: string[]; titre: string; compte?: boolean }> = {
   pro: { table: "pros_proposes", titre: "Un pro propose ses services", compte: true,
@@ -344,6 +357,10 @@ const FORMULAIRES: Record<string, { table: string; champs: string[]; titre: stri
 async function formulaire(body: Record<string, unknown>, req: Request) {
   const f = FORMULAIRES[String(body.type_formulaire ?? "")];
   if (!f) return reply(400, { erreur: "Formulaire inconnu." });
+  if (robot(body)) {
+    console.log("Robot ignoré :", f.table);
+    return reply(200, { ok: true, id: null });
+  }
   const u = f.compte ? await connecte(body, "envoyer ce formulaire") : null;
   await limiter(await empreinte(req), "formulaire");
   const row: Record<string, unknown> = {};

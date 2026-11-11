@@ -138,8 +138,9 @@ async function rapport(body: Record<string, unknown>) {
 }
 
 async function codeOk(body: Record<string, unknown>) {
-  const code = env("ADMIN_CODE");
-  if (code && String(body.code ?? "") === code) return true;
+  // Espaces collés par erreur au début ou à la fin : ignorés des deux côtés.
+  const code = env("ADMIN_CODE").trim();
+  if (code && String(body.code ?? "").trim() === code) return true;
   await new Promise((r) => setTimeout(r, 800));
   return false;
 }

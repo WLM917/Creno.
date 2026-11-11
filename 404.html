@@ -28,6 +28,10 @@
 <a class="skip" href="#main">Aller au contenu</a>
 <header class="site-header">
   <div class="wrap header-row">
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Ouvrir le menu" hidden>
+      <svg class="menu-ico-ouvrir" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 6.5H20M4 12H20M4 17.5H20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <svg class="menu-ico-fermer" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
     <a class="logo" href="/" aria-label="Créno, accueil">
       <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
         <rect x="2" y="2" width="60" height="60" rx="12" fill="var(--signal)"/>
@@ -43,7 +47,7 @@
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       <span class="compte-btn-txt">Compte</span>
     </a>
-    <nav class="site-nav" aria-label="Sections"><a href="/auto-ecoles/">Auto-écoles</a><a href="/candidat-libre/">Candidat libre</a><a href="/alertes/">Alertes places</a><a href="/pack-candidat-libre/">Le pack</a><a href="/pro/">Espace pros</a><a href="/contact/">Nous contacter</a></nav>
+    <nav class="site-nav" id="site-nav" aria-label="Sections"><a href="/auto-ecoles/">Auto-écoles</a><a href="/candidat-libre/">Candidat libre</a><a href="/alertes/">Alertes places</a><a href="/pack-candidat-libre/">Le pack</a><a href="/pro/">Espace pros</a><a href="/contact/">Nous contacter</a></nav>
   </div>
 </header>
 <main id="main" tabindex="-1">

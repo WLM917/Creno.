@@ -152,6 +152,12 @@ jobs:
               noms="$noms $n"
             fi
           done
+          # Adresse du site (site.json) : liens des e-mails et listes d'auto-écoles lues par les fonctions
+          SITE=$(python3 -c "import json; print(json.load(open('site.json')).get('adresse_du_site', '').rstrip('/'))" 2>/dev/null || true)
+          if [ -n "$SITE" ]; then
+            args+=("SITE_URL=$SITE")
+            noms="$noms SITE_URL"
+          fi
           if [ ${#args[@]} -eq 0 ]; then
             echo "### ⚪ 3. Secrets des fonctions : aucun sur GitHub pour l'instant" >> "$GITHUB_STEP_SUMMARY"
             exit 0

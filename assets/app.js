@@ -2147,8 +2147,33 @@
     depuisAdresse();
   }
 
+  /* ---------- Menu à trois barres (téléphone) ---------- */
+  // Sans JavaScript, le bouton reste caché et les onglets restent affichés comme avant.
+  function initMenu() {
+    var btn = $(".menu-btn");
+    var header = $(".site-header");
+    if (!btn || !header) return;
+    document.documentElement.classList.add("js-menu");
+    btn.hidden = false;
+    function ouvrir(oui, rendreFocus) {
+      header.classList.toggle("menu-ouvert", oui);
+      btn.setAttribute("aria-expanded", oui ? "true" : "false");
+      btn.setAttribute("aria-label", oui ? "Fermer le menu" : "Ouvrir le menu");
+      if (!oui && rendreFocus) btn.focus();
+    }
+    btn.addEventListener("click", function () { ouvrir(btn.getAttribute("aria-expanded") !== "true", false); });
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape" && header.classList.contains("menu-ouvert")) ouvrir(false, true);
+    });
+    document.addEventListener("click", function (ev) {
+      if (header.classList.contains("menu-ouvert") && !header.contains(ev.target)) ouvrir(false, false);
+    });
+    $all(".site-nav a", header).forEach(function (a) { a.addEventListener("click", function () { ouvrir(false, false); }); });
+  }
+
   /* ---------- Démarrage ---------- */
   function start() {
+    initMenu();
     majIconeCompte();
     initGates();
     initMotsDePasse();

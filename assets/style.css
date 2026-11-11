@@ -1726,3 +1726,45 @@ button.pro-tab { appearance: none; border: 0; background: transparent; cursor: p
 .mdp-oeil:focus-visible { outline-offset: -3px; }
 .compte-sortie { border-top: 1px solid var(--line); padding-top: 0.9rem; margin-top: 0.4rem; display: flex; flex-direction: column; gap: 0.6rem; }
 .compte-sortie p { margin: 0; }
+
+/* ---------- Menu à trois barres sur téléphone ---------- */
+.menu-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  place-items: center;
+  padding: 0;
+  border: 2px solid var(--asphalt-2);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--asphalt-ink);
+  cursor: pointer;
+}
+.menu-btn:hover { background: var(--asphalt-2); }
+.menu-btn .menu-ico-fermer { display: none; }
+.menu-btn[aria-expanded="true"] .menu-ico-ouvrir { display: none; }
+.menu-btn[aria-expanded="true"] .menu-ico-fermer { display: block; }
+@media (max-width: 720px) {
+  .js-menu .header-row { gap: 0.75rem; }
+  .js-menu .menu-btn:not([hidden]) { display: grid; }
+  .js-menu .site-nav { display: none; }
+  .js-menu .menu-ouvert .site-nav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
+    margin: 0.25rem 0 0;
+    border-top: 1px solid var(--asphalt-2);
+  }
+  .js-menu .menu-ouvert .site-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding: 0.6rem 0.75rem;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--asphalt-2);
+    border-radius: 0;
+  }
+  .js-menu .menu-ouvert .site-nav a[aria-current="page"] { border-radius: 6px; border-bottom-color: transparent; }
+}

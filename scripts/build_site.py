@@ -725,6 +725,10 @@ def page(L, path, kind, title, description, body, jsonld=None, section=None, dep
 <a class="skip" href="#main">Aller au contenu</a>
 <header class="site-header">
   <div class="wrap header-row">
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Ouvrir le menu" hidden>
+      <svg class="menu-ico-ouvrir" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 6.5H20M4 12H20M4 17.5H20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <svg class="menu-ico-fermer" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
     <a class="logo" href="{L("")}" aria-label="Créno, accueil">
       <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
         <rect x="2" y="2" width="60" height="60" rx="12" fill="var(--signal)"/>
@@ -740,7 +744,7 @@ def page(L, path, kind, title, description, body, jsonld=None, section=None, dep
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       <span class="compte-btn-txt">Compte</span>
     </a>
-    <nav class="site-nav" aria-label="Sections">{nav}</nav>
+    <nav class="site-nav" id="site-nav" aria-label="Sections">{nav}</nav>
   </div>
 </header>
 <main id="main" tabindex="-1">
@@ -1073,8 +1077,10 @@ def build(out_dir=ROOT, explicit=False, only=None):
         accueil = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', accueil)
     write("", page(L, "", "accueil", "Créno : compare les auto-écoles et le vrai prix du permis",
                    f'Taux de réussite officiels de {common["nb_classees"]} auto-écoles, coût réel du permis, conseils pour passer en candidat libre. Gratuit et indépendant.',
-                   accueil, [{"@context": "https://schema.org", "@type": "WebSite", "name": "Créno", "url": SITE_URL + "/",
-                              "inLanguage": "fr-FR"}]), 1.0)
+                   accueil, [{"@context": "https://schema.org", "@type": "WebSite", "name": "Créno",
+                              "alternateName": ["Créno permis", "crénopermis.fr"], "url": SITE_URL + "/", "inLanguage": "fr-FR"},
+                             {"@context": "https://schema.org", "@type": "Organization", "name": "Créno", "url": SITE_URL + "/",
+                              "logo": SITE_URL + "/assets/icone-creno-180.png"}]), 1.0)
 
     # --- pages fixes
     fixes = [

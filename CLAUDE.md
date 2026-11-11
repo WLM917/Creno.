@@ -251,6 +251,8 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 
 - Menu du haut (NAV) : Auto-écoles, Candidat libre, Alertes places, Le pack, Espace pros, Nous contacter,
   puis l'icône du compte (petit bonhomme, à droite ; pastille jaune quand on est connecté).
+  Sur téléphone (720 px et moins) : bouton à trois barres à gauche du logo qui ouvre les onglets en liste
+  (initMenu dans app.js ; sans JavaScript, les onglets restent affichés comme avant).
 - /pro/ : trois onglets (auto-écoles : présentation, « Donner mes tarifs », « Trouver mon badge » ;
   moniteurs : présentation, « Proposer mes services » ; loueurs : inscription gratuite et Créno Pro).
   L'onglet auto-écoles contient aussi la section #creno-pro (explication + formulaire).
@@ -343,7 +345,9 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Hébergement : Vercel, déploiement automatique à chaque push sur main. Domaine depuis le 6 novembre 2026 :
   crénopermis.fr (écrit https://www.xn--crnopermis-c7a.fr dans site.json), acheté chez OVH, DNS chez OVH
   (A + CNAME www vers Vercel), version sans www redirigée vers www. Propriété « Domaine » dans Search Console.
-  https://creno-tan.vercel.app marche toujours : les fonctions Supabase (SITE_URL) et les liens Stripe s'en servent encore.
+  https://creno-tan.vercel.app marche toujours (les redirections Stripe s'en servent encore). Les fonctions Supabase
+  prennent SITE_URL dans site.json (étape 3 du robot « Brancher Supabase »).
+  Accueil : données structurées WebSite (name « Créno », alternateName) et Organization (logo) pour le nom du site dans Google.
   Prévu : acheter crenopermis.fr sans accent, en faire l'adresse principale (site.json + Vercel + Search Console).
 - sitemap.xml et robots.txt utilisent `adresse_du_site` de site.json : à changer si le site
   déménage (domaine perso, Vercel...), puis relancer build_site.py.

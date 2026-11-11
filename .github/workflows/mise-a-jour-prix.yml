@@ -62,6 +62,15 @@ jobs:
                 echo "::add-mask::$CLE"
                 export SUPABASE_SERVICE_KEY="$CLE"
               fi
+            else
+              # Jeton refusé (expiré ou supprimé) : on le dit en rouge au lieu de ne rien faire en silence.
+              rm -f "$RUNNER_TEMP/cles.json"
+              {
+                echo "### ❌ Le jeton Supabase ne marche plus"
+                echo "Les prix n'ont pas pu être lus. Crée un nouveau jeton dans Supabase (Account > Access Tokens, ton projet, « Full access »),"
+                echo "remplace le secret GitHub SUPABASE_ACCESS_TOKEN, puis relance « Brancher Supabase »."
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 1
             fi
             rm -f "$RUNNER_TEMP/cles.json"
           fi

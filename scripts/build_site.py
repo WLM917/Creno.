@@ -1026,6 +1026,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
   {unranked}
   {villes_block}
   {formulaire_prix(d, dep["ecoles"])}
+  <nav class="raccourcis raccourcis-bas" aria-label="Haut de page">
+    <a class="btn btn-ghost btn-small" href="#top"><span aria-hidden="true">↑&nbsp;</span>Remonter tout en haut</a>
+  </nav>
 </div>'''
         jsonld = [jsonld_ariane([("Accueil", ""), ("Auto-écoles", "auto-ecoles/"), (f'{d["nom"]} ({d["code"]})', path)]),
                   jsonld_liste(rows, f'Auto-écoles {en_dep(d["nom"])} classées par Créno')]

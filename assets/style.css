@@ -1075,7 +1075,7 @@ input[type="checkbox"] { accent-color: var(--signal); width: 1.2rem; height: 1.2
 .raccourcis .btn { align-self: auto; text-align: center; }
 .raccourcis .btn-ghost { background: transparent; color: var(--ink); }
 .raccourcis .btn-ghost:hover { background: var(--ink); color: var(--paper); }
-.raccourcis-haut { margin-top: -1.75rem; }
+.raccourcis-haut, .raccourcis-bas { margin-top: -1.75rem; }
 #villes, #declarer, #classement { scroll-margin-top: 1rem; }
 
 /* ---------- Détails des lignes du classement ---------- */

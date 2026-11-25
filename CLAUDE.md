@@ -112,7 +112,7 @@ index.html                        accueil (recherche de ville, poteau de directi
 auto-ecoles/                      liste des départements
 auto-ecoles/<nom>-<code>/         une page par département (102) : classement complet + filtres,
                                   raccourcis (↓ par ville / ↓ formulaire de prix) sous les filtres ; sous le titre de la liste des villes :
-                                  ↑ « Auto-écoles du département » (#classement) et ↓ formulaire
+                                  ↑ « Auto-écoles du département » (#classement) et ↓ formulaire ; sous le formulaire : ↑ « Remonter tout en haut » (#top)
 auto-ecoles/<nom>-<code>/<ville>/ une page par ville d'au moins 2 auto-écoles (1 777)
 candidat-libre/, candidat-libre/demander-une-place/ (test d'éligibilité + démarche DDT par département),
 cout-du-permis/, examen/, methode/, confidentialite/, alertes/, pack-candidat-libre/,

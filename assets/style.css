@@ -1835,3 +1835,9 @@ button.pro-tab { appearance: none; border: 0; background: transparent; cursor: p
 
 /* Tableau de bord : envoyer une info aux abonnés d'un département */
 .adm-annonce { max-width: 46rem; }
+
+/* Page du pack : les deux formules */
+.option p.option-price { color: var(--plate-ink); }
+.option .btn { align-self: flex-start; margin-top: auto; }
+.option-feature .btn-formule { background: var(--plate); border-color: var(--plate); color: var(--plate-ink); }
+.option-feature .btn-formule:hover { background: transparent; color: var(--signal-ink); border-color: var(--signal-ink); }

@@ -7,7 +7,9 @@
   La clé publique est faite pour être visible : les tables sont protégées
   (le site peut seulement ajouter des réponses, jamais les lire).
 
-  lienPaiementPack : le lien de paiement Stripe du Pack candidat libre (https://buy.stripe.com/...).
+  lienPaiementPack : le lien de paiement Stripe du Pack candidat libre à 14,99 € (https://buy.stripe.com/...).
+  lienPaiementPackDdt : celui de la formule « Pack candidat libre + DDT » à 24,99 € (même réglage « Après le
+  paiement » que le pack, même adresse de retour ci-dessous). Vide : le bouton de cette formule annonce « bientôt ».
   Dans Stripe, règle « Après le paiement » sur « Rediriger vers ton site » avec l'adresse :
   https://creno-tan.vercel.app/pack-candidat-libre/acces/?session_id={CHECKOUT_SESSION_ID}
 
@@ -30,6 +32,7 @@ window.CRENO_CONFIG = {
   supabaseUrl: "https://bfcgtjkzgvpaafyclnmt.supabase.co",
   supabaseAnonKey: "sb_publishable_X-hWXCFGAVrRr4OOpxePKg_TGyyULKd",
   lienPaiementPack: "https://buy.stripe.com/bJefZg23Gb3YbTNbLP4ko02",
+  lienPaiementPackDdt: "",
   lienCrenoPro: "https://buy.stripe.com/9B614m0ZCb3Yf5ZcPT4ko01",
   lienCrenoProLoueur: "https://buy.stripe.com/cNifZgfUw1tof5Z8zD4ko00",
   lienGererAbonnement: "https://billing.stripe.com/p/login/cNifZgfUw1tof5Z8zD4ko00",

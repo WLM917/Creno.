@@ -57,12 +57,12 @@
     <div class="pack-hero">
       <div class="hero-main">
         <h1 class="hero-title">Le Pack candidat libre</h1>
-        <p class="hero-sub">Le guide pour passer ton permis sans auto-école, ta demande de place préparée pour ta DDT, et les alertes de tous les départements que tu veux. En boîte manuelle ou automatique.</p>
+        <p class="hero-sub">Deux formules pour passer ton permis sans auto-école, en boîte manuelle ou automatique : le guide et les alertes, ou tout ça plus notre aide pour demander ta place à ta DDT.</p>
       </div>
       <div class="price-plate" aria-label="Prix">
         <span class="price-amount">14,99 €</span>
-        <span class="price-note">Paiement unique, guide disponible tout de suite</span>
-        <a class="btn btn-plate" href="#acheter">Obtenir le pack</a>
+        <span class="price-note">ou 24,99 € avec l'aide pour ta DDT. Paiement unique.</span>
+        <a class="btn btn-plate" href="#formules">Choisir ma formule</a>
       </div>
     </div>
   </div>
@@ -70,20 +70,29 @@
 </div>
 
 <div class="wrap stack-lg page-pad">
-  <section class="block" aria-labelledby="trois-title">
-    <h2 id="trois-title">Ce qu'il y a dedans</h2>
+  <section class="block" id="formules" aria-labelledby="formules-title">
+    <h2 id="formules-title">Choisis ta formule</h2>
     <div class="offer-grid">
       <div class="option">
-        <h3>1. Le guide en PDF</h3>
-        <p>Tout le parcours, du dossier jusqu'au jour J : le programme d'entraînement de ton accompagnateur et un examen blanc noté comme le jour de l'examen. Disponible tout de suite après le paiement.</p>
+        <h3>Pack candidat libre</h3>
+        <p class="option-price">14,99 €</p>
+        <ul class="tips">
+          <li>Le guide en PDF, du dossier jusqu'au jour J, disponible tout de suite</li>
+          <li>Le programme d'entraînement de ton accompagnateur et l'examen blanc noté</li>
+          <li>Les alertes de tous les départements que tu veux (en gratuit : un seul)</li>
+        </ul>
+        <a class="btn btn-ghost" href="#acheter" data-formule="pack">Choisir ce pack</a>
       </div>
-      <div class="option">
-        <h3>2. La démarche de ton département et ta demande préparée</h3>
-        <p>Dans ton compte, tu vois les démarches qu'on a vérifiées : formulaire, contact de la DDT, papiers à joindre. Tu nous dis ta situation, et sous 7 jours tu reçois par e-mail ta demande prête à envoyer. Si on ne connaît pas encore la démarche de ton département, on demande nous-mêmes à ta DDT comment elle fonctionne (une question générale, sans ton nom ni tes papiers). C'est toi qui envoies ta demande de place.</p>
-      </div>
-      <div class="option">
-        <h3>3. Les alertes sans limite</h3>
-        <p>En gratuit, tu suis un département. Avec le pack, tu suis tous ceux où tu es prêt à passer l'examen, même loin de chez toi, et tu es prévenu quand leur démarche change.</p>
+      <div class="option option-feature">
+        <h3>Pack candidat libre + DDT</h3>
+        <p class="option-price">24,99 €</p>
+        <ul class="tips">
+          <li>Tout le Pack candidat libre</li>
+          <li>La démarche de ton département, dans ton compte : formulaire, contact de la DDT, papiers à joindre</li>
+          <li>Ta demande de place préparée et envoyée par e-mail sous 7 jours. C'est toi qui l'envoies à la DDT.</li>
+          <li>Démarche pas encore connue : on demande nous-mêmes à ta DDT comment elle fonctionne (une question générale, sans ton nom ni tes papiers)</li>
+        </ul>
+        <a class="btn btn-formule" href="#acheter" data-formule="ddt">Choisir le pack + DDT</a>
       </div>
     </div>
   </section>
@@ -132,7 +141,7 @@
   <section class="block panel" id="test" aria-labelledby="test-titre">
   <h2 id="test-titre">Test : peux-tu passer en candidat libre ?</h2>
   <p>Cinq questions, une minute. Rien n'est envoyé : le résultat se calcule sur ton téléphone.</p>
-  <form class="form-stack test-elig" id="test-form" data-test-elig data-pack="#acheter"
+  <form class="form-stack test-elig" id="test-form" data-test-elig data-pack="#formules"
         data-ddt="../candidat-libre/demander-une-place/" data-moniteurs="../moniteurs/"
         data-auto-ecoles="../auto-ecoles/" data-candidat-libre="../candidat-libre/">
     <fieldset class="crit test-q"><legend>1. As-tu réussi ton code il y a moins de 5 ans, et as-tu ton numéro NEPH ?</legend><label class="check-inline"><input type="radio" name="code" value="oui" required> Oui</label><label class="check-inline"><input type="radio" name="code" value="non"> Non, pas encore</label></fieldset><fieldset class="crit test-q"><legend>2. Es-tu libre de toute auto-école ? Tu n&#x27;y es plus inscrit, et elle ne réserve plus ta place.</legend><label class="check-inline"><input type="radio" name="mandat" value="oui" required> Oui, je ne suis plus en auto-école</label><label class="check-inline"><input type="radio" name="mandat" value="non"> Non, je suis encore inscrit</label></fieldset><fieldset class="crit test-q"><legend>3. Un proche peut-il t&#x27;accompagner bénévolement le jour de l&#x27;examen ? Il a le permis B depuis au moins 5 ans, sans annulation ni invalidation depuis 5 ans, et ce n&#x27;est pas un moniteur.</legend><label class="check-inline"><input type="radio" name="accompagnateur" value="oui" required> Oui</label><label class="check-inline"><input type="radio" name="accompagnateur" value="non"> Non</label></fieldset><fieldset class="crit test-q"><legend>4. Peux-tu avoir une voiture à double commande assurée pour l&#x27;examen (louée, ou celle d&#x27;un proche) ?</legend><label class="check-inline"><input type="radio" name="voiture" value="oui" required> Oui</label><label class="check-inline"><input type="radio" name="voiture" value="non"> Pas encore</label></fieldset><fieldset class="crit test-q"><legend>5. As-tu appris à conduire avec des proches, sans cours payants ?</legend><label class="check-inline"><input type="radio" name="appris" value="oui" required> Oui</label><label class="check-inline"><input type="radio" name="appris" value="non"> Non, en partie ou en entier en auto-école</label></fieldset>
@@ -146,26 +155,32 @@
   <section class="block buy" id="acheter" aria-labelledby="acheter-title">
     <h2 id="acheter-title">Obtenir le pack</h2>
     <div class="buy-box">
-      <div class="buy-price"><span class="price-amount">14,99 €</span><span class="price-note">Paiement unique et sécurisé par Stripe</span></div>
-      <form class="form-stack" id="pack-form" data-compte="tous" data-suite="pack-candidat-libre/#acheter" data-compte-txt="Le pack est relié à ton compte : tu pourras retélécharger le PDF quand tu veux, sur n'importe quel appareil.">
+      <div class="buy-price"><span class="price-amount" id="pack-prix">14,99 €</span><span class="price-note">Paiement unique et sécurisé par Stripe</span></div>
+      <form class="form-stack" id="pack-form" data-compte="tous" data-suite="pack-candidat-libre/#acheter" data-prix-pack="14,99 €" data-prix-ddt="24,99 €" data-compte-txt="Le pack est relié à ton compte : tu pourras retélécharger le PDF quand tu veux, sur n'importe quel appareil.">
+        <fieldset class="crit"><legend>Ta formule</legend>
+          <label class="check-inline" for="formule-pack"><input id="formule-pack" type="radio" name="formule" value="pack" checked> Pack candidat libre (14,99 €)</label>
+          <label class="check-inline" for="formule-ddt"><input id="formule-ddt" type="radio" name="formule" value="ddt"> Pack candidat libre + DDT (24,99 €)</label>
+        </fieldset>
         <label class="check-inline" for="pack-places"><input id="pack-places" type="checkbox" required> J'ai compris que le pack ne garantit pas de place d'examen : c'est la DDT ou RdvPermis qui les donne.</label>
-        <label class="check-inline" for="pack-ok"><input id="pack-ok" type="checkbox" required> Je veux le guide tout de suite après le paiement et je renonce à mon droit de rétractation pour ce contenu numérique. Je demande que la préparation de ma demande de place commence dès que je l'envoie, et je sais que je ne pourrai plus me rétracter pour ce service une fois ma demande préparée reçue.</label>
+        <label class="check-inline" for="pack-ok"><input id="pack-ok" type="checkbox" required> Je veux le guide tout de suite après le paiement et je renonce à mon droit de rétractation pour ce contenu numérique. Avec la formule + DDT, je demande aussi que la préparation de ma demande de place commence dès que je l'envoie, et je sais que je ne pourrai plus me rétracter pour ce service une fois ma demande préparée reçue.</label>
         <label class="check-inline" for="pack-cgv"><input id="pack-cgv" type="checkbox" required><span>J'accepte les <a href="../cgv/">conditions de vente</a>.</span></label>
         <div class="form-actions">
-          <button class="btn btn-signal" type="submit">Payer 14,99 €</button>
+          <button class="btn btn-signal" type="submit" id="pack-payer">Payer 14,99 €</button>
           <p class="form-status" role="status"></p>
         </div>
       </form>
     </div>
-    <p class="small">Après le paiement, tu arrives sur une page qui te donne le PDF. Tout est ensuite dans ton compte (icône en haut à droite) : le PDF à retélécharger, ta demande de place à préparer, et tes alertes.</p>
+    <p class="small">Après le paiement, tu arrives sur une page qui te donne le PDF. Tout est ensuite dans ton compte (icône en haut à droite) : le PDF à retélécharger, tes alertes et, avec la formule + DDT, la démarche de ton département et ta demande de place à préparer.</p>
+    <p class="small">Tu as déjà le Pack candidat libre et tu veux passer à la formule + DDT ? <a href="../contact/">Écris-nous</a> : tu ne paies que la différence.</p>
   </section>
 
   <section class="block" aria-labelledby="faq-pack">
     <h2 id="faq-pack">Questions fréquentes</h2>
     <div class="faq">
-      <details><summary>Sous quelle forme est le pack ?</summary><p>Le guide est un PDF que tu télécharges juste après le paiement. Il se lit bien sur téléphone, et les fiches s'impriment en A4. Ta demande de place préparée arrive ensuite par e-mail.</p></details>
-      <details><summary>Comment je reçois ma demande de place préparée ?</summary><p>Dans ton compte, remplis « Préparer ma demande de place » : ton département, ta situation, et les départements où tu es prêt à aller. On t'envoie tout par e-mail sous 7 jours. Tu ne nous envoies aucun papier : tu les joins toi-même à ta demande, sur le site officiel ou dans ton e-mail à la DDT.</p></details>
-      <details><summary>Et si vous ne connaissez pas encore la démarche de mon département ?</summary><p>Beaucoup de départements ne publient pas leur démarche. Dans ce cas, on demande nous-mêmes à ta DDT comment elle fonctionne : c'est une question générale, sans ton nom ni tes papiers, pas une demande de place. On te transmet sa réponse avec ta demande préparée. En attendant, sous 7 jours, tu reçois un modèle de demande écrite à lui envoyer toi-même. On ne peut pas promettre quand la DDT répondra.</p></details>
+      <details><summary>Quelle formule choisir ?</summary><p>Si tu sais déjà comment demander ta place dans ton département, ou si tu veux surtout te préparer, le Pack candidat libre suffit. Si tu ne sais pas comment faire avec ta DDT, prends la formule + DDT : on te donne sa démarche et on te prépare ta demande.</p></details>
+      <details><summary>Sous quelle forme est le pack ?</summary><p>Le guide est un PDF que tu télécharges juste après le paiement. Il se lit bien sur téléphone, et les fiches s'impriment en A4. Avec la formule + DDT, ta demande de place préparée arrive ensuite par e-mail.</p></details>
+      <details><summary>Comment je reçois ma demande de place préparée (formule + DDT) ?</summary><p>Dans ton compte, remplis « Préparer ma demande de place » : ton département, ta situation, et les départements où tu es prêt à aller. On t'envoie tout par e-mail sous 7 jours. Tu ne nous envoies aucun papier : tu les joins toi-même à ta demande, sur le site officiel ou dans ton e-mail à la DDT.</p></details>
+      <details><summary>Et si vous ne connaissez pas encore la démarche de mon département (formule + DDT) ?</summary><p>Beaucoup de départements ne publient pas leur démarche. Dans ce cas, on demande nous-mêmes à ta DDT comment elle fonctionne : c'est une question générale, sans ton nom ni tes papiers, pas une demande de place. On te transmet sa réponse avec ta demande préparée. En attendant, sous 7 jours, tu reçois un modèle de demande écrite à lui envoyer toi-même. On ne peut pas promettre quand la DDT répondra.</p></details>
       <details><summary>Et si la DDT ne me donne pas de place ?</summary><p>C'est la DDT qui décide, et Créno ne peut rien garantir. On t'explique comment la relancer, et tes alertes continuent pour tous les départements que tu suis. Si tu ne remplis pas les conditions du candidat libre, ne prends pas le pack : une auto-école peut te <a href="../moniteurs/">présenter à l'examen</a> sans tout un forfait.</p></details>
       <details><summary>Les informations sont-elles à jour ?</summary><p>Le pack s'appuie sur les sources officielles (Sécurité routière, préfectures, service-public) au moment de sa rédaction, et indique chaque fois où vérifier. Les règles peuvent changer : en cas de doute, la source officielle a toujours raison.</p></details>
       <details><summary>J'ai perdu mon lien de téléchargement</summary><p>Connecte-toi à ton compte Créno (icône en haut à droite) : le bouton « Télécharger le PDF » te donne un nouveau lien. Un souci ? Écris-nous avec l'e-mail utilisé pour le paiement. L'adresse de contact sera indiquée ici dès l'ouverture des formulaires.</p></details>

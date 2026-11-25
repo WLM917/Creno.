@@ -8,6 +8,7 @@
 // Secrets à définir dans Supabase > Edge Functions > Secrets :
 //   STRIPE_SECRET_KEY      clé secrète Stripe
 //   PACK_MONTANT_CENTIMES  prix minimum attendu en centimes (défaut 1499 = 14,99 €)
+//   PACK_DDT_MONTANT_CENTIMES  prix de la formule Pack + DDT (défaut 2499 = 24,99 €) : au-delà, la réponse dit ddt: true
 //   PACK_FICHIER           nom du PDF dans le stockage « pack » (défaut : pack-candidat-libre.pdf)
 // SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY sont fournis automatiquement par Supabase.
 
@@ -67,6 +68,7 @@ Deno.serve(async (req) => {
       ok: true,
       url: `${SUPABASE_URL}/storage/v1${signedURL}`,
       email: s.customer_details?.email ?? null,
+      ddt: (s.amount_total ?? 0) >= (Number(env("PACK_DDT_MONTANT_CENTIMES", "2499")) || 2499),
     });
   } catch (e) {
     console.error(e);

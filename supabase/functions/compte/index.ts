@@ -2,16 +2,16 @@
 //
 // La connexion elle-même (inscription, mot de passe) passe par Supabase Auth, directement depuis le site.
 // Cette fonction reçoit le jeton de connexion { jeton } et ne renvoie que ce qui appartient au compte :
-//   moi        {}                                -> profil, pack acheté, alertes, demandes (avec les réponses des pros),
+//   moi        {}                                -> profil, pack acheté (et sa formule : ddt), alertes, demandes (avec les réponses des pros),
 //                                                   établissements reliés (pros) et leurs chiffres une fois vérifiés.
-//                                                   Acheteur du pack : aussi les démarches des départements (table
-//                                                   ddt_demarches), réservées au pack.
+//                                                   Formule Pack + DDT : aussi les démarches des départements (table
+//                                                   ddt_demarches), réservées à cette formule.
 //   profil     { prenom?, telephone?, departement? } -> met à jour les informations (toutes facultatives)
 //   pack       {}                                -> lien de téléchargement du pack (1 heure), si le compte l'a acheté
 //   pack_email {}                                -> envoie ce lien par e-mail (valable 7 jours)
 //   places     { departement? }                  -> places d'examen signalées ces 30 derniers jours dans le département
 //   dossier    { departement, ville?, code_ok, libre_ok, accompagnateur_ok, voiture_ok, appris_proches,
-//                autres_departements?, message? } -> acheteur du pack : demande que William prépare sa demande de place
+//                autres_departements?, message? } -> formule Pack + DDT : demande que William prépare sa demande de place
 //                                                   pour la DDT (envoyée par e-mail). Aucune pièce d'identité demandée.
 //   lier       { pro_type, departement, auto_ecole_id? | nom }  -> un pro relie son compte à son auto-école
 //                                                   ou à son agence. William vérifie avant que les chiffres s'affichent.
@@ -125,34 +125,48 @@ async function profil(u: Utilisateur) {
 }
 
 // ---------------------------------------------------------------- pack
-// Acheté si un paiement « pack-<compte> » est noté (fonction pack) ou se trouve dans les derniers paiements Stripe.
-// stripe = false : seulement la table (pour ne pas interroger Stripe à chaque visite d'un compte pro).
-async function packAchete(u: Utilisateur, stripe = true) {
+// Deux formules, payées avec la même référence « pack-<compte> » : le Pack candidat libre (PACK_MONTANT_CENTIMES,
+// 1499 par défaut) et le Pack + DDT (PACK_DDT_MONTANT_CENTIMES, 2499 par défaut : démarches des départements et
+// demande de place préparée). La formule dépend du total payé : un passage du Pack au Pack + DDT se fait avec un
+// lien Stripe de la différence, toujours avec client_reference_id=pack-<compte>.
+// Les achats sont notés dans achats_pack (fonction pack) ; sinon, ou pour un passage à la formule + DDT, on cherche
+// dans les derniers paiements Stripe. stripe = false : seulement la table (comptes pros).
+const PACK_MIN = () => Number(env("PACK_MONTANT_CENTIMES", "1499")) || 1499;
+const PACK_DDT_MIN = () => Number(env("PACK_DDT_MONTANT_CENTIMES", "2499")) || 2499;
+type Achat = { session_id: string; created_at: string; total: number; ddt: boolean };
+
+async function packAchete(u: Utilisateur, stripe = true): Promise<Achat | null> {
   const ref = `pack-${u.id}`;
-  const { data } = await db(`achats_pack?ref=eq.${ref}&select=session_id,created_at&order=created_at.desc&limit=1`);
-  if (data?.[0]) return data[0] as { session_id: string; created_at: string };
+  const { data } = await db(`achats_pack?ref=eq.${ref}&select=session_id,created_at,montant&order=created_at`);
+  const lignes = ((data ?? []) as { session_id: string; created_at: string; montant: number }[]).map((l) => ({ ...l }));
+  const somme = () => lignes.reduce((t, l) => t + n(l.montant), 0);
   const key = env("STRIPE_SECRET_KEY");
-  if (!key || !stripe) return null;
-  const min = Number(env("PACK_MONTANT_CENTIMES", "1499")) || 1499;
-  let apres = "";
-  for (let page = 0; page < 3; page++) {
-    const r = await fetch("https://api.stripe.com/v1/checkout/sessions?limit=100" + (apres ? `&starting_after=${apres}` : ""),
-      { headers: { Authorization: `Bearer ${key}` } });
-    if (!r.ok) return null;
-    const j = await r.json();
-    const liste = (j.data ?? []) as Record<string, unknown>[];
-    const s = liste.find((x) => x.client_reference_id === ref && x.payment_status === "paid" && n(x.amount_total) >= min);
-    if (s) {
-      const achat = { session_id: String(s.id), ref, montant: n(s.amount_total), created_at: new Date(n(s.created) * 1000).toISOString() };
-      await db("achats_pack?on_conflict=session_id", {
-        method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=minimal" }, body: JSON.stringify(achat),
-      });
-      return achat;
+  if (key && stripe && somme() < PACK_DDT_MIN()) {
+    const vus = new Set(lignes.map((l) => l.session_id));
+    let apres = "";
+    for (let page = 0; page < 3; page++) {
+      const r = await fetch("https://api.stripe.com/v1/checkout/sessions?limit=100" + (apres ? `&starting_after=${apres}` : ""),
+        { headers: { Authorization: `Bearer ${key}` } });
+      if (!r.ok) break;
+      const j = await r.json();
+      const liste = (j.data ?? []) as Record<string, unknown>[];
+      for (const x of liste) {
+        if (x.client_reference_id !== ref || x.payment_status !== "paid" || n(x.amount_total) <= 0 || vus.has(String(x.id))) continue;
+        const achat = { session_id: String(x.id), ref, montant: n(x.amount_total), created_at: new Date(n(x.created) * 1000).toISOString() };
+        await db("achats_pack?on_conflict=session_id", {
+          method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=minimal" }, body: JSON.stringify(achat),
+        });
+        lignes.push({ session_id: achat.session_id, created_at: achat.created_at, montant: achat.montant });
+        vus.add(achat.session_id);
+      }
+      if (!j.has_more || !liste.length) break;
+      apres = String(liste[liste.length - 1].id);
     }
-    if (!j.has_more || !liste.length) break;
-    apres = String(liste[liste.length - 1].id);
   }
-  return null;
+  const total = somme();
+  if (!lignes.length || total < PACK_MIN()) return null;
+  lignes.sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  return { session_id: lignes[0].session_id, created_at: lignes[0].created_at, total, ddt: total >= PACK_DDT_MIN() };
 }
 
 async function lienPack(secondes: number) {
@@ -201,7 +215,7 @@ async function moi(body: Record<string, unknown>) {
       : Promise.resolve([]),
   ]);
   // Démarches pour demander une place, département par département : réservées aux acheteurs du pack
-  const ddt = achat
+  const ddt = achat?.ddt
     ? await db("ddt_demarches?select=departement,fiche,maj_le&order=departement").then((r) => r.data ?? []).catch(() => [])
     : [];
   // Réponses des pros aux demandes de l'élève
@@ -231,7 +245,7 @@ async function moi(body: Record<string, unknown>) {
     ok: true,
     user: { email: u.email, cree: u.cree },
     profil: { type: p.type, pro_type: p.pro_type, prenom: p.prenom ?? null, telephone: p.telephone ?? null, departement: p.departement ?? null },
-    pack: achat ? { achete: true, date: achat.created_at } : { achete: false },
+    pack: achat ? { achete: true, date: achat.created_at, ddt: achat.ddt } : { achete: false },
     alertes, demandes, liens, reponses_envoyees: envoyees, dossiers, ddt,
     emails: !!env("RESEND_API_KEY"),
   });
@@ -283,7 +297,11 @@ async function dossier(body: Record<string, unknown>) {
   const u = await utilisateur(body.jeton);
   const p = await profil(u);
   if (p.type !== "eleve") throw new Refus("Cette demande est réservée aux comptes élèves.");
-  if (!await packAchete(u)) throw new Refus("La demande de place préparée fait partie du Pack candidat libre. Prends le pack pour l'utiliser.", 402);
+  const achat = await packAchete(u);
+  if (!achat) throw new Refus("La demande de place préparée fait partie de la formule Pack candidat libre + DDT. Prends-la pour l'utiliser.", 402);
+  if (!achat.ddt) {
+    throw new Refus("La demande de place préparée fait partie de la formule Pack candidat libre + DDT. Écris-nous pour y passer : tu ne paies que la différence.", 402);
+  }
   const departement = String(body.departement ?? "").toUpperCase();
   if (!DEPARTEMENT.test(departement)) throw new Refus("Choisis ton département.");
   const depuis = new Date(Date.now() - 86400000).toISOString();

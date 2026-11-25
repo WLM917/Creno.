@@ -44,6 +44,7 @@ VILLE_MIN = int(CFG.get("pages_ville_min_auto_ecoles", 2))
 CONTACT = (CFG.get("email_contact") or "").strip()
 GSV = (CFG.get("google_site_verification") or "").strip()
 PRIX_PACK = CFG.get("prix_pack", "14,99 €")
+PRIX_PACK_DDT = CFG.get("prix_pack_ddt", "24,99 €")
 PRIX_ALERTES = CFG.get("prix_alertes", "9,99 €")
 ESSAI_ALERTES = int(CFG.get("essai_alertes_jours", 15))
 PRIX_CRENO_PRO = CFG.get("prix_creno_pro", "19,99 €")
@@ -1218,7 +1219,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
                     'deviennent payantes, tu seras prévenu par e-mail à l\'avance, et rien ne sera jamais prélevé sans ton accord.</p></details>')
     if ALERTES_PAYANTES:
         cgv = {
-            "cgv_lede": "le Pack candidat libre, l'abonnement aux Alertes et Créno Pro pour les pros.",
+            "cgv_lede": "le Pack candidat libre (avec ou sans la formule + DDT), l'abonnement aux Alertes et Créno Pro pour les pros.",
             "cgv_offre_alertes": (f"<li><strong>Alertes places d'examen</strong> : des e-mails envoyés quand des candidats signalent des places "
                                   f"d'examen dans le département choisi. Les {ESSAI_ALERTES} premiers jours sont gratuits, sans carte bancaire et "
                                   f"sans engagement. Pour continuer ensuite, abonnement de {esc(PRIX_ALERTES)} TTC par mois, renouvelé chaque mois "
@@ -1237,7 +1238,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         }
     else:
         cgv = {
-            "cgv_lede": "le Pack candidat libre, et Créno Pro pour les pros. Les alertes places d'examen sont gratuites pour un département.",
+            "cgv_lede": "le Pack candidat libre (avec ou sans la formule + DDT), et Créno Pro pour les pros. Les alertes places d'examen sont gratuites pour un département.",
             "cgv_offre_alertes": ("<li><strong>Alertes places d'examen</strong> : gratuites pour un département à la fois (le pack permet d'en suivre "
                                   "plusieurs), aucun paiement n'est demandé. Si elles deviennent "
                                   "payantes un jour, tu seras prévenu à l'avance et rien ne sera prélevé sans ton accord.</li>"),
@@ -1256,7 +1257,8 @@ def build(out_dir=ROOT, explicit=False, only=None):
             "prix_pack": esc(PRIX_PACK), "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
             "offre_alertes": offre_alertes, "bouton_alertes": bouton_alertes,
             "faq_prix": faq_prix, "prix_creno_pro": esc(PRIX_CRENO_PRO), **cgv,
-            "test_eligibilite_pack": test_eligibilite(L, "#acheter"), "delai_dossier": DELAI_DOSSIER,
+            "test_eligibilite_pack": test_eligibilite(L, "#formules"), "delai_dossier": DELAI_DOSSIER,
+            "prix_pack_ddt": esc(PRIX_PACK_DDT),
             "contact_direct": (f'<p class="small">Tu préfères un e-mail ? Écris à <a href="mailto:{esc(CONTACT)}">{esc(CONTACT)}</a>.</p>'
                                if CONTACT else ""),
             "pros": pros_html(L, pros), "editeur": editeur_html, "mediateur": mediateur_html,
@@ -1285,6 +1287,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
     L = Links(depuis(path), explicit)
     body = fill((TPL / "demande-place.html").read_text(encoding="utf-8"), {
         **common, "root": L.root, "options_departements": options_deps, "prix_pack": esc(PRIX_PACK),
+        "prix_pack_ddt": esc(PRIX_PACK_DDT),
         "fil_ariane": fil_ariane(L, [("Accueil", ""), ("Candidat libre", "candidat-libre/"), ("Demander une place", None)]),
         "test_eligibilite": test_eligibilite(L, L("pack-candidat-libre/")),
         "options_ddt_form": "".join(f'<option value="DDT du {esc(d["code"])} ({esc(d["nom"])})">{esc(d["nom"])} ({esc(d["code"])})</option>'
@@ -1310,7 +1313,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         body = fill((TPL / tpl).read_text(encoding="utf-8"), {
             **common, "root": L.root, "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
             "prix_creno_pro": esc(PRIX_CRENO_PRO), "contact": contact_txt, "options_departements": options_deps,
-            "delai_dossier": DELAI_DOSSIER})
+            "delai_dossier": DELAI_DOSSIER, "prix_pack": esc(PRIX_PACK), "prix_pack_ddt": esc(PRIX_PACK_DDT)})
         if explicit:
             body = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', body)
         write(path, page(L, path, "compte" if path == "compte/" else "prive", f"{titre} | Créno", desc, body, noindex=True), sitemap=False)

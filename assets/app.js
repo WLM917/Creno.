@@ -479,7 +479,7 @@
     function afficherDemarches(j) {
       var box = $("#demarches");
       if (!box) return;
-      var achete = !!(j.pack && j.pack.achete);
+      var achete = !!(j.pack && j.pack.achete && j.pack.ddt);
       box.hidden = !achete;
       if (!achete) return;
       var fiches = {};
@@ -505,7 +505,7 @@
     function afficherDossier(j) {
       var box = $("#dossier");
       if (!box) return;
-      var achete = !!(j.pack && j.pack.achete);
+      var achete = !!(j.pack && j.pack.achete && j.pack.ddt);
       box.hidden = !achete;
       if (!achete) return;
       var liste = $("#dossier-liste");
@@ -547,7 +547,11 @@
           '<div class="rank-actions"><button class="btn btn-signal btn-small" type="button" id="pack-dl">Télécharger le PDF</button>' +
           '<button class="btn btn-ghost btn-small" type="button" id="pack-mail">Me l\'envoyer par e-mail</button></div>' +
           '<p class="form-status" role="status" id="pack-etat"></p>' +
-          '<p>Ton pack comprend aussi ta demande de place préparée pour ta DDT, et les alertes de tous les départements que tu veux. <a class="link-strong" href="#dossier">Préparer ma demande de place</a></p>';
+          (j.pack.ddt
+            ? '<p>Formule + DDT : tu as aussi la démarche de ton département, ta demande de place préparée et les alertes de tous les départements que tu veux. <a class="link-strong" href="#demarches">La démarche de mon département</a></p>'
+            : '<p>Ton pack comprend les alertes de tous les départements que tu veux. Pour avoir aussi la démarche de ton département et ta demande de place préparée, passe à la formule + DDT' +
+              ($("#compte-page").getAttribute("data-prix-ddt") ? " (" + esc($("#compte-page").getAttribute("data-prix-ddt")) + ")" : "") +
+              ' : <a href="' + esc(link("contact/")) + '">écris-nous</a>, tu ne paies que la différence.</p>');
         $("#pack-dl").addEventListener("click", function () {
           var b = this, st = $("#pack-etat");
           b.disabled = true; st.textContent = "Préparation du lien…"; st.className = "form-status";
@@ -1400,7 +1404,8 @@
         a.textContent = "Télécharger le Pack candidat libre (PDF)";
         $("#etat-actions").hidden = false;
         var note = $("#etat-note");
-        note.textContent = "Le lien de téléchargement marche pendant une heure. Ensuite, retrouve ton pack dans ton compte (icône en haut à droite, « Gérer mon compte ») : tu peux le retélécharger quand tu veux.";
+        note.textContent = "Le lien de téléchargement marche pendant une heure. Ensuite, retrouve ton pack dans ton compte (icône en haut à droite, « Gérer mon compte ») : tu peux le retélécharger quand tu veux." +
+          (j.ddt ? " Formule + DDT : c'est aussi dans ton compte que tu trouves la démarche de ton département et que tu prépares ta demande de place." : "");
         note.hidden = false;
       }).catch(function (e) { show(false, e.message); });
       return;
@@ -1438,24 +1443,52 @@
   function initPack() {
     var form = $("#pack-form");
     if (!form) return;
+    var prix = { pack: form.getAttribute("data-prix-pack"), ddt: form.getAttribute("data-prix-ddt") };
+    // Deux formules : le Pack (14,99 €) et le Pack + DDT (24,99 €), deux liens de paiement Stripe
+    function formule() { var r = $("input[name=formule]:checked", form); return r ? r.value : "pack"; }
+    function majFormule() {
+      var f = formule();
+      $("#pack-prix").textContent = prix[f] || "";
+      $("#pack-payer").textContent = "Payer " + (prix[f] || "");
+    }
+    $all("input[name=formule]", form).forEach(function (r) { r.addEventListener("change", majFormule); });
+    $all("[data-formule]").forEach(function (a) {
+      a.addEventListener("click", function () {
+        var r = $("input[name=formule][value=" + a.getAttribute("data-formule") + "]", form);
+        if (r) { r.checked = true; majFormule(); }
+      });
+    });
+    if (location.hash === "#ddt") { $("#formule-ddt").checked = true; }
+    majFormule();
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
       var statusEl = $(".form-status", form);
       var button = $("button[type=submit]", form);
-      if (!CONFIG.lienPaiementPack) { setStatus(statusEl, false, "Le paiement ouvre très bientôt. Reviens dans quelques jours."); return; }
+      var f = formule();
+      var lien = f === "ddt" ? CONFIG.lienPaiementPackDdt : CONFIG.lienPaiementPack;
+      if (!lien) { setStatus(statusEl, false, "Le paiement de cette formule ouvre très bientôt. Reviens dans quelques jours."); return; }
       var s = auth.session();
       if (!s) { location.href = lienCompte("pack-candidat-libre/#acheter"); return; }
       button.disabled = true;
       statusEl.textContent = "Un instant…"; statusEl.className = "form-status";
-      // Le paiement est relié au compte : le PDF se retrouve ensuite dans « Gérer mon compte ».
+      // Le paiement est relié au compte : le PDF (et la formule + DDT) se retrouvent dans « Gérer mon compte ».
       callFnCompte("compte", { action: "moi" }).then(function (j) {
-        if (j.pack && j.pack.achete) {
+        var p = j.pack || {};
+        if (p.achete && (f === "pack" || p.ddt)) {
           button.disabled = false;
-          statusEl.innerHTML = 'Tu as déjà le pack sur ce compte. <a href="' + esc(link("compte/")) + '#pack">Le télécharger depuis ton compte</a>';
+          statusEl.innerHTML = 'Tu as déjà ' + (p.ddt ? "le Pack candidat libre + DDT" : "le Pack candidat libre") +
+            ' sur ce compte. <a href="' + esc(link("compte/")) + '#pack">Le retrouver dans ton compte</a>';
           statusEl.className = "form-status is-ok";
           return;
         }
-        location.href = CONFIG.lienPaiementPack + (CONFIG.lienPaiementPack.indexOf("?") === -1 ? "?" : "&") +
+        if (p.achete && f === "ddt") {
+          button.disabled = false;
+          statusEl.innerHTML = 'Tu as déjà le Pack candidat libre : tu ne paies que la différence pour passer à la formule + DDT. <a href="' +
+            esc(link("contact/")) + '">Écris-nous</a>, on t\'envoie le lien.';
+          statusEl.className = "form-status is-ok";
+          return;
+        }
+        location.href = lien + (lien.indexOf("?") === -1 ? "?" : "&") +
           "client_reference_id=pack-" + s.user.id + "&prefilled_email=" + encodeURIComponent(s.user.email);
       }).catch(function (e) {
         button.disabled = false;

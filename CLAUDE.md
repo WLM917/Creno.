@@ -196,9 +196,9 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   ce qu'est la DDT, le test « Peux-tu passer en candidat libre ? » (calculé dans le navigateur, rien n'est envoyé :
   initTestEligibilite), un encadré qui renvoie vers le pack, et un formulaire « Ta DDT t'a répondu ? » (Nous contacter,
   type élève, département dans la colonne ville).
-- **Les démarches de chaque département sont RÉSERVÉES AU PACK** (choix de William, 25 novembre 2026) : elles ne sont
+- **Les démarches de chaque département sont RÉSERVÉES À LA FORMULE PACK + DDT** (choix de William, 25 novembre 2026) : elles ne sont
   plus sur la page publique ni dans le dépôt (public sur GitHub), mais dans la table Supabase ddt_demarches
-  (departement, fiche jsonb). La fonction compte les renvoie (moi -> ddt) seulement si le pack est acheté ;
+  (departement, fiche jsonb). La fonction compte les renvoie (moi -> ddt) seulement avec la formule + DDT ;
   section « La démarche de ton département » de « Gérer mon compte » (afficherDemarches). William les ajoute,
   modifie et supprime depuis le tableau de bord (« Démarches des départements », fonction stats, actions
   ddt_enregistrer / ddt_supprimer). Modes : formulaire, email, dossier, rdvpermis, ferme ; a_confirmer si la source
@@ -232,7 +232,15 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Le secret `ALERTES_LIEN_STRIPE` (lien de paiement de l'abonnement mensuel) décide du mode :
   vide = lancement gratuit (les essais se prolongent tout seuls). `alertes_payantes` dans site.json
   doit être d'accord avec lui (textes du site), puis relancer build_site.py et pousser.
-- **Pack candidat libre** = alertes + aide à la demande de place (fusion du 25 novembre 2026, même prix 14,99 €) :
+- **Deux formules depuis le 25 novembre 2026** (choix de William) : **Pack candidat libre** (`prix_pack`, 14,99 € :
+  guide PDF + alertes sans limite de départements) et **Pack candidat libre + DDT** (`prix_pack_ddt`, 24,99 € :
+  en plus, les démarches des départements et la demande de place préparée). Deux liens Stripe dans config.js
+  (`lienPaiementPack`, `lienPaiementPackDdt` : vide = « bientôt »), même référence pack-<compte>. La formule dépend
+  du TOTAL payé sur cette référence (packAchete de la fonction compte) : >= PACK_DDT_MONTANT_CENTIMES (2499) = + DDT.
+  Passer du Pack à + DDT : William envoie un lien Stripe de la différence avec client_reference_id=pack-<id du compte>
+  et le retour après paiement vers /compte/#pack (la fonction compte retrouve le paiement chez Stripe).
+  Démarches (ddt_demarches) et « Préparer ma demande de place » : formule + DDT seulement.
+- Historique : le pack avait fusionné alertes et aide à la demande de place (25 novembre 2026, même prix 14,99 €) :
   1. le guide PDF ; 2. les démarches des départements (dans le compte) et la demande de place préparée
   (démarche inconnue : William écrit à la DDT et envoie un modèle de demande écrite dans le délai) : l'acheteur remplit « Préparer ma demande de place » dans
   son compte (action `dossier` de la fonction compte -> table dossiers_ddt, e-mail à William), William lui envoie

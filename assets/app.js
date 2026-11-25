@@ -2060,7 +2060,7 @@
           rows.sort(function (a, b) { return a.departement.localeCompare(b.departement, "fr", { numeric: true }); });
           etat.j.ddt = rows;
           listeDdt();
-          setStatus(st, true, "C'est enregistré : les acheteurs du pack voient la démarche du " + r.departement + " dans leur compte.");
+          setStatus(st, true, "C'est enregistré : les acheteurs du pack + DDT voient la démarche du " + r.departement + " dans leur compte.");
           fd.reset();
         }).catch(function (e) { btn.disabled = false; setStatus(st, false, e.message); });
       });

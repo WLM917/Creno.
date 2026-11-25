@@ -121,6 +121,17 @@ def esc(s):
     return html.escape(str(s if s is not None else ""), quote=True)
 
 
+def en_dep(nom):
+    """« en Essonne », mais « à Paris » : Paris est à la fois une ville et un département."""
+    return "à Paris" if nom == "Paris" else f"en {nom}"
+
+
+def mot_villes(code, pluriel=False):
+    """Paris est découpé en arrondissements, pas en villes."""
+    mot = "arrondissement" if code == "75" else "ville"
+    return mot + "s" if pluriel else mot
+
+
 def slug(s):
     s = unicodedata.normalize("NFD", str(s)).encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]+", "-", s).strip("-") or "ville"
@@ -496,7 +507,7 @@ def formulaire_prix(dep=None, ecoles=None, deps=None):
         opts = "".join(
             f'<option value="{esc(e["nom"])}, {esc(ville_affichee(e["ville"]))}" data-id="{esc(e["id"])}"></option>'
             for e in sorted(ecoles, key=lambda e: (e["nom"], e["ville"])))
-        intro = f"Dis combien tu as vraiment payé dans ton auto-école en {esc(dep['nom'])}."
+        intro = f"Dis combien tu as vraiment payé dans ton auto-école {esc(en_dep(dep['nom']))}."
     else:
         options = "".join(f'<option value="{esc(d["code"])}">{esc(d["nom"])} ({esc(d["code"])})</option>' for d in deps)
         dep_field = (f'<div class="field field-wide"><label for="decl-dep">Département de ton auto-école</label>'
@@ -697,13 +708,13 @@ def badge_svg(e, rang, nb, dep_nom, dep_code, mois):
     nom_svg = "".join(
         f'\n  <text x="15" y="{y}" font-family="Arial, Helvetica, sans-serif" font-size="{t_nom}" fill="#55606B">{esc(t)}</text>'
         for t, y in lignes_nom)
-    for essai in (f"{rang_txt(rang)} sur {nb} en {dep_nom}", f"{rang_txt(rang)} sur {nb} auto-écoles"):
+    for essai in (f"{rang_txt(rang)} sur {nb} {en_dep(dep_nom)}", f"{rang_txt(rang)} sur {nb} auto-écoles"):
         ligne1, t1 = ajuster(essai, max_w, 19, 14, True)
         if not ligne1.endswith("…"):
             break
     ligne2, t2 = ajuster(f"Classement Créno · {mois}", max_w, 10.5, 8.5)
     t_dep = 22 if len(dep_code) <= 2 else 18
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="280" height="88" viewBox="0 0 280 88" role="img" aria-label="{esc(e["nom"])} : {esc(rang_txt(rang))} sur {nb} en {esc(dep_nom)}, classement Créno, {esc(mois)}">
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="280" height="88" viewBox="0 0 280 88" role="img" aria-label="{esc(e["nom"])} : {esc(rang_txt(rang))} sur {nb} {esc(en_dep(dep_nom))}, classement Créno, {esc(mois)}">
   <rect x="1" y="1" width="278" height="86" rx="9" fill="#FFFFFF" stroke="#1A1F25" stroke-width="2"/>
   <rect x="226" y="1" width="53" height="86" rx="9" fill="#0A4F8F"/>
   <rect x="226" y="1" width="12" height="86" fill="#0A4F8F"/>
@@ -945,7 +956,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
       <ul class="unranked-list">{items}</ul>
     </details>'''
         villes_block = f'''<section class="block" aria-labelledby="villes-title">
-    <h2 id="villes-title">Auto-écoles par ville en {esc(d["nom"])}</h2>
+    <h2 id="villes-title">Auto-écoles par {mot_villes(d["code"])} {esc(en_dep(d["nom"]))}</h2>
     <ul class="city-links">{ville_links}</ul>
   </section>''' if ville_links else ""
         title = f'Auto-écoles {d["nom"]} ({d["code"]}) : classement et taux de réussite | Créno'
@@ -955,7 +966,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         body = f'''<div class="wrap stack-lg page-pad">
   {fil_ariane(L, crumbs)}
   <header class="view-head">
-    <h1>Auto-écoles en {esc(d["nom"])} ({esc(d["code"])})</h1>
+    <h1>Auto-écoles {esc(en_dep(d["nom"]))} ({esc(d["code"])})</h1>
     <p class="lede">Classement des {plural(nb, "auto-école", "auto-écoles")} du département qui ont un taux de réussite officiel au permis B. Réussite moyenne au 1er passage : {pct(res["moyenne"])}, contre {pct(meta["moyenne_nationale"])} en France.</p>
   </header>
 
@@ -1006,7 +1017,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
   {formulaire_prix(d, dep["ecoles"])}
 </div>'''
         jsonld = [jsonld_ariane([("Accueil", ""), ("Auto-écoles", "auto-ecoles/"), (f'{d["nom"]} ({d["code"]})', path)]),
-                  jsonld_liste(rows, f'Auto-écoles en {d["nom"]} classées par Créno')]
+                  jsonld_liste(rows, f'Auto-écoles {en_dep(d["nom"])} classées par Créno')]
         write(path, page(L, path, "departement", title, description, body, jsonld, "auto-ecoles", d["code"]),
               0.8 if d["code"] in IDF else 0.7)
 
@@ -1059,7 +1070,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
     <a class="link-strong" href="{LV("candidat-libre/")}">Comment passer le permis en candidat libre</a>
   </section>
   <section class="block" aria-labelledby="autres-title">
-    <h2 id="autres-title">Autres villes en {esc(d["nom"])}</h2>
+    <h2 id="autres-title">{"Autres arrondissements de Paris" if d["code"] == "75" else f'Autres villes en {esc(d["nom"])}'}</h2>
     <ul class="city-links">{others}</ul>
     <a class="link-strong" href="{LV(path)}">Tout le classement du {esc(d["code"])}</a>
   </section>

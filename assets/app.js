@@ -494,7 +494,7 @@
         var opt = sel.options[sel.selectedIndex];
         var nom = String(opt ? opt.textContent : dep).replace(/\s*\([0-9AB]+\)\s*$/, "");
         zone.innerHTML = fiches[dep] ? ficheDdt(dep, nom, fiches[dep])
-          : '<div class="ddt-inconnu"><p><strong>On n\'a pas encore vérifié la démarche de ce département.</strong> Envoie « Préparer ma demande de place » juste en dessous : on écrit à sa DDT pour toi et on te prépare ta demande.</p></div>';
+          : '<div class="ddt-inconnu"><p><strong>On n\'a pas encore vérifié la démarche de ce département.</strong> Envoie « Préparer ma demande de place » juste en dessous : on demande à sa DDT comment elle fonctionne, puis on te prépare ta demande.</p></div>';
       }
       if (!sel.value) sel.value = (j.profil && j.profil.departement) || ((j.alertes || [])[0] || {}).departement || "";
       if (!sel.getAttribute("data-pret")) { sel.setAttribute("data-pret", "1"); sel.addEventListener("change", montrer); }

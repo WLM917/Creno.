@@ -100,9 +100,12 @@ data/loueurs.json                 loueurs de voitures à double commande (2 entr
                                   code_promo, reduction, lien_reservation
 data/partenaires.json             auto-écoles abonnées à Créno Pro (par numéro d'agrément : depuis, code_promo,
                                   reduction), vide pour l'instant ; à remplir à la main après chaque paiement
-data/ddt.json                     démarche pour demander une place en candidat libre, par département (46, 67, 80, 82
-                                  vérifiés le 25 novembre 2026) : service, mode (formulaire / dossier), conditions, papiers,
-                                  lien officiel, source et date. N'ajouter un département qu'avec une source officielle (règle 3).
+data/ddt.json                     démarche pour demander une place en candidat libre, par département (46, 67, 80, 82, 83, 91
+                                  vérifiés le 25 novembre 2026) : service, mode (formulaire / dossier / email / rdvpermis / ferme),
+                                  conditions, papiers, contact, lien officiel, source et date, a_confirmer si la source n'est
+                                  pas datée. Les formulaires du Lot (46) et du Tarn-et-Garonne (82) sont fermés depuis le
+                                  5 mai 2026 : revérifier les liens (demarche.numerique.gouv.fr, ex-demarches-simplifiees.fr).
+                                  N'ajouter un département qu'avec une source officielle ou une réponse écrite de la DDT (règle 3).
 data/pros.json                    annuaire des moniteurs / auto-écoles pour examen blanc (vide, à remplir
                                   à la main après vérification de chaque pro)
 data/recherche.json               index de recherche des villes (généré)

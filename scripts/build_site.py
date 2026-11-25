@@ -641,19 +641,24 @@ def ddt_html(L, ddt, deps_by_code):
     for code in sorted(deps, key=lambda c: (len(c), c)):
         d = deps[code]
         nom = deps_by_code.get(code, {}).get("nom", code)
-        mode = {"formulaire": "Formulaire en ligne", "dossier": "Sur dossier, par e-mail", "rdvpermis": "Places sur RdvPermis"}.get(
-            d.get("mode"), "Démarche")
+        mode = {"formulaire": "Formulaire en ligne", "dossier": "Sur dossier, par e-mail", "email": "Demande par e-mail",
+                "rdvpermis": "Directement sur RdvPermis", "ferme": "Formulaire fermé"}.get(d.get("mode"), "Démarche")
+        alerte = d.get("mode") == "ferme" or d.get("a_confirmer")
         conditions = "".join(f"<li>{esc(c)}</li>" for c in d.get("conditions") or [])
         pieces = "".join(f"<li>{esc(p)}</li>" for p in d.get("pieces") or [])
         lien = (f'<a class="btn btn-small btn-signal" href="{esc(d["lien"])}" target="_blank" rel="noopener">'
                 f'{esc(d.get("lien_txt") or "Ouvrir la démarche officielle")}</a>') if d.get("lien") else ""
-        contact = (f'<p>Écris à <a href="mailto:{esc(d["contact"])}">{esc(d["contact"])}</a> pour connaître les démarches.</p>'
+        contact = (f'<p>Écris à <a href="mailto:{esc(d["contact"])}">{esc(d["contact"])}</a>'
+                   f'{(" ou appelle le " + esc(d["telephone"])) if d.get("telephone") else ""} pour connaître la démarche.</p>'
                    if d.get("contact") else "")
+        if d.get("contact_questions"):
+            contact += (f'<p class="small">Une question sur le formulaire : <a href="mailto:{esc(d["contact_questions"])}">'
+                        f'{esc(d["contact_questions"])}</a>.</p>')
         source = (f'<p class="small">Source : <a href="{esc(d["source_url"])}" target="_blank" rel="noopener">{esc(d["source"])}</a>. '
                   f'Vérifié le {esc(date_fr(d["verifie_le"]))}. La DDT peut changer sa démarche : en cas de doute, c\'est elle qui a raison.</p>'
                   if d.get("source_url") else "")
         cartes.append(f'''<li class="ddt-carte" id="ddt-{esc(code.lower())}" data-ddt-dep="{esc(code)}">
-  <div class="ddt-tete"><span class="dep-code">{esc(code)}</span><h3>{esc(nom)}</h3><span class="chip">{esc(mode)}</span></div>
+  <div class="ddt-tete"><span class="dep-code">{esc(code)}</span><h3>{esc(nom)}</h3><span class="chip{" chip-flag" if alerte else ""}">{esc(mode)}</span>{'<span class="chip chip-flag">À confirmer</span>' if d.get("a_confirmer") else ""}</div>
   <p class="small">{esc(d.get("service", ""))}</p>
   <p>{esc(d.get("resume", ""))}</p>
   {contact}

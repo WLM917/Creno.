@@ -1076,7 +1076,7 @@ input[type="checkbox"] { accent-color: var(--signal); width: 1.2rem; height: 1.2
 .raccourcis .btn-ghost { background: transparent; color: var(--ink); }
 .raccourcis .btn-ghost:hover { background: var(--ink); color: var(--paper); }
 .raccourcis-haut { margin-top: -1.75rem; }
-#villes, #declarer { scroll-margin-top: 1rem; }
+#villes, #declarer, #classement { scroll-margin-top: 1rem; }
 
 /* ---------- Détails des lignes du classement ---------- */
 .rank-deprank { font-size: 0.88rem; font-weight: 700; margin-top: 0.15rem; }

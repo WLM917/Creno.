@@ -957,11 +957,11 @@ def build(out_dir=ROOT, explicit=False, only=None):
     </details>'''
         villes_block = f'''<section class="block" id="villes" aria-labelledby="villes-title">
     <h2 id="villes-title">Auto-écoles par {mot_villes(d["code"])} {esc(en_dep(d["nom"]))}</h2>
-    <ul class="city-links">{ville_links}</ul>
     <nav class="raccourcis" aria-label="Raccourcis">
-      <a class="btn btn-ghost btn-small" href="{L("auto-ecoles/")}">Auto-écoles par département</a>
+      <a class="btn btn-ghost btn-small" href="#classement"><span aria-hidden="true">↑&nbsp;</span>Auto-écoles du département</a>
       <a class="btn btn-ghost btn-small" href="#declarer"><span aria-hidden="true">↓&nbsp;</span>Tu as passé ton permis récemment ?</a>
     </nav>
+    <ul class="city-links">{ville_links}</ul>
   </section>''' if ville_links else ""
         # Raccourcis sous les filtres : la liste des villes et le formulaire de prix sont tout en bas de la page.
         lien_villes = (f'\n    <a class="btn btn-ghost btn-small" href="#villes"><span aria-hidden="true">↓&nbsp;</span>Auto-écoles par {mot_villes(d["code"])}</a>'
@@ -1012,7 +1012,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
   </form>
   {raccourcis}
 
-  <div class="summary-block">
+  <div class="summary-block" id="classement">
     <p class="zone-summary" id="zone-summary" aria-live="polite">{plural(nb, "auto-école classée", "auto-écoles classées")} dans le {esc(d["code"])}.</p>
     <p class="small">{price_note} Données de la Sécurité routière, fichier du {date_import}. <a href="{L("methode/")}">Comment on calcule l'indice</a></p>
     <p class="rank-hint">Touche une auto-école pour la contacter : téléphone, itinéraire ou message tout prêt. Le permis demande au moins 20 heures de conduite (13 h en boîte automatique) : c'est souvent ce que comprend le forfait, les heures en plus se paient à l'unité.</p>

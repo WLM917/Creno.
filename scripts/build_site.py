@@ -955,10 +955,20 @@ def build(out_dir=ROOT, explicit=False, only=None):
       <p class="small">Elles enseignent le permis B, mais n'ont pas encore de taux publié, souvent parce qu'elles sont récentes ou présentent peu d'élèves. Elles ne sont donc pas classées.</p>
       <ul class="unranked-list">{items}</ul>
     </details>'''
-        villes_block = f'''<section class="block" aria-labelledby="villes-title">
+        villes_block = f'''<section class="block" id="villes" aria-labelledby="villes-title">
     <h2 id="villes-title">Auto-écoles par {mot_villes(d["code"])} {esc(en_dep(d["nom"]))}</h2>
     <ul class="city-links">{ville_links}</ul>
+    <nav class="raccourcis" aria-label="Raccourcis">
+      <a class="btn btn-ghost btn-small" href="{L("auto-ecoles/")}">Auto-écoles par département</a>
+      <a class="btn btn-ghost btn-small" href="#declarer"><span aria-hidden="true">↓&nbsp;</span>Tu as passé ton permis récemment ?</a>
+    </nav>
   </section>''' if ville_links else ""
+        # Raccourcis sous les filtres : la liste des villes et le formulaire de prix sont tout en bas de la page.
+        lien_villes = (f'\n    <a class="btn btn-ghost btn-small" href="#villes"><span aria-hidden="true">↓&nbsp;</span>Auto-écoles par {mot_villes(d["code"])}</a>'
+                       if ville_links else "")
+        raccourcis = f'''<nav class="raccourcis raccourcis-haut" aria-label="Raccourcis">{lien_villes}
+    <a class="btn btn-ghost btn-small" href="#declarer"><span aria-hidden="true">↓&nbsp;</span>Tu as passé ton permis récemment ?</a>
+  </nav>'''
         title = f'Auto-écoles {d["nom"]} ({d["code"]}) : classement et taux de réussite | Créno'
         best = rows[0]["e"]
         description = (f'Compare les {nb} auto-écoles du {d["code"]} sur leur taux de réussite officiel au permis B. '
@@ -1000,6 +1010,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
 {garder_inconnus}      </div>
     </details>
   </form>
+  {raccourcis}
 
   <div class="summary-block">
     <p class="zone-summary" id="zone-summary" aria-live="polite">{plural(nb, "auto-école classée", "auto-écoles classées")} dans le {esc(d["code"])}.</p>

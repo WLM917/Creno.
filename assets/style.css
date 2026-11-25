@@ -1070,6 +1070,14 @@ input[type="checkbox"] { accent-color: var(--signal); width: 1.2rem; height: 1.2
 .city-links a { font-weight: 700; overflow-wrap: anywhere; }
 .city-links span { color: var(--muted); font-variant-numeric: tabular-nums; }
 
+/* Raccourcis des pages département : liste des villes, départements, formulaire de prix (tout en bas) */
+.raccourcis { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.raccourcis .btn { align-self: auto; text-align: center; }
+.raccourcis .btn-ghost { background: transparent; color: var(--ink); }
+.raccourcis .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+.raccourcis-haut { margin-top: -1.75rem; }
+#villes, #declarer { scroll-margin-top: 1rem; }
+
 /* ---------- Détails des lignes du classement ---------- */
 .rank-deprank { font-size: 0.88rem; font-weight: 700; margin-top: 0.15rem; }
 .rank-row.is-target, .rank-row:target { background: var(--target); box-shadow: -16px 0 0 var(--target), 16px 0 0 var(--target); }

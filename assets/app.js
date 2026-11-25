@@ -453,6 +453,54 @@
       if (cible && dedans.contains(cible)) setTimeout(function () { cible.scrollIntoView({ block: "start" }); }, 0);
     }
 
+    // Démarches des départements (table ddt_demarches), réservées aux acheteurs du pack
+    var MODES_DDT = { formulaire: "Formulaire en ligne", dossier: "Sur dossier, par e-mail", email: "Demande par e-mail",
+      rdvpermis: "Directement sur RdvPermis", ferme: "Formulaire fermé" };
+    function lienSur(u) { return /^https?:\/\/[^\s"<>]+$/.test(String(u || "")); }
+    function mailSur(m) { return /^[^@\s"<>]+@[^@\s"<>]+\.[^@\s"<>]+$/.test(String(m || "")); }
+    function ficheDdt(code, nom, f) {
+      var alerte = f.mode === "ferme" || f.a_confirmer;
+      var liste = function (t, items) {
+        return items && items.length ? "<h4>" + t + '</h4><ul class="tips">' + items.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "";
+      };
+      var contact = mailSur(f.contact) ? '<p>Écris à <a href="mailto:' + esc(f.contact) + '">' + esc(f.contact) + "</a>" +
+        (f.telephone ? " ou appelle le " + esc(f.telephone) : "") + " pour connaître la démarche.</p>" : "";
+      if (mailSur(f.contact_questions)) contact += '<p class="small">Une question sur le formulaire : <a href="mailto:' + esc(f.contact_questions) + '">' + esc(f.contact_questions) + "</a>.</p>";
+      return '<div class="ddt-carte"><div class="ddt-tete"><span class="dep-code">' + esc(code) + "</span><h3>" + esc(nom) + "</h3>" +
+        '<span class="chip' + (alerte ? " chip-flag" : "") + '">' + esc(MODES_DDT[f.mode] || "Démarche") + "</span>" +
+        (f.a_confirmer ? '<span class="chip chip-flag">À confirmer</span>' : "") + "</div>" +
+        (f.service ? '<p class="small">' + esc(f.service) + "</p>" : "") + (f.resume ? "<p>" + esc(f.resume) + "</p>" : "") + contact +
+        liste("Les conditions", f.conditions) + liste("Les papiers à joindre", f.pieces) +
+        (lienSur(f.lien) ? '<div class="rank-actions"><a class="btn btn-small btn-signal" href="' + esc(f.lien) + '" target="_blank" rel="noopener">' +
+          esc(f.lien_txt || "Ouvrir la démarche officielle") + "</a></div>" : "") +
+        (lienSur(f.source_url) ? '<p class="small">Source : <a href="' + esc(f.source_url) + '" target="_blank" rel="noopener">' + esc(f.source || "source officielle") + "</a>" +
+          (f.verifie_le ? ". Vérifié le " + esc(jourTxt(f.verifie_le)) : "") + ".</p>" : "") + "</div>";
+    }
+    function afficherDemarches(j) {
+      var box = $("#demarches");
+      if (!box) return;
+      var achete = !!(j.pack && j.pack.achete);
+      box.hidden = !achete;
+      if (!achete) return;
+      var fiches = {};
+      (j.ddt || []).forEach(function (r) { if (r && r.fiche) fiches[r.departement] = r.fiche; });
+      var sel = $("#demarches-dep"), zone = $("#demarches-zone");
+      function montrer() {
+        var dep = sel.value;
+        if (!dep) {
+          zone.innerHTML = '<p class="small">' + plural(Object.keys(fiches).length, "département vérifié", "départements vérifiés") + " pour l'instant. Choisis le tien.</p>";
+          return;
+        }
+        var opt = sel.options[sel.selectedIndex];
+        var nom = String(opt ? opt.textContent : dep).replace(/\s*\([0-9AB]+\)\s*$/, "");
+        zone.innerHTML = fiches[dep] ? ficheDdt(dep, nom, fiches[dep])
+          : '<div class="ddt-inconnu"><p><strong>On n\'a pas encore vérifié la démarche de ce département.</strong> Envoie « Préparer ma demande de place » juste en dessous : on écrit à sa DDT pour toi et on te prépare ta demande.</p></div>';
+      }
+      if (!sel.value) sel.value = (j.profil && j.profil.departement) || ((j.alertes || [])[0] || {}).departement || "";
+      if (!sel.getAttribute("data-pret")) { sel.setAttribute("data-pret", "1"); sel.addEventListener("change", montrer); }
+      montrer();
+    }
+
     // Demande de place préparée (comprise dans le pack) : William la prépare et l'envoie par e-mail
     function afficherDossier(j) {
       var box = $("#dossier");
@@ -523,6 +571,7 @@
           '<a class="link-strong" href="' + esc(link("pack-candidat-libre/")) + '">Découvrir le pack</a>' +
           '<p class="small">Tu l\'as acheté avant d\'avoir un compte ? Utilise le lien reçu après ton paiement, ou écris-nous : on le relie à ton compte.</p>';
       }
+      afficherDemarches(j);
       afficherDossier(j);
       // Mes alertes
       var za = $("#alertes-zone");
@@ -1322,7 +1371,7 @@
         texte.push("Tu peux demander une place d'examen en candidat libre. Souvent, il faut habiter dans le département où tu la demandes.");
         if (r.appris === "non") texte.push("Attention : certaines DDT, comme celle de la Somme, demandent d'avoir appris à conduire avec des proches, sans cours payants. Vérifie la démarche de ton département.");
         if (r.voiture === "non") texte.push("Il te faudra une voiture à double commande assurée pour le jour de l'examen : certaines DDT demandent même un devis de location dans le dossier.");
-        liens.push(lienBtn(a.pack, "Le pack prépare ta demande de place", true), lienBtn(a.ddt + "#departements", "La démarche de mon département"));
+        liens.push(lienBtn(a.pack, "Le pack prépare ta demande de place", true), lienBtn(a.ddt, "Comment demander une place"));
       }
       box.className = "test-resultat " + classe;
       box.innerHTML = "<h3>" + esc(titre) + "</h3>" + texte.map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("") +
@@ -1330,31 +1379,6 @@
       box.hidden = false;
       box.scrollIntoView({ block: "nearest", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     });
-  }
-
-  /* ---------- Démarche de chaque département (page Demander une place) ---------- */
-  function initDdt() {
-    var sel = $("[data-ddt-select]");
-    if (!sel) return;
-    var cartes = $all("[data-ddt-dep]");
-    var inconnu = $("#ddt-inconnu");
-    function montrer() {
-      var dep = sel.value;
-      var trouve = false;
-      cartes.forEach(function (c) {
-        var ok = !dep || c.getAttribute("data-ddt-dep") === dep;
-        c.hidden = !ok;
-        c.classList.toggle("is-choisi", !!dep && ok);
-        if (dep && ok) trouve = true;
-      });
-      inconnu.hidden = !dep || trouve;
-      if (dep && !trouve) cartes.forEach(function (c) { c.hidden = false; });
-    }
-    sel.addEventListener("change", montrer);
-    // Arrivée avec #ddt-67 : ce département est choisi
-    var m = /^#ddt-([0-9a-z]{2,3})$/.exec(location.hash);
-    if (m) sel.value = m[1].toUpperCase();
-    montrer();
   }
 
   /* ---------- Pages de confirmation (alertes, accès au pack) ---------- */
@@ -1931,6 +1955,7 @@
           courbe(j.jours);
           afficher();
           afficherDemandes(j, code);
+          if (etat.apresChargement) etat.apresChargement();
           $("#adm-maj").textContent = "Mis à jour à " + new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) + ".";
         });
       }).catch(function (e) { setStatus(statusEl, false, e.message); $("#adm-maj").textContent = ""; });
@@ -1945,6 +1970,69 @@
       });
     });
     $("#adm-actualiser").addEventListener("click", function () { if (etat.code) charger(etat.code); });
+    // Démarches des départements, réservées au pack (fonction stats, actions ddt_enregistrer / ddt_supprimer)
+    var fd = $("#ddt-admin-form");
+    var MODES_ADM = { formulaire: "Formulaire en ligne", email: "Demande par e-mail", dossier: "Sur dossier",
+      rdvpermis: "Directement sur RdvPermis", ferme: "Formulaire fermé" };
+    function listeDdt() {
+      var rows = (etat.j && etat.j.ddt) || [];
+      $("#adm-ddt-liste").innerHTML = rows.map(function (r) {
+        var f = r.fiche || {};
+        return '<tr><td class="cell-titre"><strong>' + esc(r.departement) + "</strong></td>" +
+          '<td data-label="Démarche">' + esc(MODES_ADM[f.mode] || f.mode || "") + (f.a_confirmer ? " · à confirmer" : "") + "</td>" +
+          '<td data-label="Vérifiée le">' + esc(f.verifie_le || "") + "</td>" +
+          '<td data-label="Actions"><div class="rap-actions"><button class="btn btn-small btn-ghost" type="button" data-ddt-modifier="' + esc(r.departement) + '">Modifier</button>' +
+          '<button class="btn btn-small btn-ghost" type="button" data-ddt-supprimer="' + esc(r.departement) + '">Supprimer</button></div></td></tr>';
+      }).join("") || '<tr><td colspan="4">Aucune démarche pour l\'instant.</td></tr>';
+    }
+    etat.apresChargement = listeDdt;
+    if (fd) {
+      $("#adm-ddt-liste").addEventListener("click", function (ev) {
+        var m = ev.target.closest && ev.target.closest("[data-ddt-modifier]");
+        var d = ev.target.closest && ev.target.closest("[data-ddt-supprimer]");
+        var rows = (etat.j && etat.j.ddt) || [];
+        if (m) {
+          var dep = m.getAttribute("data-ddt-modifier");
+          var r = rows.filter(function (x) { return x.departement === dep; })[0];
+          var f = (r && r.fiche) || {};
+          fd.departement.value = dep;
+          ["mode", "service", "resume", "lien", "lien_txt", "contact", "telephone", "source", "source_url", "verifie_le"].forEach(function (k) { fd[k].value = f[k] || ""; });
+          fd.conditions.value = (f.conditions || []).join("\n");
+          fd.pieces.value = (f.pieces || []).join("\n");
+          fd.a_confirmer.checked = !!f.a_confirmer;
+          $("#ddt-admin-titre").scrollIntoView({ block: "start" });
+        }
+        if (d && etat.code) {
+          var depS = d.getAttribute("data-ddt-supprimer");
+          d.disabled = true;
+          callFn("stats", { action: "ddt_supprimer", code: etat.code, departement: depS }).then(function () {
+            etat.j.ddt = rows.filter(function (x) { return x.departement !== depS; });
+            listeDdt();
+          }).catch(function (e) { d.disabled = false; alertStatus(d, e.message); });
+        }
+      });
+      fd.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var st = $(".form-status", fd), btn = $("button[type=submit]", fd);
+        if (!etat.code) { setStatus(st, false, "Ouvre d'abord le tableau de bord avec ton code."); return; }
+        var fiche = {};
+        ["mode", "service", "resume", "lien", "lien_txt", "contact", "telephone", "source", "source_url", "verifie_le", "conditions", "pieces"]
+          .forEach(function (k) { fiche[k] = fd[k].value.trim(); });
+        fiche.a_confirmer = fd.a_confirmer.checked;
+        btn.disabled = true; st.textContent = "Enregistrement…"; st.className = "form-status";
+        callFn("stats", { action: "ddt_enregistrer", code: etat.code, departement: fd.departement.value, fiche: fiche }).then(function (r) {
+          btn.disabled = false;
+          var rows = ((etat.j && etat.j.ddt) || []).filter(function (x) { return x.departement !== r.departement; });
+          rows.push({ departement: r.departement, fiche: r.fiche });
+          rows.sort(function (a, b) { return a.departement.localeCompare(b.departement, "fr", { numeric: true }); });
+          etat.j.ddt = rows;
+          listeDdt();
+          setStatus(st, true, "C'est enregistré : les acheteurs du pack voient la démarche du " + r.departement + " dans leur compte.");
+          fd.reset();
+        }).catch(function (e) { btn.disabled = false; setStatus(st, false, e.message); });
+      });
+    }
+
     // Prévenir les abonnés d'un département (fonction alertes, action annonce)
     var fa = $("#annonce-form");
     if (fa) fa.addEventListener("submit", function (ev) {
@@ -2000,7 +2088,7 @@
           " · Voiture double commande : " + on(x.voiture_ok) + " · Appris avec des proches : " + on(x.appris_proches) + "</span>" +
           (x.autres_departements ? '<span class="sub">Prêt à aller aussi : ' + esc(x.autres_departements) + "</span>" : "") +
           (x.message ? '<span class="sub">« ' + esc(x.message) + " »</span>" : "") +
-          '<span class="sub">Envoie-lui par e-mail la démarche de sa DDT (fiche du département sur la page « Demander une place »), le formulaire ou l\'e-mail à envoyer et la liste des papiers, puis clique « Envoyé ».</span>';
+          '<span class="sub">Envoie-lui par e-mail la démarche de sa DDT (rubrique « Démarches des départements »), le formulaire ou l\'e-mail à envoyer et la liste des papiers. Démarche inconnue : écris à sa DDT et envoie-lui un modèle de demande écrite. Puis clique « Envoyé ».</span>';
       }],
       ["liens", "Comptes pros à vérifier", "Valider", function (x) {
         var ae = String(x.pro_ref || "").indexOf("ae-") === 0;
@@ -2361,7 +2449,6 @@
     initChecklist();
     initAlertes();
     initTestEligibilite();
-    initDdt();
     initEtat();
     initPack();
     initBadge();

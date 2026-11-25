@@ -20,19 +20,11 @@
 
   {{test_eligibilite}}
 
-  <section class="block" id="departements" aria-labelledby="ddt-dep-titre">
+  <section class="block note-block" id="departements" aria-labelledby="ddt-dep-titre">
     <h2 id="ddt-dep-titre">La démarche de ton département</h2>
-    <div class="field ddt-choix"><label for="ddt-dep">Ton département</label>
-      <select id="ddt-dep" data-ddt-select><option value="">Choisis</option>{{options_departements}}</select>
-    </div>
-    <div class="ddt-inconnu" id="ddt-inconnu" role="status" hidden>
-      <p><strong>On n'a pas encore vérifié la démarche de ce département.</strong> Écris à sa DDT (ou à sa préfecture, au bureau de l'éducation routière) et demande : « Comment obtenir une place d'examen pratique du permis B en candidat libre ? Quelles conditions, et quels papiers faut-il envoyer ? »</p>
-      <p>Tu trouves son adresse sur le site de la préfecture du département, rubrique sécurité routière ou permis de conduire. Ensuite, <a href="#partager">dis-nous ce qu'elle t'a répondu</a> : on l'ajoute ici pour les prochains candidats.</p>
-    </div>
-    <p class="small">{{nb_ddt}} renseignés pour l'instant. La plupart des départements ne publient pas leur démarche en ligne : on les ajoute dès qu'on a une source officielle ou une réponse écrite de la DDT.</p>
-    <ul class="ddt-liste">
-      {{ddt_cartes}}
-    </ul>
+    <p>Chaque département fait différemment : formulaire en ligne, dossier par e-mail, réservation directe sur RdvPermis… et certains formulaires ferment sans prévenir. La plupart ne publient même pas leur démarche.</p>
+    <p>Avec le <strong>Pack candidat libre</strong>, tu as accès aux démarches qu'on a déjà vérifiées (contact, formulaire, papiers à joindre). Si on n'a pas encore celle de ton département, on écrit à ta DDT pour toi et on te prépare ta demande.</p>
+    <a class="btn btn-signal" href="{{root}}pack-candidat-libre/">Découvrir le pack ({{prix_pack}})</a>
   </section>
 
   <section class="block note-block" aria-labelledby="ddt-avant">
@@ -48,7 +40,7 @@
 
   <section class="block panel" id="partager" aria-labelledby="partager-titre">
     <h2 id="partager-titre">Ta DDT t'a répondu ? Partage la démarche</h2>
-    <p>Recopie ce qu'elle t'a dit (sans ton nom ni ton numéro de dossier). On vérifie, et on l'ajoute pour aider les autres candidats.</p>
+    <p>Recopie ce qu'elle t'a dit (sans ton nom ni ton numéro de dossier). On vérifie, et on l'ajoute aux démarches du Pack candidat libre.</p>
     <form class="form-grid" id="ddt-form" data-form-type="contact_pro">
       <input type="hidden" name="type" value="eleve">
       <input type="hidden" name="nom" value="Démarche d'une DDT (page Demander une place)">
@@ -62,12 +54,6 @@
         <p class="form-status" role="status"></p>
       </div>
     </form>
-  </section>
-
-  <section class="block note-block" aria-labelledby="ddt-pack">
-    <h2 id="ddt-pack">Tu veux qu'on t'aide à monter ton dossier ?</h2>
-    <p>Avec le Pack candidat libre, on te prépare ta demande de place pour ta DDT : le bon formulaire ou le bon e-mail, et la liste exacte des papiers à joindre. Tu vérifies, et tu l'envoies toi-même. Tu reçois aussi les alertes de tous les départements que tu veux.</p>
-    <a class="link-strong" href="{{root}}pack-candidat-libre/">Découvrir le pack ({{prix_pack}})</a>
   </section>
 
   <p class="pledge">Créno est un service privé et indépendant, ce n'est pas un site officiel. Les démarches auprès de la DDT et de RdvPermis sont gratuites, et Créno n'a aucun accès privilégié aux places d'examen.</p>

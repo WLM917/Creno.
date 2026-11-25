@@ -3,7 +3,9 @@
 // La connexion elle-même (inscription, mot de passe) passe par Supabase Auth, directement depuis le site.
 // Cette fonction reçoit le jeton de connexion { jeton } et ne renvoie que ce qui appartient au compte :
 //   moi        {}                                -> profil, pack acheté, alertes, demandes (avec les réponses des pros),
-//                                                   établissements reliés (pros) et leurs chiffres une fois vérifiés
+//                                                   établissements reliés (pros) et leurs chiffres une fois vérifiés.
+//                                                   Acheteur du pack : aussi les démarches des départements (table
+//                                                   ddt_demarches), réservées au pack.
 //   profil     { prenom?, telephone?, departement? } -> met à jour les informations (toutes facultatives)
 //   pack       {}                                -> lien de téléchargement du pack (1 heure), si le compte l'a acheté
 //   pack_email {}                                -> envoie ce lien par e-mail (valable 7 jours)
@@ -198,6 +200,10 @@ async function moi(body: Record<string, unknown>) {
         .then((r) => r.data ?? []).catch(() => [])
       : Promise.resolve([]),
   ]);
+  // Démarches pour demander une place, département par département : réservées aux acheteurs du pack
+  const ddt = achat
+    ? await db("ddt_demarches?select=departement,fiche,maj_le&order=departement").then((r) => r.data ?? []).catch(() => [])
+    : [];
   // Réponses des pros aux demandes de l'élève
   const ids = (demandes as { id: number }[]).map((d) => d.id);
   const reponses = ids.length
@@ -226,7 +232,7 @@ async function moi(body: Record<string, unknown>) {
     user: { email: u.email, cree: u.cree },
     profil: { type: p.type, pro_type: p.pro_type, prenom: p.prenom ?? null, telephone: p.telephone ?? null, departement: p.departement ?? null },
     pack: achat ? { achete: true, date: achat.created_at } : { achete: false },
-    alertes, demandes, liens, reponses_envoyees: envoyees, dossiers,
+    alertes, demandes, liens, reponses_envoyees: envoyees, dossiers, ddt,
     emails: !!env("RESEND_API_KEY"),
   });
 }

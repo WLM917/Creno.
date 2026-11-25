@@ -634,42 +634,6 @@ def test_eligibilite(L, pack_href):
 </section>'''
 
 
-def ddt_html(L, ddt, deps_by_code):
-    """Démarche pour demander une place en candidat libre, par département (data/ddt.json, vérifiée à la main)."""
-    deps = ddt.get("departements") or {}
-    cartes = []
-    for code in sorted(deps, key=lambda c: (len(c), c)):
-        d = deps[code]
-        nom = deps_by_code.get(code, {}).get("nom", code)
-        mode = {"formulaire": "Formulaire en ligne", "dossier": "Sur dossier, par e-mail", "email": "Demande par e-mail",
-                "rdvpermis": "Directement sur RdvPermis", "ferme": "Formulaire fermé"}.get(d.get("mode"), "Démarche")
-        alerte = d.get("mode") == "ferme" or d.get("a_confirmer")
-        conditions = "".join(f"<li>{esc(c)}</li>" for c in d.get("conditions") or [])
-        pieces = "".join(f"<li>{esc(p)}</li>" for p in d.get("pieces") or [])
-        lien = (f'<a class="btn btn-small btn-signal" href="{esc(d["lien"])}" target="_blank" rel="noopener">'
-                f'{esc(d.get("lien_txt") or "Ouvrir la démarche officielle")}</a>') if d.get("lien") else ""
-        contact = (f'<p>Écris à <a href="mailto:{esc(d["contact"])}">{esc(d["contact"])}</a>'
-                   f'{(" ou appelle le " + esc(d["telephone"])) if d.get("telephone") else ""} pour connaître la démarche.</p>'
-                   if d.get("contact") else "")
-        if d.get("contact_questions"):
-            contact += (f'<p class="small">Une question sur le formulaire : <a href="mailto:{esc(d["contact_questions"])}">'
-                        f'{esc(d["contact_questions"])}</a>.</p>')
-        source = (f'<p class="small">Source : <a href="{esc(d["source_url"])}" target="_blank" rel="noopener">{esc(d["source"])}</a>. '
-                  f'Vérifié le {esc(date_fr(d["verifie_le"]))}. La DDT peut changer sa démarche : en cas de doute, c\'est elle qui a raison.</p>'
-                  if d.get("source_url") else "")
-        cartes.append(f'''<li class="ddt-carte" id="ddt-{esc(code.lower())}" data-ddt-dep="{esc(code)}">
-  <div class="ddt-tete"><span class="dep-code">{esc(code)}</span><h3>{esc(nom)}</h3><span class="chip{" chip-flag" if alerte else ""}">{esc(mode)}</span>{'<span class="chip chip-flag">À confirmer</span>' if d.get("a_confirmer") else ""}</div>
-  <p class="small">{esc(d.get("service", ""))}</p>
-  <p>{esc(d.get("resume", ""))}</p>
-  {contact}
-  {f'<h4>Les conditions</h4><ul class="tips">{conditions}</ul>' if conditions else ""}
-  {f'<h4>Les papiers à joindre</h4><ul class="tips">{pieces}</ul>' if pieces else ""}
-  {f'<div class="rank-actions">{lien}</div>' if lien else ""}
-  {source}
-</li>''')
-    return "".join(cartes)
-
-
 def pros_html(L, pros):
     """Annuaire des moniteurs et auto-écoles vérifiés (data/pros.json)."""
     items = [p for p in pros if p.get("verifie", True)]
@@ -1290,24 +1254,22 @@ def build(out_dir=ROOT, explicit=False, only=None):
                      "Les élèves de ton département cherchent un examen blanc, des heures avec un moniteur ou une voiture à double commande. Réponds-leur via Créno.",
                      body, [jsonld_ariane([("Accueil", ""), ("Espace pros", "pro/"), ("Demandes d'élèves", path)])], "pro"), 0.4)
 
-    # --- demander une place en candidat libre, département par département (data/ddt.json)
-    ddt = json.loads((DATA / "ddt.json").read_text(encoding="utf-8")) if (DATA / "ddt.json").exists() else {}
+    # --- demander une place en candidat libre. Les démarches de chaque département sont réservées au pack :
+    # elles sont dans Supabase (table ddt_demarches), plus dans le dépôt public.
     path = "candidat-libre/demander-une-place/"
     L = Links(depuis(path), explicit)
-    nb_ddt = len(ddt.get("departements") or {})
     body = fill((TPL / "demande-place.html").read_text(encoding="utf-8"), {
         **common, "root": L.root, "options_departements": options_deps, "prix_pack": esc(PRIX_PACK),
         "fil_ariane": fil_ariane(L, [("Accueil", ""), ("Candidat libre", "candidat-libre/"), ("Demander une place", None)]),
         "test_eligibilite": test_eligibilite(L, L("pack-candidat-libre/")),
-        "ddt_cartes": ddt_html(L, ddt, deps_by_code), "nb_ddt": plural(nb_ddt, "département", "départements"),
         "options_ddt_form": "".join(f'<option value="DDT du {esc(d["code"])} ({esc(d["nom"])})">{esc(d["nom"])} ({esc(d["code"])})</option>'
                                     for d in deps),
     })
     if explicit:
         body = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', body)
-    write(path, page(L, path, "candidat-libre", "Demander une place d'examen en candidat libre à la DDT, par département | Créno",
+    write(path, page(L, path, "candidat-libre", "Demander une place d'examen en candidat libre à la DDT | Créno",
                      "Pas de place candidat libre sur RdvPermis ? Dans la plupart des départements, il faut la demander à la DDT. "
-                     "Conditions, papiers et démarche officielle, département par département.",
+                     "Ce qu'est la DDT, le test pour savoir si tu peux passer en candidat libre, et comment monter ta demande.",
                      body, [jsonld_ariane([("Accueil", ""), ("Candidat libre", "candidat-libre/"), ("Demander une place", path)])],
                      "candidat-libre"), 0.8)
 

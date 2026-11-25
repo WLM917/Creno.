@@ -10,6 +10,8 @@
 //                                    courbe jour par jour, ventes Stripe, abonnés aux alertes, demandes d'élèves,
 //                                    réponses des pros, liens des rapports, formulaires à traiter
 //   traiter { code, quoi, id, decision } -> publier des tarifs, marquer un pro / un loueur / un message comme traité
+//   ddt_enregistrer { code, departement, fiche } -> ajoute ou modifie la démarche d'un département (réservée au pack)
+//   ddt_supprimer   { code, departement }        -> supprime la démarche d'un département
 //
 // Vie privée : on ne garde jamais l'adresse IP. L'empreinte est calculée à partir de l'IP, du navigateur,
 // du jour et d'une phrase secrète : elle change chaque jour et ne permet pas de suivre quelqu'un.
@@ -246,6 +248,9 @@ async function admin(body: Record<string, unknown>) {
       db("creno_pro_demandes?traite=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
     ]);
   // Comptes : élèves, pros, et pros qui attendent ta vérification (pour voir leurs chiffres)
+  // Démarches des départements, réservées aux acheteurs du pack (table ddt_demarches)
+  const ddt = await db("ddt_demarches?select=departement,fiche,maj_le&order=departement")
+    .then((r) => r.data ?? []).catch(() => []);
   // Demandes de place à préparer pour les acheteurs du pack (table dossiers_ddt)
   const dossiers = await db("dossiers_ddt?traite=eq.false&select=id,created_at,email,departement,ville,code_ok,libre_ok," +
     "accompagnateur_ok,voiture_ok,appris_proches,autres_departements,message&order=created_at&limit=50")
@@ -289,6 +294,7 @@ async function admin(body: Record<string, unknown>) {
     demandes: { ouvertes: demandesOuvertes, recues_30j: demandes30, recues_7j: demandes7, recues_tout: demandesTout, liste: demandes, reponses },
     comptes: { eleves: comptesEleves, pros: comptesPros },
     a_traiter: { dossiers, liens, creno_pro: crenoPro, tarifs, pros: prosProposes, loueurs, messages },
+    ddt,
   });
 }
 
@@ -319,6 +325,56 @@ async function traiter(body: Record<string, unknown>) {
   return reply(200, { ok: true });
 }
 
+// ---------------------------------------------------------------- démarches des départements (réservées au pack)
+const DEP = /^([0-9]{2,3}|2[AB])$/;
+const MODES_DDT = ["formulaire", "dossier", "email", "rdvpermis", "ferme"];
+const texte = (v: unknown, max: number) => {
+  const t = String(v ?? "").replace(/\s+/g, " ").trim();
+  return t ? t.slice(0, max) : undefined;
+};
+const lienOk = (v: unknown) => {
+  const t = String(v ?? "").trim();
+  return /^https?:\/\/[^\s"<>]+$/.test(t) && t.length <= 600 ? t : undefined;
+};
+const mailOk = (v: unknown) => {
+  const t = String(v ?? "").trim();
+  return /^[^@\s"<>]+@[^@\s"<>]+\.[^@\s"<>]+$/.test(t) && t.length <= 200 ? t : undefined;
+};
+const lignes = (v: unknown) => (Array.isArray(v) ? v : String(v ?? "").split("\n"))
+  .map((x) => texte(x, 240)).filter((x): x is string => !!x).slice(0, 15);
+
+async function ddtEnregistrer(body: Record<string, unknown>) {
+  if (!await codeOk(body)) return reply(403, { erreur: "Code incorrect." });
+  const departement = String(body.departement ?? "").toUpperCase();
+  if (!DEP.test(departement)) return reply(400, { erreur: "Choisis un département." });
+  const f = (body.fiche ?? {}) as Record<string, unknown>;
+  const mode = String(f.mode ?? "");
+  if (!MODES_DDT.includes(mode)) return reply(400, { erreur: "Choisis comment on demande une place (formulaire, e-mail…)." });
+  const resume = texte(f.resume, 1200);
+  if (!resume) return reply(400, { erreur: "Écris un résumé de la démarche." });
+  const verifie = /^\d{4}-\d{2}-\d{2}$/.test(String(f.verifie_le ?? "")) ? String(f.verifie_le) : jourParis(new Date());
+  const fiche: Record<string, unknown> = {
+    service: texte(f.service, 200), mode, resume, conditions: lignes(f.conditions), pieces: lignes(f.pieces),
+    lien: lienOk(f.lien), lien_txt: texte(f.lien_txt, 80), contact: mailOk(f.contact), telephone: texte(f.telephone, 60),
+    contact_questions: mailOk(f.contact_questions), source: texte(f.source, 300), source_url: lienOk(f.source_url),
+    verifie_le: verifie, a_confirmer: f.a_confirmer === true || f.a_confirmer === "oui",
+  };
+  for (const k of Object.keys(fiche)) if (fiche[k] === undefined) delete fiche[k];
+  await db("ddt_demarches?on_conflict=departement", {
+    method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify({ departement, fiche, maj_le: new Date().toISOString() }),
+  });
+  return reply(200, { ok: true, departement, fiche });
+}
+
+async function ddtSupprimer(body: Record<string, unknown>) {
+  if (!await codeOk(body)) return reply(403, { erreur: "Code incorrect." });
+  const departement = String(body.departement ?? "").toUpperCase();
+  if (!DEP.test(departement)) return reply(400, { erreur: "Département invalide." });
+  await db(`ddt_demarches?departement=eq.${departement}`, { method: "DELETE" });
+  return reply(200, { ok: true });
+}
+
 // ---------------------------------------------------------------- point d'entrée
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
@@ -336,6 +392,8 @@ Deno.serve(async (req) => {
       case "rapport": return await rapport(body);
       case "admin": return await admin(body);
       case "traiter": return await traiter(body);
+      case "ddt_enregistrer": return await ddtEnregistrer(body);
+      case "ddt_supprimer": return await ddtSupprimer(body);
       default: return reply(400, { erreur: "Action inconnue." });
     }
   } catch (e) {

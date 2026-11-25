@@ -55,7 +55,8 @@ supabase/migrations/*.sql         tables + sécurité. Toujours REJOUABLES (if n
                                   (demandes d'abonnement Créno Pro des auto-écoles, aucun accès public).
                                   Puis stats_boutons(depuis) et stats_jours(depuis) pour le tableau de bord.
                                   Puis comptes (profils, liens_pros, achats_pack, colonne user_id des formulaires).
-                                  Dernière : dossiers_ddt (demandes de place à préparer pour les acheteurs du pack)
+                                  Puis dossiers_ddt (demandes de place à préparer pour les acheteurs du pack).
+                                  Dernière : ddt_demarches (démarche de chaque département, réservée au pack)
 supabase/functions/alertes/       fonction serveur (Deno) : abonnement, paiement Stripe, confirmation,
                                   désabonnement, signalement de places + envoi des e-mails (Resend)
 supabase/functions/pack/          fonction serveur : vérifie le paiement Stripe, renvoie un lien de 1 h vers le PDF
@@ -100,12 +101,6 @@ data/loueurs.json                 loueurs de voitures à double commande (2 entr
                                   code_promo, reduction, lien_reservation
 data/partenaires.json             auto-écoles abonnées à Créno Pro (par numéro d'agrément : depuis, code_promo,
                                   reduction), vide pour l'instant ; à remplir à la main après chaque paiement
-data/ddt.json                     démarche pour demander une place en candidat libre, par département (46, 67, 80, 82, 83, 91
-                                  vérifiés le 25 novembre 2026) : service, mode (formulaire / dossier / email / rdvpermis / ferme),
-                                  conditions, papiers, contact, lien officiel, source et date, a_confirmer si la source n'est
-                                  pas datée. Les formulaires du Lot (46) et du Tarn-et-Garonne (82) sont fermés depuis le
-                                  5 mai 2026 : revérifier les liens (demarche.numerique.gouv.fr, ex-demarches-simplifiees.fr).
-                                  N'ajouter un département qu'avec une source officielle ou une réponse écrite de la DDT (règle 3).
 data/pros.json                    annuaire des moniteurs / auto-écoles pour examen blanc (vide, à remplir
                                   à la main après vérification de chaque pro)
 data/recherche.json               index de recherche des villes (généré)
@@ -195,11 +190,19 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   (réponse écrite de la DDT du Bas-Rhin, 30 avril 2026) : il faut les demander à la DDT (bureau de l'éducation
   routière), par formulaire en ligne (Lot, Somme, Tarn-et-Garonne) ou sur dossier par e-mail (Bas-Rhin).
   Souvent réservé aux habitants du département. La Somme exige d'avoir appris avec des proches, sans cours payants.
-- /candidat-libre/demander-une-place/ (templates/demande-place.html, fonctions test_eligibilite et ddt_html de
-  build_site.py) : ce qu'est la DDT, le test « Peux-tu passer en candidat libre ? » (calculé dans le navigateur,
-  rien n'est envoyé : initTestEligibilite), la fiche de chaque département vérifié (data/ddt.json, choix du
-  département : initDdt, lien direct #ddt-67), et un formulaire « Ta DDT t'a répondu ? » (Nous contacter,
-  type élève, département dans la colonne ville) pour enrichir data/ddt.json après vérification.
+- /candidat-libre/demander-une-place/ (templates/demande-place.html, fonction test_eligibilite de build_site.py) :
+  ce qu'est la DDT, le test « Peux-tu passer en candidat libre ? » (calculé dans le navigateur, rien n'est envoyé :
+  initTestEligibilite), un encadré qui renvoie vers le pack, et un formulaire « Ta DDT t'a répondu ? » (Nous contacter,
+  type élève, département dans la colonne ville).
+- **Les démarches de chaque département sont RÉSERVÉES AU PACK** (choix de William, 25 novembre 2026) : elles ne sont
+  plus sur la page publique ni dans le dépôt (public sur GitHub), mais dans la table Supabase ddt_demarches
+  (departement, fiche jsonb). La fonction compte les renvoie (moi -> ddt) seulement si le pack est acheté ;
+  section « La démarche de ton département » de « Gérer mon compte » (afficherDemarches). William les ajoute,
+  modifie et supprime depuis le tableau de bord (« Démarches des départements », fonction stats, actions
+  ddt_enregistrer / ddt_supprimer). Modes : formulaire, email, dossier, rdvpermis, ferme ; a_confirmer si la source
+  n'est pas datée. Au 25 novembre 2026 : 46 et 82 (formulaires fermés depuis le 5 mai 2026), 67, 80, 83, 91 (à confirmer).
+  La plupart des départements ne publient pas leur démarche : William écrit aux DDT (à la demande, quand un
+  acheteur du pack vient d'un département inconnu, et en avance pour l'Île-de-France).
 - Le même test est sur la page du pack, juste avant l'achat.
 
 ## Services payants (alertes, pack, Créno Pro)
@@ -228,7 +231,8 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   vide = lancement gratuit (les essais se prolongent tout seuls). `alertes_payantes` dans site.json
   doit être d'accord avec lui (textes du site), puis relancer build_site.py et pousser.
 - **Pack candidat libre** = alertes + aide à la demande de place (fusion du 25 novembre 2026, même prix 14,99 €) :
-  1. le guide PDF ; 2. la demande de place préparée : l'acheteur remplit « Préparer ma demande de place » dans
+  1. le guide PDF ; 2. les démarches des départements (dans le compte) et la demande de place préparée
+  (démarche inconnue : William écrit à la DDT et envoie un modèle de demande écrite dans le délai) : l'acheteur remplit « Préparer ma demande de place » dans
   son compte (action `dossier` de la fonction compte -> table dossiers_ddt, e-mail à William), William lui envoie
   par e-mail sous `delai_dossier_jours` (site.json, 7) la démarche de sa DDT, le formulaire ou l'e-mail à envoyer
   et la liste des papiers, puis clique « Envoyé » (tableau de bord, « À traiter ») ; 3. les alertes sans limite
@@ -448,8 +452,8 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
 3. **Annuaire des loueurs double commande** : inscription gratuite, Créno Pro 19,99 €/mois codé (formulaire + Stripe).
    Reste : recherche par ville, boîte manuelle/auto dans la fiche.
 4. **Trouver une date d'examen** : guide fait, page « Demander une place » (DDT par département, test
-   d'éligibilité), alertes communautaires codées et déployées (fonction `alertes`). À faire : vérifier et ajouter
-   d'autres départements dans data/ddt.json (en priorité l'Île-de-France : 91, 77, 78, 95, 45, 60).
+   d'éligibilité), alertes communautaires codées et déployées (fonction `alertes`). À faire : ajouter d'autres
+   départements depuis le tableau de bord (en priorité l'Île-de-France : 91, 77, 78, 95, 45, 60).
    Reste : brancher Resend (RESEND_API_KEY) et un domaine, sans quoi aucun e-mail ne part
    (les formulaires sont quand même enregistrés). Jamais de bot (règle 1).
 5. ~~Pages par ville et par département pour Google~~ : fait (1 892 pages).

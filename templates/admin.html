@@ -111,7 +111,7 @@
 
     <section class="block" aria-labelledby="adm-annonce-titre">
       <h2 id="adm-annonce-titre">Prévenir les abonnés d'un département</h2>
-      <p class="small">Quand la démarche d'un département change (nouveau formulaire de la DDT, demandes de places rouvertes…), envoie un e-mail à ceux qui le suivent. Mets aussi à jour sa fiche dans data/ddt.json (page « Demander une place »).</p>
+      <p class="small">Quand la démarche d'un département change (nouveau formulaire de la DDT, demandes de places rouvertes…), envoie un e-mail à ceux qui le suivent. Mets aussi à jour sa fiche juste en dessous, dans « Démarches des départements ».</p>
       <form class="form-grid adm-annonce" id="annonce-form">
         <div class="field"><label for="annonce-dep">Département</label>
           <select id="annonce-dep" name="departement" required><option value="">Choisis</option><option value="toutes">Tous les départements</option>{{options_departements}}</select>
@@ -121,6 +121,49 @@
         <label class="check-inline field-wide" for="annonce-ok"><input id="annonce-ok" type="checkbox" required> J'ai relu : l'e-mail part tout de suite, sans retour en arrière.</label>
         <div class="form-actions field-wide">
           <button class="btn" type="submit">Envoyer l'e-mail</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </section>
+
+    <section class="block" id="admin-ddt" aria-labelledby="adm-ddt-titre">
+      <h2 id="adm-ddt-titre">Démarches des départements (réservées au pack)</h2>
+      <p class="small">Seuls les acheteurs du pack les voient, dans leur compte. Ajoute un département dès que tu as une source officielle ou une réponse écrite de sa DDT. « Modifier » remplit le formulaire avec la fiche.</p>
+      <div class="table-scroll">
+        <table class="data-table stack">
+          <thead><tr><th scope="col">Département</th><th scope="col">Démarche</th><th scope="col">Vérifiée le</th><th scope="col">Actions</th></tr></thead>
+          <tbody id="adm-ddt-liste"></tbody>
+        </table>
+      </div>
+      <form class="form-grid" id="ddt-admin-form">
+        <h3 class="field-wide" id="ddt-admin-titre">Ajouter ou modifier un département</h3>
+        <div class="field"><label for="ddta-dep">Département</label>
+          <select id="ddta-dep" name="departement" required><option value="">Choisis</option>{{options_departements}}</select>
+        </div>
+        <div class="field"><label for="ddta-mode">Comment on demande une place</label>
+          <select id="ddta-mode" name="mode" required>
+            <option value="">Choisis</option>
+            <option value="formulaire">Formulaire en ligne</option>
+            <option value="email">Demande par e-mail</option>
+            <option value="dossier">Sur dossier, par e-mail ou courrier</option>
+            <option value="rdvpermis">Directement sur RdvPermis</option>
+            <option value="ferme">Formulaire fermé (contact seulement)</option>
+          </select>
+        </div>
+        <div class="field field-wide"><label for="ddta-service">Service (facultatif)</label><input id="ddta-service" name="service" maxlength="200" placeholder="Ex. Bureau de l'éducation routière, DDT du Loiret"></div>
+        <div class="field field-wide"><label for="ddta-resume">Résumé de la démarche</label><textarea id="ddta-resume" name="resume" rows="3" required maxlength="1200"></textarea></div>
+        <div class="field"><label for="ddta-cond">Conditions (une par ligne)</label><textarea id="ddta-cond" name="conditions" rows="5"></textarea></div>
+        <div class="field"><label for="ddta-pieces">Papiers à joindre (un par ligne)</label><textarea id="ddta-pieces" name="pieces" rows="5"></textarea></div>
+        <div class="field"><label for="ddta-lien">Lien du formulaire officiel (facultatif)</label><input id="ddta-lien" name="lien" type="url" maxlength="600"></div>
+        <div class="field"><label for="ddta-lientxt">Texte du bouton (facultatif)</label><input id="ddta-lientxt" name="lien_txt" maxlength="80" placeholder="Ex. Le formulaire officiel du Loiret"></div>
+        <div class="field"><label for="ddta-contact">E-mail de la DDT (facultatif)</label><input id="ddta-contact" name="contact" type="email" maxlength="200"></div>
+        <div class="field"><label for="ddta-tel">Téléphone (facultatif)</label><input id="ddta-tel" name="telephone" maxlength="60"></div>
+        <div class="field"><label for="ddta-source">Source</label><input id="ddta-source" name="source" maxlength="300" placeholder="Ex. Réponse écrite de la DDT du 2 décembre 2026"></div>
+        <div class="field"><label for="ddta-sourceurl">Lien de la source (facultatif)</label><input id="ddta-sourceurl" name="source_url" type="url" maxlength="600"></div>
+        <div class="field"><label for="ddta-date">Vérifiée le</label><input id="ddta-date" name="verifie_le" type="date"></div>
+        <label class="check-inline" for="ddta-confirmer"><input id="ddta-confirmer" name="a_confirmer" type="checkbox"> À confirmer (source pas datée ou pas sûre)</label>
+        <div class="form-actions field-wide">
+          <button class="btn" type="submit">Enregistrer</button>
           <p class="form-status" role="status"></p>
         </div>
       </form>

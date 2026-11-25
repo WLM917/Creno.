@@ -95,9 +95,17 @@
         <h2 id="pack-titre">Mon Pack candidat libre</h2>
         <div id="pack-zone"></div>
       </section>
+      <section class="block panel compte-large" id="demarches" aria-labelledby="demarches-titre" hidden>
+        <h2 id="demarches-titre">La démarche de ton département</h2>
+        <p class="small">Réservé au Pack candidat libre. Vérifié par Créno à partir des sources officielles ou des réponses écrites des DDT. Une DDT peut changer sa démarche sans prévenir : en cas de doute, c'est elle qui a raison.</p>
+        <div class="field ddt-choix"><label for="demarches-dep">Département</label>
+          <select id="demarches-dep"><option value="">Choisis</option>{{options_departements}}</select>
+        </div>
+        <div id="demarches-zone" role="status"></div>
+      </section>
       <section class="block panel compte-large" id="dossier" aria-labelledby="dossier-titre" hidden>
         <h2 id="dossier-titre">Préparer ma demande de place</h2>
-        <p>On te prépare la démarche de ta DDT : le formulaire ou l'e-mail à envoyer, et la liste exacte des papiers à joindre. Tu reçois tout par e-mail sous {{delai_dossier}} jours, à l'adresse de ton compte.</p>
+        <p>On te prépare ta demande pour ta DDT : le formulaire ou l'e-mail à envoyer, rempli avec ta situation, et la liste exacte des papiers à joindre. Tu reçois tout par e-mail sous {{delai_dossier}} jours, à l'adresse de ton compte. Si on ne connaît pas encore la démarche de ton département, on écrit à ta DDT pour toi : en attendant sa réponse, tu reçois un modèle de demande écrite à lui envoyer.</p>
         <p class="small">Ne nous envoie aucun papier ni aucune pièce d'identité : c'est toi qui les joins à ta demande, sur le site officiel ou dans ton e-mail à la DDT. Aucune place n'est garantie : c'est la DDT qui décide.</p>
         <ul class="compte-liste" id="dossier-liste" hidden></ul>
         <form class="form-grid" id="dossier-form">

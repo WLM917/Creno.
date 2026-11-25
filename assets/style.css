@@ -1771,3 +1771,59 @@ button.pro-tab { appearance: none; border: 0; background: transparent; cursor: p
 
 /* ---------- Piège à robots : champ invisible pour les gens ---------- */
 .piege { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+/* ---------- Test « Peux-tu passer en candidat libre ? » et démarches des DDT ---------- */
+.test-elig { max-width: 46rem; gap: 1.1rem; }
+.test-q { flex-direction: column; gap: 0.55rem; }
+.test-q legend { font-size: 1rem; line-height: 1.4; }
+.test-resultat {
+  border-left: 6px solid var(--ok);
+  background: var(--surface);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 62ch;
+}
+.test-resultat.is-non { border-left-color: var(--stop); }
+.test-resultat.is-attention { border-left-color: var(--chantier); }
+.test-resultat h3 { font-size: 1.15rem; }
+.test-resultat .tips { max-width: none; }
+
+.ddt-choix { max-width: 22rem; }
+.ddt-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+}
+.ddt-carte {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sign);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ddt-carte.is-choisi { border: 2px solid var(--signal); }
+.ddt-tete { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.ddt-tete h3 { font-size: 1.15rem; margin: 0; }
+.ddt-carte .dep-code { margin-block: 0; min-height: 2rem; min-width: 2.8rem; font-size: 1.05rem; border-radius: 4px; font-weight: 800; }
+.ddt-carte h4 { font-family: var(--font-display); font-size: 1rem; margin-top: 0.3rem; }
+.ddt-inconnu {
+  border-left: 6px solid var(--chantier);
+  background: var(--surface);
+  padding: 0.9rem 1rem;
+  max-width: 62ch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Tableau de bord : envoyer une info aux abonnés d'un département */
+.adm-annonce { max-width: 46rem; }

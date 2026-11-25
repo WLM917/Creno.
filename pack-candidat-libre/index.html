@@ -57,11 +57,11 @@
     <div class="pack-hero">
       <div class="hero-main">
         <h1 class="hero-title">Le Pack candidat libre</h1>
-        <p class="hero-sub">Tout le parcours pour passer ton permis sans auto-école, du dossier jusqu'au jour J, en boîte manuelle ou automatique. Avec le programme d'entraînement de ton accompagnateur et un examen blanc noté comme le jour de l'examen.</p>
+        <p class="hero-sub">Le guide pour passer ton permis sans auto-école, ta demande de place préparée pour ta DDT, et les alertes de tous les départements que tu veux. En boîte manuelle ou automatique.</p>
       </div>
       <div class="price-plate" aria-label="Prix">
         <span class="price-amount">14,99 €</span>
-        <span class="price-note">Paiement unique, accès immédiat</span>
+        <span class="price-note">Paiement unique, guide disponible tout de suite</span>
         <a class="btn btn-plate" href="#acheter">Obtenir le pack</a>
       </div>
     </div>
@@ -70,9 +70,27 @@
 </div>
 
 <div class="wrap stack-lg page-pad">
+  <section class="block" aria-labelledby="trois-title">
+    <h2 id="trois-title">Ce qu'il y a dedans</h2>
+    <div class="offer-grid">
+      <div class="option">
+        <h3>1. Le guide en PDF</h3>
+        <p>Tout le parcours, du dossier jusqu'au jour J : le programme d'entraînement de ton accompagnateur et un examen blanc noté comme le jour de l'examen. Disponible tout de suite après le paiement.</p>
+      </div>
+      <div class="option">
+        <h3>2. Ta demande de place préparée</h3>
+        <p>Depuis ton compte, tu nous dis ton département et ta situation. Sous 7 jours, tu reçois par e-mail le bon formulaire ou le bon e-mail pour ta DDT, la liste exacte des papiers à joindre, et quoi faire si elle ne répond pas. Tu vérifies, et c'est toi qui l'envoies.</p>
+      </div>
+      <div class="option">
+        <h3>3. Les alertes sans limite</h3>
+        <p>En gratuit, tu suis un département. Avec le pack, tu suis tous ceux où tu es prêt à passer l'examen, même loin de chez toi, et tu es prévenu quand leur démarche change.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="block" aria-labelledby="dedans-title">
-    <h2 id="dedans-title">Ce qu'il y a dedans</h2>
-    <p class="lede">Un guide en PDF à lire sur ton téléphone ou à imprimer, avec des fiches à remplir. Les chapitres suivent l'ordre de ton parcours.</p>
+    <h2 id="dedans-title">Le guide, chapitre par chapitre</h2>
+    <p class="lede">Un PDF à lire sur ton téléphone ou à imprimer, avec des fiches à remplir. Les chapitres suivent l'ordre de ton parcours.</p>
     <ol class="toc">
       <li><strong>Le candidat libre est-il fait pour toi ?</strong><span>Les conditions à vérifier avant de te lancer, et quoi faire si tu n'as pas d'accompagnateur.</span></li>
       <li><strong>Boîte manuelle ou automatique ?</strong><span>Ce que ton choix change pour ton permis, la location et l'examen, et comment passer de l'automatique à la manuelle plus tard.</span></li>
@@ -94,6 +112,7 @@
       <h2 id="pourqui-title">Pour qui ?</h2>
       <ul class="tips">
         <li>Tu veux passer le permis en candidat libre et tu ne sais pas par où commencer.</li>
+        <li>Tu ne trouves aucune place sur RdvPermis et tu ne sais pas comment la demander à ta DDT.</li>
         <li>Un proche peut t'accompagner, mais il ne sait pas comment t'apprendre.</li>
         <li>Tu as raté l'examen et tu veux te préparer autrement.</li>
       </ul>
@@ -101,19 +120,36 @@
     <section class="block" aria-labelledby="pasca-title">
       <h2 id="pasca-title">Ce que le pack n'est pas</h2>
       <ul class="tips">
+        <li>Il ne garantit aucune place d'examen : c'est la DDT ou RdvPermis qui les donne. On t'aide à bien faire ta demande, et Créno n'a aucun accès privilégié aux places.</li>
+        <li>Ce n'est pas un service officiel. Les démarches auprès de la DDT et de RdvPermis sont gratuites : tu paies l'aide pour préparer ton dossier, pas la place.</li>
+        <li>On ne fait pas la démarche à ta place, on ne se connecte jamais à ton compte RdvPermis et on ne te demande jamais ta pièce d'identité.</li>
         <li>Il ne remplace pas les informations officielles : il t'y renvoie à chaque étape.</li>
-        <li>Il ne donne aucun accès privilégié aux places d'examen.</li>
         <li>Il ne remplace pas un moniteur. Si tu as besoin d'un pro, regarde la page <a href="../moniteurs/">Moniteurs</a>.</li>
       </ul>
     </section>
   </div>
+
+  <section class="block panel" id="test" aria-labelledby="test-titre">
+  <h2 id="test-titre">Test : peux-tu passer en candidat libre ?</h2>
+  <p>Cinq questions, une minute. Rien n'est envoyé : le résultat se calcule sur ton téléphone.</p>
+  <form class="form-stack test-elig" id="test-form" data-test-elig data-pack="#acheter"
+        data-ddt="../candidat-libre/demander-une-place/" data-moniteurs="../moniteurs/"
+        data-auto-ecoles="../auto-ecoles/" data-candidat-libre="../candidat-libre/">
+    <fieldset class="crit test-q"><legend>1. As-tu réussi ton code il y a moins de 5 ans, et as-tu ton numéro NEPH ?</legend><label class="check-inline"><input type="radio" name="code" value="oui" required> Oui</label><label class="check-inline"><input type="radio" name="code" value="non"> Non, pas encore</label></fieldset><fieldset class="crit test-q"><legend>2. Es-tu libre de toute auto-école ? Tu n&#x27;y es plus inscrit, et elle ne réserve plus ta place.</legend><label class="check-inline"><input type="radio" name="mandat" value="oui" required> Oui, je ne suis plus en auto-école</label><label class="check-inline"><input type="radio" name="mandat" value="non"> Non, je suis encore inscrit</label></fieldset><fieldset class="crit test-q"><legend>3. Un proche peut-il t&#x27;accompagner bénévolement le jour de l&#x27;examen ? Il a le permis B depuis au moins 5 ans, sans annulation ni invalidation depuis 5 ans, et ce n&#x27;est pas un moniteur.</legend><label class="check-inline"><input type="radio" name="accompagnateur" value="oui" required> Oui</label><label class="check-inline"><input type="radio" name="accompagnateur" value="non"> Non</label></fieldset><fieldset class="crit test-q"><legend>4. Peux-tu avoir une voiture à double commande assurée pour l&#x27;examen (louée, ou celle d&#x27;un proche) ?</legend><label class="check-inline"><input type="radio" name="voiture" value="oui" required> Oui</label><label class="check-inline"><input type="radio" name="voiture" value="non"> Pas encore</label></fieldset><fieldset class="crit test-q"><legend>5. As-tu appris à conduire avec des proches, sans cours payants ?</legend><label class="check-inline"><input type="radio" name="appris" value="oui" required> Oui</label><label class="check-inline"><input type="radio" name="appris" value="non"> Non, en partie ou en entier en auto-école</label></fieldset>
+    <div class="form-actions"><button class="btn btn-signal" type="submit">Voir mon résultat</button></div>
+    <div class="test-resultat" role="status" aria-live="polite" hidden></div>
+  </form>
+  <noscript><p class="small">Le résultat a besoin de JavaScript. Sinon : sans proche bénévole pour t'accompagner, ou si une
+  auto-école réserve encore ta place, le candidat libre n'est pas possible.</p></noscript>
+</section>
 
   <section class="block buy" id="acheter" aria-labelledby="acheter-title">
     <h2 id="acheter-title">Obtenir le pack</h2>
     <div class="buy-box">
       <div class="buy-price"><span class="price-amount">14,99 €</span><span class="price-note">Paiement unique et sécurisé par Stripe</span></div>
       <form class="form-stack" id="pack-form" data-compte="tous" data-suite="pack-candidat-libre/#acheter" data-compte-txt="Le pack est relié à ton compte : tu pourras retélécharger le PDF quand tu veux, sur n'importe quel appareil.">
-        <label class="check-inline" for="pack-ok"><input id="pack-ok" type="checkbox" required> Je veux accéder au pack tout de suite après le paiement et je renonce à mon droit de rétractation pour ce contenu numérique.</label>
+        <label class="check-inline" for="pack-places"><input id="pack-places" type="checkbox" required> J'ai compris que le pack ne garantit pas de place d'examen : c'est la DDT ou RdvPermis qui les donne.</label>
+        <label class="check-inline" for="pack-ok"><input id="pack-ok" type="checkbox" required> Je veux le guide tout de suite après le paiement et je renonce à mon droit de rétractation pour ce contenu numérique. Je demande que la préparation de ma demande de place commence dès que je l'envoie, et je sais que je ne pourrai plus me rétracter pour ce service une fois ma demande préparée reçue.</label>
         <label class="check-inline" for="pack-cgv"><input id="pack-cgv" type="checkbox" required><span>J'accepte les <a href="../cgv/">conditions de vente</a>.</span></label>
         <div class="form-actions">
           <button class="btn btn-signal" type="submit">Payer 14,99 €</button>
@@ -121,13 +157,15 @@
         </div>
       </form>
     </div>
-    <p class="small">Après le paiement, tu arrives sur une page qui te donne le PDF. Il reste aussi dans ton compte (icône en haut à droite) : tu peux le retélécharger ou te l'envoyer par e-mail quand tu veux.</p>
+    <p class="small">Après le paiement, tu arrives sur une page qui te donne le PDF. Tout est ensuite dans ton compte (icône en haut à droite) : le PDF à retélécharger, ta demande de place à préparer, et tes alertes.</p>
   </section>
 
   <section class="block" aria-labelledby="faq-pack">
     <h2 id="faq-pack">Questions fréquentes</h2>
     <div class="faq">
-      <details><summary>Sous quelle forme est le pack ?</summary><p>Un PDF que tu télécharges juste après le paiement. Il se lit bien sur téléphone, et les fiches s'impriment en A4.</p></details>
+      <details><summary>Sous quelle forme est le pack ?</summary><p>Le guide est un PDF que tu télécharges juste après le paiement. Il se lit bien sur téléphone, et les fiches s'impriment en A4. Ta demande de place préparée arrive ensuite par e-mail.</p></details>
+      <details><summary>Comment je reçois ma demande de place préparée ?</summary><p>Dans ton compte, rubrique « Mon Pack candidat libre », remplis « Préparer ma demande de place » : ton département, ta situation, et les départements où tu es prêt à aller. On t'envoie tout par e-mail sous 7 jours. Tu ne nous envoies aucun papier : tu les joins toi-même à ta demande, sur le site officiel ou dans ton e-mail à la DDT.</p></details>
+      <details><summary>Et si la DDT ne me donne pas de place ?</summary><p>C'est la DDT qui décide, et Créno ne peut rien garantir. On t'explique comment la relancer, et tes alertes continuent pour tous les départements que tu suis. Si tu ne remplis pas les conditions du candidat libre, ne prends pas le pack : une auto-école peut te <a href="../moniteurs/">présenter à l'examen</a> sans tout un forfait.</p></details>
       <details><summary>Les informations sont-elles à jour ?</summary><p>Le pack s'appuie sur les sources officielles (Sécurité routière, préfectures, service-public) au moment de sa rédaction, et indique chaque fois où vérifier. Les règles peuvent changer : en cas de doute, la source officielle a toujours raison.</p></details>
       <details><summary>J'ai perdu mon lien de téléchargement</summary><p>Connecte-toi à ton compte Créno (icône en haut à droite) : le bouton « Télécharger le PDF » te donne un nouveau lien. Un souci ? Écris-nous avec l'e-mail utilisé pour le paiement. L'adresse de contact sera indiquée ici dès l'ouverture des formulaires.</p></details>
     </div>

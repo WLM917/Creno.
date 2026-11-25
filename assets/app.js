@@ -453,6 +453,44 @@
       if (cible && dedans.contains(cible)) setTimeout(function () { cible.scrollIntoView({ block: "start" }); }, 0);
     }
 
+    // Demande de place préparée (comprise dans le pack) : William la prépare et l'envoie par e-mail
+    function afficherDossier(j) {
+      var box = $("#dossier");
+      if (!box) return;
+      var achete = !!(j.pack && j.pack.achete);
+      box.hidden = !achete;
+      if (!achete) return;
+      var liste = $("#dossier-liste");
+      var ds = j.dossiers || [];
+      function ligne(d) {
+        return '<li><span class="dep-code">' + esc(d.departement) + "</span><span>Demande envoyée le " + esc(jourTxt(d.created_at)) + " · " +
+          (d.traite ? "ta demande préparée t'a été envoyée par e-mail" : "en préparation") + "</span></li>";
+      }
+      liste.innerHTML = ds.map(ligne).join("");
+      liste.hidden = !ds.length;
+      var f = $("#dossier-form");
+      if (!f.departement.value && j.profil && j.profil.departement) f.departement.value = j.profil.departement;
+      if (f.getAttribute("data-pret")) return;
+      f.setAttribute("data-pret", "1");
+      f.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var st = $(".form-status", f), btn = $("button[type=submit]", f);
+        var corps = { action: "dossier" };
+        $all("input[name], select[name], textarea[name]", f).forEach(function (c) {
+          if (c.type === "radio") { if (c.checked) corps[c.name] = c.value; return; }
+          corps[c.name] = c.value.trim();
+        });
+        btn.disabled = true; st.textContent = "Envoi…"; st.className = "form-status";
+        callFnCompte("compte", corps).then(function (r) {
+          btn.disabled = false;
+          setStatus(st, true, "C'est envoyé. Tu reçois ta demande préparée par e-mail sous " + r.delai + " jours, à " + j.user.email + ".");
+          liste.innerHTML = ligne({ departement: corps.departement, created_at: new Date().toISOString(), traite: false }) + liste.innerHTML;
+          liste.hidden = false;
+          f.reset();
+        }).catch(function (e) { btn.disabled = false; setStatus(st, false, e.message); });
+      });
+    }
+
     function afficherEleve(j) {
       // Mon pack
       var zp = $("#pack-zone");
@@ -460,7 +498,8 @@
         zp.innerHTML = "<p>Acheté le " + esc(jourTxt(j.pack.date)) + ". Le lien de téléchargement marche pendant une heure : redemande-le ici quand tu veux.</p>" +
           '<div class="rank-actions"><button class="btn btn-signal btn-small" type="button" id="pack-dl">Télécharger le PDF</button>' +
           '<button class="btn btn-ghost btn-small" type="button" id="pack-mail">Me l\'envoyer par e-mail</button></div>' +
-          '<p class="form-status" role="status" id="pack-etat"></p>';
+          '<p class="form-status" role="status" id="pack-etat"></p>' +
+          '<p>Ton pack comprend aussi ta demande de place préparée pour ta DDT, et les alertes de tous les départements que tu veux. <a class="link-strong" href="#dossier">Préparer ma demande de place</a></p>';
         $("#pack-dl").addEventListener("click", function () {
           var b = this, st = $("#pack-etat");
           b.disabled = true; st.textContent = "Préparation du lien…"; st.className = "form-status";
@@ -480,10 +519,11 @@
           }).catch(function (e) { b.disabled = false; setStatus(st, false, e.message); });
         });
       } else {
-        zp.innerHTML = "<p>Tu n'as pas encore le pack. Il te guide du dossier jusqu'au jour J, en boîte manuelle ou automatique.</p>" +
+        zp.innerHTML = "<p>Tu n'as pas encore le pack. Il te guide du dossier jusqu'au jour J, te prépare ta demande de place pour ta DDT et te permet de suivre tous les départements que tu veux.</p>" +
           '<a class="link-strong" href="' + esc(link("pack-candidat-libre/")) + '">Découvrir le pack</a>' +
           '<p class="small">Tu l\'as acheté avant d\'avoir un compte ? Utilise le lien reçu après ton paiement, ou écris-nous : on le relie à ton compte.</p>';
       }
+      afficherDossier(j);
       // Mes alertes
       var za = $("#alertes-zone");
       var al = j.alertes || [];
@@ -493,7 +533,11 @@
           : "Arrêtée";
         return '<li><span class="dep-code">' + esc(a.departement) + "</span><span>" + esc(etat) + "</span></li>";
       }).join("") + "</ul>" : '<p>Tu ne suis aucun département pour l\'instant.</p>';
-      za.innerHTML += '<a class="link-strong" href="' + esc(link("alertes/")) + '#suivre">' + (al.length ? "Suivre un autre département" : "Recevoir les alertes") + "</a>";
+      var pack = !!(j.pack && j.pack.achete);
+      var actives = al.filter(function (a) { return a.statut === "actif" || a.statut === "en_attente"; }).length;
+      za.innerHTML += '<a class="link-strong" href="' + esc(link("alertes/")) + '#suivre">' +
+        (!actives ? "Suivre mon département" : pack ? "Suivre un autre département" : "Changer de département") + "</a>" +
+        (actives && !pack ? '<p class="small">En gratuit, tu suis un département à la fois. Avec le <a href="' + esc(link("pack-candidat-libre/")) + '">Pack candidat libre</a>, autant que tu veux.</p>' : "");
       var depSel = $("#places-dep");
       var depDefaut = (al[0] && al[0].departement) || (j.profil && j.profil.departement) || "";
       if (depDefaut && !depSel.value) depSel.value = depDefaut;
@@ -1183,6 +1227,12 @@
   }
 
   /* ---------- Alertes partagées ---------- */
+  // En gratuit, on suit un département à la fois : le nouveau remplace l'ancien (le pack enlève la limite).
+  function remplaceTxt(j) {
+    if (!j.remplace || !j.remplace.length) return "";
+    return " Tu ne suis plus le " + j.remplace.join(", le ") + " : en gratuit, c'est un département à la fois. Avec le Pack candidat libre, tu en suis autant que tu veux.";
+  }
+
   function initAlertes() {
     var forms = $all("form[data-alertes]");
     if (!forms.length) return;
@@ -1211,10 +1261,10 @@
           if (j.deja) {
             setStatus(statusEl, true, "Tu suis déjà le " + j.departement + " : tes alertes sont actives jusqu'au " + j.expire_txt + ".");
           } else if (j.compte && !j.confirmation) {
-            setStatus(statusEl, true, "C'est noté : tu suis le " + j.departement + ". Les places signalées s'affichent dans ton compte (Gérer mon compte), et les e-mails d'alerte arrivent très bientôt.");
+            setStatus(statusEl, true, "C'est noté : tu suis le " + j.departement + ". Les places signalées s'affichent dans ton compte (Gérer mon compte), et les e-mails d'alerte arrivent très bientôt." + remplaceTxt(j));
           } else if (j.confirmation) {
             setStatus(statusEl, true, "C'est presque fini : on t'a envoyé un e-mail. Clique sur le lien pour activer " +
-              (j.payant ? "ton essai gratuit de " + j.essai_jours + " jours." : "tes alertes."));
+              (j.payant ? "ton essai gratuit de " + j.essai_jours + " jours." : "tes alertes.") + remplaceTxt(j));
             form.reset();
             remplirCompte(form);
           } else if (action === "signaler") {
@@ -1230,6 +1280,81 @@
         });
       });
     });
+  }
+
+  /* ---------- Test « Peux-tu passer en candidat libre ? » (rien n'est envoyé) ---------- */
+  function initTestEligibilite() {
+    var form = $("form[data-test-elig]");
+    if (!form) return;
+    var box = $(".test-resultat", form);
+    function lienBtn(href, txt, fort) {
+      return '<a class="btn btn-small ' + (fort ? "btn-signal" : "btn-ghost") + '" href="' + esc(href) + '">' + esc(txt) + "</a>";
+    }
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var r = {};
+      $all("input[type=radio]:checked", form).forEach(function (i) { r[i.name] = i.value; });
+      var a = {
+        pack: form.getAttribute("data-pack"), ddt: form.getAttribute("data-ddt"), moniteurs: form.getAttribute("data-moniteurs"),
+        ae: form.getAttribute("data-auto-ecoles"), cl: form.getAttribute("data-candidat-libre")
+      };
+      var classe = "", titre = "", texte = [], liens = [];
+      if (r.accompagnateur === "non") {
+        classe = "is-non";
+        titre = "Le candidat libre n'est pas possible pour toi aujourd'hui";
+        texte.push("Sans un proche bénévole pour t'accompagner le jour de l'examen, tu ne peux pas passer en candidat libre. Un moniteur ou un pro payé ne peut pas t'accompagner en candidat libre.");
+        texte.push("La solution : une auto-école peut te présenter à l'examen avec sa voiture et son moniteur, parfois sans tout un forfait.");
+        liens.push(lienBtn(a.moniteurs + "#demande", "Demander une présentation à l'examen", true), lienBtn(a.ae, "Comparer les auto-écoles"));
+      } else if (r.mandat === "non") {
+        classe = "is-non";
+        titre = "D'abord, ton auto-école";
+        texte.push("Tant qu'une auto-école t'a sous mandat, c'est elle qui réserve ta place d'examen. Demande-lui une date.");
+        texte.push("Si tu veux passer en candidat libre, préviens-la par écrit que tu arrêtes, puis inscris-toi en candidat libre sur RdvPermis.");
+        liens.push(lienBtn(a.cl, "Les étapes du candidat libre", true));
+      } else if (r.code === "non") {
+        classe = "is-attention";
+        titre = "Commence par le code et ton NEPH";
+        texte.push("Il te faut le code (réussi il y a moins de 5 ans) et ton numéro NEPH, que tu obtiens en t'inscrivant au permis sur le site de l'ANTS. Ensuite seulement, tu pourras demander une place.");
+        liens.push(lienBtn(a.cl, "Les étapes du candidat libre", true));
+      } else {
+        classe = r.appris === "non" || r.voiture === "non" ? "is-attention" : "";
+        titre = "Bonne nouvelle : tu remplis les conditions de base";
+        texte.push("Tu peux demander une place d'examen en candidat libre. Souvent, il faut habiter dans le département où tu la demandes.");
+        if (r.appris === "non") texte.push("Attention : certaines DDT, comme celle de la Somme, demandent d'avoir appris à conduire avec des proches, sans cours payants. Vérifie la démarche de ton département.");
+        if (r.voiture === "non") texte.push("Il te faudra une voiture à double commande assurée pour le jour de l'examen : certaines DDT demandent même un devis de location dans le dossier.");
+        liens.push(lienBtn(a.pack, "Le pack prépare ta demande de place", true), lienBtn(a.ddt + "#departements", "La démarche de mon département"));
+      }
+      box.className = "test-resultat " + classe;
+      box.innerHTML = "<h3>" + esc(titre) + "</h3>" + texte.map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("") +
+        '<div class="rank-actions">' + liens.join("") + "</div>";
+      box.hidden = false;
+      box.scrollIntoView({ block: "nearest", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    });
+  }
+
+  /* ---------- Démarche de chaque département (page Demander une place) ---------- */
+  function initDdt() {
+    var sel = $("[data-ddt-select]");
+    if (!sel) return;
+    var cartes = $all("[data-ddt-dep]");
+    var inconnu = $("#ddt-inconnu");
+    function montrer() {
+      var dep = sel.value;
+      var trouve = false;
+      cartes.forEach(function (c) {
+        var ok = !dep || c.getAttribute("data-ddt-dep") === dep;
+        c.hidden = !ok;
+        c.classList.toggle("is-choisi", !!dep && ok);
+        if (dep && ok) trouve = true;
+      });
+      inconnu.hidden = !dep || trouve;
+      if (dep && !trouve) cartes.forEach(function (c) { c.hidden = false; });
+    }
+    sel.addEventListener("change", montrer);
+    // Arrivée avec #ddt-67 : ce département est choisi
+    var m = /^#ddt-([0-9a-z]{2,3})$/.exec(location.hash);
+    if (m) sel.value = m[1].toUpperCase();
+    montrer();
   }
 
   /* ---------- Pages de confirmation (alertes, accès au pack) ---------- */
@@ -1820,6 +1945,21 @@
       });
     });
     $("#adm-actualiser").addEventListener("click", function () { if (etat.code) charger(etat.code); });
+    // Prévenir les abonnés d'un département (fonction alertes, action annonce)
+    var fa = $("#annonce-form");
+    if (fa) fa.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var st = $(".form-status", fa), btn = $("button[type=submit]", fa);
+      if (!etat.code) { setStatus(st, false, "Ouvre d'abord le tableau de bord avec ton code."); return; }
+      btn.disabled = true; st.textContent = "Envoi…"; st.className = "form-status";
+      callFn("alertes", { action: "annonce", code: etat.code, departement: fa.departement.value, titre: fa.titre.value.trim(), message: fa.message.value.trim() })
+        .then(function (j) {
+          btn.disabled = false;
+          setStatus(st, true, j.abonnes ? "C'est parti : " + plural(j.prevenus, "abonné prévenu", "abonnés prévenus") + " sur " + intFmt.format(j.abonnes) + "."
+            : "Personne ne suit ce département pour l'instant : aucun e-mail n'est parti.");
+          if (j.abonnes) fa.reset();
+        }).catch(function (e) { btn.disabled = false; setStatus(st, false, e.message); });
+    });
     $("#adm-ae-q").addEventListener("input", function () { etat.limite = 50; if (etat.j) tableAe(lignes().filter(function (r) { return String(r.p).indexOf("ae-") === 0; })); });
     $("#adm-ae-tri").addEventListener("change", function () { if (etat.j) tableAe(lignes().filter(function (r) { return String(r.p).indexOf("ae-") === 0; })); });
     $("#adm-ae-plus").addEventListener("click", function () { etat.limite += 50; tableAe(lignes().filter(function (r) { return String(r.p).indexOf("ae-") === 0; })); });
@@ -1852,7 +1992,16 @@
         '<td data-label="Date">' + date(r.created_at) + "</td></tr>";
     }).join("") || '<tr><td colspan="3">Aucune réponse de pro pour l\'instant.</td></tr>';
 
+    function on(v) { return v === true ? "oui" : v === false ? "non" : "?"; }
     var blocs = [
+      ["dossiers", "Demandes de place à préparer (acheteurs du pack)", "Envoyé", function (x) {
+        return '<strong><a href="mailto:' + esc(x.email) + '">' + esc(x.email) + "</a></strong> · " + esc(x.departement) + (x.ville ? ", " + esc(x.ville) : "") +
+          '<span class="sub">Code et NEPH : ' + on(x.code_ok) + " · Plus en auto-école : " + on(x.libre_ok) + " · Accompagnateur : " + on(x.accompagnateur_ok) +
+          " · Voiture double commande : " + on(x.voiture_ok) + " · Appris avec des proches : " + on(x.appris_proches) + "</span>" +
+          (x.autres_departements ? '<span class="sub">Prêt à aller aussi : ' + esc(x.autres_departements) + "</span>" : "") +
+          (x.message ? '<span class="sub">« ' + esc(x.message) + " »</span>" : "") +
+          '<span class="sub">Envoie-lui par e-mail la démarche de sa DDT (fiche du département sur la page « Demander une place »), le formulaire ou l\'e-mail à envoyer et la liste des papiers, puis clique « Envoyé ».</span>';
+      }],
       ["liens", "Comptes pros à vérifier", "Valider", function (x) {
         var ae = String(x.pro_ref || "").indexOf("ae-") === 0;
         return "<strong>" + esc(x.nom) + "</strong>" + (x.departement ? " (" + esc(x.departement) + ")" : "") +
@@ -2211,6 +2360,8 @@
     initForms();
     initChecklist();
     initAlertes();
+    initTestEligibilite();
+    initDdt();
     initEtat();
     initPack();
     initBadge();

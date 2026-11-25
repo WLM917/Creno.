@@ -1,0 +1,90 @@
+{
+  "_aide": "Comment demander une place d'examen pratique B en candidat libre, département par département. N'ajoute un département qu'après avoir vérifié sa démarche sur une source officielle (site de la préfecture, formulaire officiel, réponse écrite de la DDT) : note la source, son lien et la date de vérification. Les départements absents s'affichent « pas encore renseigné ». Après une modification : python3 scripts/build_site.py, puis pousse.",
+  "verifie_le": "2026-11-25",
+  "departements": {
+    "46": {
+      "service": "Unité Éducation Sécurité Routières et Défense (DDT du Lot)",
+      "mode": "formulaire",
+      "resume": "Tu demandes ta place avec un formulaire en ligne. Seuls les habitants du Lot peuvent avoir une place dans le Lot en candidat libre.",
+      "conditions": [
+        "Habiter dans le Lot",
+        "Ne pas être inscrit en auto-école (attestation sur l'honneur)",
+        "Code réussi il y a moins de 5 ans",
+        "Accompagnateur bénévole : permis B depuis 5 ans, pas d'annulation ni d'invalidation depuis 5 ans, charte signée"
+      ],
+      "pieces": [
+        "Justificatif de domicile récent dans le Lot",
+        "Attestation d'inscription au permis (AIPC), sur le site de l'ANTS",
+        "Justificatif de la date de réussite au code",
+        "Permis de l'accompagnateur",
+        "Contrat de location de la voiture à double commande"
+      ],
+      "lien": "https://www.demarches-simplifiees.fr/commencer/46-demande-place-candidat-libre",
+      "lien_txt": "Le formulaire officiel du Lot",
+      "source": "Formulaire officiel « 46 - Demande place examen pratique B permis conduire candidat libre »",
+      "source_url": "https://www.demarches-simplifiees.fr/commencer/46-demande-place-candidat-libre/dossier_vide",
+      "verifie_le": "2026-11-25"
+    },
+    "67": {
+      "service": "DDT du Bas-Rhin, bureau de la répartition",
+      "mode": "dossier",
+      "resume": "Pas de places en libre accès : la DDT étudie chaque demande au cas par cas, sur dossier. Écris-lui pour connaître la marche à suivre.",
+      "conditions": [],
+      "pieces": [],
+      "contact": "ddt-repartition@bas-rhin.gouv.fr",
+      "source": "Réponse écrite de la DDT du Bas-Rhin à un candidat sur Services Publics+, le 30 avril 2026",
+      "source_url": "https://www.plus.transformation.gouv.fr/experiences/7271134_impossible-davoir-une-date-dexamen-de-permis-de-conduire-en-candidat-libre",
+      "verifie_le": "2026-11-25"
+    },
+    "80": {
+      "service": "Bureau Éducation Routière de la Somme",
+      "mode": "formulaire",
+      "resume": "Tu demandes ta place avec un formulaire en ligne, réservé aux habitants de la Somme. Il faut avoir appris à conduire gratuitement, avec des proches.",
+      "conditions": [
+        "Habiter dans la Somme",
+        "Avoir appris à conduire sans payer, avec des proches qui ne sont pas des professionnels de la conduite",
+        "Code en cours de validité",
+        "Compte RdvPermis créé avec la même adresse e-mail que le formulaire",
+        "Accompagnateur : un proche (famille ou lien personnel) qui a le permis B",
+        "Annuler au plus tard 15 jours avant l'examen, sauf force majeure"
+      ],
+      "pieces": [
+        "Ta pièce d'identité et un justificatif de domicile de moins de 6 mois",
+        "ASSR2 ou ASR",
+        "AIPC ou Cerfa 02",
+        "Attestation de réussite au code",
+        "Pièce d'identité et permis de l'accompagnateur, son attestation sur l'honneur (lien avec toi) et la charte signée"
+      ],
+      "lien": "https://www.demarches-simplifiees.fr/commencer/demande-d-inscription-des-candidats-libres-a-l-epreuve-pratique-du-permis-de-conduire-de-categorie-b-reservee-exclusivement-aux-habitants-de-la-somme",
+      "lien_txt": "Le formulaire officiel de la Somme",
+      "source": "Formulaire officiel « Demande d'inscription des candidats libres à l'épreuve pratique du permis de conduire de catégorie B »",
+      "source_url": "https://www.demarches-simplifiees.fr/commencer/demande-d-inscription-des-candidats-libres-a-l-epreuve-pratique-du-permis-de-conduire-de-categorie-b-reservee-exclusivement-aux-habitants-de-la-somme/dossier_vide",
+      "verifie_le": "2026-11-25"
+    },
+    "82": {
+      "service": "Bureau éducation routière, DDT de Tarn-et-Garonne",
+      "mode": "formulaire",
+      "resume": "Tu demandes ta place avec un formulaire en ligne, réservé aux habitants du Tarn-et-Garonne. Attention : après un échec avec un niveau jugé trop faible, la DDT ne redonne pas de place en libre.",
+      "conditions": [
+        "Habiter dans le Tarn-et-Garonne",
+        "Ne plus être inscrit en auto-école ni sous mandat de ton ancienne auto-école, et être inscrit en candidat libre sur RdvPermis",
+        "Ne pas être en conduite accompagnée",
+        "Code réussi il y a moins de 5 ans",
+        "Accompagnateur bénévole : permis B depuis 5 ans, pas d'annulation ni d'invalidation depuis 5 ans, charte signée"
+      ],
+      "pieces": [
+        "Justificatif de domicile récent dans le Tarn-et-Garonne",
+        "AIPC (sur le site de l'ANTS)",
+        "Scan du livret d'apprentissage",
+        "Date de réussite au code",
+        "Permis de l'accompagnateur",
+        "Devis ou contrat de location de la voiture à double commande"
+      ],
+      "lien": "https://www.demarches-simplifiees.fr/commencer/82-demande-place-examen-candidat-libre",
+      "lien_txt": "Le formulaire officiel du Tarn-et-Garonne",
+      "source": "Formulaire officiel « 82 DDT - Demande place examen permis conduire candidat libre »",
+      "source_url": "https://www.demarches-simplifiees.fr/commencer/82-demande-place-examen-candidat-libre/dossier_vide",
+      "verifie_le": "2026-11-25"
+    }
+  }
+}

@@ -2,20 +2,26 @@
   {{fil_ariane}}
   <header class="view-head">
     <h1>Alertes places d'examen</h1>
-    <p class="lede">Des places se libèrent quand des candidats annulent, mais personne ne te prévient. Ici, quand un candidat voit des places sur RdvPermis, il le signale en un clic, et tous ceux qui suivent ce département reçoivent un e-mail.</p>
+    <p class="lede">Suis ton département et reçois un e-mail quand un candidat signale des places vues sur RdvPermis, ou quand la démarche pour obtenir une place change chez toi (nouveau formulaire, DDT qui rouvre les demandes…).</p>
   </header>
 
   <ol class="steps steps-inline">
     <li><h3>Tu suis ton département</h3><p>Tu te connectes à ton compte et tu choisis le département où tu veux passer l'examen.</p></li>
-    <li><h3>Un candidat voit des places</h3><p>En cherchant sur RdvPermis, il tombe sur des créneaux libres et les signale ici.</p></li>
-    <li><h3>Tu es prévenu tout de suite</h3><p>Tu reçois un e-mail avec le centre et le créneau. À toi de réserver vite sur RdvPermis.</p></li>
+    <li><h3>Un candidat voit des places</h3><p>En cherchant sur RdvPermis, il tombe sur des créneaux libres et les signale ici. Si la démarche de ton département change, on te prévient aussi.</p></li>
+    <li><h3>Tu es prévenu tout de suite</h3><p>Tu reçois un e-mail avec le centre et le créneau. Les places partent en quelques minutes : réserve vite sur RdvPermis.</p></li>
   </ol>
+
+  <div class="note-block block" aria-labelledby="alertes-libre">
+    <h2 id="alertes-libre">En candidat libre, les places sont rares</h2>
+    <p>Dans la plupart des départements, les places des candidats libres ne s'affichent plus sur RdvPermis : il faut les demander à la DDT. Les alertes restent utiles (des places apparaissent parfois, souvent loin de chez soi), mais commence par la bonne démarche.</p>
+    <a class="link-strong" href="{{root}}candidat-libre/demander-une-place/">Voir comment demander une place dans ton département</a>
+  </div>
 
   <p class="notice" data-alertes-off hidden>Les alertes ouvrent très bientôt. Reviens dans quelques jours, ou suis-nous pour être prévenu du lancement.</p>
 
   <div class="two-col">
     <section class="block panel" id="suivre" aria-labelledby="suivre-title">
-      <h2 id="suivre-title">Recevoir les alertes</h2>
+      <h2 id="suivre-title">Suivre mon département</h2>
       <p class="offer">{{offre_alertes}}</p>
       <form class="form-stack" id="follow-form" data-alertes="abonner" data-compte="tous" data-suite="alertes/#suivre" data-compte-txt="Tes alertes sont reliées à ton compte : tu y vois aussi toutes les places signalées dans ton département.">
         <div class="field"><label for="follow-email">Ton e-mail</label><input id="follow-email" name="email" type="email" required autocomplete="email" maxlength="200" data-email-compte></div>
@@ -48,13 +54,14 @@
     </section>
   </div>
 
-  <p class="pledge">Créno ne se connecte jamais à RdvPermis et n'utilise aucun robot. Les alertes viennent uniquement des candidats, alors une place signalée peut déjà être prise quand tu arrives.</p>
+  <p class="pledge">Créno ne se connecte jamais à RdvPermis et n'utilise aucun robot. Les alertes viennent uniquement des candidats, alors une place signalée peut déjà être prise quand tu arrives. Créno est un service privé et indépendant, ce n'est pas un site officiel : RdvPermis et les démarches auprès de la DDT sont gratuits.</p>
 
   <section class="block" aria-labelledby="faq-alertes">
     <h2 id="faq-alertes">Questions fréquentes</h2>
     <div class="faq">
       <details><summary>Combien d'alertes vais-je recevoir ?</summary><p>Ça dépend du nombre de candidats qui signalent des places dans ton département. Pour ne pas t'inonder, tu reçois au plus une alerte toutes les 10 minutes.</p></details>
       {{faq_prix}}
+      <details><summary>Je suis prêt à passer l'examen loin de chez moi</summary><p>Bonne idée : des places apparaissent parfois dans des départements éloignés. En gratuit, tu suis un département à la fois. Avec le <a href="{{root}}pack-candidat-libre/">Pack candidat libre</a>, tu en suis autant que tu veux. Pense aussi à réserver une voiture à double commande sur place.</p></details>
       <details><summary>Comment réserver la place signalée ?</summary><p>Connecte-toi à RdvPermis avec ton compte candidat, comme d'habitude. Garde ton NEPH et ton accompagnateur déjà déclarés : tu gagneras de précieuses minutes.</p></details>
       <details><summary>Comment arrêter les alertes ?</summary><p>Chaque e-mail contient un lien « Ne plus recevoir d'alertes ». Un clic suffit, et si tu es abonné, l'abonnement s'arrête en même temps.</p></details>
       <details><summary>Que faites-vous de mon e-mail ?</summary><p>Il sert à te connecter à ton compte et à t'envoyer les alertes du département choisi. Il n'est ni vendu ni partagé. <a href="{{root}}confidentialite/">Confidentialité</a></p></details>
@@ -62,8 +69,8 @@
   </section>
 
   <section class="block note-block" aria-labelledby="pack-cta">
-    <h2 id="pack-cta">Pas encore prêt pour l'examen ?</h2>
-    <p>Le Pack candidat libre te guide du dossier jusqu'au jour J, avec un programme d'entraînement pour ton accompagnateur et un examen blanc noté sur 31 points.</p>
+    <h2 id="pack-cta">Va plus loin avec le pack</h2>
+    <p>Le Pack candidat libre, c'est le guide du dossier jusqu'au jour J, ta demande de place préparée pour ta DDT, et les alertes de tous les départements que tu veux. Aucune place garantie : on t'aide à bien faire ta demande.</p>
     <a class="link-strong" href="{{root}}pack-candidat-libre/">Découvrir le pack</a>
   </section>
 </div>

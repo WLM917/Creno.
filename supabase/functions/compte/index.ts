@@ -8,6 +8,9 @@
 //   pack       {}                                -> lien de téléchargement du pack (1 heure), si le compte l'a acheté
 //   pack_email {}                                -> envoie ce lien par e-mail (valable 7 jours)
 //   places     { departement? }                  -> places d'examen signalées ces 30 derniers jours dans le département
+//   dossier    { departement, ville?, code_ok, libre_ok, accompagnateur_ok, voiture_ok, appris_proches,
+//                autres_departements?, message? } -> acheteur du pack : demande que William prépare sa demande de place
+//                                                   pour la DDT (envoyée par e-mail). Aucune pièce d'identité demandée.
 //   lier       { pro_type, departement, auto_ecole_id? | nom }  -> un pro relie son compte à son auto-école
 //                                                   ou à son agence. William vérifie avant que les chiffres s'affichent.
 //   supprimer  { confirmation: "SUPPRIMER" }      -> supprime le compte et ses données (demandes, alertes, liens)
@@ -179,7 +182,7 @@ async function sendEmail(message: Record<string, unknown>) {
 async function moi(body: Record<string, unknown>) {
   const u = await utilisateur(body.jeton);
   const p = await profil(u);
-  const [achat, alertes, demandes, liens, envoyees] = await Promise.all([
+  const [achat, alertes, demandes, liens, envoyees, dossiers] = await Promise.all([
     packAchete(u, p.type === "eleve"),
     db(`abonnes_alertes?user_id=eq.${u.id}&select=departement,statut,plan,expire_le,created_at&order=created_at.desc`).then((r) => r.data ?? []),
     db(`demandes_pros?user_id=eq.${u.id}&select=id,created_at,besoin,departement,ville,statut,nb_reponses,token&order=created_at.desc&limit=20`)
@@ -189,6 +192,10 @@ async function moi(body: Record<string, unknown>) {
     p.type === "pro"
       ? db(`reponses_demandes?user_id=eq.${u.id}&select=created_at,pro_nom,message,demandes_pros(besoin,ville,departement,statut)` +
         "&order=created_at.desc&limit=30").then((r) => r.data ?? [])
+      : Promise.resolve([]),
+    p.type === "eleve"
+      ? db(`dossiers_ddt?user_id=eq.${u.id}&select=created_at,departement,traite&order=created_at.desc&limit=10`)
+        .then((r) => r.data ?? []).catch(() => [])
       : Promise.resolve([]),
   ]);
   // Réponses des pros aux demandes de l'élève
@@ -219,7 +226,7 @@ async function moi(body: Record<string, unknown>) {
     user: { email: u.email, cree: u.cree },
     profil: { type: p.type, pro_type: p.pro_type, prenom: p.prenom ?? null, telephone: p.telephone ?? null, departement: p.departement ?? null },
     pack: achat ? { achete: true, date: achat.created_at } : { achete: false },
-    alertes, demandes, liens, reponses_envoyees: envoyees,
+    alertes, demandes, liens, reponses_envoyees: envoyees, dossiers,
     emails: !!env("RESEND_API_KEY"),
   });
 }
@@ -260,6 +267,45 @@ async function packEmail(body: Record<string, unknown>) {
   });
   if (!ok) throw new Refus("L'e-mail n'a pas pu partir. Télécharge ton pack avec le bouton « Télécharger ».", 503);
   return reply(200, { ok: true });
+}
+
+// ---------------------------------------------------------------- demande de place préparée (pack)
+const DELAI_DOSSIER = Number(env("DOSSIER_DELAI_JOURS", "7")) || 7;
+const ouiNon = (v: unknown) => v === true || v === "oui" ? true : v === false || v === "non" ? false : null;
+
+async function dossier(body: Record<string, unknown>) {
+  const u = await utilisateur(body.jeton);
+  const p = await profil(u);
+  if (p.type !== "eleve") throw new Refus("Cette demande est réservée aux comptes élèves.");
+  if (!await packAchete(u)) throw new Refus("La demande de place préparée fait partie du Pack candidat libre. Prends le pack pour l'utiliser.", 402);
+  const departement = String(body.departement ?? "").toUpperCase();
+  if (!DEPARTEMENT.test(departement)) throw new Refus("Choisis ton département.");
+  const depuis = new Date(Date.now() - 86400000).toISOString();
+  const { data: recents } = await db(`dossiers_ddt?user_id=eq.${u.id}&created_at=gte.${depuis}&select=id`);
+  if ((recents ?? []).length >= 3) throw new Refus("Tu as déjà envoyé plusieurs demandes aujourd'hui. On s'en occupe : réessaie demain si besoin.", 429);
+  const row = {
+    user_id: u.id, email: u.email, departement, ville: clean(body.ville, 80),
+    code_ok: ouiNon(body.code_ok), libre_ok: ouiNon(body.libre_ok), accompagnateur_ok: ouiNon(body.accompagnateur_ok),
+    voiture_ok: ouiNon(body.voiture_ok), appris_proches: ouiNon(body.appris_proches),
+    autres_departements: clean(body.autres_departements, 200), message: clean(body.message, 1000),
+  };
+  await db("dossiers_ddt", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(row) });
+  const admin = env("ADMIN_EMAIL");
+  if (admin) {
+    const oui = (b: boolean | null) => b === null ? "?" : b ? "oui" : "non";
+    await sendEmail({
+      to: [admin], reply_to: u.email, subject: `[Créno] Demande de place à préparer : ${departement}`,
+      html: `<p>Un acheteur du pack attend sa demande de place préparée (délai annoncé : ${DELAI_DOSSIER} jours).</p>
+        <p>Compte : ${esc(u.email)}<br>Département : ${esc(departement)}${row.ville ? `, ${esc(row.ville)}` : ""}<br>
+        Code et NEPH : ${oui(row.code_ok)} · Plus en auto-école : ${oui(row.libre_ok)} · Accompagnateur : ${oui(row.accompagnateur_ok)}<br>
+        Voiture double commande : ${oui(row.voiture_ok)} · Appris avec des proches : ${oui(row.appris_proches)}<br>
+        Autres départements : ${esc(row.autres_departements ?? "aucun")}</p>
+        ${row.message ? `<p>« ${esc(row.message)} »</p>` : ""}
+        <p>Réponds à cet e-mail pour lui envoyer sa demande, puis clique « Envoyé » dans <a href="${SITE_URL}/admin/">ton tableau de bord</a>.</p>`,
+      text: `Demande de place à préparer pour ${u.email} (${departement}). Tableau de bord : ${SITE_URL}/admin/`,
+    });
+  }
+  return reply(200, { ok: true, delai: DELAI_DOSSIER });
 }
 
 async function places(body: Record<string, unknown>) {
@@ -324,6 +370,7 @@ async function supprimer(body: Record<string, unknown>) {
   // Données personnelles rattachées au compte : supprimées. Le reste (profil, liens) part avec le compte.
   await db(`demandes_pros?user_id=eq.${u.id}`, { method: "DELETE" });
   await db(`abonnes_alertes?user_id=eq.${u.id}`, { method: "DELETE" });
+  await db(`dossiers_ddt?user_id=eq.${u.id}`, { method: "DELETE" }).catch((e) => console.error("Dossiers", e));
   const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${u.id}`, { method: "DELETE", headers: authHeaders() });
   if (!res.ok) {
     console.error("Suppression du compte", res.status, await res.text());
@@ -349,6 +396,7 @@ Deno.serve(async (req) => {
       case "pack": return await pack(body);
       case "pack_email": return await packEmail(body);
       case "places": return await places(body);
+      case "dossier": return await dossier(body);
       case "lier": return await lier(body);
       case "supprimer": return await supprimer(body);
       default: return reply(400, { erreur: "Action inconnue." });

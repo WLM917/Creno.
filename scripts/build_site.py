@@ -48,6 +48,8 @@ PRIX_ALERTES = CFG.get("prix_alertes", "9,99 €")
 ESSAI_ALERTES = int(CFG.get("essai_alertes_jours", 15))
 PRIX_CRENO_PRO = CFG.get("prix_creno_pro", "19,99 €")
 ALERTES_PAYANTES = bool(CFG.get("alertes_payantes", False))
+# Délai (jours) pour envoyer à l'acheteur du pack son dossier de demande de place préparé
+DELAI_DOSSIER = int(CFG.get("delai_dossier_jours", 7))
 # Barre « Budget maximum » des classements : masquée tant qu'on ne connaît pas les prix des auto-écoles.
 FILTRE_BUDGET = bool(CFG.get("filtre_budget", False))
 ANALYTICS = bool(CFG.get("vercel_analytics", False))
@@ -597,6 +599,70 @@ def loueurs_html(L, loueurs, dep=None):
                    f'<span>{esc(l["ville"])} ({esc(l["dep"])})</span>{prix}</div>'
                    f'<div class="rank-actions">{"".join(boutons)}</div>{tip}<p class="rank-msg" role="status" hidden></p></li>')
     return "".join(out)
+
+
+def test_eligibilite(L, pack_href):
+    """Test « Peux-tu passer en candidat libre ? ». Rien n'est envoyé : le résultat est calculé sur le téléphone
+    (initTestEligibilite dans app.js). pack_href : lien du bouton vers le pack (#acheter sur la page du pack)."""
+    questions = [
+        ("code", "As-tu réussi ton code il y a moins de 5 ans, et as-tu ton numéro NEPH ?", "Oui", "Non, pas encore"),
+        ("mandat", "Es-tu libre de toute auto-école ? Tu n'y es plus inscrit, et elle ne réserve plus ta place.",
+         "Oui, je ne suis plus en auto-école", "Non, je suis encore inscrit"),
+        ("accompagnateur", "Un proche peut-il t'accompagner bénévolement le jour de l'examen ? Il a le permis B depuis au "
+                           "moins 5 ans, sans annulation ni invalidation depuis 5 ans, et ce n'est pas un moniteur.", "Oui", "Non"),
+        ("voiture", "Peux-tu avoir une voiture à double commande assurée pour l'examen (louée, ou celle d'un proche) ?",
+         "Oui", "Pas encore"),
+        ("appris", "As-tu appris à conduire avec des proches, sans cours payants ?", "Oui", "Non, en partie ou en entier en auto-école"),
+    ]
+    q_html = "".join(
+        f'<fieldset class="crit test-q"><legend>{i}. {esc(q)}</legend>'
+        f'<label class="check-inline"><input type="radio" name="{n}" value="oui" required> {esc(oui)}</label>'
+        f'<label class="check-inline"><input type="radio" name="{n}" value="non"> {esc(non)}</label></fieldset>'
+        for i, (n, q, oui, non) in enumerate(questions, 1))
+    return f'''<section class="block panel" id="test" aria-labelledby="test-titre">
+  <h2 id="test-titre">Test : peux-tu passer en candidat libre ?</h2>
+  <p>Cinq questions, une minute. Rien n'est envoyé : le résultat se calcule sur ton téléphone.</p>
+  <form class="form-stack test-elig" id="test-form" data-test-elig data-pack="{esc(pack_href)}"
+        data-ddt="{esc(L("candidat-libre/demander-une-place/"))}" data-moniteurs="{esc(L("moniteurs/"))}"
+        data-auto-ecoles="{esc(L("auto-ecoles/"))}" data-candidat-libre="{esc(L("candidat-libre/"))}">
+    {q_html}
+    <div class="form-actions"><button class="btn btn-signal" type="submit">Voir mon résultat</button></div>
+    <div class="test-resultat" role="status" aria-live="polite" hidden></div>
+  </form>
+  <noscript><p class="small">Le résultat a besoin de JavaScript. Sinon : sans proche bénévole pour t'accompagner, ou si une
+  auto-école réserve encore ta place, le candidat libre n'est pas possible.</p></noscript>
+</section>'''
+
+
+def ddt_html(L, ddt, deps_by_code):
+    """Démarche pour demander une place en candidat libre, par département (data/ddt.json, vérifiée à la main)."""
+    deps = ddt.get("departements") or {}
+    cartes = []
+    for code in sorted(deps, key=lambda c: (len(c), c)):
+        d = deps[code]
+        nom = deps_by_code.get(code, {}).get("nom", code)
+        mode = {"formulaire": "Formulaire en ligne", "dossier": "Sur dossier, par e-mail", "rdvpermis": "Places sur RdvPermis"}.get(
+            d.get("mode"), "Démarche")
+        conditions = "".join(f"<li>{esc(c)}</li>" for c in d.get("conditions") or [])
+        pieces = "".join(f"<li>{esc(p)}</li>" for p in d.get("pieces") or [])
+        lien = (f'<a class="btn btn-small btn-signal" href="{esc(d["lien"])}" target="_blank" rel="noopener">'
+                f'{esc(d.get("lien_txt") or "Ouvrir la démarche officielle")}</a>') if d.get("lien") else ""
+        contact = (f'<p>Écris à <a href="mailto:{esc(d["contact"])}">{esc(d["contact"])}</a> pour connaître les démarches.</p>'
+                   if d.get("contact") else "")
+        source = (f'<p class="small">Source : <a href="{esc(d["source_url"])}" target="_blank" rel="noopener">{esc(d["source"])}</a>. '
+                  f'Vérifié le {esc(date_fr(d["verifie_le"]))}. La DDT peut changer sa démarche : en cas de doute, c\'est elle qui a raison.</p>'
+                  if d.get("source_url") else "")
+        cartes.append(f'''<li class="ddt-carte" id="ddt-{esc(code.lower())}" data-ddt-dep="{esc(code)}">
+  <div class="ddt-tete"><span class="dep-code">{esc(code)}</span><h3>{esc(nom)}</h3><span class="chip">{esc(mode)}</span></div>
+  <p class="small">{esc(d.get("service", ""))}</p>
+  <p>{esc(d.get("resume", ""))}</p>
+  {contact}
+  {f'<h4>Les conditions</h4><ul class="tips">{conditions}</ul>' if conditions else ""}
+  {f'<h4>Les papiers à joindre</h4><ul class="tips">{pieces}</ul>' if pieces else ""}
+  {f'<div class="rank-actions">{lien}</div>' if lien else ""}
+  {source}
+</li>''')
+    return "".join(cartes)
 
 
 def pros_html(L, pros):
@@ -1149,10 +1215,13 @@ def build(out_dir=ROOT, explicit=False, only=None):
                     f'd\'alertes » en bas de chaque e-mail. L\'abonnement s\'arrête tout de suite et tu n\'es plus prélevé. '
                     f'Aucun engagement de durée.</p></details>')
     else:
-        offre_alertes = "<strong>Gratuit.</strong> Tu confirmes ton e-mail en un clic, et c'est parti."
-        bouton_alertes = "Recevoir les alertes"
-        faq_prix = ('<details><summary>C\'est vraiment gratuit ?</summary><p>Oui. Si un jour les alertes deviennent payantes, '
-                    'tu seras prévenu par e-mail à l\'avance, et rien ne sera jamais prélevé sans ton accord.</p></details>')
+        offre_alertes = ("<strong>Gratuit pour un département.</strong> Tu confirmes ton e-mail en un clic, et c'est parti. "
+                         "Avec le pack, tu suis tous les départements que tu veux.")
+        bouton_alertes = "Suivre mon département"
+        faq_prix = ('<details><summary>C\'est vraiment gratuit ?</summary><p>Oui, pour un département à la fois. Si tu choisis un autre '
+                    'département, il remplace le premier. Pour en suivre plusieurs en même temps (utile si tu es prêt à passer l\'examen '
+                    'loin de chez toi), prends le <a href="../pack-candidat-libre/">Pack candidat libre</a>. Si un jour les alertes '
+                    'deviennent payantes, tu seras prévenu par e-mail à l\'avance, et rien ne sera jamais prélevé sans ton accord.</p></details>')
     if ALERTES_PAYANTES:
         cgv = {
             "cgv_lede": "le Pack candidat libre, l'abonnement aux Alertes et Créno Pro pour les pros.",
@@ -1174,8 +1243,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
         }
     else:
         cgv = {
-            "cgv_lede": "le Pack candidat libre, et Créno Pro pour les pros. Les alertes places d'examen sont gratuites.",
-            "cgv_offre_alertes": ("<li><strong>Alertes places d'examen</strong> : gratuites, aucun paiement n'est demandé. Si elles deviennent "
+            "cgv_lede": "le Pack candidat libre, et Créno Pro pour les pros. Les alertes places d'examen sont gratuites pour un département.",
+            "cgv_offre_alertes": ("<li><strong>Alertes places d'examen</strong> : gratuites pour un département à la fois (le pack permet d'en suivre "
+                                  "plusieurs), aucun paiement n'est demandé. Si elles deviennent "
                                   "payantes un jour, tu seras prévenu à l'avance et rien ne sera prélevé sans ton accord.</li>"),
             "cgv_paiement_alertes": "",
             "cgv_resil_alertes": "",
@@ -1192,6 +1262,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
             "prix_pack": esc(PRIX_PACK), "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
             "offre_alertes": offre_alertes, "bouton_alertes": bouton_alertes,
             "faq_prix": faq_prix, "prix_creno_pro": esc(PRIX_CRENO_PRO), **cgv,
+            "test_eligibilite_pack": test_eligibilite(L, "#acheter"), "delai_dossier": DELAI_DOSSIER,
             "contact_direct": (f'<p class="small">Tu préfères un e-mail ? Écris à <a href="mailto:{esc(CONTACT)}">{esc(CONTACT)}</a>.</p>'
                                if CONTACT else ""),
             "pros": pros_html(L, pros), "editeur": editeur_html, "mediateur": mediateur_html,
@@ -1214,6 +1285,27 @@ def build(out_dir=ROOT, explicit=False, only=None):
                      "Les élèves de ton département cherchent un examen blanc, des heures avec un moniteur ou une voiture à double commande. Réponds-leur via Créno.",
                      body, [jsonld_ariane([("Accueil", ""), ("Espace pros", "pro/"), ("Demandes d'élèves", path)])], "pro"), 0.4)
 
+    # --- demander une place en candidat libre, département par département (data/ddt.json)
+    ddt = json.loads((DATA / "ddt.json").read_text(encoding="utf-8")) if (DATA / "ddt.json").exists() else {}
+    path = "candidat-libre/demander-une-place/"
+    L = Links(depuis(path), explicit)
+    nb_ddt = len(ddt.get("departements") or {})
+    body = fill((TPL / "demande-place.html").read_text(encoding="utf-8"), {
+        **common, "root": L.root, "options_departements": options_deps, "prix_pack": esc(PRIX_PACK),
+        "fil_ariane": fil_ariane(L, [("Accueil", ""), ("Candidat libre", "candidat-libre/"), ("Demander une place", None)]),
+        "test_eligibilite": test_eligibilite(L, L("pack-candidat-libre/")),
+        "ddt_cartes": ddt_html(L, ddt, deps_by_code), "nb_ddt": plural(nb_ddt, "département", "départements"),
+        "options_ddt_form": "".join(f'<option value="DDT du {esc(d["code"])} ({esc(d["nom"])})">{esc(d["nom"])} ({esc(d["code"])})</option>'
+                                    for d in deps),
+    })
+    if explicit:
+        body = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', body)
+    write(path, page(L, path, "candidat-libre", "Demander une place d'examen en candidat libre à la DDT, par département | Créno",
+                     "Pas de place candidat libre sur RdvPermis ? Dans la plupart des départements, il faut la demander à la DDT. "
+                     "Conditions, papiers et démarche officielle, département par département.",
+                     body, [jsonld_ariane([("Accueil", ""), ("Candidat libre", "candidat-libre/"), ("Demander une place", path)])],
+                     "candidat-libre"), 0.8)
+
     # --- pages privées (pas dans Google) : continuer les alertes, tableau de bord, rapport envoyé aux pros
     prives = [
         ("alertes/continuer/", "alertes-continuer.html", "Continuer les alertes", "Continuer à recevoir les alertes places d'examen."),
@@ -1225,7 +1317,8 @@ def build(out_dir=ROOT, explicit=False, only=None):
         L = Links(depuis(path), explicit)
         body = fill((TPL / tpl).read_text(encoding="utf-8"), {
             **common, "root": L.root, "prix_alertes": esc(PRIX_ALERTES), "essai_alertes": ESSAI_ALERTES,
-            "prix_creno_pro": esc(PRIX_CRENO_PRO), "contact": contact_txt, "options_departements": options_deps})
+            "prix_creno_pro": esc(PRIX_CRENO_PRO), "contact": contact_txt, "options_departements": options_deps,
+            "delai_dossier": DELAI_DOSSIER})
         if explicit:
             body = re.sub(r'href="((?:\.\./)*[a-z0-9\-/]*/)"', lambda m: f'href="{m.group(1)}index.html"', body)
         write(path, page(L, path, "compte" if path == "compte/" else "prive", f"{titre} | Créno", desc, body, noindex=True), sitemap=False)

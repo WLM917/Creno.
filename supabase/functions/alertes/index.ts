@@ -7,6 +7,8 @@
 // Le site appelle cette fonction en POST avec un JSON { action, ... } :
 //   abonner    { email, departement }  -> essai : envoie un e-mail de confirmation.
 //                                        Essai déjà utilisé avec cet e-mail : renvoie { continuer } (page d'abonnement).
+//                                        En essai (gratuit), un seul département à la fois : le nouveau remplace les autres
+//                                        ({ remplace: [...] }), sauf pour les acheteurs du Pack candidat libre (sans limite).
 //   confirmer  { t }                   -> active l'essai après le clic dans l'e-mail
 //   continuer  { t }                   -> renvoie le lien de paiement Stripe de cet abonné
 //   paiement   { session_id }          -> vérifie l'abonnement Stripe et active les alertes
@@ -14,6 +16,8 @@
 //   signaler   { departement, centre, creneau?, details? } -> enregistre un signalement et prévient les abonnés
 //   quotidien  { code }                -> tâche lancée chaque jour (Supabase Cron) : rappels de fin d'essai,
 //                                        fin des essais, renouvellement des abonnements
+//   annonce    { code, departement, titre, message } -> William prévient les abonnés d'un département (ou « toutes »)
+//                                        qu'une démarche change (DDT, formulaire...). Protégé par ADMIN_CODE.
 //
 // Aucun robot, aucune connexion à RdvPermis : les alertes viennent uniquement des candidats.
 //
@@ -158,7 +162,7 @@ function emailLayout(title: string, bodyHtml: string, desabo?: string) {
     : "";
   return `<div style="font-family:Arial,sans-serif;color:#1A1F25;max-width:520px;line-height:1.5">
     <p style="font-size:20px;font-weight:bold;margin:0 0 12px">${esc(title)}</p>${bodyHtml}${foot}
-    <p style="color:#55606B;font-size:13px">Créno, le bon créneau pour ton permis. Service indépendant, sans lien avec RdvPermis.</p></div>`;
+    <p style="color:#55606B;font-size:13px">Créno, le bon créneau pour ton permis. Créno est un service privé et indépendant, ce n'est pas un site officiel : RdvPermis et les démarches auprès de la DDT sont gratuits.</p></div>`;
 }
 
 // ---------------------------------------------------------------- Stripe
@@ -197,6 +201,36 @@ async function utilisateur(jeton: unknown): Promise<{ id: string; email: string 
   return u?.id ? { id: u.id, email: String(u.email ?? "").toLowerCase() } : null;
 }
 
+// Le compte a-t-il acheté le Pack candidat libre ? (paiement « pack-<compte> » noté par la fonction pack,
+// ou retrouvé dans les derniers paiements Stripe). Les acheteurs suivent autant de départements qu'ils veulent.
+async function packAchete(userId: string) {
+  const ref = `pack-${userId}`;
+  const { data } = await db(`achats_pack?ref=eq.${ref}&select=session_id&limit=1`);
+  if (data?.[0]) return true;
+  const key = env("STRIPE_SECRET_KEY");
+  if (!key) return false;
+  const min = Number(env("PACK_MONTANT_CENTIMES", "1499")) || 1499;
+  let apres = "";
+  for (let page = 0; page < 3; page++) {
+    const r = await fetch("https://api.stripe.com/v1/checkout/sessions?limit=100" + (apres ? `&starting_after=${apres}` : ""),
+      { headers: { Authorization: `Bearer ${key}` } });
+    if (!r.ok) return false;
+    const j = await r.json();
+    const liste = (j.data ?? []) as Record<string, unknown>[];
+    const s = liste.find((x) => x.client_reference_id === ref && x.payment_status === "paid" && Number(x.amount_total ?? 0) >= min);
+    if (s) {
+      await db("achats_pack?on_conflict=session_id", {
+        method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=minimal" },
+        body: JSON.stringify({ session_id: String(s.id), ref, montant: Number(s.amount_total ?? 0) }),
+      });
+      return true;
+    }
+    if (!j.has_more || !liste.length) break;
+    apres = String(liste[liste.length - 1].id);
+  }
+  return false;
+}
+
 async function abonner(body: Record<string, unknown>) {
   // Il faut un compte Créno : l'abonnement y est rattaché (rubrique « Mes alertes » du compte).
   const u = await utilisateur(body.jeton);
@@ -231,6 +265,15 @@ async function abonner(body: Record<string, unknown>) {
     return reply(200, { essai_utilise: true, continuer: continuerUrl(token!) });
   }
 
+  // Gratuit (essai) : un seul département à la fois. Le nouveau remplace les autres, sauf avec le pack.
+  const autres = rows.filter((r) => r.departement !== departement && r.plan === "essai" &&
+    (r.statut === "en_attente" || (r.statut === "actif" && !!r.expire_le && new Date(r.expire_le) > now)));
+  let remplace: string[] = [];
+  if (autres.length && !(await packAchete(u.id))) {
+    await patch(`id=in.(${autres.map((r) => r.id).join(",")})`, { statut: "desabonne" });
+    remplace = [...new Set(autres.map((r) => r.departement))];
+  }
+
   let token = memeDep.find((r) => r.statut === "en_attente")?.token;
   if (!token) {
     const { data } = await db("abonnes_alertes", {
@@ -256,8 +299,8 @@ async function abonner(body: Record<string, unknown>) {
     text: `Active tes alertes Créno pour le ${departement} : ${confirmUrl}`,
   }]);
   // E-mails pas encore branchés : l'inscription est gardée, les places signalées restent visibles dans le compte.
-  if (!sent) return reply(200, { confirmation: false, compte: true, departement });
-  return reply(200, { confirmation: true, essai_jours: ESSAI_JOURS, payant: !!lienPaye() });
+  if (!sent) return reply(200, { confirmation: false, compte: true, departement, remplace });
+  return reply(200, { confirmation: true, essai_jours: ESSAI_JOURS, payant: !!lienPaye(), remplace });
 }
 
 async function confirmer(body: Record<string, unknown>) {
@@ -498,6 +541,48 @@ async function quotidien(body: Record<string, unknown>) {
   return reply(200, { ok: true, ...bilan });
 }
 
+// ---------------------------------------------------------------- annonce de William
+// Prévenir les abonnés d'un département (ou de tous) qu'une démarche change : nouveau formulaire de la DDT,
+// demandes de places rouvertes... Pas de pause de 10 minutes : ces e-mails sont rares et écrits à la main.
+async function annonce(body: Record<string, unknown>) {
+  const code = env("ADMIN_CODE");
+  if (!code || String(body.code ?? "") !== code) {
+    await new Promise((r) => setTimeout(r, 800));
+    return reply(403, { erreur: "Code incorrect." });
+  }
+  const departement = String(body.departement ?? "").toUpperCase();
+  const toutes = departement === "TOUTES";
+  if (!toutes && !DEPARTEMENT.test(departement)) return reply(400, { erreur: "Choisis un département." });
+  const titre = clean(body.titre, 120);
+  const message = String(body.message ?? "").trim().slice(0, 2000);
+  if (!titre || titre.length < 3) return reply(400, { erreur: "Écris un titre." });
+  if (message.length < 10) return reply(400, { erreur: "Écris ton message (10 caractères au moins)." });
+  if (!env("RESEND_API_KEY")) {
+    return reply(503, { erreur: "Les e-mails ne sont pas encore branchés (secret RESEND_API_KEY) : rien n'est parti." });
+  }
+
+  const now = new Date();
+  const { data: abonnes } = await db(`abonnes_alertes?statut=eq.actif&expire_le=gt.${now.toISOString()}` +
+    `${toutes ? "" : `&departement=eq.${departement}`}&select=id,email,token,departement&order=created_at.desc`);
+  const vus = new Set<string>();
+  const cibles = (abonnes ?? []).filter((a: { email: string }) => !vus.has(a.email) && !!vus.add(a.email));
+  const page = (dep: string) => `${SITE_URL}/candidat-libre/demander-une-place/#ddt-${dep.toLowerCase()}`;
+  const messages = cibles.map((a: { email: string; token: string; departement: string }) => {
+    const desabo = desaboUrl(a.token);
+    return {
+      from: expediteur(),
+      to: [a.email],
+      subject: toutes ? titre : `${titre} (${a.departement})`,
+      headers: { "List-Unsubscribe": `<${desabo}>` },
+      html: emailLayout(titre, `<p style="white-space:pre-line">${esc(message)}</p>
+        ${bouton(page(a.departement), "Voir la démarche de mon département")}`, desabo),
+      text: `${titre}\n\n${message}\n\nLa démarche de ton département : ${page(a.departement)}\nNe plus recevoir d'alertes : ${desabo}`,
+    };
+  });
+  const ok = await sendEmails(messages);
+  return reply(200, { ok: true, abonnes: cibles.length, prevenus: ok.filter(Boolean).length });
+}
+
 // ---------------------------------------------------------------- point d'entrée
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
@@ -517,6 +602,7 @@ Deno.serve(async (req) => {
       case "desabonner": return await desabonner(body);
       case "signaler": return await signaler(body, req);
       case "quotidien": return await quotidien(body);
+      case "annonce": return await annonce(body);
       default: return reply(400, { erreur: "Action inconnue." });
     }
   } catch (e) {

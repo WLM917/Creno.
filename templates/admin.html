@@ -109,6 +109,23 @@
       <dl class="facts" id="admin-alertes"></dl>
     </section>
 
+    <section class="block" aria-labelledby="adm-annonce-titre">
+      <h2 id="adm-annonce-titre">Prévenir les abonnés d'un département</h2>
+      <p class="small">Quand la démarche d'un département change (nouveau formulaire de la DDT, demandes de places rouvertes…), envoie un e-mail à ceux qui le suivent. Mets aussi à jour sa fiche dans data/ddt.json (page « Demander une place »).</p>
+      <form class="form-grid adm-annonce" id="annonce-form">
+        <div class="field"><label for="annonce-dep">Département</label>
+          <select id="annonce-dep" name="departement" required><option value="">Choisis</option><option value="toutes">Tous les départements</option>{{options_departements}}</select>
+        </div>
+        <div class="field"><label for="annonce-titre">Titre de l'e-mail</label><input id="annonce-titre" name="titre" required maxlength="120" placeholder="Ex. Nouveau formulaire de la DDT"></div>
+        <div class="field field-wide"><label for="annonce-msg">Message</label><textarea id="annonce-msg" name="message" rows="5" required minlength="10" maxlength="2000"></textarea></div>
+        <label class="check-inline field-wide" for="annonce-ok"><input id="annonce-ok" type="checkbox" required> J'ai relu : l'e-mail part tout de suite, sans retour en arrière.</label>
+        <div class="form-actions field-wide">
+          <button class="btn" type="submit">Envoyer l'e-mail</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </section>
+
     <section class="block" id="admin-demandes" aria-labelledby="adm-dem" hidden>
       <h2 id="adm-dem">Comptes, demandes d'élèves et réponses des pros</h2>
       <dl class="facts" id="admin-dem-faits"></dl>
@@ -123,7 +140,7 @@
 
     <section class="block" aria-labelledby="adm-traiter">
       <h2 id="adm-traiter">À traiter</h2>
-      <p class="small">Tout ce que les pros envoient depuis le site arrive ici (et dans ta boîte e-mail). « Publier » met les tarifs sur la fiche de l'auto-école à la prochaine mise à jour automatique du site.</p>
+      <p class="small">Tout ce que les pros et les acheteurs du pack envoient depuis le site arrive ici (et dans ta boîte e-mail). « Publier » met les tarifs sur la fiche de l'auto-école à la prochaine mise à jour automatique du site.</p>
       <div id="admin-a-traiter"></div>
     </section>
 

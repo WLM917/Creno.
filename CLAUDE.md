@@ -37,7 +37,7 @@ site.json                         réglages : adresse du site (canonical, sitema
                                   alertes gratuites), prix_creno_pro (19,99 € par mois), filtre_budget (false : barre « Budget maximum »
                                   masquée tant qu'on ne connaît pas les prix des auto-écoles), vercel_analytics,
                                   editeur (mentions légales) et mediateur_consommation (CGV)
-templates/*.html                  contenu des pages fixes (accueil, candidat-libre, examen, methode,
+templates/*.html                  contenu des pages fixes (accueil, candidat-libre, demande-place, examen, methode,
                                   cout-du-permis, confidentialite, alertes, pack, moniteurs, pro,
                                   mentions-legales, cgv, etat = pages de retour, alertes-continuer, admin, rapport, compte),
                                   avec des {{variables}}
@@ -54,14 +54,15 @@ supabase/migrations/*.sql         tables + sécurité. Toujours REJOUABLES (if n
                                   seule), espace de stockage privé « pack ». Puis creno_pro_demandes
                                   (demandes d'abonnement Créno Pro des auto-écoles, aucun accès public).
                                   Puis stats_boutons(depuis) et stats_jours(depuis) pour le tableau de bord.
-                                  Dernière : comptes (profils, liens_pros, achats_pack, colonne user_id des formulaires)
+                                  Puis comptes (profils, liens_pros, achats_pack, colonne user_id des formulaires).
+                                  Dernière : dossiers_ddt (demandes de place à préparer pour les acheteurs du pack)
 supabase/functions/alertes/       fonction serveur (Deno) : abonnement, paiement Stripe, confirmation,
                                   désabonnement, signalement de places + envoi des e-mails (Resend)
 supabase/functions/pack/          fonction serveur : vérifie le paiement Stripe, renvoie un lien de 1 h vers le PDF
 supabase/functions/stats/         fonction serveur : compteur des contacts envoyés aux pros, rapports des pros,
                                   tableau de bord (protégé par ADMIN_CODE), boutons « Publier / C'est fait » du tableau de bord
-supabase/functions/compte/        fonction serveur : « Gérer mon compte » (moi, profil, pack, pack_email, places, lier,
-                                  supprimer) ; reçoit le jeton de connexion { jeton } et ne renvoie que ce qui est au compte
+supabase/functions/compte/        fonction serveur : « Gérer mon compte » (moi, profil, pack, pack_email, places, dossier,
+                                  lier, supprimer) ; reçoit le jeton de connexion { jeton } et ne renvoie que ce qui est au compte
 supabase/functions/pros/          fonction serveur : demandes d'élèves (publication, liste sans contact, réponses
                                   des pros, fermeture) et formulaires des pros (tarifs, services, messages, inscription
                                   des loueurs, demande Créno Pro), avec un e-mail à William (ADMIN_EMAIL) pour chaque envoi
@@ -99,6 +100,9 @@ data/loueurs.json                 loueurs de voitures à double commande (2 entr
                                   code_promo, reduction, lien_reservation
 data/partenaires.json             auto-écoles abonnées à Créno Pro (par numéro d'agrément : depuis, code_promo,
                                   reduction), vide pour l'instant ; à remplir à la main après chaque paiement
+data/ddt.json                     démarche pour demander une place en candidat libre, par département (46, 67, 80, 82
+                                  vérifiés le 25 novembre 2026) : service, mode (formulaire / dossier), conditions, papiers,
+                                  lien officiel, source et date. N'ajouter un département qu'avec une source officielle (règle 3).
 data/pros.json                    annuaire des moniteurs / auto-écoles pour examen blanc (vide, à remplir
                                   à la main après vérification de chaque pro)
 data/recherche.json               index de recherche des villes (généré)
@@ -110,7 +114,8 @@ index.html                        accueil (recherche de ville, poteau de directi
 auto-ecoles/                      liste des départements
 auto-ecoles/<nom>-<code>/         une page par département (102) : classement complet + filtres
 auto-ecoles/<nom>-<code>/<ville>/ une page par ville d'au moins 2 auto-écoles (1 777)
-candidat-libre/, cout-du-permis/, examen/, methode/, confidentialite/, alertes/, pack-candidat-libre/,
+candidat-libre/, candidat-libre/demander-une-place/ (test d'éligibilité + démarche DDT par département),
+cout-du-permis/, examen/, methode/, confidentialite/, alertes/, pack-candidat-libre/,
 moniteurs/, pro/ (3 onglets : auto-écoles, moniteurs, loueurs), pro/demandes/ (demandes d'élèves vues par les pros),
 contact/ (« Nous contacter », formulaire pour élèves et pros), mentions-legales/, cgv/, 404.html, sitemap.xml, robots.txt
 alertes/confirmer/, alertes/merci/, alertes/desabonner/, pack-candidat-libre/acces/ : pages de retour
@@ -181,12 +186,31 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Nouvelles clés Supabase (`sb_publishable_...`) : app.js n'envoie alors que l'en-tête apikey,
   sans « Authorization: Bearer ».
 
+## Candidat libre : la vraie situation (novembre 2026) et la page « Demander une place »
+
+- Presque tous les départements ne publient plus de places candidat libre en libre accès sur RdvPermis
+  (réponse écrite de la DDT du Bas-Rhin, 30 avril 2026) : il faut les demander à la DDT (bureau de l'éducation
+  routière), par formulaire en ligne (Lot, Somme, Tarn-et-Garonne) ou sur dossier par e-mail (Bas-Rhin).
+  Souvent réservé aux habitants du département. La Somme exige d'avoir appris avec des proches, sans cours payants.
+- /candidat-libre/demander-une-place/ (templates/demande-place.html, fonctions test_eligibilite et ddt_html de
+  build_site.py) : ce qu'est la DDT, le test « Peux-tu passer en candidat libre ? » (calculé dans le navigateur,
+  rien n'est envoyé : initTestEligibilite), la fiche de chaque département vérifié (data/ddt.json, choix du
+  département : initDdt, lien direct #ddt-67), et un formulaire « Ta DDT t'a répondu ? » (Nous contacter,
+  type élève, département dans la colonne ville) pour enrichir data/ddt.json après vérification.
+- Le même test est sur la page du pack, juste avant l'achat.
+
 ## Services payants (alertes, pack, Créno Pro)
 
 - **Alertes places** (/alertes/) : un candidat signale des places vues sur RdvPermis, la fonction
   `alertes` prévient par e-mail les abonnés du département (Resend). Limites anti-abus :
   3 signalements par heure et par appareil (empreinte sha256 de l'IP + sel, IP jamais gardée),
   pas plus d'un e-mail toutes les 10 minutes par abonné.
+- **Gratuites pour UN département à la fois** (25 novembre 2026) : en essai, s'abonner à un autre département
+  arrête les autres (réponse { remplace: [...] }, message sur le site), sauf pour les acheteurs du pack
+  (achats_pack ou paiement Stripe pack-<compte>) qui suivent autant de départements qu'ils veulent.
+  Les alertes annoncent aussi les changements de démarche : action `annonce` de la fonction alertes
+  ({ code, departement | "toutes", titre, message }), formulaire « Prévenir les abonnés d'un département » du
+  tableau de bord. Chaque e-mail dit que Créno est privé, pas officiel, et que les démarches sont gratuites.
 - **Pour l'instant, les alertes sont GRATUITES** (choix de William, novembre 2026 : à rendre payantes
   plus tard si le site prend de l'ampleur). site.json `alertes_payantes: false` et secret
   `ALERTES_LIEN_STRIPE` vide. Le mode payant reste codé, prêt à être rallumé :
@@ -200,7 +224,17 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Le secret `ALERTES_LIEN_STRIPE` (lien de paiement de l'abonnement mensuel) décide du mode :
   vide = lancement gratuit (les essais se prolongent tout seuls). `alertes_payantes` dans site.json
   doit être d'accord avec lui (textes du site), puis relancer build_site.py et pousser.
-- **Pack candidat libre** (/pack-candidat-libre/) : lien de paiement Stripe dans config.js
+- **Pack candidat libre** = alertes + aide à la demande de place (fusion du 25 novembre 2026, même prix 14,99 €) :
+  1. le guide PDF ; 2. la demande de place préparée : l'acheteur remplit « Préparer ma demande de place » dans
+  son compte (action `dossier` de la fonction compte -> table dossiers_ddt, e-mail à William), William lui envoie
+  par e-mail sous `delai_dossier_jours` (site.json, 7) la démarche de sa DDT, le formulaire ou l'e-mail à envoyer
+  et la liste des papiers, puis clique « Envoyé » (tableau de bord, « À traiter ») ; 3. les alertes sans limite
+  de départements. **On vend l'aide, jamais une place** : « aucune place garantie » (case à cocher avant
+  l'achat), démarches gratuites rappelées (DGCCRF), aucune pièce d'identité demandée ni gardée, le candidat
+  envoie lui-même sa demande (attestations sur l'honneur), pas de connexion à son compte RdvPermis.
+  Rétractation (CGV) : renoncée pour le guide (L221-28), service de préparation remboursable au prorata (L221-25)
+  tant que la demande préparée n'est pas reçue.
+- Paiement du pack (/pack-candidat-libre/) : lien de paiement Stripe dans config.js
   (`lienPaiementPack`), avec `client_reference_id=pack-<uuid>`. Stripe redirige vers
   /pack-candidat-libre/acces/?session_id=..., la fonction `pack` vérifie le paiement
   (statut payé, référence pack-, montant minimum) et renvoie un lien de 1 h vers le PDF.
@@ -410,7 +444,9 @@ Couleurs : toujours via les variables CSS de `:root` dans assets/style.css (clai
    automatique ? », lignes « En manuelle / En automatique » dans les séances ; source hors dépôt).
 3. **Annuaire des loueurs double commande** : inscription gratuite, Créno Pro 19,99 €/mois codé (formulaire + Stripe).
    Reste : recherche par ville, boîte manuelle/auto dans la fiche.
-4. **Trouver une date d'examen** : guide fait, alertes communautaires codées et déployées (fonction `alertes`).
+4. **Trouver une date d'examen** : guide fait, page « Demander une place » (DDT par département, test
+   d'éligibilité), alertes communautaires codées et déployées (fonction `alertes`). À faire : vérifier et ajouter
+   d'autres départements dans data/ddt.json (en priorité l'Île-de-France : 91, 77, 78, 95, 45, 60).
    Reste : brancher Resend (RESEND_API_KEY) et un domaine, sans quoi aucun e-mail ne part
    (les formulaires sont quand même enregistrés). Jamais de bot (règle 1).
 5. ~~Pages par ville et par département pour Google~~ : fait (1 892 pages).

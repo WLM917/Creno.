@@ -246,6 +246,10 @@ async function admin(body: Record<string, unknown>) {
       db("creno_pro_demandes?traite=eq.false&select=*&order=created_at.desc&limit=50").then((r) => r.data ?? []),
     ]);
   // Comptes : élèves, pros, et pros qui attendent ta vérification (pour voir leurs chiffres)
+  // Demandes de place à préparer pour les acheteurs du pack (table dossiers_ddt)
+  const dossiers = await db("dossiers_ddt?traite=eq.false&select=id,created_at,email,departement,ville,code_ok,libre_ok," +
+    "accompagnateur_ok,voiture_ok,appris_proches,autres_departements,message&order=created_at&limit=50")
+    .then((r) => r.data ?? []).catch(() => []);
   const [comptesEleves, comptesPros, liens] = await Promise.all([
     compte("profils?type=eq.eleve&select=user_id").catch(() => 0),
     compte("profils?type=eq.pro&select=user_id").catch(() => 0),
@@ -284,7 +288,7 @@ async function admin(body: Record<string, unknown>) {
     },
     demandes: { ouvertes: demandesOuvertes, recues_30j: demandes30, recues_7j: demandes7, recues_tout: demandesTout, liste: demandes, reponses },
     comptes: { eleves: comptesEleves, pros: comptesPros },
-    a_traiter: { liens, creno_pro: crenoPro, tarifs, pros: prosProposes, loueurs, messages },
+    a_traiter: { dossiers, liens, creno_pro: crenoPro, tarifs, pros: prosProposes, loueurs, messages },
   });
 }
 
@@ -298,6 +302,7 @@ const TRAITEMENTS: Record<string, { table: string; champ: string; valeur?: unkno
   loueurs: { table: "loueurs_proposes", champ: "verifie" },
   messages: { table: "contacts_pros", champ: "traite" },
   creno_pro: { table: "creno_pro_demandes", champ: "traite" },
+  dossiers: { table: "dossiers_ddt", champ: "traite" },
 };
 
 async function traiter(body: Record<string, unknown>) {

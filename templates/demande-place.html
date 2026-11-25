@@ -1,0 +1,74 @@
+<div class="wrap stack-lg page-pad">
+  {{fil_ariane}}
+  <header class="view-head">
+    <h1>Demander une place d'examen en candidat libre</h1>
+    <p class="lede">Tu cherches tous les jours sur RdvPermis et tu ne vois aucune place ? C'est normal : dans la plupart des départements, les places des candidats libres ne s'affichent plus en libre accès. Il faut les demander à la DDT. Voici comment faire.</p>
+  </header>
+
+  <div class="two-col">
+    <section class="block" aria-labelledby="ddt-quoi">
+      <h2 id="ddt-quoi">C'est quoi, la DDT ?</h2>
+      <p>La Direction départementale des territoires est le service de l'État qui organise les examens du permis dans ton département, avec son bureau de l'éducation routière. C'est elle qui donne les places aux candidats libres.</p>
+      <p><strong>La démarche est gratuite.</strong> Personne n'a le droit de te vendre une place d'examen.</p>
+    </section>
+    <section class="block" aria-labelledby="ddt-pourquoi">
+      <h2 id="ddt-pourquoi">Pourquoi tu ne vois aucune place</h2>
+      <p>Très peu de candidats remplissent les conditions du candidat libre. Du coup, presque tous les départements ne publient plus de places accessibles directement sur RdvPermis. Chaque département a sa démarche : un formulaire en ligne, ou un dossier envoyé par e-mail.</p>
+      <p class="small">Source : <a href="https://www.plus.transformation.gouv.fr/experiences/7271134_impossible-davoir-une-date-dexamen-de-permis-de-conduire-en-candidat-libre" target="_blank" rel="noopener">réponse de la DDT du Bas-Rhin à un candidat</a>, 30 avril 2026.</p>
+    </section>
+  </div>
+
+  {{test_eligibilite}}
+
+  <section class="block" id="departements" aria-labelledby="ddt-dep-titre">
+    <h2 id="ddt-dep-titre">La démarche de ton département</h2>
+    <div class="field ddt-choix"><label for="ddt-dep">Ton département</label>
+      <select id="ddt-dep" data-ddt-select><option value="">Choisis</option>{{options_departements}}</select>
+    </div>
+    <div class="ddt-inconnu" id="ddt-inconnu" role="status" hidden>
+      <p><strong>On n'a pas encore vérifié la démarche de ce département.</strong> Écris à sa DDT (ou à sa préfecture, au bureau de l'éducation routière) et demande : « Comment obtenir une place d'examen pratique du permis B en candidat libre ? Quelles conditions, et quels papiers faut-il envoyer ? »</p>
+      <p>Tu trouves son adresse sur le site de la préfecture du département, rubrique sécurité routière ou permis de conduire. Ensuite, <a href="#partager">dis-nous ce qu'elle t'a répondu</a> : on l'ajoute ici pour les prochains candidats.</p>
+    </div>
+    <p class="small">{{nb_ddt}} vérifiés pour l'instant. On en ajoute dès qu'on a une source officielle.</p>
+    <ul class="ddt-liste">
+      {{ddt_cartes}}
+    </ul>
+  </section>
+
+  <section class="block note-block" aria-labelledby="ddt-avant">
+    <h2 id="ddt-avant">Avant d'envoyer ta demande</h2>
+    <ul class="tips">
+      <li>Inscris-toi en candidat libre sur <a href="https://candidat.permisdeconduire.gouv.fr" target="_blank" rel="noopener">RdvPermis</a> avec ton NEPH, et déclare ton accompagnateur.</li>
+      <li>Garde sous la main ton attestation d'inscription au permis (AIPC, sur le site de l'ANTS), ton attestation de réussite au code et ton livret d'apprentissage.</li>
+      <li>Ton accompagnateur prépare son permis, sa pièce d'identité et la charte de l'accompagnateur signée.</li>
+      <li>Demande un devis à un <a href="{{root}}candidat-libre/#rent-title">loueur de voiture à double commande</a> : certaines DDT le demandent dans le dossier.</li>
+      <li>Envoie tes papiers seulement sur le site officiel ou à l'adresse de la DDT. Ne donne jamais ta pièce d'identité à un site qui n'est pas celui de l'administration.</li>
+    </ul>
+  </section>
+
+  <section class="block panel" id="partager" aria-labelledby="partager-titre">
+    <h2 id="partager-titre">Ta DDT t'a répondu ? Partage la démarche</h2>
+    <p>Recopie ce qu'elle t'a dit (sans ton nom ni ton numéro de dossier). On vérifie, et on l'ajoute pour aider les autres candidats.</p>
+    <form class="form-grid" id="ddt-form" data-form-type="contact_pro">
+      <input type="hidden" name="type" value="eleve">
+      <input type="hidden" name="nom" value="Démarche d'une DDT (page Demander une place)">
+      <div class="field"><label for="ddt-form-dep">Département</label>
+        <select id="ddt-form-dep" name="ville" required><option value="">Choisis</option>{{options_ddt_form}}</select>
+      </div>
+      <div class="field"><label for="ddt-form-contact">Ton e-mail ou téléphone, au cas où on a une question</label><input id="ddt-form-contact" name="contact" required maxlength="200" autocomplete="email"></div>
+      <div class="field field-wide"><label for="ddt-form-msg">Ce que la DDT t'a répondu</label><textarea id="ddt-form-msg" name="message" rows="6" required maxlength="1000" placeholder="Ex. formulaire en ligne (avec le lien), ou dossier à envoyer par e-mail, papiers demandés, délai de réponse…"></textarea></div>
+      <div class="form-actions field-wide">
+        <button class="btn" type="submit">Envoyer</button>
+        <p class="form-status" role="status"></p>
+      </div>
+    </form>
+  </section>
+
+  <section class="block note-block" aria-labelledby="ddt-pack">
+    <h2 id="ddt-pack">Tu veux qu'on t'aide à monter ton dossier ?</h2>
+    <p>Avec le Pack candidat libre, on te prépare ta demande de place pour ta DDT : le bon formulaire ou le bon e-mail, et la liste exacte des papiers à joindre. Tu vérifies, et tu l'envoies toi-même. Tu reçois aussi les alertes de tous les départements que tu veux.</p>
+    <a class="link-strong" href="{{root}}pack-candidat-libre/">Découvrir le pack ({{prix_pack}})</a>
+  </section>
+
+  <p class="pledge">Créno est un service privé et indépendant, ce n'est pas un site officiel. Les démarches auprès de la DDT et de RdvPermis sont gratuites, et Créno n'a aucun accès privilégié aux places d'examen.</p>
+</div>

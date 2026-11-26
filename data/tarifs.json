@@ -210,6 +210,16 @@
    "lien": "https://ae-orsay-le-guichet.fr/",
    "mis_a_jour": "2026-11-26",
    "source": "site"
+  },
+  "E1209108350": {
+   "aac": true,
+   "cs": true,
+   "passerelle": true,
+   "passerelle_details": "prix sur demande",
+   "site": "https://www.ecf.asso.fr/agence/ecf-gare-dorsay",
+   "lien": "https://www.ecf.asso.fr/agence/ecf-gare-dorsay",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
   }
  }
 }

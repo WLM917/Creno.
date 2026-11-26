@@ -165,6 +165,11 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   bouton « Publier » du tableau de bord (valide = true), puis la mise à jour automatique quotidienne
   (GitHub Actions) ; ou ajoutés à la main dans data/tarifs.json avec source « site », le lien et la date),
   et prix payés par les élèves (médianes de data/prix.json, à partir de min_declarations_prix).
+- Tarifs recopiés à la main (source « site ») : champs facultatifs `forfait_note` (court, après le forfait,
+  ex. « hors code »), `precision` (ce qui est compris ou en plus) et `formules` (liste { nom, prix } des autres
+  formules), affichés dans le volet. Ajoutés le 26 novembre 2026 : Melissa Conduite et Mon Prof Auto (91),
+  Auto Moto École de Saint Germain = CER Saint-Germain-en-Laye (78, E1007813460). Route 91 écartée : sa page
+  d'accueil et sa page Tarifs donnent des prix différents.
 - Seuls les prix des élèves entrent dans l'indice (coût réel). Les prix annoncés sont affichés, pas notés.
 - 20 heures de conduite minimum en boîte manuelle, 13 h en boîte automatique : c'est souvent le contenu
   du forfait. Les auto-écoles doivent afficher leurs tarifs (arrêté du 19 juin 1987).

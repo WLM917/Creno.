@@ -306,7 +306,8 @@ def prix_connus(e):
     t = TARIFS.get(e["id"])
     if t and (t.get("forfait") is not None or t.get("prix_heure") is not None):
         return {"source": t.get("source") or "auto-ecole", "forfait": t.get("forfait"), "heures": t.get("heures_forfait") or 20,
-                "prix_heure": t.get("prix_heure"), "frais": t.get("frais_examen"), "date": t.get("mis_a_jour"), "lien": t.get("lien")}
+                "prix_heure": t.get("prix_heure"), "frais": t.get("frais_examen"), "date": t.get("mis_a_jour"), "lien": t.get("lien"),
+                "note": t.get("forfait_note"), "precision": t.get("precision"), "formules": t.get("formules") or []}
     if (e.get("declarations") or 0) >= MIN_DECL and e.get("forfait") is not None:
         return {"source": "eleves", "forfait": e["forfait"], "heures": e.get("heures_incluses"), "prix_heure": e.get("prix_heure"),
                 "frais": e.get("frais_examen"), "n": e["declarations"]}
@@ -337,7 +338,8 @@ def ligne_prix(p):
         return ""
     parts = []
     if p.get("forfait") is not None:
-        parts.append(f'Forfait{(" " + str(p["heures"]) + " h") if p.get("heures") else ""} : <strong>{eur(p["forfait"])}</strong>')
+        note = f' ({esc(p["note"])})' if p.get("note") else ""
+        parts.append(f'Forfait{(" " + str(p["heures"]) + " h") if p.get("heures") else ""} : <strong>{eur(p["forfait"])}</strong>{note}')
     if p.get("prix_heure") is not None:
         parts.append(f'Heure en plus : <strong>{eur(p["prix_heure"])}</strong>')
     return f'<p class="rank-prix">{" · ".join(parts)}</p>'
@@ -354,13 +356,20 @@ def bloc_prix(e):
             lignes.append(f'<div><dt>Heure de conduite en plus</dt><dd>{eur(p["prix_heure"])}</dd></div>')
         if p.get("frais") is not None:
             lignes.append(f'<div><dt>Présentation à l\'examen</dt><dd>{eur(p["frais"])}</dd></div>')
+        # Autres formules recopiées de la page de tarifs de l'auto-école (data/tarifs.json, champ formules)
+        for f in p.get("formules") or []:
+            if f.get("nom") and f.get("prix") is not None:
+                lignes.append(f'<div><dt>{esc(f["nom"])}</dt><dd>{eur(f["prix"])}</dd></div>')
+        if p.get("note") and p.get("forfait") is not None:
+            lignes[0] = lignes[0].replace("</dt>", f' ({esc(p["note"])})</dt>', 1)
+        precision = f' {esc(p["precision"])}' if p.get("precision") else ""
         if p["source"] == "eleves":
             src = f'Prix payés par les élèves (médiane de {plural(p["n"], "déclaration", "déclarations")})'
         else:
             src = "Prix annoncés par l'auto-école" + (f", relevés le {date_fr(p['date'])}" if p.get("date") else "")
         lien = (f' <a href="{esc(p["lien"])}" target="_blank" rel="noopener nofollow">Voir leurs tarifs</a>'
                 if p.get("lien") else "")
-        html = f'<div class="rank-tarifs"><dl>{"".join(lignes)}</dl><p class="small">{src}. Vérifie toujours avec l\'auto-école.{lien}</p></div>'
+        html = f'<div class="rank-tarifs"><dl>{"".join(lignes)}</dl><p class="small">{src}.{precision} Vérifie toujours avec l\'auto-école.{lien}</p></div>'
     else:
         html = ""
     acc = accelere(e)

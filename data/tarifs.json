@@ -1,6 +1,162 @@
 {
  "meta": {
-  "description": "Prix annoncés par les auto-écoles, par numéro d'agrément. Rempli par scripts/sync_prix.py à partir des tarifs que les auto-écoles envoient depuis l'espace pros (après vérification : valide = true dans Supabase). On peut aussi en ajouter à la main, en recopiant la page de tarifs de l'auto-école : mettre alors source = \"site\", le lien de la page et la date. Champs : forfait (€), heures_forfait (souvent 20, le minimum légal en boîte manuelle), prix_heure (€, heure en plus), frais_examen (€, présentation à l'examen), accelere (true/false), accelere_details (texte court), lien, mis_a_jour (AAAA-MM-JJ), source (auto-ecole ou site). Ne jamais inventer de prix."
+  "description": "Prix annoncés par les auto-écoles, par numéro d'agrément. Rempli par scripts/sync_prix.py à partir des tarifs que les auto-écoles envoient depuis l'espace pros (après vérification : valide = true dans Supabase). On peut aussi en ajouter à la main, en recopiant la page de tarifs de l'auto-école : mettre alors source = \"site\", le lien de la page et la date. Champs : forfait (€), heures_forfait (souvent 20, le minimum légal en boîte manuelle), prix_heure (€, heure en plus), frais_examen (€, présentation à l'examen), accelere (true/false), accelere_details (texte court), lien, mis_a_jour (AAAA-MM-JJ), source (auto-ecole ou site). Ne jamais inventer de prix. Champs facultatifs pour les tarifs recopiés : forfait_note (texte court après le forfait, ex. « hors code »), precision (phrase sous les prix : ce qui est compris ou en plus), formules (liste de { nom, prix } : les autres formules de la page de tarifs)."
  },
- "ecoles": {}
+ "ecoles": {
+  "E1007813460": {
+   "forfait": 1320,
+   "heures_forfait": 20,
+   "forfait_note": "boîte manuelle, hors code",
+   "prix_heure": 70,
+   "frais_examen": 70,
+   "accelere": true,
+   "accelere_details": "stages de code accélérés sur 5 jours",
+   "precision": "Code en salle et évaluation de départ en plus (voir ci-dessus). Conduite supervisée : mêmes forfaits que la boîte manuelle (20, 25 ou 30 h). Livrets compris, contrat valable 1 an.",
+   "formules": [
+    {
+     "nom": "Forfait 25 h boîte manuelle",
+     "prix": 1600
+    },
+    {
+     "nom": "Forfait 30 h boîte manuelle",
+     "prix": 1860
+    },
+    {
+     "nom": "Forfait 13 h boîte automatique",
+     "prix": 870
+    },
+    {
+     "nom": "Forfait 20 h boîte automatique",
+     "prix": 1320
+    },
+    {
+     "nom": "Conduite accompagnée : 20 h + rendez-vous préalable",
+     "prix": 1430
+    },
+    {
+     "nom": "Conduite accompagnée en boîte auto : 13 h + rendez-vous préalable",
+     "prix": 975
+    },
+    {
+     "nom": "Conduite accompagnée : 1er rendez-vous pédagogique (1 h)",
+     "prix": 70
+    },
+    {
+     "nom": "Conduite accompagnée : 2e rendez-vous pédagogique (2 h)",
+     "prix": 135
+    },
+    {
+     "nom": "Conduite supervisée : rendez-vous préalable (2 h)",
+     "prix": 135
+    },
+    {
+     "nom": "Conduite supervisée : bilan avant l'examen (1 h)",
+     "prix": 70
+    },
+    {
+     "nom": "Code en salle, 4 mois (gestion du dossier ANTS comprise)",
+     "prix": 290
+    },
+    {
+     "nom": "Renouvellement du code, 2 mois",
+     "prix": 95
+    },
+    {
+     "nom": "Évaluation de départ sur simulateur",
+     "prix": 50
+    },
+    {
+     "nom": "Évaluation de départ en voiture",
+     "prix": 70
+    },
+    {
+     "nom": "Gestion du dossier et ANTS (sans le code chez eux)",
+     "prix": 120
+    },
+    {
+     "nom": "Gestion du dossier partielle (code déjà obtenu ou transfert)",
+     "prix": 50
+    },
+    {
+     "nom": "Passerelle boîte auto vers boîte manuelle (7 h)",
+     "prix": 450
+    }
+   ],
+   "lien": "https://www.cer-saint-germain-en-laye.com/formations-voiture.html",
+   "mis_a_jour": "2026-11-25",
+   "source": "site"
+  },
+  "E2409100310": {
+   "forfait": 1590,
+   "heures_forfait": 20,
+   "forfait_note": "code et examens compris",
+   "prix_heure": null,
+   "frais_examen": null,
+   "precision": "Code, 1 examen du code et 1 examen pratique compris. Paiement en 2, 3 ou 4 fois sans frais.",
+   "formules": [
+    {
+     "nom": "Formule 13 h boîte automatique",
+     "prix": 1190
+    },
+    {
+     "nom": "Formule 20 h conduite supervisée",
+     "prix": 1830
+    },
+    {
+     "nom": "Formule 20 h conduite accompagnée",
+     "prix": 1890
+    }
+   ],
+   "lien": "https://melissaconduite.fr/tarifs",
+   "mis_a_jour": "2026-11-25",
+   "source": "site"
+  },
+  "E2209100110": {
+   "forfait": 1190,
+   "heures_forfait": 20,
+   "forfait_note": "20 leçons de 55 min",
+   "prix_heure": 55,
+   "frais_examen": null,
+   "accelere": true,
+   "accelere_details": "forfaits accélérés de 20 leçons (1 690 €) et 30 leçons (2 090 €)",
+   "precision": "Code, frais de gestion et accompagnement à l'examen compris. Évaluation de départ en plus (50 €, 60 € en boîte auto). Leçons de 55 min.",
+   "formules": [
+    {
+     "nom": "Forfait 30 leçons boîte manuelle",
+     "prix": 1590
+    },
+    {
+     "nom": "Forfait accéléré 20 leçons",
+     "prix": 1690
+    },
+    {
+     "nom": "Forfait accéléré 30 leçons",
+     "prix": 2090
+    },
+    {
+     "nom": "Forfait 13 leçons boîte automatique",
+     "prix": 890
+    },
+    {
+     "nom": "Forfait accéléré 13 leçons boîte automatique",
+     "prix": 1390
+    },
+    {
+     "nom": "Conduite accompagnée (20 leçons)",
+     "prix": 1450
+    },
+    {
+     "nom": "Conduite supervisée (20 leçons)",
+     "prix": 1340
+    },
+    {
+     "nom": "Leçon en boîte automatique",
+     "prix": 60
+    }
+   ],
+   "lien": "https://monprofauto.fr/formules-tarifs-prix-forfaits/",
+   "mis_a_jour": "2026-11-25",
+   "source": "site"
+  }
+ }
 }

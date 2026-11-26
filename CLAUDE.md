@@ -198,6 +198,11 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   les affiche : ESR x3, Start'IN, Lardy, Draveil, AEC, S&G, Longjumeau Conduite = PariPermis ; sinon site + critères).
   « Passerelle B78 vers B » = passerelle boîte auto -> manuelle (B78 = permis limité à la boîte auto). Prix à l'heure
   sans forfait (Lardy) : la ligne dit « Heure de conduite », pas « Heure en plus ».
+- Même soirée, à la main (sans robot) : 91 auto-écoles du 91 dans data/tarifs.json (49 avec prix). Méthode : site trouvé sur
+  l'annuaire bottin.fr (page « auto-ecole-a-<ville>-<code INSEE>.htm »), adresse vérifiée, puis prix lus sur le site de
+  l'auto-école ; jamais de prix si la page est contradictoire ou datée (Route 91, Drive School, La Verville). Réseaux : un
+  site commun pour toutes leurs agences (CER Révolution Permis, ECF Pro Conduite, Bil's, Driving Center, Point Conduite…).
+  heures_forfait: 0 = nombre d'heures non précisé (la ligne n'affiche pas d'heures).
 - Site web : lien discret sous l'adresse de chaque fiche (fonction lien_site : icône globe + nom de domaine sans « www »,
   une ligne coupée par « … », utm_source=creno, compté comme le bouton « Son site web » : data-clic ae-<agrément>-site).
   Source : colonne site du fichier officiel, sinon champ site de data/tarifs.json, sinon data/sites_auto_ecoles.json

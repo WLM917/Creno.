@@ -341,10 +341,10 @@ def prix_connus(e):
     MIN_DECL déclarations). None tant qu'on ne les connaît pas : on n'invente jamais de prix."""
     t = TARIFS.get(e["id"])
     if t and (t.get("forfait") is not None or t.get("prix_heure") is not None):
-        return {"source": t.get("source") or "auto-ecole", "forfait": t.get("forfait"), "heures": t.get("heures_forfait") or 20,
+        return {"source": t.get("source") or "auto-ecole", "forfait": t.get("forfait"), "heures": t.get("heures_forfait", 20),
                 "prix_heure": t.get("prix_heure"), "frais": t.get("frais_examen"), "date": t.get("mis_a_jour"), "lien": t.get("lien"),
                 "note": t.get("forfait_note"), "precision": t.get("precision"), "formules": t.get("formules") or [],
-                "forfait_auto": t.get("forfait_auto"), "heures_auto": t.get("heures_forfait_auto") or 13}
+                "forfait_auto": t.get("forfait_auto"), "heures_auto": t.get("heures_forfait_auto", 13)}
     if (e.get("declarations") or 0) >= MIN_DECL and e.get("forfait") is not None:
         return {"source": "eleves", "forfait": e["forfait"], "heures": e.get("heures_incluses"), "prix_heure": e.get("prix_heure"),
                 "frais": e.get("frais_examen"), "n": e["declarations"]}
@@ -403,7 +403,7 @@ def ligne_prix(p):
         lib = "Boîte manuelle" if auto else "Forfait"
         parts.append(f'{lib}{(" " + str(p["heures"]) + " h") if p.get("heures") else ""} : <strong>{eur(p["forfait"])}</strong>')
     if auto:
-        parts.append(f'Boîte auto {p["heures_auto"]} h : <strong>{eur(p["forfait_auto"])}</strong>')
+        parts.append(f'Boîte auto{(" " + str(p["heures_auto"]) + " h") if p.get("heures_auto") else ""} : <strong>{eur(p["forfait_auto"])}</strong>')
     if p.get("prix_heure") is not None:
         lib_h = "Heure en plus" if (p.get("forfait") is not None or auto) else "Heure de conduite"
         parts.append(f'{lib_h} : <strong>{eur(p["prix_heure"])}</strong>')
@@ -421,7 +421,7 @@ def bloc_prix(e):
         if p.get("forfait") is not None:
             lignes.append(f'<div><dt>Forfait{" boîte manuelle" if auto else ""}{(" " + str(p["heures"]) + " h de conduite") if p.get("heures") else ""}</dt><dd>{eur(p["forfait"])}</dd></div>')
         if auto:
-            lignes.append(f'<div><dt>Forfait boîte auto {p["heures_auto"]} h de conduite</dt><dd>{eur(p["forfait_auto"])}</dd></div>')
+            lignes.append(f'<div><dt>Forfait boîte auto{(" " + str(p["heures_auto"]) + " h de conduite") if p.get("heures_auto") else ""}</dt><dd>{eur(p["forfait_auto"])}</dd></div>')
         if p.get("prix_heure") is not None:
             lib_h = "Heure de conduite en plus" if (p.get("forfait") is not None or auto) else "Heure de conduite"
             lignes.append(f'<div><dt>{lib_h}</dt><dd>{eur(p["prix_heure"])}</dd></div>')

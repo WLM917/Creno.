@@ -690,64 +690,318 @@
    "lien": "https://cykaroute.com/"
   },
   "E2309100070": {
-   "site": "https://abcconduite-essonne.fr/",
-   "source": "site",
+   "site": "https://www.abcconduite-essonne.fr/",
+   "lien": "https://www.abcconduite-essonne.fr/tarifs.html",
+   "prix_heure": 60,
+   "precision": "Pas de forfait classique affiché : leçon à l'unité. Agences de Savigny-sur-Orge et Quincy-sous-Sénart.",
+   "formules": [
+    {
+     "nom": "Formule accélérée 20 h",
+     "prix": 1610
+    },
+    {
+     "nom": "Formule accélérée 25 h",
+     "prix": 1890
+    },
+    {
+     "nom": "Formule accélérée 30 h",
+     "prix": 2090
+    },
+    {
+     "nom": "Conduite accompagnée 20 h (2 rendez-vous pédagogiques)",
+     "prix": 1490
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle 7 h",
+     "prix": 450
+    },
+    {
+     "nom": "Forfait code",
+     "prix": 200
+    },
+    {
+     "nom": "Évaluation de départ",
+     "prix": 50
+    },
+    {
+     "nom": "Examen blanc",
+     "prix": 60
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formules accélérées de 20 h (1 610 €) à 30 h (2 090 €)",
+   "passerelle": true,
+   "passerelle_details": "7 h, 450 €",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://abcconduite-essonne.fr/"
+   "source": "site"
   },
   "E2209100170": {
    "site": "https://autoecole-monge.com/",
-   "source": "site",
+   "lien": "https://autoecole-monge.com/formation-permis-b-Monge",
+   "forfait": 1490,
+   "heures_forfait": 20,
+   "forfait_note": "code compris, + 4 leçons sur simulateur",
+   "forfait_auto": 1490,
+   "heures_forfait_auto": 20,
+   "precision": "Évaluation de départ, dossier, code 6 mois (en ligne et en salle), kit pédagogique et un accompagnement à l'examen compris. Leçons de 50 min + 5 min de bilan. Même prix en boîte manuelle ou auto. Paiement en plusieurs fois sans frais.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée (20 leçons, code, rendez-vous)",
+     "prix": 1790
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 leçons)",
+     "prix": 460
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formation accélérée proposée",
+   "passerelle": true,
+   "passerelle_details": "7 leçons, 460 €",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://autoecole-monge.com/"
+   "source": "site"
   },
   "E2409100090": {
-   "site": "https://autoecole-rersavigny.com/",
-   "source": "site",
+   "site": "https://www.autoecole-rersavigny.com/",
+   "forfait": 1390,
+   "heures_forfait": 20,
+   "forfait_note": "code compris",
+   "precision": "Prix habituel (promotion affichée à 1 190 €). Évaluation de départ, démarches ANTS, code en ligne et en salle, kit pédagogique et un examen pratique compris. Paiement en 3 fois sans frais.",
+   "formules": [
+    {
+     "nom": "Forfait 30 h (boîte auto ou manuelle)",
+     "prix": 1740
+    },
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1690
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "forfait conduite accélérée",
+   "lien": "https://www.autoecole-rersavigny.com/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://autoecole-rersavigny.com/"
+   "source": "site"
   },
   "E1809100270": {
    "site": "https://www.permisaccelere91.fr/",
-   "source": "site",
+   "lien": "https://www.permisaccelere91.fr/permis-b-boite-manuelle/",
+   "forfait": 989,
+   "heures_forfait": 20,
+   "forfait_note": "leçons de 45 min, code en plus",
+   "forfait_auto": 800,
+   "heures_forfait_auto": 13,
+   "precision": "Leçons de 45 min, dont 3 sur simulateur (2 en boîte auto). Avec le code : 100 € de plus. Tarifs du site CER Révolution Permis, communs à ses agences de l'Essonne, valables jusqu'au 31 décembre 2026.",
+   "formules": [
+    {
+     "nom": "Boîte manuelle 25 leçons",
+     "prix": 1189
+    },
+    {
+     "nom": "Boîte manuelle 30 leçons",
+     "prix": 1389
+    },
+    {
+     "nom": "Boîte auto 20 leçons",
+     "prix": 1089
+    },
+    {
+     "nom": "Boîte auto 25 leçons",
+     "prix": 1349
+    },
+    {
+     "nom": "Conduite accompagnée boîte auto 13 leçons",
+     "prix": 1019
+    },
+    {
+     "nom": "Conduite accompagnée boîte manuelle 20 leçons",
+     "prix": 1290
+    },
+    {
+     "nom": "Stage permis accéléré (5 jours)",
+     "prix": 1400
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis accéléré en 5 jours, 1 400 €",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://www.permisaccelere91.fr/"
+   "source": "site"
   },
   "E2509100060": {
    "site": "https://www.permisaccelere91.fr/",
-   "source": "site",
+   "lien": "https://www.permisaccelere91.fr/permis-b-boite-manuelle/",
+   "forfait": 989,
+   "heures_forfait": 20,
+   "forfait_note": "leçons de 45 min, code en plus",
+   "forfait_auto": 800,
+   "heures_forfait_auto": 13,
+   "precision": "Leçons de 45 min, dont 3 sur simulateur (2 en boîte auto). Avec le code : 100 € de plus. Tarifs du site CER Révolution Permis, communs à ses agences de l'Essonne, valables jusqu'au 31 décembre 2026.",
+   "formules": [
+    {
+     "nom": "Boîte manuelle 25 leçons",
+     "prix": 1189
+    },
+    {
+     "nom": "Boîte manuelle 30 leçons",
+     "prix": 1389
+    },
+    {
+     "nom": "Boîte auto 20 leçons",
+     "prix": 1089
+    },
+    {
+     "nom": "Boîte auto 25 leçons",
+     "prix": 1349
+    },
+    {
+     "nom": "Conduite accompagnée boîte auto 13 leçons",
+     "prix": 1019
+    },
+    {
+     "nom": "Conduite accompagnée boîte manuelle 20 leçons",
+     "prix": 1290
+    },
+    {
+     "nom": "Stage permis accéléré (5 jours)",
+     "prix": 1400
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis accéléré en 5 jours, 1 400 €",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://www.permisaccelere91.fr/"
+   "source": "site"
   },
   "E2509100050": {
    "site": "https://www.permisaccelere91.fr/",
-   "source": "site",
+   "lien": "https://www.permisaccelere91.fr/permis-b-boite-manuelle/",
+   "forfait": 989,
+   "heures_forfait": 20,
+   "forfait_note": "leçons de 45 min, code en plus",
+   "forfait_auto": 800,
+   "heures_forfait_auto": 13,
+   "precision": "Leçons de 45 min, dont 3 sur simulateur (2 en boîte auto). Avec le code : 100 € de plus. Tarifs du site CER Révolution Permis, communs à ses agences de l'Essonne, valables jusqu'au 31 décembre 2026.",
+   "formules": [
+    {
+     "nom": "Boîte manuelle 25 leçons",
+     "prix": 1189
+    },
+    {
+     "nom": "Boîte manuelle 30 leçons",
+     "prix": 1389
+    },
+    {
+     "nom": "Boîte auto 20 leçons",
+     "prix": 1089
+    },
+    {
+     "nom": "Boîte auto 25 leçons",
+     "prix": 1349
+    },
+    {
+     "nom": "Conduite accompagnée boîte auto 13 leçons",
+     "prix": 1019
+    },
+    {
+     "nom": "Conduite accompagnée boîte manuelle 20 leçons",
+     "prix": 1290
+    },
+    {
+     "nom": "Stage permis accéléré (5 jours)",
+     "prix": 1400
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis accéléré en 5 jours, 1 400 €",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://www.permisaccelere91.fr/"
+   "source": "site"
   },
   "E1709100350": {
    "site": "https://permisswiftautoecole-yerres.com/",
-   "source": "site",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formules 20 h en 2 semaines ou 30 h en 3 semaines",
+   "lien": "https://permisswiftautoecole-yerres.com/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://permisswiftautoecole-yerres.com/"
+   "source": "site"
   },
   "E2309100190": {
    "site": "https://automotoecoleparissud.fr/",
-   "source": "site",
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "permis boîte manuelle en formation intensive",
+   "lien": "https://automotoecoleparissud.fr/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://automotoecoleparissud.fr/"
+   "source": "site"
   },
   "E2509100210": {
-   "site": "https://dsautoecoleevry.com/",
-   "source": "site",
+   "site": "https://www.dsautoecoleevry.com/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formules accélérées, conduite en une ou deux semaines",
+   "lien": "https://www.dsautoecoleevry.com/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://dsautoecoleevry.com/"
+   "source": "site"
   },
   "E2509100010": {
    "site": "https://autoecolevcarnot.com/",
-   "source": "site",
+   "lien": "https://autoecolevcarnot.com/nos-tarifs/",
+   "forfait": 1280,
+   "heures_forfait": 20,
+   "forfait_note": "code en ligne et un examen compris",
+   "prix_heure": 50,
+   "precision": "Inscription, code en ligne, livret et une présentation à l'examen compris. Évaluation de départ 55 € en plus.",
+   "formules": [
+    {
+     "nom": "Formule 30 leçons",
+     "prix": 1480
+    },
+    {
+     "nom": "Pack 10 leçons",
+     "prix": 480
+    },
+    {
+     "nom": "Pack 20 leçons",
+     "prix": 950
+    },
+    {
+     "nom": "Leçon sur simulateur (1 h)",
+     "prix": 40
+    },
+    {
+     "nom": "Rendez-vous pédagogique (2 h)",
+     "prix": 100
+    },
+    {
+     "nom": "Accompagnement à l'examen pratique",
+     "prix": 80
+    },
+    {
+     "nom": "Évaluation de départ",
+     "prix": 55
+    }
+   ],
+   "cs": true,
+   "accelere": true,
+   "accelere_details": "stage accéléré en 7 à 10 jours, sur devis",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://autoecolevcarnot.com/"
+   "source": "site"
   },
   "E1809100240": {
    "site": "https://driveracademy.net/",
@@ -757,99 +1011,394 @@
   },
   "E2509100270": {
    "site": "https://atfconduite.fr/",
-   "source": "site",
+   "forfait": 1190,
+   "heures_forfait": 0,
+   "forfait_note": "nombre d'heures non précisé sur le site",
+   "forfait_auto": 790,
+   "heures_forfait_auto": 0,
+   "prix_heure": 60,
+   "frais_examen": 60,
+   "precision": "Le site n'indique pas le nombre d'heures des forfaits. À l'unité : évaluation de départ 60 €, ouverture de dossier et gestion 120 €, inscription ANTS 50 €, code en ligne 50 €.",
+   "bea": true,
+   "lien": "https://atfconduite.fr/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://atfconduite.fr/"
+   "source": "site"
   },
   "E1309100170": {
-   "site": "https://pointconduite.com/",
-   "source": "site",
+   "site": "https://www.pointconduite.com/",
+   "lien": "https://www.pointconduite.com/agence/massy/",
+   "forfait": 980,
+   "heures_forfait": 20,
+   "forfait_note": "à partir de, une présentation à l'examen comprise",
+   "precision": "Prix « à partir de » du réseau Point Conduite (Antony, Laplace, Massy). Paiement en 4 fois sans frais.",
+   "formules": [
+    {
+     "nom": "Forfait jeune moins de 21 ans (code, 24 leçons, examen)",
+     "prix": 1200
+    }
+   ],
+   "accelere": true,
+   "accelere_details": "formation accélérée du réseau Point Conduite",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://pointconduite.com/"
+   "source": "site"
   },
   "E2509100140": {
    "site": "https://autoecolebrunoy.fr/",
-   "source": "site",
+   "lien": "https://autoecolebrunoy.fr/permis-auto/",
+   "forfait_auto": 1050,
+   "heures_forfait_auto": 13,
+   "forfait_note": "code compris",
+   "prix_heure": 60,
+   "frais_examen": 60,
+   "precision": "Le prix du forfait boîte manuelle n'apparaît pas dans ce que nous avons lu : demande-le à l'auto-école.",
+   "formules": [
+    {
+     "nom": "Permis B accéléré (code, 20 h)",
+     "prix": 1460
+    },
+    {
+     "nom": "Permis boîte auto accéléré",
+     "prix": 1360
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "permis accéléré 20 h à 1 460 €, boîte auto à 1 360 €",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://autoecolebrunoy.fr/"
+   "source": "site"
   },
   "E2309100080": {
    "site": "https://cocoautoecole.fr/",
-   "source": "site",
+   "lien": "https://cocoautoecole.fr/nos-formules-a-et-b-2/",
+   "forfait_auto": 930,
+   "heures_forfait_auto": 15,
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "environ 450 à 590 € (7 à 10 h de conduite)",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://cocoautoecole.fr/"
+   "source": "site"
   },
   "E2209100200": {
-   "site": "https://bami-bass.fr/",
-   "source": "site",
+   "site": "https://www.bami-bass.fr/",
+   "bea": true,
+   "lien": "https://www.bami-bass.fr/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://bami-bass.fr/"
+   "source": "site"
   },
   "E1609100110": {
-   "site": "https://ecoleconduiteevasion.fr/",
-   "source": "site",
+   "site": "https://www.ecoleconduiteevasion.fr/",
+   "aac": true,
+   "cs": true,
+   "passerelle": true,
+   "passerelle_details": "7 h de formation",
+   "lien": "https://www.ecoleconduiteevasion.fr/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://ecoleconduiteevasion.fr/"
+   "source": "site"
   },
   "E2109100090": {
-   "site": "https://apprendreaconduire-montgeron.fr/",
-   "source": "site",
+   "site": "https://www.apprendreaconduire-montgeron.fr/",
+   "forfait": 1300,
+   "heures_forfait": 20,
+   "forfait_note": "code compris, évaluation en plus",
+   "precision": "Inscription, démarches ANTS, fournitures, code et une présentation à l'examen compris. L'évaluation de départ est en plus. Paiement jusqu'à 3 fois sans frais.",
+   "formules": [
+    {
+     "nom": "Permis B 25 h",
+     "prix": 1550
+    },
+    {
+     "nom": "Permis B 30 h",
+     "prix": 1800
+    },
+    {
+     "nom": "20 h sans code",
+     "prix": 1210
+    },
+    {
+     "nom": "30 h sans code",
+     "prix": 1710
+    }
+   ],
+   "aac": true,
+   "lien": "https://www.apprendreaconduire-montgeron.fr/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://apprendreaconduire-montgeron.fr/"
+   "source": "site"
   },
   "E2509100080": {
    "site": "https://drivinghouse.fr/",
-   "source": "site",
+   "lien": "https://drivinghouse.fr/formations-auto/permis-b-supervise/",
+   "cs": true,
+   "formules": [
+    {
+     "nom": "Conduite supervisée : 10 h boîte manuelle",
+     "prix": 700
+    },
+    {
+     "nom": "Conduite supervisée : code + 20 h",
+     "prix": 1590
+    },
+    {
+     "nom": "Conduite supervisée : 30 h",
+     "prix": 1890
+    },
+    {
+     "nom": "Conduite supervisée : code + 30 h",
+     "prix": 2090
+    }
+   ],
    "mis_a_jour": "2026-11-26",
-   "lien": "https://drivinghouse.fr/"
+   "source": "site"
   },
   "E2409100070": {
    "site": "https://drivinghouse.fr/",
-   "source": "site",
+   "lien": "https://drivinghouse.fr/formations-auto/permis-b-supervise/",
+   "cs": true,
+   "formules": [
+    {
+     "nom": "Conduite supervisée : 10 h boîte manuelle",
+     "prix": 700
+    },
+    {
+     "nom": "Conduite supervisée : code + 20 h",
+     "prix": 1590
+    },
+    {
+     "nom": "Conduite supervisée : 30 h",
+     "prix": 1890
+    },
+    {
+     "nom": "Conduite supervisée : code + 30 h",
+     "prix": 2090
+    }
+   ],
    "mis_a_jour": "2026-11-26",
-   "lien": "https://drivinghouse.fr/"
+   "source": "site"
   },
   "E1509100240": {
-   "site": "https://ecf-proconduite.com/",
-   "source": "site",
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "lien": "https://autoecole.ecf-proconduite.com/permis-auto",
+   "forfait": 1350,
+   "heures_forfait": 27,
+   "forfait_note": "à partir de, sans code, dont 2 leçons sur simulateur",
+   "forfait_auto": 999,
+   "heures_forfait_auto": 0,
+   "precision": "Prix « à partir de » du réseau ECF Pro Conduite (Montgeron, Vigneux, Longjumeau, Brunoy…). Un accompagnement à l'examen pratique est compris dans chaque forfait. Boîte auto : nombre d'heures non précisé.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1600
+    },
+    {
+     "nom": "Conduite supervisée (sans code)",
+     "prix": 1032
+    },
+    {
+     "nom": "Conduite supervisée avec code",
+     "prix": 1332
+    },
+    {
+     "nom": "Stage permis accéléré (1 semaine)",
+     "prix": 2500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h)",
+     "prix": 350
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis B ou boîte auto en 1 semaine, dès 2 500 €",
+   "passerelle": true,
+   "passerelle_details": "7 h, 350 €",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://ecf-proconduite.com/"
+   "source": "site"
   },
   "E1509100250": {
-   "site": "https://konduit.fr/",
-   "source": "site",
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "lien": "https://autoecole.ecf-proconduite.com/permis-auto",
+   "forfait": 1350,
+   "heures_forfait": 27,
+   "forfait_note": "à partir de, sans code, dont 2 leçons sur simulateur",
+   "forfait_auto": 999,
+   "heures_forfait_auto": 0,
+   "precision": "Prix « à partir de » du réseau ECF Pro Conduite (Montgeron, Vigneux, Longjumeau, Brunoy…). Un accompagnement à l'examen pratique est compris dans chaque forfait. Boîte auto : nombre d'heures non précisé.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1600
+    },
+    {
+     "nom": "Conduite supervisée (sans code)",
+     "prix": 1032
+    },
+    {
+     "nom": "Conduite supervisée avec code",
+     "prix": 1332
+    },
+    {
+     "nom": "Stage permis accéléré (1 semaine)",
+     "prix": 2500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h)",
+     "prix": 350
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis B ou boîte auto en 1 semaine, dès 2 500 €",
+   "passerelle": true,
+   "passerelle_details": "7 h, 350 €",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://konduit.fr/"
+   "source": "site"
   },
   "E2209100030": {
-   "site": "https://konduit.fr/",
-   "source": "site",
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "lien": "https://autoecole.ecf-proconduite.com/permis-auto",
+   "forfait": 1350,
+   "heures_forfait": 27,
+   "forfait_note": "à partir de, sans code, dont 2 leçons sur simulateur",
+   "forfait_auto": 999,
+   "heures_forfait_auto": 0,
+   "precision": "Prix « à partir de » du réseau ECF Pro Conduite (Montgeron, Vigneux, Longjumeau, Brunoy…). Un accompagnement à l'examen pratique est compris dans chaque forfait. Boîte auto : nombre d'heures non précisé.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1600
+    },
+    {
+     "nom": "Conduite supervisée (sans code)",
+     "prix": 1032
+    },
+    {
+     "nom": "Conduite supervisée avec code",
+     "prix": 1332
+    },
+    {
+     "nom": "Stage permis accéléré (1 semaine)",
+     "prix": 2500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h)",
+     "prix": 350
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis B ou boîte auto en 1 semaine, dès 2 500 €",
+   "passerelle": true,
+   "passerelle_details": "7 h, 350 €",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://konduit.fr/"
+   "source": "site"
   },
   "E2009100180": {
-   "site": "https://bilsconduite.fr/",
-   "source": "site",
+   "site": "https://www.bilsconduite.fr/",
+   "forfait": 1400,
+   "heures_forfait": 20,
+   "forfait_note": "à partir de, code en salle compris",
+   "precision": "Pack Éco : inscription, 6 mois de code en salle et 20 leçons. Examen du code (30 €) en plus. Horaires de nuit (20 h – minuit) : 1 600 €. Tarifs du réseau Bil's Conduite (Essonne et Val-de-Marne).",
+   "formules": [
+    {
+     "nom": "Pack 20 leçons en horaires de nuit",
+     "prix": 1600
+    },
+    {
+     "nom": "Pack accéléré 30 leçons",
+     "prix": 2400
+    },
+    {
+     "nom": "Pack accéléré 40 leçons",
+     "prix": 3000
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "20 leçons de conduite en 2 semaines",
+   "lien": "https://www.bilsconduite.fr/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://bilsconduite.fr/"
+   "source": "site"
   },
   "E2409100030": {
-   "site": "https://bilsconduite.fr/",
-   "source": "site",
+   "site": "https://www.bilsconduite.fr/",
+   "forfait": 1400,
+   "heures_forfait": 20,
+   "forfait_note": "à partir de, code en salle compris",
+   "precision": "Pack Éco : inscription, 6 mois de code en salle et 20 leçons. Examen du code (30 €) en plus. Horaires de nuit (20 h – minuit) : 1 600 €. Tarifs du réseau Bil's Conduite (Essonne et Val-de-Marne).",
+   "formules": [
+    {
+     "nom": "Pack 20 leçons en horaires de nuit",
+     "prix": 1600
+    },
+    {
+     "nom": "Pack accéléré 30 leçons",
+     "prix": 2400
+    },
+    {
+     "nom": "Pack accéléré 40 leçons",
+     "prix": 3000
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "20 leçons de conduite en 2 semaines",
+   "lien": "https://www.bilsconduite.fr/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://bilsconduite.fr/"
+   "source": "site"
   },
   "E2509100180": {
-   "site": "https://auto-ecole-longjumeau.com/",
-   "source": "site",
+   "site": "https://www.auto-ecole-longjumeau.com/",
+   "forfait": 1290,
+   "heures_forfait": 20,
+   "forfait_note": "code compris, leçons de 55 min",
+   "forfait_auto": 1290,
+   "heures_forfait_auto": 20,
+   "precision": "Évaluation de départ, dossier, code en ligne et en salle, kit pédagogique et un accompagnement à l'examen compris. Même prix en boîte manuelle ou auto. Paiement en 3 fois sans frais.",
+   "formules": [
+    {
+     "nom": "Forfait 30 h",
+     "prix": 1850
+    },
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1690
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "lien": "https://www.auto-ecole-longjumeau.com/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://auto-ecole-longjumeau.com/"
+   "source": "site"
   },
   "E2209100010": {
    "site": "https://validetonpermis.fr/",
-   "source": "site",
+   "lien": "https://validetonpermis.fr/valide-ton-permis-longjumeau/",
+   "forfait": 1299,
+   "heures_forfait": 20,
+   "forfait_note": "code compris",
+   "precision": "Page de l'agence de Longjumeau. Les forfaits comprennent l'inscription, le code, le matériel et une présentation à l'examen.",
+   "formules": [
+    {
+     "nom": "Permis accéléré (6 leçons, code 1 mois, examen)",
+     "prix": 599
+    }
+   ],
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "permis accéléré en boîte auto ou manuelle",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://validetonpermis.fr/"
+   "source": "site"
   },
   "E2209100120": {
    "site": "https://montlheryconduite.fr/",
@@ -858,10 +1407,11 @@
    "lien": "https://montlheryconduite.fr/"
   },
   "E2209100100": {
-   "site": "https://groupe-maurice-conduite.fr/",
-   "source": "site",
+   "site": "https://www.bami-bass.fr/",
+   "bea": true,
+   "lien": "https://www.bami-bass.fr/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://groupe-maurice-conduite.fr/"
+   "source": "site"
   },
   "E2509100100": {
    "site": "https://autoecolelyz-juvisy.fr/",
@@ -892,6 +1442,311 @@
    "source": "site",
    "mis_a_jour": "2026-11-26",
    "lien": "https://auto-ecole-la-verville.com/"
+  },
+  "E2409100300": {
+   "site": "https://www.abcconduite-essonne.fr/",
+   "lien": "https://www.abcconduite-essonne.fr/tarifs.html",
+   "prix_heure": 60,
+   "precision": "Pas de forfait classique affiché : leçon à l'unité. Agences de Savigny-sur-Orge et Quincy-sous-Sénart.",
+   "formules": [
+    {
+     "nom": "Formule accélérée 20 h",
+     "prix": 1610
+    },
+    {
+     "nom": "Formule accélérée 25 h",
+     "prix": 1890
+    },
+    {
+     "nom": "Formule accélérée 30 h",
+     "prix": 2090
+    },
+    {
+     "nom": "Conduite accompagnée 20 h (2 rendez-vous pédagogiques)",
+     "prix": 1490
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle 7 h",
+     "prix": 450
+    },
+    {
+     "nom": "Forfait code",
+     "prix": 200
+    },
+    {
+     "nom": "Évaluation de départ",
+     "prix": 50
+    },
+    {
+     "nom": "Examen blanc",
+     "prix": 60
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formules accélérées de 20 h (1 610 €) à 30 h (2 090 €)",
+   "passerelle": true,
+   "passerelle_details": "7 h, 450 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2409100130": {
+   "site": "https://www.permisaccelere91.fr/",
+   "lien": "https://www.permisaccelere91.fr/permis-b-boite-manuelle/",
+   "forfait": 989,
+   "heures_forfait": 20,
+   "forfait_note": "leçons de 45 min, code en plus",
+   "forfait_auto": 800,
+   "heures_forfait_auto": 13,
+   "precision": "Leçons de 45 min, dont 3 sur simulateur (2 en boîte auto). Avec le code : 100 € de plus. Tarifs du site CER Révolution Permis, communs à ses agences de l'Essonne, valables jusqu'au 31 décembre 2026.",
+   "formules": [
+    {
+     "nom": "Boîte manuelle 25 leçons",
+     "prix": 1189
+    },
+    {
+     "nom": "Boîte manuelle 30 leçons",
+     "prix": 1389
+    },
+    {
+     "nom": "Boîte auto 20 leçons",
+     "prix": 1089
+    },
+    {
+     "nom": "Boîte auto 25 leçons",
+     "prix": 1349
+    },
+    {
+     "nom": "Conduite accompagnée boîte auto 13 leçons",
+     "prix": 1019
+    },
+    {
+     "nom": "Conduite accompagnée boîte manuelle 20 leçons",
+     "prix": 1290
+    },
+    {
+     "nom": "Stage permis accéléré (5 jours)",
+     "prix": 1400
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis accéléré en 5 jours, 1 400 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1509100160": {
+   "site": "https://www.permisaccelere91.fr/",
+   "lien": "https://www.permisaccelere91.fr/permis-b-boite-manuelle/",
+   "forfait": 989,
+   "heures_forfait": 20,
+   "forfait_note": "leçons de 45 min, code en plus",
+   "forfait_auto": 800,
+   "heures_forfait_auto": 13,
+   "precision": "Leçons de 45 min, dont 3 sur simulateur (2 en boîte auto). Avec le code : 100 € de plus. Tarifs du site CER Révolution Permis, communs à ses agences de l'Essonne, valables jusqu'au 31 décembre 2026.",
+   "formules": [
+    {
+     "nom": "Boîte manuelle 25 leçons",
+     "prix": 1189
+    },
+    {
+     "nom": "Boîte manuelle 30 leçons",
+     "prix": 1389
+    },
+    {
+     "nom": "Boîte auto 20 leçons",
+     "prix": 1089
+    },
+    {
+     "nom": "Boîte auto 25 leçons",
+     "prix": 1349
+    },
+    {
+     "nom": "Conduite accompagnée boîte auto 13 leçons",
+     "prix": 1019
+    },
+    {
+     "nom": "Conduite accompagnée boîte manuelle 20 leçons",
+     "prix": 1290
+    },
+    {
+     "nom": "Stage permis accéléré (5 jours)",
+     "prix": 1400
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis accéléré en 5 jours, 1 400 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1709100310": {
+   "site": "https://www.permisaccelere91.fr/",
+   "lien": "https://www.permisaccelere91.fr/permis-b-boite-manuelle/",
+   "forfait": 989,
+   "heures_forfait": 20,
+   "forfait_note": "leçons de 45 min, code en plus",
+   "forfait_auto": 800,
+   "heures_forfait_auto": 13,
+   "precision": "Leçons de 45 min, dont 3 sur simulateur (2 en boîte auto). Avec le code : 100 € de plus. Tarifs du site CER Révolution Permis, communs à ses agences de l'Essonne, valables jusqu'au 31 décembre 2026.",
+   "formules": [
+    {
+     "nom": "Boîte manuelle 25 leçons",
+     "prix": 1189
+    },
+    {
+     "nom": "Boîte manuelle 30 leçons",
+     "prix": 1389
+    },
+    {
+     "nom": "Boîte auto 20 leçons",
+     "prix": 1089
+    },
+    {
+     "nom": "Boîte auto 25 leçons",
+     "prix": 1349
+    },
+    {
+     "nom": "Conduite accompagnée boîte auto 13 leçons",
+     "prix": 1019
+    },
+    {
+     "nom": "Conduite accompagnée boîte manuelle 20 leçons",
+     "prix": 1290
+    },
+    {
+     "nom": "Stage permis accéléré (5 jours)",
+     "prix": 1400
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis accéléré en 5 jours, 1 400 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1609100230": {
+   "site": "https://www.permisaccelere91.fr/",
+   "lien": "https://www.permisaccelere91.fr/permis-b-boite-manuelle/",
+   "forfait": 989,
+   "heures_forfait": 20,
+   "forfait_note": "leçons de 45 min, code en plus",
+   "forfait_auto": 800,
+   "heures_forfait_auto": 13,
+   "precision": "Leçons de 45 min, dont 3 sur simulateur (2 en boîte auto). Avec le code : 100 € de plus. Tarifs du site CER Révolution Permis, communs à ses agences de l'Essonne, valables jusqu'au 31 décembre 2026.",
+   "formules": [
+    {
+     "nom": "Boîte manuelle 25 leçons",
+     "prix": 1189
+    },
+    {
+     "nom": "Boîte manuelle 30 leçons",
+     "prix": 1389
+    },
+    {
+     "nom": "Boîte auto 20 leçons",
+     "prix": 1089
+    },
+    {
+     "nom": "Boîte auto 25 leçons",
+     "prix": 1349
+    },
+    {
+     "nom": "Conduite accompagnée boîte auto 13 leçons",
+     "prix": 1019
+    },
+    {
+     "nom": "Conduite accompagnée boîte manuelle 20 leçons",
+     "prix": 1290
+    },
+    {
+     "nom": "Stage permis accéléré (5 jours)",
+     "prix": 1400
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis accéléré en 5 jours, 1 400 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2309100130": {
+   "site": "https://www.bami-bass.fr/",
+   "bea": true,
+   "lien": "https://www.bami-bass.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2309100100": {
+   "site": "https://www.ecoleconduiteevasion.fr/",
+   "aac": true,
+   "cs": true,
+   "passerelle": true,
+   "passerelle_details": "7 h de formation",
+   "lien": "https://www.ecoleconduiteevasion.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2409100040": {
+   "site": "https://www.bilsconduite.fr/",
+   "forfait": 1400,
+   "heures_forfait": 20,
+   "forfait_note": "à partir de, code en salle compris",
+   "precision": "Pack Éco : inscription, 6 mois de code en salle et 20 leçons. Examen du code (30 €) en plus. Horaires de nuit (20 h – minuit) : 1 600 €. Tarifs du réseau Bil's Conduite (Essonne et Val-de-Marne).",
+   "formules": [
+    {
+     "nom": "Pack 20 leçons en horaires de nuit",
+     "prix": 1600
+    },
+    {
+     "nom": "Pack accéléré 30 leçons",
+     "prix": 2400
+    },
+    {
+     "nom": "Pack accéléré 40 leçons",
+     "prix": 3000
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "20 leçons de conduite en 2 semaines",
+   "lien": "https://www.bilsconduite.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2409100050": {
+   "site": "https://www.bilsconduite.fr/",
+   "forfait": 1400,
+   "heures_forfait": 20,
+   "forfait_note": "à partir de, code en salle compris",
+   "precision": "Pack Éco : inscription, 6 mois de code en salle et 20 leçons. Examen du code (30 €) en plus. Horaires de nuit (20 h – minuit) : 1 600 €. Tarifs du réseau Bil's Conduite (Essonne et Val-de-Marne).",
+   "formules": [
+    {
+     "nom": "Pack 20 leçons en horaires de nuit",
+     "prix": 1600
+    },
+    {
+     "nom": "Pack accéléré 30 leçons",
+     "prix": 2400
+    },
+    {
+     "nom": "Pack accéléré 40 leçons",
+     "prix": 3000
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "20 leçons de conduite en 2 semaines",
+   "lien": "https://www.bilsconduite.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
   }
  }
 }

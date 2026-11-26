@@ -7,3 +7,5 @@ templates
 pack
 dist
 .github
+data/explorations.json
+data/sites_auto_ecoles.json

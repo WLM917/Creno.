@@ -78,6 +78,13 @@ PARTENAIRES = ((json.loads((ROOT / "data" / "partenaires.json").read_text(encodi
 # Prix annoncés par les auto-écoles elles-mêmes (vérifiés), par numéro d'agrément : voir scripts/sync_prix.py
 TARIFS = ((json.loads((ROOT / "data" / "tarifs.json").read_text(encoding="utf-8")).get("ecoles") or {})
           if (ROOT / "data" / "tarifs.json").exists() else {})
+# Sites web trouvés par le robot (fichier officiel + OpenStreetMap) et ce qu'il a vu sur ces sites :
+# voir scripts/explorer_auto_ecoles.py, lancé chaque mois par GitHub Actions.
+SITES_AE = ((json.loads((ROOT / "data" / "sites_auto_ecoles.json").read_text(encoding="utf-8")).get("ecoles") or {})
+            if (ROOT / "data" / "sites_auto_ecoles.json").exists() else {})
+EXPLO = ((json.loads((ROOT / "data" / "explorations.json").read_text(encoding="utf-8")).get("ecoles") or {})
+         if (ROOT / "data" / "explorations.json").exists() else {})
+AUTO_TXT = "vue sur son site (relevé automatique, à confirmer avec l'auto-école)"
 NAV = [
     ("auto-ecoles/", "Auto-écoles", "auto-ecoles"),
     ("candidat-libre/", "Candidat libre", "candidat-libre"),
@@ -178,7 +185,8 @@ MESSAGE_CONTACT = ("Bonjour, j'ai trouvé votre auto-école sur Créno. Je voudr
 
 def site_de(e):
     """Site web de l'auto-école : celui du fichier officiel, sinon celui recopié dans data/tarifs.json (champ site)."""
-    return e.get("site") or (TARIFS.get(e["id"]) or {}).get("site") or ""
+    return (e.get("site") or (TARIFS.get(e["id"]) or {}).get("site")
+            or (SITES_AE.get(e["id"]) or {}).get("site") or "")
 
 
 def domaine(url):
@@ -347,6 +355,8 @@ def accelere(e):
         return t.get("accelere_details") or ""
     if (e.get("accelere_declarations") or 0) >= 2:
         return ""
+    if (EXPLO.get(e["id"]) or {}).get("accelere"):
+        return AUTO_TXT
     return None
 
 
@@ -356,6 +366,8 @@ def passerelle(e):
     t = TARIFS.get(e["id"]) or {}
     if t.get("passerelle"):
         return t.get("passerelle_details") or ""
+    if (EXPLO.get(e["id"]) or {}).get("passerelle"):
+        return AUTO_TXT
     return None
 
 
@@ -422,11 +434,19 @@ def bloc_prix(e):
         html = ""
     acc = accelere(e)
     if acc is not None:
-        html += f'<p class="rank-acc"><strong>Formation accélérée :</strong> oui{(", " + esc(acc)) if acc else ""}.</p>'
+        html += f'<p class="rank-acc"><strong>Formation accélérée :</strong> oui{(", " + esc(acc)) if acc else ""}.{lien_vu(e, "accelere", acc)}</p>'
     pas = passerelle(e)
     if pas is not None:
-        html += f'<p class="rank-acc"><strong>Passerelle boîte auto → boîte manuelle :</strong> oui{(", " + esc(pas)) if pas else ""}.</p>'
+        html += f'<p class="rank-acc"><strong>Passerelle boîte auto → boîte manuelle :</strong> oui{(", " + esc(pas)) if pas else ""}.{lien_vu(e, "passerelle", pas)}</p>'
     return html
+
+
+def lien_vu(e, cle, detail):
+    """« Voir la page » : la page du site où le robot a vu l'info (seulement pour un relevé automatique)."""
+    vu = (EXPLO.get(e["id"]) or {}).get(cle) or {}
+    if detail != AUTO_TXT or not vu.get("page"):
+        return ""
+    return f' <a href="{esc(vu["page"])}" target="_blank" rel="noopener nofollow">Voir la page</a>'
 
 
 def chips(e):

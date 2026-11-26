@@ -1,0 +1,64 @@
+# Créno : robot qui explore les sites des auto-écoles de toute la France, une fois par mois.
+#
+# 1. Trouve le site web de chaque auto-école (fichier officiel, sinon OpenStreetMap si le nom et le lieu concordent).
+# 2. Lit poliment chaque site (robots.txt respecté, 6 pages au plus) et repère la passerelle boîte auto -> manuelle,
+#    la formation accélérée et des extraits de prix (à vérifier, jamais publiés tels quels).
+# 3. Régénère le site et publie : Vercel met le site à jour.
+#
+# Aucun secret nécessaire. Pour lancer tout de suite : onglet Actions > « Explorer les auto-écoles » > Run workflow.
+# Le résultat (nombre de sites, passerelles, formations accélérées) est sur la page Summary du lancement.
+name: Explorer les auto-écoles
+
+on:
+  schedule:
+    - cron: "17 2 3 * *"   # le 3 de chaque mois vers 3 h 17 (heure de Paris en hiver)
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/explorer_auto_ecoles.py
+      - .github/workflows/explorer-auto-ecoles.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: explorer-auto-ecoles
+  cancel-in-progress: false
+
+jobs:
+  explorer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Trouver les sites et les lire
+        env:
+          MINUTES_MAX: "150"
+        run: python3 scripts/explorer_auto_ecoles.py
+      - name: Régénérer le site et publier
+        run: |
+          # Repart de la dernière version de main (le robot des prix a pu publier entre-temps),
+          # remet les deux fichiers du robot, régénère toutes les pages, puis publie.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp data/sites_auto_ecoles.json data/explorations.json "$RUNNER_TEMP"/
+          for essai in 1 2 3; do
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            cp "$RUNNER_TEMP"/sites_auto_ecoles.json "$RUNNER_TEMP"/explorations.json data/
+            python3 scripts/build_site.py
+            rm -rf scripts/__pycache__
+            git add -A
+            if git diff --cached --quiet; then
+              echo "Rien de nouveau."
+              exit 0
+            fi
+            git commit -q -m "Robot : sites web, passerelles et formations accélérées des auto-écoles"
+            git push -q origin HEAD:main && exit 0
+            sleep 15
+          done
+          exit 1

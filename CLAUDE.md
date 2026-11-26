@@ -188,7 +188,14 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   et ECF Yerres (91).
 - Site web : lien discret sous l'adresse de chaque fiche (fonction lien_site : icône globe + nom de domaine sans « www »,
   une ligne coupée par « … », utm_source=creno, compté comme le bouton « Son site web » : data-clic ae-<agrément>-site).
-  Source : colonne site du fichier officiel, sinon champ site de data/tarifs.json (fonction site_de).
+  Source : colonne site du fichier officiel, sinon champ site de data/tarifs.json, sinon data/sites_auto_ecoles.json
+  (fonction site_de).
+- **Robot des auto-écoles** (scripts/explorer_auto_ecoles.py, workflow explorer-auto-ecoles.yml : le 3 de chaque mois,
+  Run workflow, ou à chaque changement du script) : 1. sites web = fichier officiel, sinon OpenStreetMap
+  (amenity=driving_school) relié à l'auto-école officielle seulement si nom ET lieu concordent -> data/sites_auto_ecoles.json
+  (ODbL, attribution sur /methode/) ; 2. lecture polie des sites (robots.txt, 6 pages, UA CrenoBot) -> data/explorations.json :
+  passerelle et accelere affichés avec « relevé automatique » + « Voir la page » ; prix = extraits À VÉRIFIER, jamais publiés.
+  Priorité : tarifs.json (vérifié) > déclarations d'élèves > robot.
 
 ## Formulaires et Supabase
 

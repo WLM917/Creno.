@@ -670,6 +670,228 @@
    "lien": "https://paripermis.com/permis-voiture/",
    "mis_a_jour": "2026-11-26",
    "source": "site"
+  },
+  "E0709107610": {
+   "site": "https://cykaroute.com/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://cykaroute.com/"
+  },
+  "E1209108300": {
+   "site": "https://cykaroute.com/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://cykaroute.com/"
+  },
+  "E2309100070": {
+   "site": "https://abcconduite-essonne.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://abcconduite-essonne.fr/"
+  },
+  "E2209100170": {
+   "site": "https://autoecole-monge.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://autoecole-monge.com/"
+  },
+  "E2409100090": {
+   "site": "https://autoecole-rersavigny.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://autoecole-rersavigny.com/"
+  },
+  "E1809100270": {
+   "site": "https://www.permisaccelere91.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://www.permisaccelere91.fr/"
+  },
+  "E2509100060": {
+   "site": "https://www.permisaccelere91.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://www.permisaccelere91.fr/"
+  },
+  "E2509100050": {
+   "site": "https://www.permisaccelere91.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://www.permisaccelere91.fr/"
+  },
+  "E1709100350": {
+   "site": "https://permisswiftautoecole-yerres.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://permisswiftautoecole-yerres.com/"
+  },
+  "E2309100190": {
+   "site": "https://automotoecoleparissud.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://automotoecoleparissud.fr/"
+  },
+  "E2509100210": {
+   "site": "https://dsautoecoleevry.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://dsautoecoleevry.com/"
+  },
+  "E2509100010": {
+   "site": "https://autoecolevcarnot.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://autoecolevcarnot.com/"
+  },
+  "E1809100240": {
+   "site": "https://driveracademy.net/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://driveracademy.net/"
+  },
+  "E2509100270": {
+   "site": "https://atfconduite.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://atfconduite.fr/"
+  },
+  "E1309100170": {
+   "site": "https://pointconduite.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://pointconduite.com/"
+  },
+  "E2509100140": {
+   "site": "https://autoecolebrunoy.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://autoecolebrunoy.fr/"
+  },
+  "E2309100080": {
+   "site": "https://cocoautoecole.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://cocoautoecole.fr/"
+  },
+  "E2209100200": {
+   "site": "https://bami-bass.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://bami-bass.fr/"
+  },
+  "E1609100110": {
+   "site": "https://ecoleconduiteevasion.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://ecoleconduiteevasion.fr/"
+  },
+  "E2109100090": {
+   "site": "https://apprendreaconduire-montgeron.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://apprendreaconduire-montgeron.fr/"
+  },
+  "E2509100080": {
+   "site": "https://drivinghouse.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://drivinghouse.fr/"
+  },
+  "E2409100070": {
+   "site": "https://drivinghouse.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://drivinghouse.fr/"
+  },
+  "E1509100240": {
+   "site": "https://ecf-proconduite.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://ecf-proconduite.com/"
+  },
+  "E1509100250": {
+   "site": "https://konduit.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://konduit.fr/"
+  },
+  "E2209100030": {
+   "site": "https://konduit.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://konduit.fr/"
+  },
+  "E2009100180": {
+   "site": "https://bilsconduite.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://bilsconduite.fr/"
+  },
+  "E2409100030": {
+   "site": "https://bilsconduite.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://bilsconduite.fr/"
+  },
+  "E2509100180": {
+   "site": "https://auto-ecole-longjumeau.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://auto-ecole-longjumeau.com/"
+  },
+  "E2209100010": {
+   "site": "https://validetonpermis.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://validetonpermis.fr/"
+  },
+  "E2209100120": {
+   "site": "https://montlheryconduite.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://montlheryconduite.fr/"
+  },
+  "E2209100100": {
+   "site": "https://groupe-maurice-conduite.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://groupe-maurice-conduite.fr/"
+  },
+  "E2509100100": {
+   "site": "https://autoecolelyz-juvisy.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://autoecolelyz-juvisy.fr/"
+  },
+  "E2409100210": {
+   "site": "https://apsconduite.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://apsconduite.com/"
+  },
+  "E2509100240": {
+   "site": "https://amsecuriteroutiere.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://amsecuriteroutiere.fr/"
+  },
+  "E2309100040": {
+   "site": "https://auto-ecole-vip.fr/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://auto-ecole-vip.fr/"
+  },
+  "E0209107040": {
+   "site": "https://auto-ecole-la-verville.com/",
+   "source": "site",
+   "mis_a_jour": "2026-11-26",
+   "lien": "https://auto-ecole-la-verville.com/"
   }
  }
 }

@@ -163,13 +163,15 @@ def charger_officiel() -> dict[str, dict]:
 def requete_osm() -> list[dict]:
     q = ('[out:json][timeout:300];area["ISO3166-1"="FR"][admin_level=2]->.fr;'
          '(nwr["amenity"="driving_school"](area.fr););out center tags;')
-    for url in OVERPASS:
-        try:
-            _, texte = lire(url, timeout=360, maxi=200_000_000, data=urllib.parse.urlencode({"data": q}).encode())
-            return json.loads(texte).get("elements") or []
-        except Exception as err:  # serveur occupé : on essaie le suivant
-            print(f"OpenStreetMap ({url}) : {err}", file=sys.stderr)
-    raise SystemExit("OpenStreetMap ne répond pas : réessaie plus tard (Run workflow).")
+    for essai in range(3):
+        for url in OVERPASS:
+            try:
+                _, texte = lire(url, timeout=360, maxi=200_000_000, data=urllib.parse.urlencode({"data": q}).encode())
+                return json.loads(texte).get("elements") or []
+            except Exception as err:  # serveur occupé : on essaie le suivant, puis on attend un peu
+                print(f"OpenStreetMap ({url}, essai {essai + 1}) : {err}", file=sys.stderr)
+        time.sleep(60)
+    raise RuntimeError("OpenStreetMap ne répond pas")
 
 
 def charger_communes() -> list[dict]:
@@ -201,6 +203,17 @@ class Grille:
 
 
 def etape_sites() -> dict:
+    try:
+        return chercher_sites()
+    except Exception as err:
+        # OpenStreetMap en panne : on garde les sites du passage précédent et on continue l'exploration.
+        if SITES.exists():
+            print(f"::warning::Sites non mis à jour ({err}) : on garde ceux du passage précédent.")
+            return json.loads(SITES.read_text(encoding="utf-8"))
+        raise SystemExit(f"OpenStreetMap ne répond pas ({err}) : réessaie plus tard (Run workflow).")
+
+
+def chercher_sites() -> dict:
     officiel = charger_officiel()
     par_cp: dict[str, list[str]] = {}
     par_ville: dict[str, list[str]] = {}

@@ -186,12 +186,19 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   annoncée par l'auto-école (data/tarifs.json, passerelle: true, fonction passerelle de build_site.py). Même règle :
   filtre désactivé dans un département où on n'en connaît aucune. Au 26 novembre 2026 : CER Saint-Germain-en-Laye (78)
   et ECF Yerres (91).
+- « Boîte automatique » (étiquette bea, filtre « Le permis en boîte automatique », 26 novembre 2026) : data/tarifs.json
+  bea: true, ou forfait_auto connu. Même règle : filtre désactivé là où on n'en connaît aucune. Pas de filtre boîte manuelle
+  (presque toutes l'enseignent : il cacherait à tort les auto-écoles dont on ne sait rien).
+- Adresse corrigée à la main (data/tarifs.json, champ adresse) quand l'auto-école a déménagé depuis le fichier officiel :
+  Paris Saclay (91, E2209100280, 5 rue de la Gare -> 13 bis rue de Paris, choix de William : 15 rue de Paris, l'adresse
+  de son site, n'est pas trouvée par Google Maps). Elle sert aussi au lien « Téléphone et itinéraire ».
 - Site web : lien discret sous l'adresse de chaque fiche (fonction lien_site : icône globe + nom de domaine sans « www »,
   une ligne coupée par « … », utm_source=creno, compté comme le bouton « Son site web » : data-clic ae-<agrément>-site).
   Source : colonne site du fichier officiel, sinon champ site de data/tarifs.json, sinon data/sites_auto_ecoles.json
   (fonction site_de).
-- **Robot des auto-écoles** (scripts/explorer_auto_ecoles.py, workflow explorer-auto-ecoles.yml : le 3 de chaque mois,
-  Run workflow, ou à chaque changement du script) : 1. sites web = fichier officiel, sinon OpenStreetMap
+- **Robot des auto-écoles** (scripts/explorer_auto_ecoles.py, workflow explorer-auto-ecoles.yml) : **EN PAUSE depuis le
+  26 novembre 2026** (choix de William) : plus de passage mensuel ni automatique, seulement Run workflow s'il le demande.
+  William envoie le lien du site (ou des captures), on recopie à la main dans data/tarifs.json. Ce qu'il fait : 1. sites web = fichier officiel, sinon OpenStreetMap
   (amenity=driving_school) relié à l'auto-école officielle seulement si nom ET lieu concordent -> data/sites_auto_ecoles.json
   (ODbL, attribution sur /methode/) ; 2. lecture polie des sites (robots.txt, 6 pages, UA CrenoBot) -> data/explorations.json :
   passerelle et accelere affichés avec « relevé automatique » + « Voir la page » ; prix = extraits À VÉRIFIER, jamais publiés.

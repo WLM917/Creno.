@@ -71,6 +71,7 @@ LABELS = {
     "enligne": "En ligne",
     "accelere": "Formation accélérée",
     "passerelle": "Passerelle auto → manuelle",
+    "bea": "Boîte automatique",
 }
 # Auto-écoles abonnées à Créno Pro : mises en avant (encadré séparé), sans changer leur rang
 PARTENAIRES = ((json.loads((ROOT / "data" / "partenaires.json").read_text(encoding="utf-8")).get("auto_ecoles") or {})
@@ -382,6 +383,9 @@ def labels_de(e):
     for cle in ("aac", "cs"):
         if t.get(cle) and cle not in out:
             out.append(cle)
+    # Permis en boîte automatique : vu sur le site de l'auto-école (bea : true), ou forfait boîte auto connu
+    if (t.get("bea") or t.get("forfait_auto") is not None) and "bea" not in out:
+        out.append("bea")
     return out
 
 
@@ -451,7 +455,7 @@ def lien_vu(e, cle, detail):
 
 def chips(e):
     labels = labels_de(e)
-    out = "".join(f'<span class="chip">{esc(LABELS[l])}</span>' for l in ("accelere", "passerelle", "qualite", "permis1euro", "aac", "cs", "associative", "enligne") if l in labels)
+    out = "".join(f'<span class="chip">{esc(LABELS[l])}</span>' for l in ("accelere", "passerelle", "bea", "qualite", "permis1euro", "aac", "cs", "associative", "enligne") if l in labels)
     if e.get("partenaire"):
         out = '<span class="chip chip-flag">Partenaire payant</span>' + out
     return out
@@ -948,6 +952,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
             continue
         dep = json.loads((DATA / "departements" / f'{d["code"]}.json').read_text(encoding="utf-8"))
         for e in dep["ecoles"]:
+            # Adresse corrigée à la main (data/tarifs.json, champ adresse) : déménagement plus récent que le fichier officiel
+            if (TARIFS.get(e["id"]) or {}).get("adresse"):
+                e["adresse"] = TARIFS[e["id"]]["adresse"]
             pa = PARTENAIRES.get(e["id"])
             if pa:
                 e["partenaire"] = True
@@ -1021,6 +1028,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
         nb_pas = sum(1 for r in rows if passerelle(r["e"]) is not None)
         pas_attr = "" if nb_pas else " disabled"
         pas_note = "" if nb_pas else ' <span class="small">(pas encore d\'info dans ce département)</span>'
+        nb_bea = sum(1 for r in rows if "bea" in labels_de(r["e"]))
+        bea_attr = "" if nb_bea else " disabled"
+        bea_note = "" if nb_bea else ' <span class="small">(pas encore d\'info dans ce département)</span>'
         champ_budget = garder_inconnus = ""
         if FILTRE_BUDGET:
             champ_budget = ('        <div class="field">\n'
@@ -1093,6 +1103,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
           <label class="check-inline" for="f-cs"><input id="f-cs" type="checkbox" data-label="cs"> La conduite supervisée</label>
           <label class="check-inline" for="f-acc"><input id="f-acc" type="checkbox" data-label="accelere"{acc_attr}> La formation accélérée{acc_note}</label>
           <label class="check-inline" for="f-pas"><input id="f-pas" type="checkbox" data-label="passerelle"{pas_attr}> La passerelle boîte auto → boîte manuelle{pas_note}</label>
+          <label class="check-inline" for="f-bea"><input id="f-bea" type="checkbox" data-label="bea"{bea_attr}> Le permis en boîte automatique{bea_note}</label>
         </fieldset>
 {garder_inconnus}      </div>
     </details>

@@ -1,4 +1,4 @@
-# Créno : robot qui explore les sites des auto-écoles de toute la France, une fois par mois.
+# Créno : robot qui explore les sites des auto-écoles de toute la France (lancement à la main seulement).
 #
 # 1. Trouve le site web de chaque auto-école (fichier officiel, sinon OpenStreetMap si le nom et le lieu concordent).
 # 2. Lit poliment chaque site (robots.txt respecté, 6 pages au plus) et repère la passerelle boîte auto -> manuelle,
@@ -9,15 +9,10 @@
 # Le résultat (nombre de sites, passerelles, formations accélérées) est sur la page Summary du lancement.
 name: Explorer les auto-écoles
 
+# En pause depuis le 26 novembre 2026 (choix de William : il envoie les sites, on les recopie à la main).
+# Plus de passage mensuel ni de lancement automatique : seulement Run workflow, quand William le demande.
 on:
-  schedule:
-    - cron: "17 2 3 * *"   # le 3 de chaque mois vers 3 h 17 (heure de Paris en hiver)
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - scripts/explorer_auto_ecoles.py
-      - .github/workflows/explorer-auto-ecoles.yml
 
 permissions:
   contents: write

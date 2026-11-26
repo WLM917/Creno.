@@ -1,0 +1,14 @@
+{
+ "meta": {
+  "description": "Auto-écoles fermées définitivement, par numéro d'agrément : build_site.py les retire du classement et de toutes les pages (le fichier officiel peut encore les lister). Ajouter nom, ville, source (où on l'a vu) et date."
+ },
+ "ecoles": {
+  "E0209105690": {
+   "nom": "Ecir",
+   "ville": "Morsang-sur-Orge",
+   "adresse": "122, rue Jean Raynal",
+   "source": "Google Maps : « Définitivement fermé » (capture de William)",
+   "date": "2026-11-26"
+  }
+ }
+}

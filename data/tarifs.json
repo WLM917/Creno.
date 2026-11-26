@@ -232,6 +232,444 @@
    "lien": "https://www.autoecoleparissaclay.fr/permis-accelere/",
    "mis_a_jour": "2026-11-26",
    "source": "site"
+  },
+  "E0209107030": {
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "formation boîte auto vers boîte manuelle (prix dans leur PDF de tarifs)",
+   "site": "https://anticipassion-permis.fr/",
+   "lien": "https://anticipassion-permis.fr/permis-auto",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1709100270": {
+   "forfait": 1290,
+   "heures_forfait": 20,
+   "forfait_note": "3 leçons sur simulateur comprises",
+   "forfait_auto": 1050,
+   "heures_forfait_auto": 13,
+   "frais_examen": 65,
+   "precision": "Prix payés comptant (90 € de plus en paiement échelonné). Frais de gestion et livret compris. En plus : évaluation de départ 65 €. Tarifs du site ESR, communs aux agences de Savigny-sur-Orge, Juvisy-sur-Orge et Athis-Mons.",
+   "formules": [
+    {
+     "nom": "Forfait 30 leçons",
+     "prix": 1890
+    },
+    {
+     "nom": "Forfait 40 leçons",
+     "prix": 2490
+    },
+    {
+     "nom": "Forfait accéléré 20 leçons",
+     "prix": 1720
+    },
+    {
+     "nom": "Forfait accéléré 30 leçons",
+     "prix": 2390
+    },
+    {
+     "nom": "Conduite accompagnée 20 leçons",
+     "prix": 1590
+    }
+   ],
+   "accelere": true,
+   "accelere_details": "forfaits accélérés de 20 leçons (1 720 €) ou 30 leçons (2 390 €)",
+   "passerelle": true,
+   "aac": true,
+   "site": "https://esrformation.fr/",
+   "lien": "https://esrformation.fr/formations-auto-permis-voiture-b-bea-aac-accelere/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1409100290": {
+   "forfait": 1290,
+   "heures_forfait": 20,
+   "forfait_note": "3 leçons sur simulateur comprises",
+   "forfait_auto": 1050,
+   "heures_forfait_auto": 13,
+   "frais_examen": 65,
+   "precision": "Prix payés comptant (90 € de plus en paiement échelonné). Frais de gestion et livret compris. En plus : évaluation de départ 65 €. Tarifs du site ESR, communs aux agences de Savigny-sur-Orge, Juvisy-sur-Orge et Athis-Mons.",
+   "formules": [
+    {
+     "nom": "Forfait 30 leçons",
+     "prix": 1890
+    },
+    {
+     "nom": "Forfait 40 leçons",
+     "prix": 2490
+    },
+    {
+     "nom": "Forfait accéléré 20 leçons",
+     "prix": 1720
+    },
+    {
+     "nom": "Forfait accéléré 30 leçons",
+     "prix": 2390
+    },
+    {
+     "nom": "Conduite accompagnée 20 leçons",
+     "prix": 1590
+    }
+   ],
+   "accelere": true,
+   "accelere_details": "forfaits accélérés de 20 leçons (1 720 €) ou 30 leçons (2 390 €)",
+   "passerelle": true,
+   "aac": true,
+   "site": "https://esrformation.fr/",
+   "lien": "https://esrformation.fr/formations-auto-permis-voiture-b-bea-aac-accelere/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1809100190": {
+   "forfait": 1290,
+   "heures_forfait": 20,
+   "forfait_note": "3 leçons sur simulateur comprises",
+   "forfait_auto": 1050,
+   "heures_forfait_auto": 13,
+   "frais_examen": 65,
+   "precision": "Prix payés comptant (90 € de plus en paiement échelonné). Frais de gestion et livret compris. En plus : évaluation de départ 65 €. Tarifs du site ESR, communs aux agences de Savigny-sur-Orge, Juvisy-sur-Orge et Athis-Mons.",
+   "formules": [
+    {
+     "nom": "Forfait 30 leçons",
+     "prix": 1890
+    },
+    {
+     "nom": "Forfait 40 leçons",
+     "prix": 2490
+    },
+    {
+     "nom": "Forfait accéléré 20 leçons",
+     "prix": 1720
+    },
+    {
+     "nom": "Forfait accéléré 30 leçons",
+     "prix": 2390
+    },
+    {
+     "nom": "Conduite accompagnée 20 leçons",
+     "prix": 1590
+    }
+   ],
+   "accelere": true,
+   "accelere_details": "forfaits accélérés de 20 leçons (1 720 €) ou 30 leçons (2 390 €)",
+   "passerelle": true,
+   "aac": true,
+   "site": "https://esrformation.fr/",
+   "lien": "https://esrformation.fr/formations-auto-permis-voiture-b-bea-aac-accelere/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2409100260": {
+   "aac": true,
+   "passerelle": true,
+   "passerelle_details": "passerelle B78 vers B",
+   "site": "https://gtpermis.fr/",
+   "lien": "https://gtpermis.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1809100110": {
+   "aac": true,
+   "bea": true,
+   "passerelle": true,
+   "accelere": true,
+   "accelere_details": "permis accéléré, se renseigner en agence",
+   "site": "https://autoecole-saintgermainlescorbeil.com/",
+   "lien": "https://autoecole-saintgermainlescorbeil.com/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2409100140": {
+   "aac": true,
+   "bea": true,
+   "site": "https://www.premiumconduite.fr/",
+   "lien": "https://www.premiumconduite.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2509100030": {
+   "aac": true,
+   "bea": true,
+   "site": "https://www.premiumconduite.fr/",
+   "lien": "https://www.premiumconduite.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1609100040": {
+   "aac": true,
+   "bea": true,
+   "passerelle": true,
+   "site": "https://www.autoecole3c.com/",
+   "lien": "https://www.autoecole3c.com/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1909100290": {
+   "forfait": 1299,
+   "heures_forfait": 20,
+   "forfait_note": "code en plus",
+   "forfait_auto": 999,
+   "heures_forfait_auto": 13,
+   "precision": "Frais administratifs et fournitures compris. En plus : évaluation de départ 59 €, redevance du code 30 €, accompagnement aux examens et heures supplémentaires (prix non affichés). Conduite accompagnée : 3 rendez-vous pédagogiques en plus (320 € en manuelle, 340 € en auto). Conduite supervisée : bilan en plus (110 € en manuelle, 120 € en auto).",
+   "formules": [
+    {
+     "nom": "Code en ligne + 20 h boîte manuelle",
+     "prix": 1499
+    },
+    {
+     "nom": "Code en ligne + 13 h boîte auto",
+     "prix": 1199
+    },
+    {
+     "nom": "Conduite accompagnée boîte manuelle (code, 20 h, rendez-vous préalable)",
+     "prix": 1599
+    },
+    {
+     "nom": "Conduite accompagnée boîte auto (code, 13 h, rendez-vous préalable)",
+     "prix": 1299
+    },
+    {
+     "nom": "Conduite supervisée boîte manuelle (code, 20 h, rendez-vous préalable)",
+     "prix": 1599
+    },
+    {
+     "nom": "Conduite supervisée boîte auto (code, 13 h, rendez-vous préalable)",
+     "prix": 1299
+    },
+    {
+     "nom": "Évaluation de départ",
+     "prix": 59
+    }
+   ],
+   "aac": true,
+   "site": "https://www.startinconduite.com/",
+   "lien": "https://www.startinconduite.com/forfaits.html",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1809100010": {
+   "prix_heure": 60,
+   "frais_examen": 60,
+   "precision": "Pas de forfait : chaque heure se paie à l'unité. Exemple donné par l'auto-école : 2 575 € pour 38 h de conduite.",
+   "formules": [
+    {
+     "nom": "Frais de gestion",
+     "prix": 135
+    },
+    {
+     "nom": "Évaluation de départ (1 h)",
+     "prix": 60
+    },
+    {
+     "nom": "Code en ligne (6 mois)",
+     "prix": 40
+    },
+    {
+     "nom": "Salle de code illimitée (6 mois)",
+     "prix": 150
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "passerelle": true,
+   "site": "https://www.lardyconduite.fr/",
+   "lien": "https://www.lardyconduite.fr/permisb",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1809100230": {
+   "forfait": 1390,
+   "heures_forfait": 20,
+   "forfait_note": "code compris",
+   "forfait_auto": 1120,
+   "heures_forfait_auto": 13,
+   "prix_heure": 60,
+   "precision": "Code, évaluation de départ, dossier et un accompagnement à l'examen compris. Heure en boîte auto : 65 €. Paiement en 3 fois sans frais.",
+   "formules": [
+    {
+     "nom": "Forfait 20 h sans code",
+     "prix": 1290
+    },
+    {
+     "nom": "Conduite accompagnée (code et 20 h)",
+     "prix": 1550
+    },
+    {
+     "nom": "Option accélérée (détail non précisé)",
+     "prix": 220
+    }
+   ],
+   "aac": true,
+   "site": "https://draveil-auto-ecole.com/",
+   "lien": "https://draveil-auto-ecole.com/formations/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1109108230": {
+   "forfait": 1260,
+   "heures_forfait": 20,
+   "forfait_note": "leçons de 55 min",
+   "forfait_auto": 780,
+   "heures_forfait_auto": 13,
+   "prix_heure": 60,
+   "precision": "Livret et accompagnement à l'examen pratique compris. En plus : évaluation de départ 60 €. Paiement en 4 fois sans frais. Tarifs valables du 1er septembre 2026 au 1er juillet 2027.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée 20 leçons",
+     "prix": 1620
+    },
+    {
+     "nom": "5 leçons",
+     "prix": 300
+    },
+    {
+     "nom": "10 leçons",
+     "prix": 600
+    },
+    {
+     "nom": "Évaluation de départ",
+     "prix": 60
+    }
+   ],
+   "aac": true,
+   "passerelle": true,
+   "passerelle_details": "passerelle B78 vers B",
+   "site": "https://aecconduite.com/",
+   "lien": "https://aecconduite.com/permis-b/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E0709107670": {
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "passerelle boîte manuelle de 7 h",
+   "site": "https://www.automotoecole-soisy.fr/",
+   "lien": "https://www.automotoecole-soisy.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E0709107650": {
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "passerelle boîte manuelle de 7 h",
+   "site": "https://www.automotoecole-soisy.fr/",
+   "lien": "https://www.automotoecole-soisy.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2509100040": {
+   "forfait": 1250,
+   "heures_forfait": 20,
+   "forfait_note": "évaluation de départ en plus",
+   "forfait_auto": 890,
+   "heures_forfait_auto": 13,
+   "prix_heure": 65,
+   "frais_examen": 65,
+   "precision": "Inscription, demande de numéro NEPH et livret numérique compris. En plus : évaluation de départ 65 € (55 € sur simulateur). Paiement en 3 fois sans frais.",
+   "formules": [
+    {
+     "nom": "Forfait 25 h",
+     "prix": 1530
+    },
+    {
+     "nom": "Forfait 30 h",
+     "prix": 1830
+    },
+    {
+     "nom": "Conduite accompagnée boîte manuelle 20 h",
+     "prix": 1550
+    },
+    {
+     "nom": "Conduite accompagnée boîte auto 13 h",
+     "prix": 1200
+    },
+    {
+     "nom": "Conduite supervisée 20 h",
+     "prix": 1450
+    },
+    {
+     "nom": "Bilan conduite supervisée",
+     "prix": 200
+    },
+    {
+     "nom": "Accéléré boîte auto 13 h",
+     "prix": 1250
+    },
+    {
+     "nom": "Accéléré 20 h",
+     "prix": 1650
+    },
+    {
+     "nom": "Accéléré 25 h",
+     "prix": 1930
+    },
+    {
+     "nom": "Accéléré 30 h",
+     "prix": 2230
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle 7 h",
+     "prix": 450
+    },
+    {
+     "nom": "Repasser son permis (10 h + examen)",
+     "prix": 750
+    },
+    {
+     "nom": "Examen blanc",
+     "prix": 65
+    },
+    {
+     "nom": "Code en ligne + salle (3 mois)",
+     "prix": 50
+    },
+    {
+     "nom": "Stage de code 7 h",
+     "prix": 90
+    }
+   ],
+   "aac": true,
+   "accelere": true,
+   "accelere_details": "forfaits accélérés de 13 h en boîte auto (1 250 €) à 30 h (2 230 €), 3 places par mois",
+   "passerelle": true,
+   "passerelle_details": "7 h, 450 €",
+   "site": "https://sgconduite.fr/",
+   "lien": "https://sgconduite.fr/tarifs/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1709100250": {
+   "forfait": 1290,
+   "heures_forfait": 20,
+   "forfait_note": "code en ligne compris",
+   "forfait_auto": 990,
+   "heures_forfait_auto": 13,
+   "precision": "Code en ligne et simulateur compris. Tarifs du site PariPermis, communs à ses agences de Longjumeau et Paris.",
+   "formules": [
+    {
+     "nom": "Boîte manuelle 30 h",
+     "prix": 1890
+    },
+    {
+     "nom": "Express boîte auto 13 h",
+     "prix": 1490
+    },
+    {
+     "nom": "Express boîte manuelle 20 h",
+     "prix": 1890
+    },
+    {
+     "nom": "Conduite accompagnée 20 h",
+     "prix": 1490
+    }
+   ],
+   "aac": true,
+   "accelere": true,
+   "accelere_details": "formules express : 13 h en boîte auto (1 490 €), 20 h en boîte manuelle (1 890 €)",
+   "site": "https://paripermis.com/",
+   "lien": "https://paripermis.com/permis-voiture/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
   }
  }
 }

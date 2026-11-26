@@ -96,6 +96,8 @@ data/index.json                   départements (code, nom, nb, moyenne), date d
 data/departements/<code>.json     auto-écoles d'un département (id = numéro d'agrément raf_numero)
 data/prix.json                    prix déclarés par les élèves, par numéro d'agrément (vide pour l'instant)
 data/tarifs.json                  prix annoncés par les auto-écoles (vérifiés), par numéro d'agrément (vide pour l'instant)
+data/fermees.json                 auto-écoles fermées définitivement (par agrément : nom, ville, source, date) :
+                                  build_site.py les retire de toutes les pages (Ecir, Morsang-sur-Orge, 26 novembre 2026)
 data/loueurs.json                 loueurs de voitures à double commande (2 entrées réelles à vérifier) ;
                                   "formule": "gratuit" ou "partenaire" (Créno Pro) ; champs optionnels
                                   code_promo, reduction, lien_reservation
@@ -192,6 +194,10 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Adresse corrigée à la main (data/tarifs.json, champ adresse) quand l'auto-école a déménagé depuis le fichier officiel :
   Paris Saclay (91, E2209100280, 5 rue de la Gare -> 13 bis rue de Paris, choix de William : 15 rue de Paris, l'adresse
   de son site, n'est pas trouvée par Google Maps). Elle sert aussi au lien « Téléphone et itinéraire ».
+- 26 novembre 2026 (soir) : 17 auto-écoles du 91 recopiées depuis les sites envoyés par William (prix quand le site
+  les affiche : ESR x3, Start'IN, Lardy, Draveil, AEC, S&G, Longjumeau Conduite = PariPermis ; sinon site + critères).
+  « Passerelle B78 vers B » = passerelle boîte auto -> manuelle (B78 = permis limité à la boîte auto). Prix à l'heure
+  sans forfait (Lardy) : la ligne dit « Heure de conduite », pas « Heure en plus ».
 - Site web : lien discret sous l'adresse de chaque fiche (fonction lien_site : icône globe + nom de domaine sans « www »,
   une ligne coupée par « … », utm_source=creno, compté comme le bouton « Son site web » : data-clic ae-<agrément>-site).
   Source : colonne site du fichier officiel, sinon champ site de data/tarifs.json, sinon data/sites_auto_ecoles.json

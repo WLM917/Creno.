@@ -76,6 +76,9 @@ LABELS = {
 # Auto-écoles abonnées à Créno Pro : mises en avant (encadré séparé), sans changer leur rang
 PARTENAIRES = ((json.loads((ROOT / "data" / "partenaires.json").read_text(encoding="utf-8")).get("auto_ecoles") or {})
                if (ROOT / "data" / "partenaires.json").exists() else {})
+# Auto-écoles fermées définitivement (vu sur Google Maps ou leur site) : retirées de toutes les pages
+FERMEES = ((json.loads((ROOT / "data" / "fermees.json").read_text(encoding="utf-8")).get("ecoles") or {})
+           if (ROOT / "data" / "fermees.json").exists() else {})
 # Prix annoncés par les auto-écoles elles-mêmes (vérifiés), par numéro d'agrément : voir scripts/sync_prix.py
 TARIFS = ((json.loads((ROOT / "data" / "tarifs.json").read_text(encoding="utf-8")).get("ecoles") or {})
           if (ROOT / "data" / "tarifs.json").exists() else {})
@@ -402,7 +405,8 @@ def ligne_prix(p):
     if auto:
         parts.append(f'Boîte auto {p["heures_auto"]} h : <strong>{eur(p["forfait_auto"])}</strong>')
     if p.get("prix_heure") is not None:
-        parts.append(f'Heure en plus : <strong>{eur(p["prix_heure"])}</strong>')
+        lib_h = "Heure en plus" if (p.get("forfait") is not None or auto) else "Heure de conduite"
+        parts.append(f'{lib_h} : <strong>{eur(p["prix_heure"])}</strong>')
     if p.get("note"):
         parts.append(esc(p["note"][:1].upper() + p["note"][1:]))
     return f'<p class="rank-prix">{" · ".join(parts)}</p>'
@@ -419,7 +423,8 @@ def bloc_prix(e):
         if auto:
             lignes.append(f'<div><dt>Forfait boîte auto {p["heures_auto"]} h de conduite</dt><dd>{eur(p["forfait_auto"])}</dd></div>')
         if p.get("prix_heure") is not None:
-            lignes.append(f'<div><dt>Heure de conduite en plus</dt><dd>{eur(p["prix_heure"])}</dd></div>')
+            lib_h = "Heure de conduite en plus" if (p.get("forfait") is not None or auto) else "Heure de conduite"
+            lignes.append(f'<div><dt>{lib_h}</dt><dd>{eur(p["prix_heure"])}</dd></div>')
         if p.get("frais") is not None:
             lignes.append(f'<div><dt>Présentation à l\'examen</dt><dd>{eur(p["frais"])}</dd></div>')
         # Autres formules recopiées de la page de tarifs de l'auto-école (data/tarifs.json, champ formules)
@@ -951,6 +956,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
         if only is not None and d["code"] not in only and d["code"] != DEP_DEFAUT:
             continue
         dep = json.loads((DATA / "departements" / f'{d["code"]}.json').read_text(encoding="utf-8"))
+        dep["ecoles"] = [e for e in dep["ecoles"] if e["id"] not in FERMEES]
         for e in dep["ecoles"]:
             # Adresse corrigée à la main (data/tarifs.json, champ adresse) : déménagement plus récent que le fichier officiel
             if (TARIFS.get(e["id"]) or {}).get("adresse"):

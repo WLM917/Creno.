@@ -66,6 +66,7 @@ LABELS = {
     "qualite": "Label qualité",
     "permis1euro": "Permis à 1 € par jour",
     "aac": "Conduite accompagnée",
+    "cs": "Conduite supervisée",
     "associative": "Associative",
     "enligne": "En ligne",
     "accelere": "Formation accélérée",
@@ -364,6 +365,11 @@ def labels_de(e):
         out.append("accelere")
     if passerelle(e) is not None:
         out.append("passerelle")
+    # Conduite accompagnée / supervisée vues sur la page de tarifs de l'auto-école (data/tarifs.json, aac / cs : true)
+    t = TARIFS.get(e["id"]) or {}
+    for cle in ("aac", "cs"):
+        if t.get(cle) and cle not in out:
+            out.append(cle)
     return out
 
 
@@ -425,7 +431,7 @@ def bloc_prix(e):
 
 def chips(e):
     labels = labels_de(e)
-    out = "".join(f'<span class="chip">{esc(LABELS[l])}</span>' for l in ("accelere", "passerelle", "qualite", "permis1euro", "aac", "associative", "enligne") if l in labels)
+    out = "".join(f'<span class="chip">{esc(LABELS[l])}</span>' for l in ("accelere", "passerelle", "qualite", "permis1euro", "aac", "cs", "associative", "enligne") if l in labels)
     if e.get("partenaire"):
         out = '<span class="chip chip-flag">Partenaire payant</span>' + out
     return out
@@ -1064,6 +1070,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
           <label class="check-inline" for="f-1euro"><input id="f-1euro" type="checkbox" data-label="permis1euro"> Le permis à 1 € par jour</label>
           <label class="check-inline" for="f-qualite"><input id="f-qualite" type="checkbox" data-label="qualite"> Le label qualité</label>
           <label class="check-inline" for="f-aac"><input id="f-aac" type="checkbox" data-label="aac"> La conduite accompagnée</label>
+          <label class="check-inline" for="f-cs"><input id="f-cs" type="checkbox" data-label="cs"> La conduite supervisée</label>
           <label class="check-inline" for="f-acc"><input id="f-acc" type="checkbox" data-label="accelere"{acc_attr}> La formation accélérée{acc_note}</label>
           <label class="check-inline" for="f-pas"><input id="f-pas" type="checkbox" data-label="passerelle"{pas_attr}> La passerelle boîte auto → boîte manuelle{pas_note}</label>
         </fieldset>

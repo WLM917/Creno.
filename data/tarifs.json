@@ -1,6 +1,6 @@
 {
  "meta": {
-  "description": "Prix annoncés par les auto-écoles, par numéro d'agrément. Rempli par scripts/sync_prix.py à partir des tarifs que les auto-écoles envoient depuis l'espace pros (après vérification : valide = true dans Supabase). On peut aussi en ajouter à la main, en recopiant la page de tarifs de l'auto-école : mettre alors source = \"site\", le lien de la page et la date. Champs : forfait (€), heures_forfait (souvent 20, le minimum légal en boîte manuelle), prix_heure (€, heure en plus), frais_examen (€, présentation à l'examen), accelere (true/false), accelere_details (texte court), lien, mis_a_jour (AAAA-MM-JJ), source (auto-ecole ou site). Ne jamais inventer de prix. Champs facultatifs pour les tarifs recopiés : forfait_auto et heures_forfait_auto (forfait boîte automatique, souvent 13 h, affiché à côté de la boîte manuelle), forfait_note (texte court en fin de ligne, ex. « code en plus »), precision (phrase sous les prix : ce qui est compris ou en plus), formules (liste de { nom, prix } : les autres formules de la page de tarifs). Aussi : site (adresse du site de l'auto-école, affichée sous son adresse quand le fichier officiel n'en a pas), passerelle (true si l'auto-école propose la passerelle boîte auto vers boîte manuelle de 7 h) et passerelle_details (texte court)."
+  "description": "Prix annoncés par les auto-écoles, par numéro d'agrément. Rempli par scripts/sync_prix.py à partir des tarifs que les auto-écoles envoient depuis l'espace pros (après vérification : valide = true dans Supabase). On peut aussi en ajouter à la main, en recopiant la page de tarifs de l'auto-école : mettre alors source = \"site\", le lien de la page et la date. Champs : forfait (€), heures_forfait (souvent 20, le minimum légal en boîte manuelle), prix_heure (€, heure en plus), frais_examen (€, présentation à l'examen), accelere (true/false), accelere_details (texte court), lien, mis_a_jour (AAAA-MM-JJ), source (auto-ecole ou site). Ne jamais inventer de prix. Champs facultatifs pour les tarifs recopiés : forfait_auto et heures_forfait_auto (forfait boîte automatique, souvent 13 h, affiché à côté de la boîte manuelle), forfait_note (texte court en fin de ligne, ex. « code en plus »), precision (phrase sous les prix : ce qui est compris ou en plus), formules (liste de { nom, prix } : les autres formules de la page de tarifs). Aussi : site (adresse du site de l'auto-école, affichée sous son adresse quand le fichier officiel n'en a pas), passerelle (true si l'auto-école propose la passerelle boîte auto vers boîte manuelle de 7 h) et passerelle_details (texte court). Aussi : aac et cs (true si la page de tarifs montre la conduite accompagnée / supervisée et que le fichier officiel ne le dit pas)."
  },
  "ecoles": {
   "E1007813460": {
@@ -151,11 +151,13 @@
     }
    ],
    "lien": "https://monprofauto.fr/formules-tarifs-prix-forfaits/",
-   "mis_a_jour": "2026-11-25",
+   "mis_a_jour": "2026-11-26",
    "source": "site",
    "forfait_auto": 890,
    "heures_forfait_auto": 13,
-   "site": "https://monprofauto.fr/"
+   "site": "https://monprofauto.fr/",
+   "aac": true,
+   "cs": true
   },
   "E1109108190": {
    "passerelle": true,

@@ -176,6 +176,9 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - Seuls les prix des élèves entrent dans l'indice (coût réel). Les prix annoncés sont affichés, pas notés.
 - 20 heures de conduite minimum en boîte manuelle, 13 h en boîte automatique : c'est souvent le contenu
   du forfait. Les auto-écoles doivent afficher leurs tarifs (arrêté du 19 juin 1987).
+- Étiquettes et filtres « Conduite accompagnée » (aac) et « Conduite supervisée » (cs, ajoutée le 26 novembre 2026 :
+  7 076 auto-écoles l'ont dans le fichier officiel) : fichier officiel, ou aac / cs : true dans data/tarifs.json
+  quand la page de tarifs le montre (Mon Prof Auto : aac).
 - « Formation accélérée » (étiquette, filtre, détail dans le volet) : annoncée par l'auto-école,
   ou déclarée par au moins 2 élèves (case dans le formulaire de déclaration, colonne declarations.accelere).
   Le filtre est désactivé dans un département où on ne connaît encore aucune formation accélérée.

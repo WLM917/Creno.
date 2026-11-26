@@ -1401,10 +1401,14 @@
    "source": "site"
   },
   "E2209100120": {
-   "site": "https://montlheryconduite.fr/",
-   "source": "site",
+   "site": "https://www.montlheryconduite.fr/",
+   "lien": "https://montlheryconduite.fr/informations-pratiques",
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formules accélérées (tarifs à demander)",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://montlheryconduite.fr/"
+   "source": "site"
   },
   "E2209100100": {
    "site": "https://www.bami-bass.fr/",
@@ -1415,33 +1419,72 @@
   },
   "E2509100100": {
    "site": "https://autoecolelyz-juvisy.fr/",
-   "source": "site",
+   "lien": "https://autoecolelyz-juvisy.fr/permis-b/",
+   "forfait": 1290,
+   "heures_forfait": 20,
+   "forfait_note": "code compris, leçons de 55 min",
+   "forfait_auto": 1090,
+   "heures_forfait_auto": 13,
+   "precision": "Évaluation de départ, dossier, kit pédagogique, code (en ligne 6 mois et en salle) et un accompagnement à l'examen compris.",
+   "aac": true,
+   "bea": true,
    "mis_a_jour": "2026-11-26",
-   "lien": "https://autoecolelyz-juvisy.fr/"
+   "source": "site"
   },
   "E2409100210": {
-   "site": "https://apsconduite.com/",
-   "source": "site",
+   "site": "https://www.apsconduite.com/",
+   "lien": "https://www.apsconduite.com/acceuil/nos-formules/",
+   "forfait": 1090,
+   "heures_forfait": 20,
+   "forfait_note": "code compris",
+   "forfait_auto": 1190,
+   "heures_forfait_auto": 20,
+   "precision": "Frais d'établissement, fournitures, code en ligne et en salle, 20 h de conduite et un examen compris, valable 12 mois.",
+   "formules": [
+    {
+     "nom": "20 h + examen, sans code",
+     "prix": 990
+    },
+    {
+     "nom": "Conduite accompagnée (code + 20 h)",
+     "prix": 1190
+    }
+   ],
+   "aac": true,
+   "bea": true,
    "mis_a_jour": "2026-11-26",
-   "lien": "https://apsconduite.com/"
+   "source": "site"
   },
   "E2509100240": {
-   "site": "https://amsecuriteroutiere.fr/",
-   "source": "site",
+   "site": "https://www.amsecuriteroutiere.fr/",
+   "aac": true,
+   "lien": "https://www.amsecuriteroutiere.fr/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://amsecuriteroutiere.fr/"
+   "source": "site"
   },
   "E2309100040": {
    "site": "https://auto-ecole-vip.fr/",
-   "source": "site",
+   "lien": "https://auto-ecole-vip.fr/agences/agence-de-mennecy-essonne/",
+   "formules": [
+    {
+     "nom": "Code + 13 h en boîte auto, tout compris (prix de l'agence de Brétigny)",
+     "prix": 1219
+    }
+   ],
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stages accélérés : permis en 18 jours ou en 1 mois",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://auto-ecole-vip.fr/"
+   "source": "site"
   },
   "E0209107040": {
    "site": "https://auto-ecole-la-verville.com/",
-   "source": "site",
+   "cs": true,
+   "accelere": true,
+   "accelere_details": "formule 25 h en accéléré",
+   "lien": "https://auto-ecole-la-verville.com/",
    "mis_a_jour": "2026-11-26",
-   "lien": "https://auto-ecole-la-verville.com/"
+   "source": "site"
   },
   "E2409100300": {
    "site": "https://www.abcconduite-essonne.fr/",
@@ -1745,6 +1788,243 @@
    "accelere": true,
    "accelere_details": "20 leçons de conduite en 2 semaines",
    "lien": "https://www.bilsconduite.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2209100300": {
+   "site": "https://villebonconduite.fr/",
+   "aac": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "passerelle BEA vers B, sans examen",
+   "lien": "https://villebonconduite.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1709100100": {
+   "site": "https://route91.fr/",
+   "lien": "https://route91.fr/tarifs/",
+   "aac": true,
+   "accelere": true,
+   "accelere_details": "formule conduite accélérée, cours intensifs",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1509100040": {
+   "site": "https://www.ll-conduite.com/",
+   "lien": "https://www.ll-conduite.com/formation-b/",
+   "forfait": 2050,
+   "heures_forfait": 25,
+   "forfait_note": "code en salle compris",
+   "forfait_auto": 1360,
+   "heures_forfait_auto": 20,
+   "prix_heure": 66,
+   "precision": "Pas de forfait 20 h affiché en boîte manuelle. Inscription, démarches, fournitures et salle de code illimitée compris. Agences de Chevry et Gif Vallée.",
+   "formules": [
+    {
+     "nom": "Forfait 30 h",
+     "prix": 2330
+    },
+    {
+     "nom": "25 h sans code",
+     "prix": 1600
+    },
+    {
+     "nom": "30 h sans code",
+     "prix": 1830
+    },
+    {
+     "nom": "Boîte auto 25 h",
+     "prix": 1600
+    },
+    {
+     "nom": "Conduite accompagnée (code, 20 h, rendez-vous)",
+     "prix": 1900
+    },
+    {
+     "nom": "Conduite accompagnée sans code",
+     "prix": 1300
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h)",
+     "prix": 320
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "7 h, 320 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2009100070": {
+   "site": "https://www.streetconduite.com/",
+   "aac": true,
+   "lien": "https://www.streetconduite.com/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1809100300": {
+   "site": "https://www.freedomformations.fr/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "passerelle B78 vers B, 7 h",
+   "lien": "https://www.freedomformations.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1509100430": {
+   "site": "https://www.ll-conduite.com/",
+   "lien": "https://www.ll-conduite.com/formation-b/",
+   "forfait": 2050,
+   "heures_forfait": 25,
+   "forfait_note": "code en salle compris",
+   "forfait_auto": 1360,
+   "heures_forfait_auto": 20,
+   "prix_heure": 66,
+   "precision": "Pas de forfait 20 h affiché en boîte manuelle. Inscription, démarches, fournitures et salle de code illimitée compris. Agences de Chevry et Gif Vallée.",
+   "formules": [
+    {
+     "nom": "Forfait 30 h",
+     "prix": 2330
+    },
+    {
+     "nom": "25 h sans code",
+     "prix": 1600
+    },
+    {
+     "nom": "30 h sans code",
+     "prix": 1830
+    },
+    {
+     "nom": "Boîte auto 25 h",
+     "prix": 1600
+    },
+    {
+     "nom": "Conduite accompagnée (code, 20 h, rendez-vous)",
+     "prix": 1900
+    },
+    {
+     "nom": "Conduite accompagnée sans code",
+     "prix": 1300
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h)",
+     "prix": 320
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "7 h, 320 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E0409107330": {
+   "site": "https://sesamautoecole.com/",
+   "lien": "https://sesamautoecole.com/boutique/",
+   "forfait": 1590,
+   "heures_forfait": 20,
+   "forfait_note": "code compris, leçons de 55 min",
+   "forfait_auto": 1230,
+   "heures_forfait_auto": 13,
+   "precision": "Prix de la boutique en ligne de l'auto-école. Évaluation, dossier, fournitures, code 6 mois, redevance du code et un accompagnement à l'examen compris.",
+   "formules": [
+    {
+     "nom": "20 h sans code",
+     "prix": 1390
+    },
+    {
+     "nom": "25 h avec code",
+     "prix": 1830
+    },
+    {
+     "nom": "30 h avec code",
+     "prix": 2070
+    },
+    {
+     "nom": "Boîte auto 13 h sans code",
+     "prix": 1090
+    },
+    {
+     "nom": "Option conduite accélérée",
+     "prix": 500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle",
+     "prix": 480
+    }
+   ],
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "option conduite accélérée, 500 € en plus de la formule",
+   "passerelle": true,
+   "passerelle_details": "480 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2109100120": {
+   "site": "https://atlantis-auto-ecole.com/",
+   "lien": "https://atlantis-auto-ecole.com/boutique/",
+   "forfait": 1590,
+   "heures_forfait": 20,
+   "forfait_note": "code compris, leçons de 55 min",
+   "forfait_auto": 1230,
+   "heures_forfait_auto": 13,
+   "precision": "Prix de la boutique en ligne de l'auto-école. Évaluation, dossier, fournitures, code 6 mois, redevance du code et un accompagnement à l'examen compris.",
+   "formules": [
+    {
+     "nom": "20 h sans code",
+     "prix": 1390
+    },
+    {
+     "nom": "25 h avec code",
+     "prix": 1830
+    },
+    {
+     "nom": "30 h avec code",
+     "prix": 2070
+    },
+    {
+     "nom": "Boîte auto 13 h sans code",
+     "prix": 1090
+    },
+    {
+     "nom": "Option conduite accélérée",
+     "prix": 500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle",
+     "prix": 480
+    }
+   ],
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "option conduite accélérée, 500 € en plus de la formule",
+   "passerelle": true,
+   "passerelle_details": "480 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2109100210": {
+   "site": "https://www.permis2-0.fr/",
+   "lien": "https://www.permis2-0.fr/22-nos-forfaits",
+   "precision": "Forfaits à partir de 890 €. Boîte manuelle : 20 h dont 4 h sur simulateur ; boîte auto : 13 h dont 3 h sur simulateur. Paiement jusqu'à 4 fois sans frais.",
+   "aac": true,
+   "bea": true,
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1909100240": {
+   "site": "https://www.permis2-0.fr/",
+   "lien": "https://www.permis2-0.fr/22-nos-forfaits",
+   "precision": "Forfaits à partir de 890 €. Boîte manuelle : 20 h dont 4 h sur simulateur ; boîte auto : 13 h dont 3 h sur simulateur. Paiement jusqu'à 4 fois sans frais.",
+   "aac": true,
+   "bea": true,
    "mis_a_jour": "2026-11-26",
    "source": "site"
   }

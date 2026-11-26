@@ -2027,6 +2027,150 @@
    "bea": true,
    "mis_a_jour": "2026-11-26",
    "source": "site"
+  },
+  "E2309100030": {
+   "site": "https://etriangle.fr/",
+   "lien": "https://etriangle.fr/offres-formation-permis-b/",
+   "forfait": 1325,
+   "heures_forfait": 20,
+   "forfait_note": "évaluation de départ comprise",
+   "formules": [
+    {
+     "nom": "Forfait 10 h (après un échec)",
+     "prix": 695
+    },
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1820
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "accelere": true,
+   "accelere_details": "permis B et examen en moins de deux semaines",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2409100060": {
+   "site": "https://autoecoledelagare-arpajon.fr/",
+   "lien": "https://autoecoledelagare-arpajon.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2209100080": {
+   "site": "https://auto-ecole-les-iris.fr/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "accelere": true,
+   "accelere_details": "formule express : 3 jours en boîte auto, 1 semaine en manuelle",
+   "lien": "https://auto-ecole-les-iris.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2209100160": {
+   "site": "https://driveracademy.net/",
+   "lien": "https://driveracademy.net/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2309100010": {
+   "site": "https://www.driving-center.fr/",
+   "lien": "https://driving-center.fr/permis-voiture/permis-b-bo%C3%AEte-automatique",
+   "forfait": 1350,
+   "heures_forfait": 20,
+   "forfait_note": "à partir de",
+   "precision": "Prix « à partir de » du réseau Driving Center (Orsay, Gif-sur-Yvette, Arpajon, Limours).",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2409100010": {
+   "site": "https://www.driving-center.fr/",
+   "lien": "https://driving-center.fr/permis-voiture/permis-b-bo%C3%AEte-automatique",
+   "forfait": 1350,
+   "heures_forfait": 20,
+   "forfait_note": "à partir de",
+   "precision": "Prix « à partir de » du réseau Driving Center (Orsay, Gif-sur-Yvette, Arpajon, Limours).",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2109100030": {
+   "site": "https://www.driving-center.fr/",
+   "lien": "https://driving-center.fr/permis-voiture/permis-b-bo%C3%AEte-automatique",
+   "forfait": 1350,
+   "heures_forfait": 20,
+   "forfait_note": "à partir de",
+   "precision": "Prix « à partir de » du réseau Driving Center (Orsay, Gif-sur-Yvette, Arpajon, Limours).",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1809100150": {
+   "site": "https://www.driving-center.fr/",
+   "lien": "https://driving-center.fr/permis-voiture/permis-b-bo%C3%AEte-automatique",
+   "forfait": 1350,
+   "heures_forfait": 20,
+   "forfait_note": "à partir de",
+   "precision": "Prix « à partir de » du réseau Driving Center (Orsay, Gif-sur-Yvette, Arpajon, Limours).",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2309100090": {
+   "site": "https://courtois-driving-school.fr/",
+   "aac": true,
+   "cs": true,
+   "lien": "https://courtois-driving-school.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1909100230": {
+   "site": "https://courtois-driving-school.fr/",
+   "aac": true,
+   "cs": true,
+   "lien": "https://courtois-driving-school.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1209108430": {
+   "site": "https://www.greenconduite-autoecole.fr/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "7 h",
+   "lien": "https://www.greenconduite-autoecole.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E2409100250": {
+   "site": "https://courtois-driving-school.fr/",
+   "aac": true,
+   "cs": true,
+   "lien": "https://courtois-driving-school.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
+  },
+  "E1709100200": {
+   "site": "https://auto-ecole-de-la-place.jimdosite.com/",
+   "lien": "https://auto-ecole-de-la-place.jimdosite.com/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
   }
  }
 }

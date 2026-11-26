@@ -1,12 +1,12 @@
 {
  "meta": {
-  "description": "Prix annoncés par les auto-écoles, par numéro d'agrément. Rempli par scripts/sync_prix.py à partir des tarifs que les auto-écoles envoient depuis l'espace pros (après vérification : valide = true dans Supabase). On peut aussi en ajouter à la main, en recopiant la page de tarifs de l'auto-école : mettre alors source = \"site\", le lien de la page et la date. Champs : forfait (€), heures_forfait (souvent 20, le minimum légal en boîte manuelle), prix_heure (€, heure en plus), frais_examen (€, présentation à l'examen), accelere (true/false), accelere_details (texte court), lien, mis_a_jour (AAAA-MM-JJ), source (auto-ecole ou site). Ne jamais inventer de prix. Champs facultatifs pour les tarifs recopiés : forfait_note (texte court après le forfait, ex. « hors code »), precision (phrase sous les prix : ce qui est compris ou en plus), formules (liste de { nom, prix } : les autres formules de la page de tarifs)."
+  "description": "Prix annoncés par les auto-écoles, par numéro d'agrément. Rempli par scripts/sync_prix.py à partir des tarifs que les auto-écoles envoient depuis l'espace pros (après vérification : valide = true dans Supabase). On peut aussi en ajouter à la main, en recopiant la page de tarifs de l'auto-école : mettre alors source = \"site\", le lien de la page et la date. Champs : forfait (€), heures_forfait (souvent 20, le minimum légal en boîte manuelle), prix_heure (€, heure en plus), frais_examen (€, présentation à l'examen), accelere (true/false), accelere_details (texte court), lien, mis_a_jour (AAAA-MM-JJ), source (auto-ecole ou site). Ne jamais inventer de prix. Champs facultatifs pour les tarifs recopiés : forfait_auto et heures_forfait_auto (forfait boîte automatique, souvent 13 h, affiché à côté de la boîte manuelle), forfait_note (texte court en fin de ligne, ex. « code en plus »), precision (phrase sous les prix : ce qui est compris ou en plus), formules (liste de { nom, prix } : les autres formules de la page de tarifs)."
  },
  "ecoles": {
   "E1007813460": {
    "forfait": 1320,
    "heures_forfait": 20,
-   "forfait_note": "boîte manuelle, hors code",
+   "forfait_note": "code en plus",
    "prix_heure": 70,
    "frais_examen": 70,
    "accelere": true,
@@ -20,10 +20,6 @@
     {
      "nom": "Forfait 30 h boîte manuelle",
      "prix": 1860
-    },
-    {
-     "nom": "Forfait 13 h boîte automatique",
-     "prix": 870
     },
     {
      "nom": "Forfait 20 h boîte automatique",
@@ -84,7 +80,9 @@
    ],
    "lien": "https://www.cer-saint-germain-en-laye.com/formations-voiture.html",
    "mis_a_jour": "2026-11-25",
-   "source": "site"
+   "source": "site",
+   "forfait_auto": 870,
+   "heures_forfait_auto": 13
   },
   "E2409100310": {
    "forfait": 1590,
@@ -94,10 +92,6 @@
    "frais_examen": null,
    "precision": "Code, 1 examen du code et 1 examen pratique compris. Paiement en 2, 3 ou 4 fois sans frais.",
    "formules": [
-    {
-     "nom": "Formule 13 h boîte automatique",
-     "prix": 1190
-    },
     {
      "nom": "Formule 20 h conduite supervisée",
      "prix": 1830
@@ -109,12 +103,14 @@
    ],
    "lien": "https://melissaconduite.fr/tarifs",
    "mis_a_jour": "2026-11-25",
-   "source": "site"
+   "source": "site",
+   "forfait_auto": 1190,
+   "heures_forfait_auto": 13
   },
   "E2209100110": {
    "forfait": 1190,
    "heures_forfait": 20,
-   "forfait_note": "20 leçons de 55 min",
+   "forfait_note": "leçons de 55 min",
    "prix_heure": 55,
    "frais_examen": null,
    "accelere": true,
@@ -132,10 +128,6 @@
     {
      "nom": "Forfait accéléré 30 leçons",
      "prix": 2090
-    },
-    {
-     "nom": "Forfait 13 leçons boîte automatique",
-     "prix": 890
     },
     {
      "nom": "Forfait accéléré 13 leçons boîte automatique",
@@ -156,7 +148,9 @@
    ],
    "lien": "https://monprofauto.fr/formules-tarifs-prix-forfaits/",
    "mis_a_jour": "2026-11-25",
-   "source": "site"
+   "source": "site",
+   "forfait_auto": 890,
+   "heures_forfait_auto": 13
   }
  }
 }

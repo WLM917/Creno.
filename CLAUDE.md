@@ -165,9 +165,11 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   bouton « Publier » du tableau de bord (valide = true), puis la mise à jour automatique quotidienne
   (GitHub Actions) ; ou ajoutés à la main dans data/tarifs.json avec source « site », le lien et la date),
   et prix payés par les élèves (médianes de data/prix.json, à partir de min_declarations_prix).
-- Tarifs recopiés à la main (source « site ») : champs facultatifs `forfait_note` (court, après le forfait,
-  ex. « hors code »), `precision` (ce qui est compris ou en plus) et `formules` (liste { nom, prix } des autres
-  formules), affichés dans le volet. Ajoutés le 26 novembre 2026 : Melissa Conduite et Mon Prof Auto (91),
+- Tarifs recopiés à la main (source « site ») : champs facultatifs `forfait_auto` + `heures_forfait_auto`
+  (forfait boîte automatique : la ligne devient « Boîte manuelle 20 h : X € · Boîte auto 13 h : Y € », écrit en
+  entier, pas « BM / BEA », pour les élèves qui ne connaissent pas les sigles), `forfait_note` (court, en fin de
+  ligne, ex. « code en plus »), `precision` (ce qui est compris ou en plus, dans le volet) et `formules`
+  (liste { nom, prix } des autres formules, dans le volet). Ajoutés le 26 novembre 2026 : Melissa Conduite et Mon Prof Auto (91),
   Auto Moto École de Saint Germain = CER Saint-Germain-en-Laye (78, E1007813460). Route 91 écartée : sa page
   d'accueil et sa page Tarifs donnent des prix différents.
 - Seuls les prix des élèves entrent dans l'indice (coût réel). Les prix annoncés sont affichés, pas notés.

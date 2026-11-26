@@ -307,7 +307,8 @@ def prix_connus(e):
     if t and (t.get("forfait") is not None or t.get("prix_heure") is not None):
         return {"source": t.get("source") or "auto-ecole", "forfait": t.get("forfait"), "heures": t.get("heures_forfait") or 20,
                 "prix_heure": t.get("prix_heure"), "frais": t.get("frais_examen"), "date": t.get("mis_a_jour"), "lien": t.get("lien"),
-                "note": t.get("forfait_note"), "precision": t.get("precision"), "formules": t.get("formules") or []}
+                "note": t.get("forfait_note"), "precision": t.get("precision"), "formules": t.get("formules") or [],
+                "forfait_auto": t.get("forfait_auto"), "heures_auto": t.get("heures_forfait_auto") or 13}
     if (e.get("declarations") or 0) >= MIN_DECL and e.get("forfait") is not None:
         return {"source": "eleves", "forfait": e["forfait"], "heures": e.get("heures_incluses"), "prix_heure": e.get("prix_heure"),
                 "frais": e.get("frais_examen"), "n": e["declarations"]}
@@ -333,15 +334,21 @@ def labels_de(e):
 
 
 def ligne_prix(p):
-    """Ligne visible dans le classement : forfait (souvent les 20 h minimum) et prix de l'heure en plus."""
+    """Ligne visible dans le classement : forfait (souvent les 20 h minimum), forfait boîte auto s'il est connu
+    (souvent 13 h), prix de l'heure en plus, puis la note courte (ex. « Code en plus »)."""
     if not p:
         return ""
     parts = []
+    auto = p.get("forfait_auto") is not None
     if p.get("forfait") is not None:
-        note = f' ({esc(p["note"])})' if p.get("note") else ""
-        parts.append(f'Forfait{(" " + str(p["heures"]) + " h") if p.get("heures") else ""} : <strong>{eur(p["forfait"])}</strong>{note}')
+        lib = "Boîte manuelle" if auto else "Forfait"
+        parts.append(f'{lib}{(" " + str(p["heures"]) + " h") if p.get("heures") else ""} : <strong>{eur(p["forfait"])}</strong>')
+    if auto:
+        parts.append(f'Boîte auto {p["heures_auto"]} h : <strong>{eur(p["forfait_auto"])}</strong>')
     if p.get("prix_heure") is not None:
         parts.append(f'Heure en plus : <strong>{eur(p["prix_heure"])}</strong>')
+    if p.get("note"):
+        parts.append(esc(p["note"][:1].upper() + p["note"][1:]))
     return f'<p class="rank-prix">{" · ".join(parts)}</p>'
 
 
@@ -350,8 +357,11 @@ def bloc_prix(e):
     p = prix_connus(e)
     if p:
         lignes = []
+        auto = p.get("forfait_auto") is not None
         if p.get("forfait") is not None:
-            lignes.append(f'<div><dt>Forfait{(" " + str(p["heures"]) + " h de conduite") if p.get("heures") else ""}</dt><dd>{eur(p["forfait"])}</dd></div>')
+            lignes.append(f'<div><dt>Forfait{" boîte manuelle" if auto else ""}{(" " + str(p["heures"]) + " h de conduite") if p.get("heures") else ""}</dt><dd>{eur(p["forfait"])}</dd></div>')
+        if auto:
+            lignes.append(f'<div><dt>Forfait boîte auto {p["heures_auto"]} h de conduite</dt><dd>{eur(p["forfait_auto"])}</dd></div>')
         if p.get("prix_heure") is not None:
             lignes.append(f'<div><dt>Heure de conduite en plus</dt><dd>{eur(p["prix_heure"])}</dd></div>')
         if p.get("frais") is not None:
@@ -360,8 +370,6 @@ def bloc_prix(e):
         for f in p.get("formules") or []:
             if f.get("nom") and f.get("prix") is not None:
                 lignes.append(f'<div><dt>{esc(f["nom"])}</dt><dd>{eur(f["prix"])}</dd></div>')
-        if p.get("note") and p.get("forfait") is not None:
-            lignes[0] = lignes[0].replace("</dt>", f' ({esc(p["note"])})</dt>', 1)
         precision = f' {esc(p["precision"])}' if p.get("precision") else ""
         if p["source"] == "eleves":
             src = f'Prix payés par les élèves (médiane de {plural(p["n"], "déclaration", "déclarations")})'

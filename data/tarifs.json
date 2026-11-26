@@ -1,6 +1,6 @@
 {
  "meta": {
-  "description": "Prix annoncés par les auto-écoles, par numéro d'agrément. Rempli par scripts/sync_prix.py à partir des tarifs que les auto-écoles envoient depuis l'espace pros (après vérification : valide = true dans Supabase). On peut aussi en ajouter à la main, en recopiant la page de tarifs de l'auto-école : mettre alors source = \"site\", le lien de la page et la date. Champs : forfait (€), heures_forfait (souvent 20, le minimum légal en boîte manuelle), prix_heure (€, heure en plus), frais_examen (€, présentation à l'examen), accelere (true/false), accelere_details (texte court), lien, mis_a_jour (AAAA-MM-JJ), source (auto-ecole ou site). Ne jamais inventer de prix. Champs facultatifs pour les tarifs recopiés : forfait_auto et heures_forfait_auto (forfait boîte automatique, souvent 13 h, affiché à côté de la boîte manuelle), forfait_note (texte court en fin de ligne, ex. « code en plus »), precision (phrase sous les prix : ce qui est compris ou en plus), formules (liste de { nom, prix } : les autres formules de la page de tarifs)."
+  "description": "Prix annoncés par les auto-écoles, par numéro d'agrément. Rempli par scripts/sync_prix.py à partir des tarifs que les auto-écoles envoient depuis l'espace pros (après vérification : valide = true dans Supabase). On peut aussi en ajouter à la main, en recopiant la page de tarifs de l'auto-école : mettre alors source = \"site\", le lien de la page et la date. Champs : forfait (€), heures_forfait (souvent 20, le minimum légal en boîte manuelle), prix_heure (€, heure en plus), frais_examen (€, présentation à l'examen), accelere (true/false), accelere_details (texte court), lien, mis_a_jour (AAAA-MM-JJ), source (auto-ecole ou site). Ne jamais inventer de prix. Champs facultatifs pour les tarifs recopiés : forfait_auto et heures_forfait_auto (forfait boîte automatique, souvent 13 h, affiché à côté de la boîte manuelle), forfait_note (texte court en fin de ligne, ex. « code en plus »), precision (phrase sous les prix : ce qui est compris ou en plus), formules (liste de { nom, prix } : les autres formules de la page de tarifs). Aussi : site (adresse du site de l'auto-école, affichée sous son adresse quand le fichier officiel n'en a pas), passerelle (true si l'auto-école propose la passerelle boîte auto vers boîte manuelle de 7 h) et passerelle_details (texte court)."
  },
  "ecoles": {
   "E1007813460": {
@@ -79,10 +79,13 @@
     }
    ],
    "lien": "https://www.cer-saint-germain-en-laye.com/formations-voiture.html",
-   "mis_a_jour": "2026-11-25",
+   "mis_a_jour": "2026-11-26",
    "source": "site",
    "forfait_auto": 870,
-   "heures_forfait_auto": 13
+   "heures_forfait_auto": 13,
+   "site": "https://www.cer-saint-germain-en-laye.com/",
+   "passerelle": true,
+   "passerelle_details": "7 h en boîte manuelle et démarches ANTS, après 3 mois de permis boîte auto (410 € pour les anciens élèves)"
   },
   "E2409100310": {
    "forfait": 1590,
@@ -105,7 +108,8 @@
    "mis_a_jour": "2026-11-25",
    "source": "site",
    "forfait_auto": 1190,
-   "heures_forfait_auto": 13
+   "heures_forfait_auto": 13,
+   "site": "https://melissaconduite.fr/"
   },
   "E2209100110": {
    "forfait": 1190,
@@ -150,7 +154,16 @@
    "mis_a_jour": "2026-11-25",
    "source": "site",
    "forfait_auto": 890,
-   "heures_forfait_auto": 13
+   "heures_forfait_auto": 13,
+   "site": "https://monprofauto.fr/"
+  },
+  "E1109108190": {
+   "passerelle": true,
+   "passerelle_details": "à partir de 550 €",
+   "site": "https://www.ecf.asso.fr/Auto-ecole/Yerres/ECF-YERRES",
+   "lien": "https://www.ecf.asso.fr/Auto-ecole/Yerres/ECF-YERRES",
+   "mis_a_jour": "2026-11-25",
+   "source": "site"
   }
  }
 }

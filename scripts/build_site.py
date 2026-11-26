@@ -69,6 +69,7 @@ LABELS = {
     "associative": "Associative",
     "enligne": "En ligne",
     "accelere": "Formation accélérée",
+    "passerelle": "Passerelle auto → manuelle",
 }
 # Auto-écoles abonnées à Créno Pro : mises en avant (encadré séparé), sans changer leur rang
 PARTENAIRES = ((json.loads((ROOT / "data" / "partenaires.json").read_text(encoding="utf-8")).get("auto_ecoles") or {})
@@ -174,12 +175,34 @@ MESSAGE_CONTACT = ("Bonjour, j'ai trouvé votre auto-école sur Créno. Je voudr
                    "permis B, le nombre d'heures comprises et le prix d'une heure en plus. Merci !")
 
 
+def site_de(e):
+    """Site web de l'auto-école : celui du fichier officiel, sinon celui recopié dans data/tarifs.json (champ site)."""
+    return e.get("site") or (TARIFS.get(e["id"]) or {}).get("site") or ""
+
+
+def domaine(url):
+    """Adresse courte à afficher : « cer-saint-germain-en-laye.com » pour https://www.cer-saint-germain-en-laye.com/."""
+    host = urlsplit(url).netloc or url
+    return host[4:] if host.lower().startswith("www.") else host
+
+
+def lien_site(e):
+    """Lien discret vers le site de l'auto-école, sous son adresse (compté comme le bouton « Son site web »)."""
+    url = site_de(e)
+    if not url:
+        return ""
+    return (f'<p class="rank-web"><a href="{esc(avec_utm(url))}" target="_blank" rel="noopener" data-clic="ae-{esc(e["id"])}-site">'
+            f'<svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/>'
+            f'<path d="M1.5 8h13M8 1.5c2 2 2.9 4.2 2.9 6.5S10 12.5 8 14.5M8 1.5C6 3.5 5.1 5.7 5.1 8S6 12.5 8 14.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>'
+            f'<span>{esc(domaine(url))}</span><span class="visually-hidden"> : site de l’auto-école, s’ouvre dans un nouvel onglet</span></a></p>')
+
+
 def panneau_contact(e, decl_href):
     """Volet « Contacter » d'une auto-école du classement. Chaque clic est compté (table clics)."""
     eid = esc(e["id"])
     nom = esc(e["nom"])
-    site = (f'<a class="btn btn-small btn-ghost" href="{esc(avec_utm(e["site"]))}" target="_blank" rel="noopener" '
-            f'data-clic="ae-{eid}-site">Son site web<span class="visually-hidden"> ({nom})</span></a>') if e.get("site") else ""
+    site = (f'<a class="btn btn-small btn-ghost" href="{esc(avec_utm(site_de(e)))}" target="_blank" rel="noopener" '
+            f'data-clic="ae-{eid}-site">Son site web<span class="visually-hidden"> ({nom})</span></a>') if site_de(e) else ""
     if e.get("email"):
         mail = ("mailto:" + quote(e["email"], safe="@.") + "?subject=" + quote("Demande d'information (trouvé sur Créno)")
                 + "&body=" + quote(MESSAGE_CONTACT))
@@ -326,10 +349,21 @@ def accelere(e):
     return None
 
 
+def passerelle(e):
+    """Passerelle boîte auto -> boîte manuelle (7 h) : annoncée par l'auto-école (data/tarifs.json).
+    Renvoie le détail (texte, parfois vide) si oui, None si on ne sait pas."""
+    t = TARIFS.get(e["id"]) or {}
+    if t.get("passerelle"):
+        return t.get("passerelle_details") or ""
+    return None
+
+
 def labels_de(e):
     out = list(e.get("labels") or [])
     if accelere(e) is not None:
         out.append("accelere")
+    if passerelle(e) is not None:
+        out.append("passerelle")
     return out
 
 
@@ -383,12 +417,15 @@ def bloc_prix(e):
     acc = accelere(e)
     if acc is not None:
         html += f'<p class="rank-acc"><strong>Formation accélérée :</strong> oui{(", " + esc(acc)) if acc else ""}.</p>'
+    pas = passerelle(e)
+    if pas is not None:
+        html += f'<p class="rank-acc"><strong>Passerelle boîte auto → boîte manuelle :</strong> oui{(", " + esc(pas)) if pas else ""}.</p>'
     return html
 
 
 def chips(e):
     labels = labels_de(e)
-    out = "".join(f'<span class="chip">{esc(LABELS[l])}</span>' for l in ("accelere", "qualite", "permis1euro", "aac", "associative", "enligne") if l in labels)
+    out = "".join(f'<span class="chip">{esc(LABELS[l])}</span>' for l in ("accelere", "passerelle", "qualite", "permis1euro", "aac", "associative", "enligne") if l in labels)
     if e.get("partenaire"):
         out = '<span class="chip chip-flag">Partenaire payant</span>' + out
     return out
@@ -428,11 +465,12 @@ def ligne(r, moyenne, mode, nb_dep=None, code=None, avec_prix=True, href=None, d
     m = round(moyenne * 100)
     nom_html = f'<a class="rank-link" href="{href}">{esc(e["nom"])}</a>' if href else esc(e["nom"])
     prix_html = "" if mode == "compact" else ligne_prix(prix_connus(e))
+    web_html = "" if mode == "compact" else lien_site(e)
     return (
         f'<li class="rank-row{" is-first" if r["rang"] == 1 else ""}{"" if avec_prix else " no-cost"}"{attrs}>'
         f'<span class="rank-plate{" is-long" if r["rang"] >= 100 else ""}"><span class="visually-hidden">Rang </span>{r["rang"]}</span>'
         f'<div class="rank-main"><h3 class="rank-name">{nom_html}</h3>'
-        f'<p class="rank-place">{place}</p>{extra}{prix_html}{chip_html}</div>'
+        f'<p class="rank-place">{place}</p>{web_html}{extra}{prix_html}{chip_html}</div>'
         f'<div class="metric metric-taux"><span class="metric-label">Réussite</span>'
         f'<span class="metric-value">{pct(e["taux"])}</span>'
         f'<span class="bar" role="img" aria-label="{t} % de réussite, moyenne du département {m} %">'
@@ -499,8 +537,8 @@ def jsonld_liste(rows, nom_liste):
             "address": {"@type": "PostalAddress", "streetAddress": e.get("adresse", ""),
                         "postalCode": e["cp"], "addressLocality": ville_affichee(e["ville"]), "addressCountry": "FR"},
         }
-        if e.get("site"):
-            school["url"] = e["site"]
+        if site_de(e):
+            school["url"] = site_de(e)
         items.append({"@type": "ListItem", "position": r["rang"], "item": school})
     return {"@context": "https://schema.org", "@type": "ItemList", "name": nom_liste, "itemListElement": items}
 
@@ -954,6 +992,9 @@ def build(out_dir=ROOT, explicit=False, only=None):
         nb_acc = sum(1 for r in rows if accelere(r["e"]) is not None)
         acc_attr = "" if nb_acc else " disabled"
         acc_note = "" if nb_acc else ' <span class="small">(pas encore d\'info dans ce département)</span>'
+        nb_pas = sum(1 for r in rows if passerelle(r["e"]) is not None)
+        pas_attr = "" if nb_pas else " disabled"
+        pas_note = "" if nb_pas else ' <span class="small">(pas encore d\'info dans ce département)</span>'
         champ_budget = garder_inconnus = ""
         if FILTRE_BUDGET:
             champ_budget = ('        <div class="field">\n'
@@ -1024,6 +1065,7 @@ def build(out_dir=ROOT, explicit=False, only=None):
           <label class="check-inline" for="f-qualite"><input id="f-qualite" type="checkbox" data-label="qualite"> Le label qualité</label>
           <label class="check-inline" for="f-aac"><input id="f-aac" type="checkbox" data-label="aac"> La conduite accompagnée</label>
           <label class="check-inline" for="f-acc"><input id="f-acc" type="checkbox" data-label="accelere"{acc_attr}> La formation accélérée{acc_note}</label>
+          <label class="check-inline" for="f-pas"><input id="f-pas" type="checkbox" data-label="passerelle"{pas_attr}> La passerelle boîte auto → boîte manuelle{pas_note}</label>
         </fieldset>
 {garder_inconnus}      </div>
     </details>

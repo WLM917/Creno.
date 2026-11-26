@@ -374,6 +374,15 @@ a { color: var(--link); text-underline-offset: 0.18em; }
   align-items: baseline;
 }
 .rank-place { color: var(--muted); font-size: 0.95rem; overflow-wrap: anywhere; }
+/* Site web de l'auto-école, discret sous l'adresse : une seule ligne, coupée par « … » si l'adresse est longue */
+.rank-web { margin-top: 0.15rem; font-size: 0.9rem; min-width: 0; }
+.rank-web a {
+  display: inline-flex; align-items: center; gap: 0.35rem; max-width: 100%;
+  color: var(--link); font-weight: 700; text-decoration: none;
+}
+.rank-web a span:not(.visually-hidden) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-web a:hover span, .rank-web a:focus-visible span { text-decoration: underline; text-underline-offset: 3px; }
+.rank-web svg { flex: none; }
 .rank-site { font-weight: 700; white-space: nowrap; }
 .rank-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.35rem; }
 .rank-chips:empty { display: none; }

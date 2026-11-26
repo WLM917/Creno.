@@ -169,7 +169,8 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   (forfait boîte automatique : la ligne devient « Boîte manuelle 20 h : X € · Boîte auto 13 h : Y € », écrit en
   entier, pas « BM / BEA », pour les élèves qui ne connaissent pas les sigles), `forfait_note` (court, en fin de
   ligne, ex. « code en plus »), `precision` (ce qui est compris ou en plus, dans le volet) et `formules`
-  (liste { nom, prix } des autres formules, dans le volet). Ajoutés le 26 novembre 2026 : Melissa Conduite et Mon Prof Auto (91),
+  (liste { nom, prix } des autres formules, dans le volet), `site` (site web quand le fichier officiel n'en a pas :
+  seulement 577 auto-écoles sur 11 060 en ont un, aucune dans le 91 ni le 78), `passerelle` + `passerelle_details`. Ajoutés le 26 novembre 2026 : Melissa Conduite et Mon Prof Auto (91),
   Auto Moto École de Saint Germain = CER Saint-Germain-en-Laye (78, E1007813460). Route 91 écartée : sa page
   d'accueil et sa page Tarifs donnent des prix différents.
 - Seuls les prix des élèves entrent dans l'indice (coût réel). Les prix annoncés sont affichés, pas notés.
@@ -178,6 +179,13 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
 - « Formation accélérée » (étiquette, filtre, détail dans le volet) : annoncée par l'auto-école,
   ou déclarée par au moins 2 élèves (case dans le formulaire de déclaration, colonne declarations.accelere).
   Le filtre est désactivé dans un département où on ne connaît encore aucune formation accélérée.
+- « Passerelle auto → manuelle » (étiquette, filtre « La passerelle boîte auto → boîte manuelle », détail dans le volet) :
+  annoncée par l'auto-école (data/tarifs.json, passerelle: true, fonction passerelle de build_site.py). Même règle :
+  filtre désactivé dans un département où on n'en connaît aucune. Au 26 novembre 2026 : CER Saint-Germain-en-Laye (78)
+  et ECF Yerres (91).
+- Site web : lien discret sous l'adresse de chaque fiche (fonction lien_site : icône globe + nom de domaine sans « www »,
+  une ligne coupée par « … », utm_source=creno, compté comme le bouton « Son site web » : data-clic ae-<agrément>-site).
+  Source : colonne site du fichier officiel, sinon champ site de data/tarifs.json (fonction site_de).
 
 ## Formulaires et Supabase
 

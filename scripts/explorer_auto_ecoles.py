@@ -51,6 +51,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 SITES = DATA / "sites_auto_ecoles.json"
 EXPLO = DATA / "explorations.json"
+REGLES = 2  # à augmenter quand on change la détection : tout est relu au passage suivant
 UA = "CrenoBot/1.0 (+https://www.xn--crnopermis-c7a.fr/methode/ ; classement des auto-ecoles)"
 OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
 COMMUNES = "https://geo.api.gouv.fr/communes?fields=nom,codesPostaux,centre,codeDepartement&format=json&geometry=centre"
@@ -314,7 +315,7 @@ class Lecteur(HTMLParser):
 RE_PAGE_UTILE = re.compile(r"tarif|prix|forfait|formule|formation|passerelle|accel|intensif|b78|bea|boite|automatique|permis-b|permis_b|offre", re.I)
 RE_PASSERELLE = re.compile(
     r"passerelle.{0,80}?(boite auto|boite automatique|\bbea\b|\bbva\b|\bb ?78\b|automatique)"
-    r"|(boite auto(matique)?|\bbea\b|\bbva\b|\bb ?78\b).{0,40}?\b(vers|a|en)\b\s+(la\s+|une\s+)?boite (manuelle|mecanique)")
+    r"|(boite auto(matique)?|\bbea\b|\bbva\b|\bb ?78\b).{0,40}?\b(vers|a)\b\s+(la\s+|une\s+)?boite (manuelle|mecanique)")
 RE_ACCELERE = re.compile(
     r"\b(formations?|stages?|permis|formules?|forfaits?|conduite|cursus|apprentissage)\s+(en\s+)?"
     r"(accelere|acceleree|acceleres|accelerees|intensif|intensive|intensifs|intensives)\b"
@@ -340,8 +341,13 @@ def chercher(texte_page: str) -> dict:
         break
     for m in RE_ACCELERE.finditer(t):
         autour = t[max(0, m.start() - 20): m.end() + 25]
-        if re.search(r"\bcode\b", autour) or re.search(r"\bpas de (formation|stage)|\bne propos", autour):
-            continue  # stage de code accéléré, ou « pas de formation accélérée »
+        large = t[max(0, m.start() - 70): m.end() + 55]
+        if re.search(r"\bpas de (formation|stage)|\bne propos", autour):
+            continue  # « pas de formation accélérée »
+        # « permis / conduite accéléré(e) » : c'est bien la conduite. « Formation / stage accéléré » près du mot
+        # code (ou cours en salle) : c'est le code, pas une formation accélérée de conduite.
+        if not re.search(r"permis|conduite", m.group(0)) and re.search(r"\bcode\b|en salle|theorique|\betg\b", large):
+            continue
         out["accelere"] = extrait(t, m.start(), m.end())
         break
     prix = []
@@ -389,8 +395,14 @@ def autorise(url: str) -> bool:
     return rp is None or rp.can_fetch(UA, url)
 
 
-def explorer_une(eid: str, site: str) -> dict:
-    res: dict = {"site": site, "date": date.today().isoformat(), "pages": []}
+def explorer_une(eid: str, site: str, reseau: bool = False) -> dict:
+    """reseau=True : site partagé par plusieurs auto-écoles (ECF, Codes Rousseau, Stych...). Le texte des pages
+    (menus nationaux) ne compte pas : seulement les liens vers les formations de CETTE agence."""
+    res: dict = {"site": site, "date": date.today().isoformat(), "pages": [], "regles": REGLES}
+    prefixe = urllib.parse.urlsplit(site).path.rstrip("/")
+    if reseau and not prefixe:
+        res["reseau"] = True  # page commune à tout le réseau : rien de propre à cette agence
+        return res
     try:
         if not autorise(site):
             res["erreur"] = "robots.txt refuse la lecture"
@@ -416,6 +428,13 @@ def explorer_une(eid: str, site: str) -> dict:
             continue
         if url.rstrip("/") in vus or re.search(r"\.(pdf|jpe?g|png|gif|webp|zip|docx?)$", url, re.I):
             continue
+        if reseau:
+            chemin = urllib.parse.urlsplit(url).path
+            if not chemin.startswith(prefixe + "/"):
+                continue  # page d'une autre agence ou du réseau
+            for cle, motif in (("passerelle", r"passerelle"), ("accelere", r"accel|intensif")):
+                if re.search(motif, chemin, re.I) and cle not in res:
+                    res[cle] = {"extrait": f"formation « {norm(txt) or chemin} » sur la page de l'agence", "page": url}
         if RE_PAGE_UTILE.search(url) or RE_PAGE_UTILE.search(norm(txt)):
             score = 2 if re.search(r"tarif|prix|forfait", url + " " + norm(txt), re.I) else 1
             suivants.append((score, url))
@@ -435,6 +454,9 @@ def explorer_une(eid: str, site: str) -> dict:
             continue
         trouve = chercher(lec.texte())
         res["pages"].append(url)
+        if reseau:
+            trouve.pop("passerelle", None)
+            trouve.pop("accelere", None)
         for cle in ("passerelle", "accelere"):
             if cle in trouve and cle not in res:
                 res[cle] = {"extrait": trouve[cle], "page": url}
@@ -453,10 +475,19 @@ def etape_explorer(minutes_max: float) -> dict:
             sites[eid] = {"site": t["site"], "source": "tarifs"}
     ancien = (json.loads(EXPLO.read_text(encoding="utf-8")).get("ecoles") or {}) if EXPLO.exists() else {}
     # D'abord les auto-écoles jamais lues, puis les plus anciennes ; un site qui a changé est relu.
-    ordre = sorted(sites, key=lambda k: ((ancien.get(k) or {}).get("site") == sites[k]["site"],
+    ordre = sorted(sites, key=lambda k: ((ancien.get(k) or {}).get("site") == sites[k]["site"]
+                                         and (ancien.get(k) or {}).get("regles") == REGLES,
                                          (ancien.get(k) or {}).get("date", "")))
+    # Un même domaine pour au moins 3 auto-écoles = site de réseau (menus communs) : voir explorer_une.
+    par_domaine: dict[str, int] = {}
+    for v in sites.values():
+        d = (urllib.parse.urlsplit(v["site"]).hostname or "").removeprefix("www.")
+        par_domaine[d] = par_domaine.get(d, 0) + 1
+    def est_reseau(url):
+        return par_domaine.get((urllib.parse.urlsplit(url).hostname or "").removeprefix("www."), 0) >= 3
     fin = time.monotonic() + minutes_max * 60
-    resultats = {k: v for k, v in ancien.items() if k in sites and v.get("site") == sites[k]["site"]}
+    resultats = {k: v for k, v in ancien.items()
+                 if k in sites and v.get("site") == sites[k]["site"] and v.get("regles") == REGLES}
     faits = 0
     with cf.ThreadPoolExecutor(max_workers=16) as pool:
         en_cours = {}
@@ -465,7 +496,7 @@ def etape_explorer(minutes_max: float) -> dict:
             for eid in it:
                 if time.monotonic() > fin:
                     return
-                en_cours[pool.submit(explorer_une, eid, sites[eid]["site"])] = eid
+                en_cours[pool.submit(explorer_une, eid, sites[eid]["site"], est_reseau(sites[eid]["site"]))] = eid
                 return
         for _ in range(32):
             lancer()

@@ -196,6 +196,10 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   (ODbL, attribution sur /methode/) ; 2. lecture polie des sites (robots.txt, 6 pages, UA CrenoBot) -> data/explorations.json :
   passerelle et accelere affichés avec « relevé automatique » + « Voir la page » ; prix = extraits À VÉRIFIER, jamais publiés.
   Priorité : tarifs.json (vérifié) > déclarations d'élèves > robot.
+  1er passage (26 novembre 2026, 10 min) : 1 054 sites (577 officiels + 477 OpenStreetMap), 798 lisibles. Contrôle :
+  sites justes ; erreurs corrigées (REGLES = 2) : « boîte auto ou en boîte manuelle » pris pour une passerelle,
+  stages de CODE accélérés, et menus nationaux des réseaux (ECF, Codes Rousseau, Stych : domaine partagé par 3 auto-écoles
+  ou plus) -> pour eux, seuls les liens de formation sous le chemin de l'agence comptent. Changer REGLES fait tout relire.
 
 ## Formulaires et Supabase
 

@@ -166,6 +166,50 @@
    "lien": "https://www.ecf.asso.fr/Auto-ecole/Yerres/ECF-YERRES",
    "mis_a_jour": "2026-11-25",
    "source": "site"
+  },
+  "E1809100100": {
+   "forfait": 1540,
+   "heures_forfait": 20,
+   "forfait_note": "code compris, examens en plus",
+   "forfait_auto": 1120,
+   "heures_forfait_auto": 13,
+   "prix_heure": null,
+   "frais_examen": 64,
+   "precision": "Compris : démarches, livret numérique, code illimité 6 mois et accès web 6 mois. En plus : évaluation de départ 50 € (obligatoire), accompagnement à l'examen du code 70 €, redevance de l'examen du code 30 €. Contrat valable 12 mois, paiement en 3 fois sans frais.",
+   "formules": [
+    {
+     "nom": "Formation B+ 30 h boîte manuelle",
+     "prix": 2045
+    },
+    {
+     "nom": "Boîte automatique + 23 h",
+     "prix": 1680
+    },
+    {
+     "nom": "Pack 10 heures en plus",
+     "prix": 600
+    },
+    {
+     "nom": "Évaluation de départ (obligatoire)",
+     "prix": 50
+    },
+    {
+     "nom": "Accompagnement à l'examen du code",
+     "prix": 70
+    },
+    {
+     "nom": "Redevance de l'examen du code",
+     "prix": 30
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "passerelle": true,
+   "passerelle_details": "7 h de conduite en boîte manuelle, au moins 3 mois après le permis boîte auto",
+   "site": "https://ae-orsay-le-guichet.fr/",
+   "lien": "https://ae-orsay-le-guichet.fr/",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
   }
  }
 }

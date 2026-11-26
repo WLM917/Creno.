@@ -51,7 +51,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 SITES = DATA / "sites_auto_ecoles.json"
 EXPLO = DATA / "explorations.json"
-REGLES = 2  # à augmenter quand on change la détection : tout est relu au passage suivant
+REGLES = 3  # à augmenter quand on change la détection : tout est relu au passage suivant
 UA = "CrenoBot/1.0 (+https://www.xn--crnopermis-c7a.fr/methode/ ; classement des auto-ecoles)"
 OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
 COMMUNES = "https://geo.api.gouv.fr/communes?fields=nom,codesPostaux,centre,codeDepartement&format=json&geometry=centre"
@@ -330,7 +330,7 @@ RE_PASSERELLE = re.compile(
     r"passerelle.{0,80}?(boite auto|boite automatique|\bbea\b|\bbva\b|\bb ?78\b|automatique)"
     r"|(boite auto(matique)?|\bbea\b|\bbva\b|\bb ?78\b).{0,40}?\b(vers|a)\b\s+(la\s+|une\s+)?boite (manuelle|mecanique)")
 RE_ACCELERE = re.compile(
-    r"\b(formations?|stages?|permis|formules?|forfaits?|conduite|cursus|apprentissage)\s+(en\s+)?"
+    r"\b(formations?|stages?|permis(\s+(b|auto|voiture))?|formules?|forfaits?|conduite|cursus|apprentissage)\s+(en\s+)?"
     r"(accelere|acceleree|acceleres|accelerees|intensif|intensive|intensifs|intensives)\b"
     r"|\b(accelere|acceleree|intensif|intensive)s?\s+(du\s+|de\s+)?(permis|conduite)\b")
 RE_PRIX = re.compile(r"\d\s*(€|euros?\b|eur\b|e ttc\b)|€\s*\d")
@@ -357,6 +357,16 @@ def chercher(texte_page: str) -> dict:
         large = t[max(0, m.start() - 70): m.end() + 55]
         if re.search(r"\bpas de (formation|stage)|\bne propos", autour):
             continue  # « pas de formation accélérée »
+        if re.search(r"trustindex|publie sur google|avis google|je recommande", large):
+            continue  # avis d'un élève (widget Google) : pas une offre de l'auto-école
+        if re.match(r"\s*certaines (auto-?)?ecoles", t[m.end(): m.end() + 30]):
+            continue  # article de blog sur les permis accélérés en général
+        if re.match(r"accel|intensi", m.group(0)):
+            # « code accéléré » suivi du menu « permis … » : c'est le code, pas la conduite.
+            if re.search(r"\bcode\b", t[max(0, m.start() - 15): m.start()]):
+                continue
+            if re.match(r"\s*(am|a|a1|a2|moto|bsr|bateau|cotier)\b", t[m.end(): m.end() + 8]):
+                continue  # « accéléré permis AM / moto » : pas le permis B
         # « permis / conduite accéléré(e) » : c'est bien la conduite. « Formation / stage accéléré » près du mot
         # code (ou cours en salle) : c'est le code, pas une formation accélérée de conduite.
         if not re.search(r"permis|conduite", m.group(0)) and re.search(r"\bcode\b|en salle|theorique|\betg\b", large):

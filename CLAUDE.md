@@ -200,6 +200,9 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   sites justes ; erreurs corrigées (REGLES = 2) : « boîte auto ou en boîte manuelle » pris pour une passerelle,
   stages de CODE accélérés, et menus nationaux des réseaux (ECF, Codes Rousseau, Stych : domaine partagé par 3 auto-écoles
   ou plus) -> pour eux, seuls les liens de formation sous le chemin de l'agence comptent. Changer REGLES fait tout relire.
+  2e passage (REGLES = 2) : 182 passerelles, 160 accélérées, 341 avec prix à vérifier, aucune agence ECF cochée par le
+  menu national. REGLES = 3 : écarte encore « code accéléré » suivi du menu « permis … », « accéléré permis AM / moto »,
+  les avis Google (widget Trustindex) et les articles de blog (« certaines écoles… ») ; « permis auto accéléré » compte.
 
 ## Formulaires et Supabase
 

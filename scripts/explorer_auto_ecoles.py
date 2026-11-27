@@ -115,6 +115,36 @@ def site_propre(url: str | None) -> str:
     return urllib.parse.urlunsplit((p.scheme.lower(), p.netloc.lower(), p.path or "/", p.query, ""))
 
 
+ABREV_RUE = {"av": "avenue", "ave": "avenue", "bd": "boulevard", "bld": "boulevard", "boul": "boulevard", "r": "rue",
+             "pl": "place", "rte": "route", "che": "chemin", "chem": "chemin", "all": "allee", "imp": "impasse",
+             "fbg": "faubourg", "sq": "square", "crs": "cours", "qu": "quai", "res": "residence", "cc": "centre commercial",
+             "gal": "general", "gen": "general", "mal": "marechal", "pdt": "president", "pres": "president"}
+MOTS_RUE_VIDES = {"de", "du", "des", "la", "le", "les", "l", "d", "et", "a", "au", "aux"}
+
+
+def rue_norm(rue: str | None) -> str:
+    mots_ = [ABREV_RUE.get(m, m) for m in norm(rue).split()]
+    return " ".join(m for m in mots_ if m not in MOTS_RUE_VIDES)
+
+
+def adresse_cle(adresse: str | None) -> tuple[str, str]:
+    """« 135 Avenue de la République » -> ("135", "avenue republique") ; numéro vide s'il n'y en a pas."""
+    a = norm(adresse)
+    m = re.match(r"^(\d+)\s*(?:bis|ter|quater|[a-dt])?\b\s*(.*)$", a)
+    if not m:
+        return "", rue_norm(a)
+    reste = re.sub(r"^\d+\s*(?:bis|ter)?\s*", "", m.group(2))  # « 84-86 rue … » -> « rue … »
+    return m.group(1), rue_norm(reste)
+
+
+def memes_rues(a: str, b: str) -> bool:
+    if not a or not b:
+        return False
+    if a == b or (len(a) > 8 and a in b) or (len(b) > 8 and b in a):
+        return True
+    return SequenceMatcher(None, a, b).ratio() >= 0.88
+
+
 def distance_km(a, b) -> float:
     (la1, lo1), (la2, lo2) = a, b
     x = math.radians(lo2 - lo1) * math.cos(math.radians((la1 + la2) / 2))
@@ -227,6 +257,13 @@ def chercher_sites() -> dict:
           f"{sum(1 for x in elements if (x.get('tags') or {}).get('website') or (x.get('tags') or {}).get('contact:website'))} avec un site.")
 
     meilleurs: dict[str, tuple[float, str, str]] = {}
+    compte_domaines: dict[str, int] = {}
+    for el in elements:
+        t = el.get("tags") or {}
+        st = site_propre(t.get("website") or t.get("contact:website") or t.get("url"))
+        if st:
+            d = (urllib.parse.urlsplit(st).hostname or "").removeprefix("www.")
+            compte_domaines[d] = compte_domaines.get(d, 0) + 1
     for el in elements:
         t = el.get("tags") or {}
         site = site_propre(t.get("website") or t.get("contact:website") or t.get("url"))
@@ -243,13 +280,19 @@ def chercher_sites() -> dict:
                 for cp in c["cps"]:
                     cands |= set(par_cp.get(cp, []))
         rue = norm(t.get("addr:street"))
+        num_osm = (re.match(r"\d+", (t.get("addr:housenumber") or "").strip()) or [""])[0]
+        rue_osm = rue_norm(t.get("addr:street"))
         notes = []
+        meme_adresse = []
         for eid in cands:
             e = officiel[eid]
             s = ressemblance(nom, e["nom"])
             if rue and len(rue) > 5 and rue in norm(e.get("adresse")):
                 s += 0.2  # même rue : forte présomption
             notes.append((s, eid))
+            num_e, rue_e = adresse_cle(e.get("adresse"))
+            if num_osm and num_e == num_osm and memes_rues(rue_osm, rue_e):
+                meme_adresse.append((s, eid))
         if not notes:
             continue
         notes.sort(reverse=True)
@@ -259,6 +302,19 @@ def chercher_sites() -> dict:
         if best >= 0.75 and best - second >= 0.15:
             if eid not in meilleurs or best > meilleurs[eid][0]:
                 meilleurs[eid] = (round(best, 2), site, nom)
+            continue
+        # Même numéro et même rue qu'UNE seule auto-école officielle : c'est elle, même si le nom diffère
+        # (enseigne commerciale ≠ nom officiel). Plusieurs à la même adresse : il faut aussi que le nom concorde.
+        # Les domaines de réseaux (Stych, ECF…) sont écartés ici : un point de rendez-vous n'est pas l'agence.
+        domaine_osm = (urllib.parse.urlsplit(site).hostname or "").removeprefix("www.")
+        if meme_adresse and compte_domaines.get(domaine_osm, 0) < 3:
+            meme_adresse.sort(reverse=True)
+            b_s, b_eid = meme_adresse[0]
+            s2 = meme_adresse[1][0] if len(meme_adresse) > 1 else -1.0
+            if len(meme_adresse) == 1 or (b_s >= 0.5 and b_s - s2 >= 0.15):
+                note = round(max(0.7, b_s), 2)
+                if b_eid not in meilleurs or note > meilleurs[b_eid][0]:
+                    meilleurs[b_eid] = (note, site, nom)
 
     ecoles = {}
     for eid, e in officiel.items():

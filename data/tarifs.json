@@ -2874,6 +2874,53 @@
    "precision": "Forfaits avec ou sans code (20 leçons dont 3 sur simulateur). Prix revus au 1er janvier 2026 : demande-les à l'auto-école.",
    "mis_a_jour": "2026-11-27",
    "source": "site"
+  },
+  "E2209100260": {
+   "site": "https://ittevilleconduite.com/",
+   "lien": "https://ittevilleconduite.com/formations/pemis-b-bea/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "passerelle B78 vers B (boîte auto → manuelle)",
+   "precision": "Les tarifs du site étaient valables jusqu'au 1er mars 2026 : demande les nouveaux prix à l'auto-école.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2509100250": {
+   "site": "https://www.cersuard.fr/",
+   "lien": "https://www.cersuard.fr/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "precision": "Réseau CER Suard (Toury, Janville, Angerville).",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2209100090": {
+   "site": "https://autoecole-serenity.fr/",
+   "lien": "https://autoecole-serenity.fr/nos-offres",
+   "forfait": 1450,
+   "heures_forfait": 20,
+   "forfait_note": "code compris",
+   "forfait_auto": 990,
+   "heures_forfait_auto": 13,
+   "precision": "Frais de gestion, code illimité 6 mois et un accompagnement à l'examen compris. Boîte manuelle : 17 leçons + 3 sur simulateur ; boîte auto : 11 leçons + 2 sur simulateur.",
+   "bea": true,
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1409100210": {
+   "site": "https://fleury-conduite.com/",
+   "lien": "https://fleury-conduite.com/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formule accélérée de 20 h",
+   "precision": "Loue aussi des voitures à double commande (boîte auto et manuelle). Les prix du site datent de 2024 : demande les tarifs à jour.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
   }
  }
 }

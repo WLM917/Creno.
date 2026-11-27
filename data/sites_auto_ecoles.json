@@ -2,9 +2,9 @@
  "meta": {
   "description": "Site web de chaque auto-école, par numéro d'agrément. Source : colonne site du fichier officiel de la Sécurité routière, sinon OpenStreetMap (nom et lieu concordants). Généré par scripts/explorer_auto_ecoles.py, ne pas modifier à la main : pour corriger un site, mets-le dans data/tarifs.json (champ site), il passe en priorité.",
   "licence": "Sites issus d'OpenStreetMap : © contributeurs OpenStreetMap, licence ODbL (openstreetmap.org/copyright).",
-  "mis_a_jour": "2026-11-26",
+  "mis_a_jour": "2026-11-27",
   "nb_officiel": 577,
-  "nb_osm": 477
+  "nb_osm": 478
  },
  "ecoles": {
   "E0201100610": {
@@ -230,6 +230,12 @@
   "E0205605290": {
    "site": "https://autoecole-herve.fr",
    "source": "officiel"
+  },
+  "E0206406410": {
+   "site": "https://autoecolemarti.fr/",
+   "source": "osm",
+   "nom_osm": "Auto-Ecole Marti",
+   "note": 0.7
   },
   "E0206407280": {
    "site": "https://autoecolestarter.com/",

@@ -1,13 +1,13 @@
 {
  "meta": {
   "description": "Ce que le robot a vu sur le site de chaque auto-école (scripts/explorer_auto_ecoles.py). passerelle et accelere sont affichés avec « relevé automatique » et le lien de la page ; les extraits de prix sont À VÉRIFIER, jamais affichés tels quels.",
-  "mis_a_jour": "2026-11-27T14:11:22+00:00",
-  "lus_ce_passage": 1136,
-  "nb_sites": 1136,
-  "nb_lus": 884,
-  "nb_passerelle": 202,
-  "nb_accelere": 182,
-  "nb_avec_prix": 361
+  "mis_a_jour": "2026-11-27T15:42:56+00:00",
+  "lus_ce_passage": 1176,
+  "nb_sites": 1176,
+  "nb_lus": 930,
+  "nb_passerelle": 215,
+  "nb_accelere": 198,
+  "nb_avec_prix": 379
  },
  "ecoles": {
   "E0201100610": {
@@ -1109,6 +1109,89 @@
     "page": "https://www.autoecole-herve.fr/formation-b78-vers-b/"
    }
   },
+  "E0206406410": {
+   "site": "https://autoecolemarti.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://autoecolemarti.fr/",
+    "https://autoecolemarti.fr/formules/",
+    "https://autoecolemarti.fr/formules/permis-b-manuel",
+    "https://autoecolemarti.fr/formules/permis-b-automatique",
+    "https://autoecolemarti.fr/formules/conduite-accompagnee",
+    "https://autoecolemarti.fr/formules/conduite-supervisee"
+   ],
+   "regles": 3,
+   "prix": [
+    {
+     "extrait": "13h de conduite minimum 52€/h",
+     "page": "https://autoecolemarti.fr/"
+    },
+    {
+     "extrait": "20h de conduite minimum 50€/h",
+     "page": "https://autoecolemarti.fr/"
+    },
+    {
+     "extrait": "permis b - aac : 1 775€",
+     "page": "https://autoecolemarti.fr/"
+    },
+    {
+     "extrait": "heure de conduite supplementaire : 50€ ttc",
+     "page": "https://autoecolemarti.fr/"
+    },
+    {
+     "extrait": "le meilleur rapport qualite-prix de bayonne. pour ceux qui cherchent une auto ecole pas chere a bayonne sans sacrifier la qualite, nos forfaits demarrent a 1 055€ : tout inclus, sans surprise.",
+     "page": "https://autoecolemarti.fr/"
+    },
+    {
+     "extrait": "commencez des 15 ans avec un proche. plus de pratique, meilleur taux de reussite a l'examen. : 1 775 €",
+     "page": "https://autoecolemarti.fr/formules/"
+    },
+    {
+     "extrait": "permis b aac des 15 ans : 1 775€",
+     "page": "https://autoecolemarti.fr/formules/"
+    },
+    {
+     "extrait": "ttc 52€/h 13h minimum",
+     "page": "https://autoecolemarti.fr/formules/"
+    },
+    {
+     "extrait": "ttc 50€/h 20h minimum",
+     "page": "https://autoecolemarti.fr/formules/"
+    },
+    {
+     "extrait": "acces salle + internet illimites (prepacode) + livre de code : 75,00 €",
+     "page": "https://autoecolemarti.fr/formules/permis-b-manuel"
+    },
+    {
+     "extrait": "20h de conduite minimum : soit 50,00 €/heure",
+     "page": "https://autoecolemarti.fr/formules/permis-b-manuel"
+    },
+    {
+     "extrait": "le nombre d'heures de conduite indique est le minimum legal. des heures supplementaires peuvent etre ajoutees selon votre progression, a 50,00 €/heure.",
+     "page": "https://autoecolemarti.fr/formules/permis-b-manuel"
+    },
+    {
+     "extrait": "acces salle + internet illimites (prepacode) + livre de code : 75,00 €",
+     "page": "https://autoecolemarti.fr/formules/permis-b-automatique"
+    },
+    {
+     "extrait": "13h de conduite minimum : soit 52,00 €/heure",
+     "page": "https://autoecolemarti.fr/formules/permis-b-automatique"
+    },
+    {
+     "extrait": " lycee paul bert, au lycee le guichot ou ailleurs et vous avez 15 ans c'est le bon moment pour ouvrir votre dossier aac. : 1 775 € ttc tout compris",
+     "page": "https://autoecolemarti.fr/formules/conduite-accompagnee"
+    },
+    {
+     "extrait": "acces salle + internet illimites (prepacode) + livre de code : 75,00 €",
+     "page": "https://autoecolemarti.fr/formules/conduite-accompagnee"
+    },
+    {
+     "extrait": "20h de conduite minimum : soit 50,00 €/heure",
+     "page": "https://autoecolemarti.fr/formules/conduite-accompagnee"
+    }
+   ]
+  },
   "E0206407280": {
    "site": "https://autoecolestarter.com/",
    "date": "2026-11-27",
@@ -1439,6 +1522,14 @@
     }
    ]
   },
+  "E0209106780": {
+   "site": "https://www.autoecole-liberty.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.autoecole-liberty.fr/"
+   ],
+   "regles": 3
+  },
   "E0209107030": {
    "site": "https://anticipassion-permis.fr/",
    "date": "2026-11-27",
@@ -1525,7 +1616,7 @@
     "https://autoecoleibos.fr/permis-bateau-3/",
     "https://autoecoleibos.fr/permis-et-formation-remorque/",
     "https://autoecoleibos.fr/pos/",
-    "https://autoecoleibos.fr/procedure-de-positionnement-de-parcours-de-formation/"
+    "https://autoecoleibos.fr/procedure-de-positionnement-de-parcours-de-formation"
    ],
    "regles": 3,
    "prix": [
@@ -2525,22 +2616,9 @@
   "E0509107430": {
    "site": "https://www.auto-ecole-st-arnoult.fr/",
    "date": "2026-11-27",
-   "pages": [
-    "https://www.maconduiteaac.fr/",
-    "https://www.maconduiteaac.fr/auto-ecole/centre-de-formation-pignon-3/",
-    "https://www.maconduiteaac.fr/devenir-partenaire/"
-   ],
+   "pages": [],
    "regles": 3,
-   "prix": [
-    {
-     "extrait": "le cout de la conduite accompagnee varie entre 1 100 € et 2 500 € selon l'auto-ecole, la region et le forfait choisi. ce prix comprend generalement la formation au code de la route, les 20 heures minimum de conduite avec",
-     "page": "https://www.maconduiteaac.fr/"
-    },
-    {
-     "extrait": "ville et code postal : formule envisagee choisissez une formulefiche gratuitefiche premium (2 € ttc/mois)visibilite locale (25 € ttc/mois)visibilite departementale (45 € ttc/mois)visibilite 3 departements (115 € ttc/mois",
-     "page": "https://www.maconduiteaac.fr/devenir-partenaire/"
-    }
-   ]
+   "erreur": "<urlopen error timed out>"
   },
   "E0509A02400": {
    "site": "https://www.excellenceconduiteformation.com/",
@@ -3926,9 +4004,11 @@
   "E0904507510": {
    "site": "https://ecoledeconduite-fremont.com/ecole-de-conduite-sully-sur-loire/",
    "date": "2026-11-27",
-   "pages": [],
-   "regles": 3,
-   "erreur": "HTTP Error 403: Forbidden"
+   "pages": [
+    "https://ecoledeconduite-fremont.com/ecole-de-conduite-sully-sur-loire/",
+    "https://ecoledeconduite-fremont.com/enjeux-et-deroulement-des-formations/"
+   ],
+   "regles": 3
   },
   "E0904703480": {
    "site": "https://delphineconduite.fr",
@@ -5035,6 +5115,38 @@
    "regles": 3,
    "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.cesr-ae.com'. (_ssl.c:1011)>"
   },
+  "E1109108070": {
+   "site": "https://www.cer-clareva.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.cer-clareva.fr/",
+    "https://www.cer-clareva.fr/stage-code-accelere-evry.html",
+    "https://www.cer-clareva.fr/error-404.html"
+   ],
+   "regles": 3,
+   "prix": [
+    {
+     "extrait": "aac : permis a 1 € / jour",
+     "page": "https://www.cer-clareva.fr/"
+    },
+    {
+     "extrait": "r, dvd, boitiers reponses identiques a ceux de l'examen, suivi informatique personnalise, code possible a domicile,...). : etablissement agree permis 1 euro par jour et prestataire de certaines mairies pour vous facilite",
+     "page": "https://www.cer-clareva.fr/"
+    },
+    {
+     "extrait": "aac : permis a 1 € / jour",
+     "page": "https://www.cer-clareva.fr/stage-code-accelere-evry.html"
+    },
+    {
+     "extrait": "aac : permis a 1 € / jour",
+     "page": "https://www.cer-clareva.fr/error-404.html"
+    }
+   ],
+   "accelere": {
+    "extrait": "ire au plus vite vous voulez profiter des vacances pour passer votre permis en accelere vous etes tout simplement presse votre c.e.r vous propose une ligne",
+    "page": "https://www.cer-clareva.fr/stage-code-accelere-evry.html"
+   }
+  },
   "E1109108190": {
    "site": "https://www.ecf.asso.fr/Auto-ecole/Yerres/ECF-YERRES",
    "date": "2026-11-27",
@@ -5263,6 +5375,7 @@
    "date": "2026-11-27",
    "pages": [
     "https://www.plandecampagne.com/annuaire/espace-conduite-barneoud/",
+    "https://www.plandecampagne.com/informations-pratiques/",
     "https://www.plandecampagne.com/categories/beaute-forme/",
     "https://www.plandecampagne.com/emploi/",
     "https://www.plandecampagne.com/categories/beaute-sante-et-forme/",
@@ -5700,9 +5813,61 @@
   "E1204203840": {
    "site": "https://www.la-liberation.fr/",
    "date": "2026-11-27",
-   "pages": [],
+   "pages": [
+    "https://www.la-liberation.fr/",
+    "https://www.la-liberation.fr/tarifs/",
+    "https://www.la-liberation.fr/",
+    "https://www.la-liberation.fr/permis-b/",
+    "https://www.la-liberation.fr/nos-formations/boite-auto/",
+    "https://www.la-liberation.fr/permis-125/"
+   ],
    "regles": 3,
-   "erreur": "HTTP Error 403: Forbidden"
+   "prix": [
+    {
+     "extrait": "code en ligne (validite 6 mois) : 35 € ttc",
+     "page": "https://www.la-liberation.fr/tarifs/"
+    },
+    {
+     "extrait": "permis 125 (a1) sans code : 750 € ttc",
+     "page": "https://www.la-liberation.fr/tarifs/"
+    },
+    {
+     "extrait": "permis a2 / a sans code : 750 € ttc",
+     "page": "https://www.la-liberation.fr/tarifs/"
+    },
+    {
+     "extrait": "formation passerelle a2a : 290 € ttc",
+     "page": "https://www.la-liberation.fr/tarifs/"
+    },
+    {
+     "extrait": "permis c1 sans code : 1 150 € ttc",
+     "page": "https://www.la-liberation.fr/tarifs/"
+    },
+    {
+     "extrait": "permis c1e sans code : 1 295 € ttc",
+     "page": "https://www.la-liberation.fr/tarifs/"
+    },
+    {
+     "extrait": "formation fco passerelle : 740 € ttc",
+     "page": "https://www.la-liberation.fr/tarifs/"
+    },
+    {
+     "extrait": "code en ligne (validite 6 mois) 35€ ttc",
+     "page": "https://www.la-liberation.fr/permis-b/"
+    },
+    {
+     "extrait": "acces code en salle (6 mois) en option 100€ ttc",
+     "page": "https://www.la-liberation.fr/permis-b/"
+    },
+    {
+     "extrait": "code en ligne (validite 6 mois) 35€ ttc",
+     "page": "https://www.la-liberation.fr/nos-formations/boite-auto/"
+    },
+    {
+     "extrait": "acces code en salle (6 mois) en option 100€ ttc",
+     "page": "https://www.la-liberation.fr/nos-formations/boite-auto/"
+    }
+   ]
   },
   "E1204611690": {
    "site": "https://www.ecf.asso.fr/auto-ecole/ecf-jerome-cayrol/ecf-jerome-cayrol-figeac",
@@ -6186,7 +6351,7 @@
    "date": "2026-11-27",
    "pages": [],
    "regles": 3,
-   "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.iwigopermis.fr'. (_ssl.c:1011)>"
+   "reseau": true
   },
   "E1207718600": {
    "site": "https://www.pilote7791.com",
@@ -7072,6 +7237,13 @@
     }
    ]
   },
+  "E1309100280": {
+   "site": "https://conduire-c-permis.fr/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'conduire-c-permis.fr'. (_ssl.c:1011)"
+  },
   "E1397100070": {
    "site": "https://centredeformation-nolivosconduite.fr/",
    "date": "2026-11-27",
@@ -7643,7 +7815,7 @@
    "date": "2026-11-27",
    "pages": [],
    "regles": 3,
-   "erreur": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.iwigopermis.fr'. (_ssl.c:1011)>"
+   "reseau": true
   },
   "E1407700210": {
    "site": "https://www.inris-formation.com-centre/ile_de_frae-seine-et-marne.com",
@@ -7843,6 +8015,13 @@
      "page": "https://www.thib-auto-ecole.fr/autres-formations-3/"
     }
    ]
+  },
+  "E1409100150": {
+   "site": "https://auto-ecole-vip.fr/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
   },
   "E1409100210": {
    "site": "https://fleury-conduite.com/",
@@ -8210,9 +8389,10 @@
   "E1502500060": {
    "site": "https://www.easydrive25.fr/",
    "date": "2026-11-27",
-   "pages": [],
-   "regles": 3,
-   "erreur": "The read operation timed out"
+   "pages": [
+    "https://www.easydrive25.fr/site-indisponible/"
+   ],
+   "regles": 3
   },
   "E1502500120": {
    "site": "https://www.gaelle-autoconduite.com/",
@@ -8924,6 +9104,81 @@
    "regles": 3,
    "erreur": "<urlopen error [Errno -2] Name or service not known>"
   },
+  "E1509100020": {
+   "site": "http://www.solutionpermisauto-ecole.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "http://www.solutionpermisauto-ecole.com/",
+    "http://www.solutionpermisauto-ecole.com/pages/tarif-automatique.html",
+    "http://www.solutionpermisauto-ecole.com/pages/tarif-conduite-accompagnee.html",
+    "http://www.solutionpermisauto-ecole.com/pages/permis-accelere.html",
+    "http://www.solutionpermisauto-ecole.com/pages/formation-post-permis.html",
+    "http://www.solutionpermisauto-ecole.com/pages/code-la-route.html"
+   ],
+   "regles": 3,
+   "accelere": {
+    "extrait": "auto ecole villiers sur marne, permis accelere, boite automatique, cpf solution permis permis b manuel boite auto",
+    "page": "http://www.solutionpermisauto-ecole.com/"
+   },
+   "prix": [
+    {
+     "extrait": "13 h : 900 €",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/tarif-automatique.html"
+    },
+    {
+     "extrait": "20 h : 1 379 €",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/tarif-automatique.html"
+    },
+    {
+     "extrait": "evaluation de depart obligatoire 60 euros en plus du prix du forfait",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/tarif-automatique.html"
+    },
+    {
+     "extrait": "20 h : 1 500 €",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/tarif-conduite-accompagnee.html"
+    },
+    {
+     "extrait": "evaluation de depart obligatoire 58 euros en plus du prix du forfait",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/tarif-conduite-accompagnee.html"
+    },
+    {
+     "extrait": "20 h : 1 580 €",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/tarif-conduite-accompagnee.html"
+    },
+    {
+     "extrait": "evaluation de depart obligatoire 60 euros en plus du prix du forfait",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/tarif-conduite-accompagnee.html"
+    },
+    {
+     "extrait": "20 h : 1 459 €",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/permis-accelere.html"
+    },
+    {
+     "extrait": "evaluation de depart obligatoire 57 euros en plus du prix du forfait",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/permis-accelere.html"
+    },
+    {
+     "extrait": "13 h : 1 320 €",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/permis-accelere.html"
+    },
+    {
+     "extrait": "20 h : 1 580 €",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/permis-accelere.html"
+    },
+    {
+     "extrait": "evaluation de depart obligatoire 59 euros en plus du prix du forfait",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/permis-accelere.html"
+    },
+    {
+     "extrait": "une connexion en ligne vous sera ouverte des votre inscription et la remise de tous les elements pour vous inscrire au permis de conduire. elle dure 6 mois ou jusqu'a ce que tous les tests et examens blanc aient ete fini",
+     "page": "http://www.solutionpermisauto-ecole.com/pages/code-la-route.html"
+    }
+   ],
+   "passerelle": {
+    "extrait": "cette formation est une acquisition de point plus rapide 6 formation passerelle boite auto vers boite manuelle la formation est realisee sous la presence effec",
+    "page": "http://www.solutionpermisauto-ecole.com/pages/code-la-route.html"
+   }
+  },
   "E1509100040": {
    "site": "https://www.ll-conduite.com/",
    "date": "2026-11-27",
@@ -9039,6 +9294,13 @@
   },
   "E1509100250": {
    "site": "https://autoecole.ecf-proconduite.com/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
+  "E1509100260": {
+   "site": "https://access-permis.com/",
    "date": "2026-11-27",
    "pages": [],
    "regles": 3,
@@ -10350,6 +10612,10 @@
     "https://aem77.fr/formation-auto/conduite-accompagnee"
    ],
    "regles": 3,
+   "passerelle": {
+    "extrait": "besoin de l'eleve. je recommande fortement abby m. il y a 10 mois passerelle bva vers bvm excellente auto-ecole que je recommande a 100 % toute l'equ",
+    "page": "https://aem77.fr/"
+   },
    "accelere": {
     "extrait": "des series de questions. acces a nos salles, entrainement en ligne et stage intensif : choisissez la formule qui vous convient. la presence d'un enseignan",
     "page": "https://aem77.fr/formation-code"
@@ -10435,11 +10701,7 @@
      "extrait": "390€ a la 15e lecon de conduite : 150€ au 1er rendez-vous pedagogique",
      "page": "https://aem77.fr/formation-auto/conduite-accompagnee"
     }
-   ],
-   "passerelle": {
-    "extrait": "e boite manuelle. apres la reussite a l'examen, une formation appelee passerelle permet aux titulaires d'un permis boite automatique de lever la restriction et d'acceder a la conduite de vehicule",
-    "page": "https://aem77.fr/formation-auto/boite-automatique"
-   }
+   ]
   },
   "E1607700210": {
    "site": "https://www.autoecole-etairos.fr",
@@ -10636,6 +10898,13 @@
      "page": "https://auto-ecole.codesrousseau.fr/annuaire-auto-ecoles/juvisy-sur-orge/auto-ecole-romeo/8204"
     }
    ]
+  },
+  "E1609100180": {
+   "site": "https://access-permis.com/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
   },
   "E1609100230": {
    "site": "https://www.permisaccelere91.fr/",
@@ -12194,6 +12463,208 @@
     "extrait": "ccompagnee conduite supervisee boite auto perfectionnement annulation permis accelere stage intensif espace eleve code en ligne mon suivi de formation li",
     "page": "https://permisswiftautoecole-yerres.com/"
    }
+  },
+  "E1709100360": {
+   "site": "https://inris-formations.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://inris-formations.com/",
+    "https://inris-formations.com/code/code-de-la-route-forfait/",
+    "https://inris-formations.com/code-de-la-route-moto-forfait/",
+    "https://inris-formations.com/code-bateau-forfait/",
+    "https://inris-formations.com/nos-tarifs-auto/",
+    "https://inris-formations.com/nos-tarifs-moto/"
+   ],
+   "regles": 3,
+   "accelere": {
+    "extrait": "permis accelere en 3, 5 ou 10 jours - inris formations banniere-site-web-inris-moto c",
+    "page": "https://inris-formations.com/"
+   },
+   "prix": [
+    {
+     "extrait": "code de la route : a partir de 0,99€",
+     "page": "https://inris-formations.com/"
+    },
+    {
+     "extrait": "entrainez-vous sur plus de 2 700 questions et des examens blancs, depuis chez vous, a votre rythme. des forfaits a partir de 0,99€.",
+     "page": "https://inris-formations.com/code/code-de-la-route-forfait/"
+    },
+    {
+     "extrait": "choisissez votre forfait : standard, confort ou premium : a partir de 0,99€, selon vos besoins.",
+     "page": "https://inris-formations.com/code/code-de-la-route-forfait/"
+    },
+    {
+     "extrait": "0,99€ choisir mon forfait",
+     "page": "https://inris-formations.com/code/code-de-la-route-forfait/"
+    },
+    {
+     "extrait": "stage 7h en visio + code illimite : 99€299 €",
+     "page": "https://inris-formations.com/code/code-de-la-route-forfait/"
+    },
+    {
+     "extrait": "formation + code illimite : tu economises 200 €",
+     "page": "https://inris-formations.com/code/code-de-la-route-forfait/"
+    },
+    {
+     "extrait": "code en poche devenez un as de la conduite en seulement 5 jours : a partir de 1409€decouvrir vers",
+     "page": "https://inris-formations.com/code/code-de-la-route-forfait/"
+    },
+    {
+     "extrait": "code en poche devenez un as de la conduite en seulement 10 jours : a partir de 2069€decouvrir vers",
+     "page": "https://inris-formations.com/code/code-de-la-route-forfait/"
+    },
+    {
+     "extrait": "forfaits des 0,99€ entrainement illimite choisir mon forfait",
+     "page": "https://inris-formations.com/code/code-de-la-route-forfait/"
+    },
+    {
+     "extrait": "entrainez-vous aux questions du code moto, a jour de l'examen, depuis chez vous, a votre rythme. des forfaits a partir de 0,99€.",
+     "page": "https://inris-formations.com/code-de-la-route-moto-forfait/"
+    },
+    {
+     "extrait": "choisissez votre forfait : standard, confort ou premium : a partir de 0,99€, selon vos besoins.",
+     "page": "https://inris-formations.com/code-de-la-route-moto-forfait/"
+    },
+    {
+     "extrait": "0,99€ choisir mon forfait",
+     "page": "https://inris-formations.com/code-de-la-route-moto-forfait/"
+    },
+    {
+     "extrait": "le forfait complet pour reussir ton code moto : 49€",
+     "page": "https://inris-formations.com/code-de-la-route-moto-forfait/"
+    },
+    {
+     "extrait": "code en poche devenez un as de la conduite en seulement 5 jours : a partir de 1409€decouvrir vers",
+     "page": "https://inris-formations.com/code-de-la-route-moto-forfait/"
+    },
+    {
+     "extrait": "code en poche devenez un as de la conduite en seulement 10 jours : a partir de 2069€decouvrir vers",
+     "page": "https://inris-formations.com/code-de-la-route-moto-forfait/"
+    },
+    {
+     "extrait": "forfaits des 0,99€ entrainement illimite choisir mon forfait",
+     "page": "https://inris-formations.com/code-de-la-route-moto-forfait/"
+    },
+    {
+     "extrait": "revisez le code cotier, fluvial ou crr, a jour de l'examen, depuis chez vous, a votre rythme. a partir de 49€.",
+     "page": "https://inris-formations.com/code-bateau-forfait/"
+    },
+    {
+     "extrait": "code bateau en ligne : cotier, fluvial ou crr, a partir de 49€.",
+     "page": "https://inris-formations.com/code-bateau-forfait/"
+    },
+    {
+     "extrait": "49€ choisir mon forfait",
+     "page": "https://inris-formations.com/code-bateau-forfait/"
+    },
+    {
+     "extrait": "code en poche devenez un as de la conduite en seulement 5 jours : a partir de 1409€decouvrir vers",
+     "page": "https://inris-formations.com/code-bateau-forfait/"
+    }
+   ],
+   "passerelle": {
+    "extrait": "t devenez un expert avec inri's a l'heuredecouvrir vers passerelle passerelle bea vers b passez a la conduite sur boite manuelle grace a la passerelle",
+    "page": "https://inris-formations.com/code/code-de-la-route-forfait/"
+   }
+  },
+  "E1709100380": {
+   "site": "https://a-e-saint-jacques.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://a-e-saint-jacques.com/",
+    "https://a-e-saint-jacques.com/tarifs/",
+    "https://a-e-saint-jacques.com/permis-b/",
+    "https://a-e-saint-jacques.com/permis-boite-automatique/",
+    "https://a-e-saint-jacques.com/passerelle-boite-auto-vers-boite-mecanique/",
+    "https://a-e-saint-jacques.com/formation-post-permis/"
+   ],
+   "regles": 3,
+   "passerelle": {
+    "extrait": "s b conduite accompagnee conduite supervisee permis boite automatique passerelle boite auto vers boite mecanique formation post-permis perfectionnement annulati",
+    "page": "https://a-e-saint-jacques.com/"
+   },
+   "prix": [
+    {
+     "extrait": "parrainez une de vos connaissance. pour chaque personne inscrite, 50€ de remise sur votre forfait.",
+     "page": "https://a-e-saint-jacques.com/"
+    },
+    {
+     "extrait": "1 lecon d'evaluation : : 65 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "forfait code 1 mois : : 100 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "forfait code 3 mois : : 200 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "forfait code 6 mois : : 300 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "code en ligne 1 mois : : 30 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "livre de code : : 15 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "lecon de conduite (a et b) : : 55 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "accompagnement a l'examen : : 55 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "accompagnement a l'examen a1 ou a2 : 80 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "lecon de conduite de perfectionnement : : 60 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "passage examen du code : : 30 €",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "parrainez une de vos connaissance. pour chaque personne inscrite, 50€ de remise sur votre forfait.",
+     "page": "https://a-e-saint-jacques.com/tarifs/"
+    },
+    {
+     "extrait": "20 lecons de conduite : 1490€ ttc",
+     "page": "https://a-e-saint-jacques.com/permis-b/"
+    },
+    {
+     "extrait": "20 lecons de conduite : 1350€ ttc",
+     "page": "https://a-e-saint-jacques.com/permis-b/"
+    },
+    {
+     "extrait": "25 lecons de conduite : 1690€ ttc",
+     "page": "https://a-e-saint-jacques.com/permis-b/"
+    },
+    {
+     "extrait": "25 lecons de conduite : 1550€ ttc",
+     "page": "https://a-e-saint-jacques.com/permis-b/"
+    },
+    {
+     "extrait": "30 lecons de conduite : 1890€ ttc",
+     "page": "https://a-e-saint-jacques.com/permis-b/"
+    },
+    {
+     "extrait": "30 lecons de conduite : 1750€ ttc",
+     "page": "https://a-e-saint-jacques.com/permis-b/"
+    },
+    {
+     "extrait": "formule permis b (sans code) 20h : 1300€ ttc",
+     "page": "https://a-e-saint-jacques.com/permis-b/"
+    }
+   ]
   },
   "E1709200020": {
    "site": "http://auto-ecole-rueil-malmaison.net/",
@@ -14016,6 +14487,15 @@
     "page": "https://www.lardyconduite.fr/"
    }
   },
+  "E1809100080": {
+   "site": "https://www.aefsaintmichelsurorge.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.aefsaintmichelsurorge.fr/",
+    "https://www.aefsaintmichelsurorge.fr/technologies-et-formation/"
+   ],
+   "regles": 3
+  },
   "E1809100100": {
    "site": "https://ae-orsay-le-guichet.fr/",
    "date": "2026-11-27",
@@ -14281,10 +14761,9 @@
   "E1809100240": {
    "site": "https://driveracademy.net/",
    "date": "2026-11-27",
-   "pages": [
-    "https://www.driveracademy.net/"
-   ],
-   "regles": 3
+   "pages": [],
+   "regles": 3,
+   "reseau": true
   },
   "E1809100270": {
    "site": "https://www.permisaccelere91.fr/",
@@ -14503,9 +14982,10 @@
   "E1902200020": {
    "site": "https://auto-ecole-les-2rivieres.buisness.site",
    "date": "2026-11-27",
-   "pages": [],
-   "regles": 3,
-   "erreur": "<urlopen error timed out>"
+   "pages": [
+    "https://auto-ecole-les-2rivieres.buisness.site"
+   ],
+   "regles": 3
   },
   "E1902200050": {
    "site": "https://ludoconduite.fr",
@@ -14808,9 +15288,10 @@
   "E1903700060": {
    "site": "https://lelu37.autoecoles.site/",
    "date": "2026-11-27",
-   "pages": [],
-   "regles": 3,
-   "erreur": "<urlopen error timed out>"
+   "pages": [
+    "https://lelu37.autoecoles.site/"
+   ],
+   "regles": 3
   },
   "E1903700080": {
    "site": "https://www.auto-ecole-route666-tours.fr/",
@@ -15781,6 +16262,140 @@
    "regles": 3,
    "erreur": "<urlopen error [Errno -2] Name or service not known>"
   },
+  "E1909100020": {
+   "site": "https://autoecole-niemen.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://autoecole-niemen.com/",
+    "https://autoecole-niemen.com/formations-auto/permis-b/",
+    "https://autoecole-niemen.com/formations-auto/permis-b-aac/",
+    "https://autoecole-niemen.com/formations-auto/permis-b-bea/",
+    "https://autoecole-niemen.com/formations-moto/permis-a2/",
+    "https://autoecole-niemen.com/formations-moto/passerelle-a2-vers-a/"
+   ],
+   "regles": 3,
+   "accelere": {
+    "extrait": "exceptionnelle en choisissant notre agence. auto moto ecole niemen conduite acceleree une formation intensive et efficace qui vous permettra d'acquerir le",
+    "page": "https://autoecole-niemen.com/"
+   },
+   "prix": [
+    {
+     "extrait": "nos forfaits : a partir de 970 €",
+     "page": "https://autoecole-niemen.com/formations-auto/permis-b/"
+    },
+    {
+     "extrait": "nos forfaits : a partir de 1675 €",
+     "page": "https://autoecole-niemen.com/formations-auto/permis-b/"
+    },
+    {
+     "extrait": "nos forfaits : a partir de 1562 €",
+     "page": "https://autoecole-niemen.com/formations-auto/permis-b-aac/"
+    },
+    {
+     "extrait": "nos forfaits : a partir de 1560 €",
+     "page": "https://autoecole-niemen.com/formations-auto/permis-b-aac/"
+    },
+    {
+     "extrait": "nos forfaits : a partir de 1290 €",
+     "page": "https://autoecole-niemen.com/formations-auto/permis-b-bea/"
+    }
+   ]
+  },
+  "E1909100070": {
+   "site": "https://www.majesteconduite.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.majesteconduite.fr/",
+    "https://www.majesteconduite.fr/formations-permis-de-conduire-draveil/",
+    "https://www.majesteconduite.fr/formations-permis-moto-draveil/",
+    "https://www.majesteconduite.fr/formations-permis-pmr-essonne/",
+    "https://www.majesteconduite.fr/formations-accelerees/"
+   ],
+   "regles": 3,
+   "accelere": {
+    "extrait": "pmr acheter un vehicule amenage pmr aide au financement vehicule pmr permis accelere perfectionnement agence avis espace eleves boutique contactez-nous 01",
+    "page": "https://www.majesteconduite.fr/"
+   },
+   "prix": [
+    {
+     "extrait": "avec code : 1530€avec code : 1335€",
+     "page": "https://www.majesteconduite.fr/formations-permis-de-conduire-draveil/"
+    },
+    {
+     "extrait": "ce tarif ne comprend pas les 30€ de redevance fiscale obligatoire pour l'examen du code de la route",
+     "page": "https://www.majesteconduite.fr/formations-permis-de-conduire-draveil/"
+    },
+    {
+     "extrait": "sans code : 1040€avec code : 1390€",
+     "page": "https://www.majesteconduite.fr/formations-permis-de-conduire-draveil/"
+    },
+    {
+     "extrait": "avec code : 1680€sans code : 1330€",
+     "page": "https://www.majesteconduite.fr/formations-permis-de-conduire-draveil/"
+    },
+    {
+     "extrait": "avec code : 1690€sans code : 1340€",
+     "page": "https://www.majesteconduite.fr/formations-permis-de-conduire-draveil/"
+    },
+    {
+     "extrait": "avec code : 1145€sans code : 900€",
+     "page": "https://www.majesteconduite.fr/formations-permis-moto-draveil/"
+    },
+    {
+     "extrait": "ce tarif ne comprend pas les 30€ de redevance fiscale obligatoire pour l'examen du code de la route moto.",
+     "page": "https://www.majesteconduite.fr/formations-permis-moto-draveil/"
+    },
+    {
+     "extrait": "heure de conduite permis b : 62€",
+     "page": "https://www.majesteconduite.fr/formations-permis-pmr-essonne/"
+    },
+    {
+     "extrait": "heure de conduite permis ba : 75€",
+     "page": "https://www.majesteconduite.fr/formations-permis-pmr-essonne/"
+    },
+    {
+     "extrait": "forfait code 6 mois : 350€",
+     "page": "https://www.majesteconduite.fr/formations-accelerees/"
+    },
+    {
+     "extrait": "code internet 3 mois : 40€",
+     "page": "https://www.majesteconduite.fr/formations-accelerees/"
+    },
+    {
+     "extrait": "20 heures de conduite : 1250€",
+     "page": "https://www.majesteconduite.fr/formations-accelerees/"
+    },
+    {
+     "extrait": "sans code : 1950€",
+     "page": "https://www.majesteconduite.fr/formations-accelerees/"
+    },
+    {
+     "extrait": "ce tarif ne comprend pas les 30€ de redevance fiscale obligatoire pour l'examen du code de la route",
+     "page": "https://www.majesteconduite.fr/formations-accelerees/"
+    }
+   ]
+  },
+  "E1909100100": {
+   "site": "https://access-permis.com/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
+  "E1909100120": {
+   "site": "https://courtois-driving-school.fr/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
+  "E1909100140": {
+   "site": "https://iwigopermis.fr/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
   "E1909100230": {
    "site": "https://courtois-driving-school.fr/",
    "date": "2026-11-27",
@@ -15838,6 +16453,13 @@
      "page": "https://www.permis2-0.fr/22-nos-forfaits"
     }
    ]
+  },
+  "E1909100250": {
+   "site": "https://autoecole-tigery.com/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "erreur": "<urlopen error [Errno -2] Name or service not known>"
   },
   "E1909100290": {
    "site": "https://www.startinconduite.com/",
@@ -16945,6 +17567,82 @@
     "page": "https://www.streetconduite.com/formation-passerelle-bea-en-b/"
    }
   },
+  "E2009100110": {
+   "site": "https://www.autoecoleevryvillage.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.autoecoleevryvillage.com/",
+    "https://www.autoecoleevryvillage.com/elementor-1244/",
+    "https://www.autoecoleevryvillage.com/boite-a-outils/"
+   ],
+   "regles": 3,
+   "passerelle": {
+    "extrait": "t evaluation de depart permis b (manuelle) permis b (automatique) passerelle bva vers b stage accelere conduite accompagnee formation pmr votre me",
+    "page": "https://www.autoecoleevryvillage.com/"
+   },
+   "accelere": {
+    "extrait": "nte adaptee a tous les profils. boite manuelle auto formations pmr permis accelere permis des 17 ans conduite accompagnee code innovant en salle con",
+    "page": "https://www.autoecoleevryvillage.com/"
+   },
+   "prix": [
+    {
+     "extrait": "pass code de la route : 49,99€",
+     "page": "https://www.autoecoleevryvillage.com/"
+    },
+    {
+     "extrait": "formule 20h manuelle : 1380€",
+     "page": "https://www.autoecoleevryvillage.com/"
+    },
+    {
+     "extrait": "accompagnement examen : -100€ pour les etudiants",
+     "page": "https://www.autoecoleevryvillage.com/"
+    },
+    {
+     "extrait": "formule 13h auto : 989€",
+     "page": "https://www.autoecoleevryvillage.com/"
+    },
+    {
+     "extrait": "accompagnement examen : -50€ pour les etudiants",
+     "page": "https://www.autoecoleevryvillage.com/"
+    },
+    {
+     "extrait": "passerelle (bva b) : 579€",
+     "page": "https://www.autoecoleevryvillage.com/"
+    },
+    {
+     "extrait": "l'heure de conduite offerte (valeur 60€) est valable uniquement en cas de reussite a l'examen du code de la route du premier coup chez evry village, sous reserve d'une inscription ulterieure a une formule de conduite pra",
+     "page": "https://www.autoecoleevryvillage.com/"
+    },
+    {
+     "extrait": "formule 20h manuelle : 1380€",
+     "page": "https://www.autoecoleevryvillage.com/elementor-1244/"
+    },
+    {
+     "extrait": "accompagnement examen : -100€ pour les etudiants",
+     "page": "https://www.autoecoleevryvillage.com/elementor-1244/"
+    },
+    {
+     "extrait": "formule 13h auto : 989€",
+     "page": "https://www.autoecoleevryvillage.com/elementor-1244/"
+    },
+    {
+     "extrait": "accompagnement examen : -50€ pour les etudiants",
+     "page": "https://www.autoecoleevryvillage.com/elementor-1244/"
+    },
+    {
+     "extrait": "formule aac 20h : 1658€",
+     "page": "https://www.autoecoleevryvillage.com/elementor-1244/"
+    },
+    {
+     "extrait": "passerelle (7h) : 579€",
+     "page": "https://www.autoecoleevryvillage.com/elementor-1244/"
+    },
+    {
+     "extrait": "l'heure de conduite offerte (valeur 60€) est valable uniquement en cas de reussite a l'examen du code de la route du premier coup chez evry village, sous reserve d'une inscription ulterieure a une formule de conduite pra",
+     "page": "https://www.autoecoleevryvillage.com/elementor-1244/"
+    }
+   ]
+  },
   "E2009100180": {
    "site": "https://www.bilsconduite.fr/",
    "date": "2026-11-27",
@@ -17780,9 +18478,21 @@
    "site": "https://www.auto-ecole-outreforet.fr/",
    "date": "2026-11-27",
    "pages": [
-    "https://www.auto-ecole-outreforet.fr/"
+    "https://auto-ecole-outreforet.fr/",
+    "https://auto-ecole-outreforet.fr/formations/",
+    "https://auto-ecole-outreforet.fr/informations/"
    ],
-   "regles": 3
+   "regles": 3,
+   "passerelle": {
+    "extrait": "lle. venez vous renseigner en agence pour de plus amples informations passerelle b78 vers b boite de vitesse automatique infos complementaires formation",
+    "page": "https://auto-ecole-outreforet.fr/formations/"
+   },
+   "prix": [
+    {
+     "extrait": "l'inscription a l'examen de l'etg (souvent appele 'examen du code') s'effectue aupres d'un prestataire exterieur a l'ecole de conduite (comme par exemple la poste). pour cela, il vous faudra vous munir de votre n neph, q",
+     "page": "https://auto-ecole-outreforet.fr/informations/"
+    }
+   ]
   },
   "E2106900150": {
    "site": "https://lanavette.co/permis-accelere-lyon",
@@ -17982,6 +18692,105 @@
    "regles": 3,
    "reseau": true
   },
+  "E2109100040": {
+   "site": "https://autoecoledepinaysurorge.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://autoecoledepinaysurorge.com/",
+    "https://autoecoledepinaysurorge.com/permis-b-automatique/",
+    "https://autoecoledepinaysurorge.com/permis-b/",
+    "https://autoecoledepinaysurorge.com/conduite-supervisee-sur-boite-auto/",
+    "https://autoecoledepinaysurorge.com/conduite-accompagnee-sur-boite-automatique/",
+    "https://autoecoledepinaysurorge.com/conduite-accompagnee/"
+   ],
+   "regles": 3,
+   "passerelle": {
+    "extrait": "upervisee) conduite aac boite automatique conduite aac boite manuelle passerelle boite auto vers manuelle formation post permis annulation et perfectionnement es",
+    "page": "https://autoecoledepinaysurorge.com/"
+   },
+   "prix": [
+    {
+     "extrait": "traditionnelle et/ou supervisee : 1 175€ ttc",
+     "page": "https://autoecoledepinaysurorge.com/permis-b-automatique/"
+    },
+    {
+     "extrait": "accompagnement a l'examen pratique : 500€ a l'inscription 675€ a la realisation du planning",
+     "page": "https://autoecoledepinaysurorge.com/permis-b-automatique/"
+    },
+    {
+     "extrait": "evaluation de depart sur simulateur obligatoire : 50€",
+     "page": "https://autoecoledepinaysurorge.com/permis-b-automatique/"
+    },
+    {
+     "extrait": "redevance code (possibilite de s'inscrire seul ou de mandater l'agence) : 30€",
+     "page": "https://autoecoledepinaysurorge.com/permis-b-automatique/"
+    },
+    {
+     "extrait": "lecon de conduite supplementaire (60 min) : 70€",
+     "page": "https://autoecoledepinaysurorge.com/permis-b-automatique/"
+    },
+    {
+     "extrait": "rendez-vous prealable (120 min, obligatoire uniquement pour les conduites supervisees) : 140€",
+     "page": "https://autoecoledepinaysurorge.com/permis-b-automatique/"
+    },
+    {
+     "extrait": "traditionnelle et/ou supervisee : 1 590€ ttc",
+     "page": "https://autoecoledepinaysurorge.com/permis-b/"
+    },
+    {
+     "extrait": "accompagnement a l'examen pratique : 500€ a l'inscription 1090€ a la realisation du planning",
+     "page": "https://autoecoledepinaysurorge.com/permis-b/"
+    },
+    {
+     "extrait": "evaluation de depart sur simulateur obligatoire : 50€",
+     "page": "https://autoecoledepinaysurorge.com/permis-b/"
+    },
+    {
+     "extrait": "redevance code (possibilite de s'inscrire seul ou de mandater l'agence) : 30€",
+     "page": "https://autoecoledepinaysurorge.com/permis-b/"
+    },
+    {
+     "extrait": "lecon de conduite supplementaire (60 min) : 70€",
+     "page": "https://autoecoledepinaysurorge.com/permis-b/"
+    },
+    {
+     "extrait": "rendez-vous prealable (120 min, obligatoire uniquement pour les conduites supervisees) : 140€",
+     "page": "https://autoecoledepinaysurorge.com/permis-b/"
+    },
+    {
+     "extrait": "traditionnelle et/ou supervisee : 1 560€ ttc",
+     "page": "https://autoecoledepinaysurorge.com/conduite-supervisee-sur-boite-auto/"
+    },
+    {
+     "extrait": "evaluation de depart sur simulateur obligatoire : 50€",
+     "page": "https://autoecoledepinaysurorge.com/conduite-supervisee-sur-boite-auto/"
+    },
+    {
+     "extrait": "redevance code (possibilite de s'inscrire seul ou de mandater l'agence) : 30€",
+     "page": "https://autoecoledepinaysurorge.com/conduite-supervisee-sur-boite-auto/"
+    },
+    {
+     "extrait": "lecon de conduite supplementaire (60 min) : 70€",
+     "page": "https://autoecoledepinaysurorge.com/conduite-supervisee-sur-boite-auto/"
+    },
+    {
+     "extrait": "rendez-vous prealable (120 min, obligatoire uniquement pour les conduites supervisees) : 140€",
+     "page": "https://autoecoledepinaysurorge.com/conduite-supervisee-sur-boite-auto/"
+    },
+    {
+     "extrait": "evaluation de depart sur simulateur obligatoire : 50€",
+     "page": "https://autoecoledepinaysurorge.com/conduite-accompagnee-sur-boite-automatique/"
+    },
+    {
+     "extrait": "evaluation de depart sur simulateur obligatoire : 50€ : redevance fiscale (possibilite de s'inscrire seul ou de mandater l'agence) : 30€",
+     "page": "https://autoecoledepinaysurorge.com/conduite-accompagnee-sur-boite-automatique/"
+    },
+    {
+     "extrait": "lecon de conduite supplementaire (60 min) : 70€",
+     "page": "https://autoecoledepinaysurorge.com/conduite-accompagnee-sur-boite-automatique/"
+    }
+   ]
+  },
   "E2109100090": {
    "site": "https://www.apprendreaconduire-montgeron.fr/",
    "date": "2026-11-27",
@@ -18064,6 +18873,118 @@
     {
      "extrait": "forfait code auto a 200€",
      "page": "https://www.permis2-0.fr/22-nos-forfaits"
+    }
+   ]
+  },
+  "E2109100220": {
+   "site": "https://autoecole91.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://autoecole91.com/",
+    "https://autoecole91.com/permis-b/",
+    "https://autoecole91.com/permis-b-accelere/",
+    "https://autoecole91.com/formation-post-permis/",
+    "https://autoecole91.com/passerelle-boite-automatique/",
+    "https://autoecole91.com/formations-seules-prestations-a-lunite/"
+   ],
+   "regles": 3,
+   "passerelle": {
+    "extrait": "celere formation post-permis conduite accompagnee conduite supervisee passerelle boite automatique vers permis b formations seules prestations a l'unite 2 roues",
+    "page": "https://autoecole91.com/"
+   },
+   "accelere": {
+    "extrait": "auto-ecoles les ulis aller au contenu menu accueil auto permis b/bea permis b accelere formation post-permis conduite accompagnee conduite supervisee passer",
+    "page": "https://autoecole91.com/"
+   }
+  },
+  "E2109100230": {
+   "site": "https://auto-ecole-vip.fr/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
+  "E2109100240": {
+   "site": "https://conduite-sure.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://conduite-sure.com/",
+    "https://conduite-sure.com/permis-b/",
+    "https://conduite-sure.com/permis-b-accelere/",
+    "https://conduite-sure.com/passerelle-boite-auto-boite-manuelle/",
+    "https://conduite-sure.com/formations-seule-prestations-a-lunite/",
+    "https://conduite-sure.com/passerelle-a2-vers-a/"
+   ],
+   "regles": 3,
+   "passerelle": {
+    "extrait": "ermis b accelere conduite accompagnee conduite supervisee post permis passerelle boite auto boite manuelle formations seules prestations a l'unite 2 roues permis",
+    "page": "https://conduite-sure.com/"
+   },
+   "accelere": {
+    "extrait": "conduite sure aller au contenu menu accueil auto permis b boite auto permis b accelere conduite accompagnee conduite supervisee post permis passerelle boite",
+    "page": "https://conduite-sure.com/"
+   }
+  },
+  "E2109100260": {
+   "site": "https://www.auto-ecole-s-inspir.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.auto-ecole-s-inspir.fr/",
+    "https://www.auto-ecole-s-inspir.fr/prestations/"
+   ],
+   "regles": 3,
+   "accelere": {
+    "extrait": "ormule aac ou supervisee : 1100€ ttcrdv pedagogique + 2 fois 120€ ttc formation acceleree : stage de conduite b sur 5 jours frais de gestion de dossier kit d",
+    "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+   },
+   "prix": [
+    {
+     "extrait": "decouvres nos trois formules code de la route : : frais de gestion : 150€ tcc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "formule code : 199€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "8 cours de code corriges en live : inscription ants : 99€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "cours individuel de code : 35€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "cours de code en ligne : 39€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "evaluation boite manuelle 59€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "evaluation boite auto 63€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "evaluation en ligne, a partir de 45€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "lecon boite manuelle : 59€ ttcrendez vous prealable 110€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "lecon boite manuelle : 59€ ttcrendez vous prealable 110€ ttc : formule b : 1199€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "formule b 25 lecons : 1449€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
+    },
+    {
+     "extrait": "formule b 30 lecons : 1699€ ttc",
+     "page": "https://www.auto-ecole-s-inspir.fr/prestations/"
     }
    ]
   },
@@ -20066,6 +20987,34 @@
    "regles": 3,
    "reseau": true
   },
+  "E2209100040": {
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
+  "E2209100050": {
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
+  "E2209100060": {
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
+  "E2209100070": {
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
   "E2209100080": {
    "site": "https://auto-ecole-les-iris.fr/",
    "date": "2026-11-27",
@@ -20082,6 +21031,81 @@
     "extrait": "k conduite auto-ecole aller au contenu permis accelere code de la route permis auto fermer permis auto ouvrir permis",
     "page": "https://auto-ecole-les-iris.fr/"
    }
+  },
+  "E2209100090": {
+   "site": "https://autoecole-serenity.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://autoecole-serenity.fr/",
+    "https://autoecole-serenity.fr/nos-offres"
+   ],
+   "regles": 3,
+   "accelere": {
+    "extrait": "les ai contacte pour repasser l'examen au plus vite,j'ai ete prise en conduite acceleree directement alors que je n'etais pas inscrite dans cette auto-ecole.",
+    "page": "https://autoecole-serenity.fr/"
+   },
+   "prix": [
+    {
+     "extrait": "(code conduite) : 990 €",
+     "page": "https://autoecole-serenity.fr/"
+    },
+    {
+     "extrait": "(code conduite) : 1450 €",
+     "page": "https://autoecole-serenity.fr/"
+    },
+    {
+     "extrait": "(code conduite) : 1950 €",
+     "page": "https://autoecole-serenity.fr/"
+    },
+    {
+     "extrait": "(code conduite) : 990 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "(code conduite) : 1450 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "(code conduite) : 1950 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "(code conduite accompagnee) : 1590 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "(code conduite) : 2500 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "(code) : 290 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "forfait 10 lecons de conduite : 650 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "lecon de conduite boite manuelle : ou automatique : 65 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "livret de code : 15 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "livret de code : 15 € : frais d'inscription ants : 90 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "frais d'accompagnement auto : 65 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    },
+    {
+     "extrait": "evaluation de conduite : 65 €",
+     "page": "https://autoecole-serenity.fr/nos-offres"
+    }
+   ]
   },
   "E2209100100": {
    "site": "https://www.bami-bass.fr/",
@@ -20260,10 +21284,9 @@
   "E2209100160": {
    "site": "https://driveracademy.net/",
    "date": "2026-11-27",
-   "pages": [
-    "https://www.driveracademy.net/"
-   ],
-   "regles": 3
+   "pages": [],
+   "regles": 3,
+   "reseau": true
   },
   "E2209100170": {
    "site": "https://autoecole-monge.com/",
@@ -20324,12 +21347,107 @@
     }
    ]
   },
+  "E2209100190": {
+   "site": "https://www.coco-autoecole.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.coco-autoecole.fr/",
+    "https://www.coco-autoecole.fr/_tarifs",
+    "https://www.coco-autoecole.fr/nos-formations",
+    "https://www.coco-autoecole.fr/_boite-automatique",
+    "https://www.coco-autoecole.fr/_boite-manuelle",
+    "https://www.coco-autoecole.fr/_conduite-acceleree"
+   ],
+   "regles": 3,
+   "accelere": {
+    "extrait": "tomatique boite manuelle conduite supervisee conduite accompagnee conduite acceleree permis a agences les ulis (91) fontenay-aux-roses (92) tarifs finan",
+    "page": "https://www.coco-autoecole.fr/"
+   },
+   "passerelle": {
+    "extrait": "te automatique fiche info - permis b - boite automatique fiche info passerelle permis boite auto a boite manuelle obtenez votre permis en boite automatique pourquoi",
+    "page": "https://www.coco-autoecole.fr/_boite-automatique"
+   }
+  },
   "E2209100200": {
    "site": "https://www.bami-bass.fr/",
    "date": "2026-11-27",
    "pages": [],
    "regles": 3,
    "reseau": true
+  },
+  "E2209100240": {
+   "site": "https://www.ecf-proconduite.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.ecf-proconduite.com/",
+    "https://www.ecf-proconduite.com/formations",
+    "https://www.ecf-proconduite.com/formations/transport-marchandises",
+    "https://www.ecf-proconduite.com/formations/transport-voyageurs",
+    "https://www.ecf-proconduite.com/formation-chauffeur-poids-lourd",
+    "https://www.ecf-proconduite.com/formation-conducteur-de-bus"
+   ],
+   "regles": 3,
+   "prix": [
+    {
+     "extrait": "la plupart de nos formations certifiantes (permis du groupe lourd, fimo, fco, titres professionnels) sont eligibles au cpf l'eligibilite et le code rncp ou rs figurent sur chaque fiche formation. depuis le 2 avril 2026, ",
+     "page": "https://www.ecf-proconduite.com/"
+    },
+    {
+     "extrait": "9 800 €1120h",
+     "page": "https://www.ecf-proconduite.com/formations"
+    },
+    {
+     "extrait": "permis be + code en ligne : 985 €21h",
+     "page": "https://www.ecf-proconduite.com/formations"
+    },
+    {
+     "extrait": "formation passerelle voyageurs vers marchandises : 770 €35h",
+     "page": "https://www.ecf-proconduite.com/formations"
+    },
+    {
+     "extrait": "formation passerelle marchandises vers voyageurs : 770 €35h",
+     "page": "https://www.ecf-proconduite.com/formations"
+    },
+    {
+     "extrait": "9 800 €1120h",
+     "page": "https://www.ecf-proconduite.com/formations/transport-marchandises"
+    },
+    {
+     "extrait": "formation passerelle voyageurs vers marchandises : 770 €35h",
+     "page": "https://www.ecf-proconduite.com/formations/transport-marchandises"
+    },
+    {
+     "extrait": "formation passerelle marchandises vers voyageurs : 770 €35h",
+     "page": "https://www.ecf-proconduite.com/formations/transport-marchandises"
+    },
+    {
+     "extrait": "formation passerelle voyageurs vers marchandises : 770 €35h",
+     "page": "https://www.ecf-proconduite.com/formations/transport-voyageurs"
+    },
+    {
+     "extrait": "formation passerelle marchandises vers voyageurs : 770 €35h",
+     "page": "https://www.ecf-proconduite.com/formations/transport-voyageurs"
+    }
+   ]
+  },
+  "E2209100260": {
+   "site": "https://ittevilleconduite.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://ittevilleconduite.com/",
+    "https://ittevilleconduite.com/formations/",
+    "https://ittevilleconduite.com/formations/formation-code-etg/",
+    "https://ittevilleconduite.com/formations/permis-b/",
+    "https://ittevilleconduite.com/formations/permis-b-accompagne/",
+    "https://ittevilleconduite.com/formations/permis-b-supervise/"
+   ],
+   "regles": 3,
+   "prix": [
+    {
+     "extrait": "permis b aac : a partir de 1415 €",
+     "page": "https://ittevilleconduite.com/formations/permis-b/"
+    }
+   ]
   },
   "E2209100280": {
    "site": "https://www.autoecoleparissaclay.fr/",
@@ -21107,9 +22225,21 @@
   "E2302900010": {
    "site": "https://www.auto-ecole-cer-mahe.com/",
    "date": "2026-11-27",
-   "pages": [],
+   "pages": [
+    "https://www.auto-ecole-cer-mahe.com/",
+    "https://www.auto-ecole-cer-mahe.com/permis-b/",
+    "https://www.auto-ecole-cer-mahe.com/auto/",
+    "https://www.auto-ecole-cer-mahe.com/moto/",
+    "https://www.auto-ecole-cer-mahe.com/passerelle-a2-vers-a/",
+    "https://www.auto-ecole-cer-mahe.com/remorque/"
+   ],
    "regles": 3,
-   "erreur": "HTTP Error 503: Service Unavailable"
+   "prix": [
+    {
+     "extrait": "formation passerelle a2 vers a : 350 €",
+     "page": "https://www.auto-ecole-cer-mahe.com/passerelle-a2-vers-a/"
+    }
+   ]
   },
   "E2302A00010": {
    "site": "https://www.scolaprima.fr",
@@ -22260,19 +23390,9 @@
   "E2309100040": {
    "site": "https://auto-ecole-vip.fr/",
    "date": "2026-11-27",
-   "pages": [
-    "https://auto-ecole-vip.fr/",
-    "https://auto-ecole-vip.fr/permis-de-conduire/stages-acceleres-auto-moto/"
-   ],
+   "pages": [],
    "regles": 3,
-   "passerelle": {
-    "extrait": "uelle ou automatique, normal ou en conduite accompagnee, passer de la boite automatique vers la boite manuelle en savoir plus stages acceleres obtenir le permis de conduire en fo",
-    "page": "https://auto-ecole-vip.fr/"
-   },
-   "accelere": {
-    "extrait": "asser de la boite automatique vers la boite manuelle en savoir plus stages acceleres obtenir le permis de conduire en formation acceleree graces aux stage",
-    "page": "https://auto-ecole-vip.fr/"
-   }
+   "reseau": true
   },
   "E2309100070": {
    "site": "https://www.abcconduite-essonne.fr/",
@@ -22403,12 +23523,34 @@
    ],
    "regles": 3
   },
+  "E2309100120": {
+   "site": "https://driveracademy.net/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
   "E2309100130": {
    "site": "https://www.bami-bass.fr/",
    "date": "2026-11-27",
    "pages": [],
    "regles": 3,
    "reseau": true
+  },
+  "E2309100140": {
+   "site": "https://www.autoecoleparissaclay.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.autoecoleparissaclay.fr/",
+    "https://www.autoecoleparissaclay.fr/permis-accelere/",
+    "https://www.autoecoleparissaclay.fr/permis-boite-manuelle/",
+    "https://www.autoecoleparissaclay.fr/permis-boite-automatique/"
+   ],
+   "regles": 3,
+   "accelere": {
+    "extrait": "main content hit enter to search or esc to close close search menu permis accelere nos formations permis boite manuelle permis boite auto conduite accom",
+    "page": "https://www.autoecoleparissaclay.fr/"
+   }
   },
   "E2309100190": {
    "site": "https://automotoecoleparissud.fr/",
@@ -23857,6 +24999,20 @@
     "page": "https://www.premiumconduite.fr/permis-boite-automatique/"
    }
   },
+  "E2409100180": {
+   "site": "https://driveracademy.net/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
+  "E2409100190": {
+   "site": "https://driveracademy.net/",
+   "date": "2026-11-27",
+   "pages": [],
+   "regles": 3,
+   "reseau": true
+  },
   "E2409100210": {
    "site": "https://www.apsconduite.com/",
    "date": "2026-11-27",
@@ -24183,9 +25339,14 @@
   "E2501400100": {
    "site": "https://www.mboautoecole.com/",
    "date": "2026-11-27",
-   "pages": [],
+   "pages": [
+    "https://www.mboautoecole.com/"
+   ],
    "regles": 3,
-   "erreur": "HTTP Error 403: Forbidden"
+   "accelere": {
+    "extrait": "onfiance a m'accepter malgre le transfert de dossier et la demande de permis accelere. je remercie egalement marina et alison qui m'ont beaucoup accompagne",
+    "page": "https://www.mboautoecole.com/"
+   }
   },
   "E2501700080": {
    "site": "https://autoecole-dumoulin.fr/",
@@ -24492,7 +25653,8 @@
    "site": "https://www.drivemepermis.fr/",
    "date": "2026-11-27",
    "pages": [
-    "https://www.drivemepermis.fr/"
+    "https://drivemepermis.fr/",
+    "https://drivemepermis.fr/permis-b/"
    ],
    "regles": 3
   },
@@ -25490,6 +26652,59 @@
     }
    ]
   },
+  "E2509100020": {
+   "site": "https://autoecoleadolphe.com/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://autoecoleadolphe.com/",
+    "https://autoecoleadolphe.com/permis-b/",
+    "https://autoecoleadolphe.com/boite-automatique/",
+    "https://autoecoleadolphe.com/passerelle-b78-vers-b/"
+   ],
+   "regles": 3,
+   "passerelle": {
+    "extrait": "s permis b boite automatique conduite accompagnee conduite supervisee passerelle b78 vers b annulation post-permis nos avis label qualite services en lign",
+    "page": "https://autoecoleadolphe.com/"
+   },
+   "prix": [
+    {
+     "extrait": "lecon de conduite supplementaire (l'heure) 60 €",
+     "page": "https://autoecoleadolphe.com/permis-b/"
+    },
+    {
+     "extrait": "frais d'accompagnement 60 €",
+     "page": "https://autoecoleadolphe.com/permis-b/"
+    },
+    {
+     "extrait": "frais d'accompagnement 60 € : frais administratifs 25 €",
+     "page": "https://autoecoleadolphe.com/permis-b/"
+    },
+    {
+     "extrait": "lecon de conduite supplementaire (l'heure) 60 €",
+     "page": "https://autoecoleadolphe.com/boite-automatique/"
+    },
+    {
+     "extrait": "frais d'accompagnement 60 €",
+     "page": "https://autoecoleadolphe.com/boite-automatique/"
+    },
+    {
+     "extrait": "frais d'accompagnement 60 € : frais administratifs 25 €",
+     "page": "https://autoecoleadolphe.com/boite-automatique/"
+    },
+    {
+     "extrait": "lecon de conduite supplementaire (l'heure) 60 €",
+     "page": "https://autoecoleadolphe.com/passerelle-b78-vers-b/"
+    },
+    {
+     "extrait": "frais d'accompagnement 60 €",
+     "page": "https://autoecoleadolphe.com/passerelle-b78-vers-b/"
+    },
+    {
+     "extrait": "frais d'accompagnement 60 € : frais administratifs 25 €",
+     "page": "https://autoecoleadolphe.com/passerelle-b78-vers-b/"
+    }
+   ]
+  },
   "E2509100030": {
    "site": "https://www.premiumconduite.fr/",
    "date": "2026-11-27",
@@ -25755,6 +26970,54 @@
     "page": "https://autoecolelyz-juvisy.fr/"
    }
   },
+  "E2509100110": {
+   "site": "https://auto-ecole-marcoussis.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://auto-ecole-marcoussis.fr/",
+    "https://auto-ecole-marcoussis.fr/pack-permis-b-classique/",
+    "https://auto-ecole-marcoussis.fr/pack-permis-automatique/",
+    "https://auto-ecole-marcoussis.fr/passerelle/",
+    "https://auto-ecole-marcoussis.fr/pack-conduite-accompagnee/",
+    "https://auto-ecole-marcoussis.fr/formations-accelere/"
+   ],
+   "regles": 3,
+   "passerelle": {
+    "extrait": "et permet de conduire plus facilement et rapidement. passerelle la passerelle permet aux titulaires du permis bea de suivre une formation acceleree de 7 heures pour obtenir le permis",
+    "page": "https://auto-ecole-marcoussis.fr/"
+   },
+   "accelere": {
+    "extrait": "relle la passerelle permet aux titulaires du permis bea de suivre une formation acceleree de 7 heures pour obtenir le permis b (boite manuelle). conduite acc",
+    "page": "https://auto-ecole-marcoussis.fr/"
+   }
+  },
+  "E2509100130": {
+   "site": "https://www.educat-route.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.educat-route.fr/",
+    "https://www.educat-route.fr/formations-codes.html",
+    "https://www.educat-route.fr/stage-code-accelere.html",
+    "https://www.educat-route.fr/permis-b.html",
+    "https://www.educat-route.fr/permis-automatique.html",
+    "https://www.educat-route.fr/stage-conduite-accelere.html"
+   ],
+   "regles": 3,
+   "passerelle": {
+    "extrait": "is conduite supervisee stage conduite accelere simulateur de conduite passerelle bea vers b formation post permis financements label etat nos services ou",
+    "page": "https://www.educat-route.fr/"
+   },
+   "accelere": {
+    "extrait": "rmis b permis automatique permis aac permis conduite supervisee stage conduite accelere simulateur de conduite passerelle bea vers b formation post permis fi",
+    "page": "https://www.educat-route.fr/"
+   },
+   "prix": [
+    {
+     "extrait": "examen et validation par l'inspecteur du permis de conduire et de la securite routiere : l'auto-ecole educat route propose d'autres formations qui peuvent vous interesser.plusieurs solutions de financement peuvent egalem",
+     "page": "https://www.educat-route.fr/stage-conduite-accelere.html"
+    }
+   ]
+  },
   "E2509100140": {
    "site": "https://autoecolebrunoy.fr/",
    "date": "2026-11-27",
@@ -25897,6 +27160,50 @@
     "https://www.amsecuriteroutiere.fr/"
    ],
    "regles": 3
+  },
+  "E2509100250": {
+   "site": "https://www.cersuard.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.cersuard.fr/",
+    "https://www.cersuard.fr/formulaire-acces-brochure-c.html",
+    "https://www.cersuard.fr/formulaire-acces-brochure-ce.html",
+    "https://www.cersuard.fr/formulaire-acces-brochure-b.html",
+    "https://www.cersuard.fr/formulaire-acces-brochure-bea.html",
+    "https://www.cersuard.fr/formulaire-acces-brochure-aac.html"
+   ],
+   "regles": 3,
+   "passerelle": {
+    "extrait": "ique conduite accompagnee conduite accompagnee - boite automatique passerelle de b automatique vers b manuelle conduite supervisee permis am (ex bsr) formation 7",
+    "page": "https://www.cersuard.fr/"
+   },
+   "accelere": {
+    "extrait": "vous au sein de notre agence de toury sur les possibilites de contrat permis accelere avec une formation en 15 jours et un taux de reussite au 1er passa",
+    "page": "https://www.cersuard.fr/"
+   }
+  },
+  "E2509100260": {
+   "site": "https://www.lessentielpermis.fr/",
+   "date": "2026-11-27",
+   "pages": [
+    "https://www.lessentielpermis.fr/",
+    "https://www.lessentielpermis.fr/nos-permis-b/"
+   ],
+   "regles": 3,
+   "accelere": {
+    "extrait": "pres un echec accompagnateur adulte titulaire du permisen savoir plus conduite acceleree formation acceleree besoin de votre permis rapidement formation inten",
+    "page": "https://www.lessentielpermis.fr/"
+   },
+   "prix": [
+    {
+     "extrait": "acces en ligne 24h/24 pour vous entrainer a votre rythme. on suit votre progression et on vous propose de passer l'examen des que vous etes pret. l'examen du code se passe en centre agree (la poste), vous y allez seul, s",
+     "page": "https://www.lessentielpermis.fr/"
+    }
+   ],
+   "passerelle": {
+    "extrait": "sion, urgence pro suivirenforces'inscrire apres un permis automatique passerelle boite auto vers boite manuelle vous avez votre permis en boite automatique avec",
+    "page": "https://www.lessentielpermis.fr/nos-permis-b/"
+   }
   },
   "E2509100270": {
    "site": "https://atfconduite.fr/",
@@ -26148,7 +27455,7 @@
    "date": "2026-11-27",
    "pages": [],
    "regles": 3,
-   "erreur": "<urlopen error timed out>"
+   "erreur": "<urlopen error [Errno -3] Temporary failure in name resolution>"
   },
   "I1904700020": {
    "site": "https://www.agirplus47.com",

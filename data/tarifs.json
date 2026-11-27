@@ -2291,6 +2291,371 @@
    "passerelle_details": "7 h, 350 €",
    "mis_a_jour": "2026-11-26",
    "source": "site"
+  },
+  "E2209100060": {
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "lien": "https://autoecole.ecf-proconduite.com/permis-auto",
+   "forfait": 1350,
+   "heures_forfait": 27,
+   "forfait_note": "à partir de, sans code, dont 2 leçons sur simulateur",
+   "forfait_auto": 999,
+   "heures_forfait_auto": 0,
+   "precision": "Prix « à partir de » du réseau ECF Pro Conduite (Montgeron, Vigneux, Longjumeau, Brunoy…). Un accompagnement à l'examen pratique est compris dans chaque forfait. Boîte auto : nombre d'heures non précisé.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1600
+    },
+    {
+     "nom": "Conduite supervisée (sans code)",
+     "prix": 1032
+    },
+    {
+     "nom": "Conduite supervisée avec code",
+     "prix": 1332
+    },
+    {
+     "nom": "Stage permis accéléré (1 semaine)",
+     "prix": 2500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h)",
+     "prix": 350
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis B ou boîte auto en 1 semaine, dès 2 500 €",
+   "passerelle": true,
+   "passerelle_details": "7 h, 350 €",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2209100070": {
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "lien": "https://autoecole.ecf-proconduite.com/permis-auto",
+   "forfait": 1350,
+   "heures_forfait": 27,
+   "forfait_note": "à partir de, sans code, dont 2 leçons sur simulateur",
+   "forfait_auto": 999,
+   "heures_forfait_auto": 0,
+   "precision": "Prix « à partir de » du réseau ECF Pro Conduite (Montgeron, Vigneux, Longjumeau, Brunoy…). Un accompagnement à l'examen pratique est compris dans chaque forfait. Boîte auto : nombre d'heures non précisé.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1600
+    },
+    {
+     "nom": "Conduite supervisée (sans code)",
+     "prix": 1032
+    },
+    {
+     "nom": "Conduite supervisée avec code",
+     "prix": 1332
+    },
+    {
+     "nom": "Stage permis accéléré (1 semaine)",
+     "prix": 2500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h)",
+     "prix": 350
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis B ou boîte auto en 1 semaine, dès 2 500 €",
+   "passerelle": true,
+   "passerelle_details": "7 h, 350 €",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2209100240": {
+   "site": "https://www.ecf-proconduite.com/",
+   "lien": "https://autoecole.ecf-proconduite.com/auto-ecole-bretigny-sur-orge",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2109100230": {
+   "site": "https://auto-ecole-vip.fr/",
+   "lien": "https://auto-ecole-vip.fr/contact/",
+   "formules": [
+    {
+     "nom": "Code + 13 h en boîte auto, tout compris (prix de l'agence de Brétigny)",
+     "prix": 1219
+    }
+   ],
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stages accélérés : permis en 18 jours ou en 1 mois",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2309100140": {
+   "adresse": "13 bis Rue de Paris",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "permis accéléré : 6, 10 ou 20 heures de conduite par semaine",
+   "site": "https://www.autoecoleparissaclay.fr/",
+   "lien": "https://www.autoecoleparissaclay.fr/permis-accelere/",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2109100260": {
+   "site": "https://www.auto-ecole-s-inspir.fr/",
+   "lien": "https://www.auto-ecole-s-inspir.fr/prestations/",
+   "forfait": 1199,
+   "heures_forfait": 0,
+   "forfait_note": "sans code",
+   "forfait_auto": 980,
+   "heures_forfait_auto": 0,
+   "prix_heure": 59,
+   "precision": "Formule B : frais de dossier, 19 leçons de conduite, 1 bilan avant l'examen et l'accompagnement à l'examen. Évaluation de départ : 59 € (boîte manuelle) ou 63 € (boîte auto). Inscription ANTS : 99 €.",
+   "formules": [
+    {
+     "nom": "Formule B 20 leçons",
+     "prix": 1350
+    },
+    {
+     "nom": "Formule B 25 leçons",
+     "prix": 1449
+    },
+    {
+     "nom": "Formule B 30 leçons",
+     "prix": 1699
+    }
+   ],
+   "bea": true,
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1109108070": {
+   "site": "https://www.cer-clareva.fr/",
+   "lien": "https://www.cer-clareva.fr/permis-auto-b-corbeil-evry.html",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formation auto par stage possible",
+   "precision": "Boîte manuelle ou automatique au choix, sans différence de prix (prix non affichés sur le site).",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2009100110": {
+   "site": "https://www.autoecoleevryvillage.com/",
+   "lien": "https://www.autoecoleevryvillage.com/elementor-1244/",
+   "forfait": 1380,
+   "heures_forfait": 20,
+   "forfait_note": "sans code",
+   "forfait_auto": 989,
+   "heures_forfait_auto": 13,
+   "precision": "Évaluation de départ et accompagnement à l'examen compris. Réduction étudiante : 100 € (boîte manuelle) ou 50 € (boîte auto). Prix valables jusqu'au 31 décembre 2026.",
+   "formules": [
+    {
+     "nom": "Option accéléré",
+     "prix": 500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h, offre du moment)",
+     "prix": 430
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "option accéléré : 500 € en plus de la formule",
+   "passerelle": true,
+   "passerelle_details": "7 h de formation : 430 € (offre du moment, 579 € d'habitude)",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2109100220": {
+   "site": "https://autoecole91.com/",
+   "lien": "https://autoecole91.com/boutique/",
+   "forfait": 1390,
+   "heures_forfait": 20,
+   "forfait_note": "sans code",
+   "forfait_auto": 1090,
+   "heures_forfait_auto": 13,
+   "precision": "Prix de la boutique en ligne de l'auto-école (formules valables en boîte manuelle ou automatique). Évaluation, dossier, fournitures et une présentation à l'examen compris.",
+   "formules": [
+    {
+     "nom": "Boîte auto 13 h avec code",
+     "prix": 1230
+    },
+    {
+     "nom": "25 h sans code",
+     "prix": 1630
+    },
+    {
+     "nom": "25 h avec code",
+     "prix": 1830
+    },
+    {
+     "nom": "30 h sans code",
+     "prix": 1870
+    },
+    {
+     "nom": "30 h avec code",
+     "prix": 2070
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle",
+     "prix": 480
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "7 h de conduite : 480 €",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2209100190": {
+   "site": "https://www.coco-autoecole.fr/",
+   "lien": "https://www.coco-autoecole.fr/formations-auto",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formules accélérées (Coco Accéléré, Coco Plus)",
+   "passerelle": true,
+   "passerelle_details": "environ 450 à 590 € (7 à 10 h de conduite)",
+   "precision": "Agence Coco des Ulis. Le site donne des prix différents selon les pages : demande le tarif à l'agence.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1409100150": {
+   "site": "https://auto-ecole-vip.fr/",
+   "lien": "https://auto-ecole-vip.fr/agences/",
+   "formules": [
+    {
+     "nom": "Code + 13 h en boîte auto, tout compris",
+     "prix": 1219
+    }
+   ],
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stages accélérés : permis en 18 jours ou en 1 mois",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2109100240": {
+   "site": "https://conduite-sure.com/",
+   "lien": "https://conduite-sure.com/categorie-produit/permis-traditionnel/",
+   "forfait": 1590,
+   "heures_forfait": 20,
+   "forfait_note": "code compris",
+   "forfait_auto": 1230,
+   "heures_forfait_auto": 13,
+   "precision": "Prix de la boutique en ligne de l'auto-école (formules valables en boîte manuelle ou automatique). Évaluation, pochette pédagogique et accompagnement à l'examen compris.",
+   "formules": [
+    {
+     "nom": "20 h sans code",
+     "prix": 1390
+    },
+    {
+     "nom": "25 h avec code",
+     "prix": 1830
+    },
+    {
+     "nom": "30 h avec code",
+     "prix": 2070
+    },
+    {
+     "nom": "Boîte auto 13 h sans code",
+     "prix": 1090
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle",
+     "prix": 480
+    }
+   ],
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "7 h de conduite : 480 €",
+   "mis_a_jour": "2026-11-27",
+   "source": "site",
+   "aac": true
+  },
+  "E1709100360": {
+   "site": "https://inris-formations.com/",
+   "lien": "https://inris-formations.com/centres/auto-ecole-inris-athis-mons/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stages accélérés de 3, 5 ou 10 jours, place d'examen prévue à la fin du stage",
+   "passerelle": true,
+   "passerelle_details": "stage de 2 jours (7 h)",
+   "precision": "Réseau INRI'S Formations. Les prix varient d'une page à l'autre du site : demande le tarif à l'agence.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2209100050": {
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "lien": "https://autoecole.ecf-proconduite.com/permis-auto",
+   "forfait": 1350,
+   "heures_forfait": 27,
+   "forfait_note": "à partir de, sans code, dont 2 leçons sur simulateur",
+   "forfait_auto": 999,
+   "heures_forfait_auto": 0,
+   "precision": "Prix « à partir de » du réseau ECF Pro Conduite (Montgeron, Vigneux, Longjumeau, Brunoy…). Un accompagnement à l'examen pratique est compris dans chaque forfait. Boîte auto : nombre d'heures non précisé.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1600
+    },
+    {
+     "nom": "Conduite supervisée (sans code)",
+     "prix": 1032
+    },
+    {
+     "nom": "Conduite supervisée avec code",
+     "prix": 1332
+    },
+    {
+     "nom": "Stage permis accéléré (1 semaine)",
+     "prix": 2500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h)",
+     "prix": 350
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis B ou boîte auto en 1 semaine, dès 2 500 €",
+   "passerelle": true,
+   "passerelle_details": "7 h, 350 €",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2309100120": {
+   "site": "https://driveracademy.net/",
+   "lien": "https://driveracademy.net/",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2409100180": {
+   "site": "https://driveracademy.net/",
+   "lien": "https://driveracademy.net/",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2409100190": {
+   "site": "https://driveracademy.net/",
+   "lien": "https://driveracademy.net/",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
   }
  }
 }

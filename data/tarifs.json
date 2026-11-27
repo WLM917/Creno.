@@ -2171,6 +2171,126 @@
    "lien": "https://auto-ecole-de-la-place.jimdosite.com/",
    "mis_a_jour": "2026-11-26",
    "source": "site"
+  },
+  "E1909100020": {
+   "site": "https://autoecole-niemen.com/",
+   "lien": "https://autoecole-niemen.com/formations-auto/permis-b-aac/",
+   "mis_a_jour": "2026-11-27",
+   "source": "site",
+   "aac": true,
+   "bea": true
+  },
+  "E2109100040": {
+   "site": "https://autoecoledepinaysurorge.com/",
+   "lien": "https://autoecoledepinaysurorge.com/permis-b/",
+   "forfait": 1590,
+   "heures_forfait": 0,
+   "forfait_note": "code offert",
+   "forfait_auto": 1175,
+   "heures_forfait_auto": 0,
+   "prix_heure": 70,
+   "precision": "Traditionnelle ou supervisée, code en ligne offert. Évaluation de départ sur simulateur obligatoire : 50 € en plus. Nombre d'heures du forfait non précisé sur le site.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée (boîte manuelle)",
+     "prix": 1615
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle",
+     "prix": 490
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "1 leçon sur simulateur + 6 leçons de conduite : 490 €, possible dès le lendemain du permis boîte auto.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1809100120": {
+   "site": "https://autoecoledepinaysurorge.com/",
+   "lien": "https://autoecoledepinaysurorge.com/permis-b/",
+   "forfait": 1590,
+   "heures_forfait": 0,
+   "forfait_note": "code offert",
+   "forfait_auto": 1175,
+   "heures_forfait_auto": 0,
+   "prix_heure": 70,
+   "precision": "Traditionnelle ou supervisée, code en ligne offert. Évaluation de départ sur simulateur obligatoire : 50 € en plus. Nombre d'heures du forfait non précisé sur le site.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée (boîte manuelle)",
+     "prix": 1615
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle",
+     "prix": 490
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "1 leçon sur simulateur + 6 leçons de conduite : 490 €, possible dès le lendemain du permis boîte auto.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2509100260": {
+   "site": "https://www.lessentielpermis.fr/",
+   "lien": "https://www.lessentielpermis.fr/",
+   "mis_a_jour": "2026-11-27",
+   "source": "site",
+   "aac": true,
+   "bea": true
+  },
+  "E1809100080": {
+   "site": "https://www.aefsaintmichelsurorge.fr/",
+   "lien": "https://www.aefsaintmichelsurorge.fr/",
+   "mis_a_jour": "2026-11-27",
+   "source": "site",
+   "aac": true
+  },
+  "E2209100040": {
+   "site": "https://autoecole.ecf-proconduite.com/",
+   "lien": "https://autoecole.ecf-proconduite.com/permis-auto",
+   "forfait": 1350,
+   "heures_forfait": 27,
+   "forfait_note": "à partir de, sans code, dont 2 leçons sur simulateur",
+   "forfait_auto": 999,
+   "heures_forfait_auto": 0,
+   "precision": "Prix « à partir de » du réseau ECF Pro Conduite (Montgeron, Vigneux, Longjumeau, Brunoy…). Un accompagnement à l'examen pratique est compris dans chaque forfait. Boîte auto : nombre d'heures non précisé.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée",
+     "prix": 1600
+    },
+    {
+     "nom": "Conduite supervisée (sans code)",
+     "prix": 1032
+    },
+    {
+     "nom": "Conduite supervisée avec code",
+     "prix": 1332
+    },
+    {
+     "nom": "Stage permis accéléré (1 semaine)",
+     "prix": 2500
+    },
+    {
+     "nom": "Passerelle boîte auto → manuelle (7 h)",
+     "prix": 350
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stage permis B ou boîte auto en 1 semaine, dès 2 500 €",
+   "passerelle": true,
+   "passerelle_details": "7 h, 350 €",
+   "mis_a_jour": "2026-11-26",
+   "source": "site"
   }
  }
 }

@@ -53,7 +53,8 @@ SITES = DATA / "sites_auto_ecoles.json"
 EXPLO = DATA / "explorations.json"
 REGLES = 3  # à augmenter quand on change la détection : tout est relu au passage suivant
 UA = "CrenoBot/1.0 (+https://www.xn--crnopermis-c7a.fr/methode/ ; classement des auto-ecoles)"
-OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
+OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter",
+            "https://overpass.private.coffee/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
 COMMUNES = "https://geo.api.gouv.fr/communes?fields=nom,codesPostaux,centre,codeDepartement&format=json&geometry=centre"
 # Réseaux sociaux, annuaires et cartes : ce ne sont pas les sites des auto-écoles.
 # « nom. » : n'importe quelle terminaison (facebook.com, facebook.fr...) ; sinon le domaine exact et ses sous-domaines.
@@ -190,18 +191,60 @@ def charger_officiel() -> dict[str, dict]:
     return ecoles
 
 
-def requete_osm() -> list[dict]:
-    q = ('[out:json][timeout:300];area["ISO3166-1"="FR"][admin_level=2]->.fr;'
-         '(nwr["amenity"="driving_school"](area.fr););out center tags;')
-    for essai in range(3):
-        for url in OVERPASS:
-            try:
-                _, texte = lire(url, timeout=360, maxi=200_000_000, data=urllib.parse.urlencode({"data": q}).encode())
-                return json.loads(texte).get("elements") or []
-            except Exception as err:  # serveur occupé : on essaie le suivant, puis on attend un peu
-                print(f"OpenStreetMap ({url}, essai {essai + 1}) : {err}", file=sys.stderr)
-        time.sleep(60)
-    raise RuntimeError("OpenStreetMap ne répond pas")
+def zones_osm() -> list[tuple[float, float, float, float]]:
+    """Petits rectangles (sud, ouest, nord, est) qui couvrent la France : une demande légère par zone.
+    La demande unique « toute la France » finissait en 504 quand les serveurs sont chargés (27 novembre 2026)."""
+    zones = []
+    lat = 41.3
+    while lat < 51.2:
+        lon = -5.3
+        while lon < 9.7:
+            zones.append((round(lat, 2), round(lon, 2), round(min(lat + 1.5, 51.2), 2), round(min(lon + 2.0, 9.7), 2)))
+            lon += 2.0
+        lat += 1.5
+    zones += [(15.8, -61.9, 16.6, -60.9),    # Guadeloupe
+              (14.3, -61.3, 14.95, -60.75),  # Martinique
+              (2.0, -54.7, 5.9, -51.5),      # Guyane
+              (-21.45, 55.2, -20.85, 55.9),  # La Réunion
+              (-13.1, 44.9, -12.6, 45.35)]   # Mayotte
+    return zones
+
+
+def requete_osm() -> tuple[list[dict], int]:
+    """Auto-écoles OpenStreetMap de toute la France, zone par zone. Renvoie (éléments, zones en échec)."""
+    vus: dict[tuple, dict] = {}
+    echecs = 0
+    fin = time.time() + 40 * 60  # au plus 40 minutes pour cette étape : le reste du temps sert à lire les sites
+    for i, (s, o, n, e) in enumerate(zones_osm()):
+        if time.time() > fin or (i >= 6 and echecs == i):  # 6 zones de suite sans réponse : serveurs en panne
+            echecs += 1
+            continue
+        q = f'[out:json][timeout:120];nwr["amenity"="driving_school"]({s},{o},{n},{e});out center tags;'
+        ok = False
+        derniere = ""
+        for essai in range(3):
+            for url in OVERPASS:
+                try:
+                    _, texte = lire(url, timeout=150, maxi=50_000_000, data=urllib.parse.urlencode({"data": q}).encode())
+                    rep = json.loads(texte)
+                    if "error" in (rep.get("remark") or "").lower():  # délai dépassé côté serveur : réponse incomplète
+                        raise RuntimeError(rep["remark"][:120])
+                    for el in rep.get("elements") or []:
+                        vus[(el.get("type"), el.get("id"))] = el  # les zones se touchent : un élément compte une fois
+                    ok = True
+                    break
+                except Exception as err:  # serveur occupé : on essaie le suivant, puis on attend un peu
+                    derniere = f"{url} : {err}"
+            if ok:
+                break
+            time.sleep(20)
+        if not ok:
+            echecs += 1
+            print(f"OpenStreetMap, zone {s},{o} sans réponse ({derniere})", file=sys.stderr)
+        time.sleep(1)  # poli avec les serveurs gratuits
+    if echecs == len(zones_osm()) or not vus:
+        raise RuntimeError("OpenStreetMap ne répond pas")
+    return list(vus.values()), echecs
 
 
 def charger_communes() -> list[dict]:
@@ -251,8 +294,10 @@ def chercher_sites() -> dict:
         par_cp.setdefault(e.get("cp") or "", []).append(eid)
         par_ville.setdefault(norm(e.get("ville")), []).append(eid)
 
-    elements = requete_osm()
+    elements, echecs = requete_osm()
     grille = Grille(charger_communes())
+    if echecs:
+        print(f"::warning::OpenStreetMap : {echecs} zone(s) sans réponse : on garde les sites déjà trouvés pour ces auto-écoles.")
     print(f"OpenStreetMap : {len(elements)} auto-écoles, dont "
           f"{sum(1 for x in elements if (x.get('tags') or {}).get('website') or (x.get('tags') or {}).get('contact:website'))} avec un site.")
 
@@ -316,6 +361,10 @@ def chercher_sites() -> dict:
                 if b_eid not in meilleurs or note > meilleurs[b_eid][0]:
                     meilleurs[b_eid] = (note, site, nom)
 
+    # Zone sans réponse : on garde les sites OpenStreetMap du passage précédent (sinon ils disparaîtraient à tort).
+    avant = {}
+    if echecs and SITES.exists():
+        avant = (json.loads(SITES.read_text(encoding="utf-8")).get("ecoles") or {})
     ecoles = {}
     for eid, e in officiel.items():
         if e.get("site"):
@@ -323,6 +372,8 @@ def chercher_sites() -> dict:
         elif eid in meilleurs:
             note, site, nom = meilleurs[eid]
             ecoles[eid] = {"site": site, "source": "osm", "nom_osm": nom, "note": note}
+        elif (avant.get(eid) or {}).get("source") == "osm":
+            ecoles[eid] = avant[eid]
     sortie = {
         "meta": {
             "description": "Site web de chaque auto-école, par numéro d'agrément. Source : colonne site du fichier "

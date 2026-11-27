@@ -212,7 +212,9 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   William envoie le lien du site (ou des captures), on recopie à la main dans data/tarifs.json. Relancé à la main le
   27 novembre 2026 (William : « un maximum de sites pour tous les départements », sans payer de clé) : OpenStreetMap relie
   aussi une auto-école par son ADRESSE (même numéro + même rue, une seule auto-école officielle à cette adresse, domaine
-  pas partagé par 3 fiches OSM ou plus), même si l'enseigne diffère du nom officiel. Clés prévues vers le 5 décembre 2026 :
+  pas partagé par 3 fiches OSM ou plus), même si l'enseigne diffère du nom officiel. Ce passage n'a rien trouvé de neuf :
+  OpenStreetMap (Overpass) ne répondait pas à la demande « toute la France » (504). Depuis : 61 petites zones (France + DOM),
+  4 serveurs Overpass, 40 min au plus, une zone sans réponse garde les sites du passage précédent. Clés prévues vers le 5 décembre 2026 :
   Google Places (site + fermeture, essai Google Cloud 300 $) et Claude Haiku (lecture des prix, ~10-20 €). Ce qu'il fait : 1. sites web = fichier officiel, sinon OpenStreetMap
   (amenity=driving_school) relié à l'auto-école officielle seulement si nom ET lieu concordent -> data/sites_auto_ecoles.json
   (ODbL, attribution sur /methode/) ; 2. lecture polie des sites (robots.txt, 6 pages, UA CrenoBot) -> data/explorations.json :

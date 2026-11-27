@@ -2656,6 +2656,224 @@
    "lien": "https://driveracademy.net/",
    "mis_a_jour": "2026-11-27",
    "source": "site"
+  },
+  "E1509100260": {
+   "site": "https://access-permis.com/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "precision": "Réseau Access Permis (Igny et Bièvres). Prix non affichés sur le site : demande-les à l'agence.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site",
+   "lien": "https://access-permis.com/agence-digny/"
+  },
+  "E1909100100": {
+   "site": "https://access-permis.com/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "precision": "Réseau Access Permis (Igny et Bièvres). Prix non affichés sur le site : demande-les à l'agence.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site",
+   "lien": "https://access-permis.com/agence-digny/"
+  },
+  "E1609100180": {
+   "site": "https://access-permis.com/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "precision": "Réseau Access Permis (Igny et Bièvres). Prix non affichés sur le site : demande-les à l'agence.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site",
+   "lien": "https://access-permis.com/agence-de-bievres/"
+  },
+  "E1709100380": {
+   "site": "https://a-e-saint-jacques.com/",
+   "lien": "https://a-e-saint-jacques.com/permis-boite-automatique/",
+   "forfait_auto": 1100,
+   "heures_forfait_auto": 13,
+   "precision": "Boîte auto : évaluation, démarches, code en ligne 3 mois et accompagnement à l'examen compris. Toutes les formations existent en boîte manuelle et automatique.",
+   "formules": [
+    {
+     "nom": "Conduite accompagnée boîte auto 13 h",
+     "prix": 1350
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "formation de 7 heures",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E0209106780": {
+   "site": "https://www.autoecole-liberty.fr/",
+   "lien": "https://www.autoecole-liberty.fr/permis-b",
+   "aac": true,
+   "precision": "Tarifs dans un document PDF en bas du site de l'auto-école.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2409100230": {
+   "site": "https://www.majesteconduite.fr/",
+   "lien": "https://www.majesteconduite.fr/formations-permis-de-conduire-draveil/",
+   "forfait_auto": 1390,
+   "heures_forfait_auto": 13,
+   "forfait_note": "code compris",
+   "precision": "Boîte auto avec code : frais de dossier, code en salle 6 mois et en ligne 3 mois, 13 h de conduite et une présentation à l'examen. Redevance du code (30 €) en plus. Formations adaptées aux personnes handicapées (PMR) sur devis.",
+   "formules": [
+    {
+     "nom": "Boîte auto 13 h sans code",
+     "prix": 1040
+    },
+    {
+     "nom": "Formation accélérée 20 h sans code",
+     "prix": 1950
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formation accélérée 20 h sans code : 1 950 €",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1909100070": {
+   "site": "https://www.majesteconduite.fr/",
+   "lien": "https://www.majesteconduite.fr/formations-permis-de-conduire-draveil/",
+   "forfait_auto": 1390,
+   "heures_forfait_auto": 13,
+   "forfait_note": "code compris",
+   "precision": "Boîte auto avec code : frais de dossier, code en salle 6 mois et en ligne 3 mois, 13 h de conduite et une présentation à l'examen. Redevance du code (30 €) en plus. Formations adaptées aux personnes handicapées (PMR) sur devis.",
+   "formules": [
+    {
+     "nom": "Boîte auto 13 h sans code",
+     "prix": 1040
+    },
+    {
+     "nom": "Formation accélérée 20 h sans code",
+     "prix": 1950
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formation accélérée 20 h sans code : 1 950 €",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1509100020": {
+   "site": "http://www.solutionpermisauto-ecole.com/",
+   "lien": "http://www.solutionpermisauto-ecole.com/pages/permis-accelere.html",
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "permis accéléré : 20 h de conduite sur 10 jours, aussi en boîte auto",
+   "precision": "Réseau Solution Permis (Crosne, Villiers-sur-Marne). Les prix du site diffèrent d'une page à l'autre : demande le tarif à l'agence.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2509100130": {
+   "site": "https://www.educat-route.fr/",
+   "lien": "https://www.educat-route.fr/stage-conduite-accelere.html",
+   "formules": [
+    {
+     "nom": "Stage accéléré boîte auto",
+     "prix": 1390
+    },
+    {
+     "nom": "Stage accéléré boîte manuelle",
+     "prix": 1690
+    }
+   ],
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "stages de conduite accélérés en boîte auto (1 390 €) ou manuelle (1 690 €)",
+   "passerelle": true,
+   "passerelle_details": "formation de 7 h après un permis boîte auto (B78)",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1309100280": {
+   "site": "https://conduire-c-permis.fr/",
+   "lien": "https://conduire-c-permis.fr/formules-auto-ecole-conduire-c-permis-essonne-saint-michel-sur-orge/",
+   "aac": true,
+   "bea": true,
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1909100120": {
+   "site": "https://courtois-driving-school.fr/",
+   "aac": true,
+   "cs": true,
+   "lien": "https://courtois-driving-school.fr/",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2509100020": {
+   "site": "https://autoecoleadolphe.com/",
+   "lien": "https://autoecoleadolphe.com/permis-b/",
+   "forfait": 1395,
+   "heures_forfait": 23,
+   "forfait_note": "sans code, dont 3 h sur simulateur",
+   "forfait_auto": 995,
+   "heures_forfait_auto": 13,
+   "prix_heure": 60,
+   "precision": "Évaluation, accompagnement à l'examen et frais administratifs compris.",
+   "formules": [
+    {
+     "nom": "Permis B avec code, 25 h",
+     "prix": 1695
+    },
+    {
+     "nom": "Permis B avec code, 30 h",
+     "prix": 1895
+    }
+   ],
+   "aac": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "permis accéléré proposé (page dédiée sur le site de l'auto-école)",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1909100250": {
+   "site": "https://autoecole-tigery.com/",
+   "lien": "https://autoecole-tigery.com/permis-boite-auto",
+   "forfait_auto": 900,
+   "heures_forfait_auto": 13,
+   "forfait_note": "code en salle compris",
+   "precision": "Boîte auto : frais de dossier, pochette pédagogique, code en salle 6 mois et 13 leçons. En plus : évaluation de départ (50 €), accompagnement à l'examen (50 €), redevance du code (30 €).",
+   "bea": true,
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E1909100140": {
+   "site": "https://iwigopermis.fr/",
+   "lien": "https://iwigopermis.fr/boite-automatique/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "passerelle": true,
+   "passerelle_details": "forfait boîte auto → manuelle : 2 leçons sur simulateur + 5 leçons de conduite",
+   "precision": "Réseau Iwigo (4 agences). Les prix du site datent de 2024 : demande le tarif à jour à l'agence.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
+  },
+  "E2509100110": {
+   "site": "https://auto-ecole-marcoussis.fr/",
+   "lien": "https://auto-ecole-marcoussis.fr/pack-permis-b-classique/",
+   "aac": true,
+   "cs": true,
+   "bea": true,
+   "accelere": true,
+   "accelere_details": "formation accélérée : 25 leçons de conduite + 10 leçons sur simulateur offertes",
+   "precision": "Forfaits avec ou sans code (20 leçons dont 3 sur simulateur). Prix revus au 1er janvier 2026 : demande-les à l'auto-école.",
+   "mis_a_jour": "2026-11-27",
+   "source": "site"
   }
  }
 }

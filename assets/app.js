@@ -2003,6 +2003,38 @@
       });
     });
     $("#adm-actualiser").addEventListener("click", function () { if (etat.code) charger(etat.code); });
+    // Accès de créateur : PDF du pack et formules offertes (fonction stats, actions pack_pdf / offrir)
+    var bpdf = $("#adm-pdf");
+    if (bpdf) bpdf.addEventListener("click", function () {
+      var st = $("#adm-pdf-etat");
+      if (!etat.code) { setStatus(st, false, "Ouvre d'abord le tableau de bord avec ton code."); return; }
+      bpdf.disabled = true; st.textContent = "Préparation du lien…"; st.className = "form-status";
+      callFn("stats", { action: "pack_pdf", code: etat.code }).then(function (r) {
+        bpdf.disabled = false;
+        st.innerHTML = 'C\'est prêt (lien valable une heure) : <a href="' + esc(r.url) + '" target="_blank" rel="noopener">ouvrir le PDF du pack</a>';
+        st.className = "form-status is-ok";
+      }).catch(function (e) { bpdf.disabled = false; setStatus(st, false, e.message); });
+    });
+    var fo = $("#offrir-form");
+    function offrir(retirer) {
+      var st = $(".form-status", fo);
+      if (!etat.code) { setStatus(st, false, "Ouvre d'abord le tableau de bord avec ton code."); return; }
+      if (!fo.email.value.trim()) { setStatus(st, false, "Écris l'e-mail du compte."); return; }
+      var f = ($("input[name=formule]:checked", fo) || {}).value || "ddt";
+      st.textContent = "Un instant…"; st.className = "form-status";
+      callFn("stats", { action: "offrir", code: etat.code, email: fo.email.value.trim(), formule: f, retirer: retirer }).then(function (r) {
+        var nomF = r.formule === "pack" ? "le Pack candidat libre" : "le Pack candidat libre + DDT";
+        var pro = r.type === "pro" ? " Attention : c'est un compte pro, il ne voit pas l'espace élève. Crée plutôt un compte élève." : "";
+        setStatus(st, true, r.retire ? "C'est fait : l'accès offert est retiré." + pro
+          : r.deja ? "Ce compte a déjà " + nomF + "." + pro
+          : "C'est fait : ce compte a maintenant " + nomF + ". Connecte-toi avec lui et ouvre « Gérer mon compte »." + pro);
+      }).catch(function (e) { setStatus(st, false, e.message); });
+    }
+    if (fo) {
+      fo.addEventListener("submit", function (ev) { ev.preventDefault(); offrir(false); });
+      $("#offrir-retirer").addEventListener("click", function () { offrir(true); });
+    }
+
     // Démarches des départements, réservées au pack (fonction stats, actions ddt_enregistrer / ddt_supprimer)
     var fd = $("#ddt-admin-form");
     var MODES_ADM = { formulaire: "Formulaire en ligne", email: "Demande par e-mail", dossier: "Sur dossier",

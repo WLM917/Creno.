@@ -179,6 +179,47 @@
       </form>
     </section>
 
+    <section class="block" id="admin-createur" aria-labelledby="adm-createur-titre">
+      <h2 id="adm-createur-titre">Les formules payantes : ton accès de créateur</h2>
+      <p class="small">Ce que contient chaque formule, et où le client le trouve. Tu n'as rien à payer pour le voir.</p>
+      <div class="offer-grid">
+        <div class="option">
+          <h3>Pack candidat libre (14,99 €)</h3>
+          <ul class="tips">
+            <li>Le guide en PDF : bouton ci-dessous. Le client le télécharge après le paiement, puis dans « Gérer mon compte ».</li>
+            <li>Les alertes de tous les départements qu'il veut (en gratuit : un seul à la fois).</li>
+          </ul>
+        </div>
+        <div class="option">
+          <h3>Pack candidat libre + DDT (24,99 €)</h3>
+          <ul class="tips">
+            <li>Tout le Pack candidat libre.</li>
+            <li>« La démarche de ton département » dans son compte : ce sont les fiches que tu gères juste en dessous.</li>
+            <li>« Préparer ma demande de place » dans son compte : ses demandes arrivent dans « À traiter ». Tu lui envoies sa demande préparée par e-mail sous 7 jours.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="rank-actions">
+        <button class="btn btn-signal" type="button" id="adm-pdf">Ouvrir le PDF du pack</button>
+      </div>
+      <p class="form-status" role="status" id="adm-pdf-etat"></p>
+
+      <form class="form-grid" id="offrir-form">
+        <h3 class="field-wide">Voir le site comme un client (ou offrir une formule)</h3>
+        <p class="small field-wide">Crée un compte <strong>élève</strong> sur le site avec ton e-mail (icône en haut à droite), puis donne-lui une formule ici. Ensuite, dans « Gérer mon compte », tu vois tout ce que voit un acheteur : le PDF, la démarche des départements, le formulaire de demande de place, les alertes sans limite. Ça sert aussi à offrir une formule à un testeur ou à un partenaire. Rien n'est payé, rien n'apparaît dans tes ventes.</p>
+        <div class="field"><label for="offrir-email">E-mail du compte</label><input id="offrir-email" name="email" type="email" required maxlength="200" autocomplete="email"></div>
+        <fieldset class="crit"><legend>Formule</legend>
+          <label class="check-inline" for="offrir-ddt"><input id="offrir-ddt" type="radio" name="formule" value="ddt" checked> Pack + DDT</label>
+          <label class="check-inline" for="offrir-pack"><input id="offrir-pack" type="radio" name="formule" value="pack"> Pack seul</label>
+        </fieldset>
+        <div class="form-actions field-wide">
+          <button class="btn" type="submit">Donner l'accès</button>
+          <button class="btn btn-ghost" type="button" id="offrir-retirer">Retirer l'accès offert</button>
+          <p class="form-status" role="status"></p>
+        </div>
+      </form>
+    </section>
+
     <section class="block" id="admin-ddt" aria-labelledby="adm-ddt-titre">
       <h2 id="adm-ddt-titre">Démarches des départements (formule + DDT)</h2>
       <p class="small">Seuls les acheteurs du pack + DDT les voient, dans leur compte. Ajoute un département dès que tu as une source officielle ou une réponse écrite de sa DDT. « Modifier » remplit le formulaire avec la fiche.</p>

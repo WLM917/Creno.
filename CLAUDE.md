@@ -294,6 +294,11 @@ l'import le range dans `email`. Les liens vers les annuaires concurrents (vroomv
   Passer du Pack à + DDT : William envoie un lien Stripe de la différence avec client_reference_id=pack-<id du compte>
   et le retour après paiement vers /compte/#pack (la fonction compte retrouve le paiement chez Stripe).
   Démarches (ddt_demarches) et « Préparer ma demande de place » : formule + DDT seulement.
+- **Accès de créateur** (tableau de bord, « Les formules payantes ») : ce que contient chaque formule, bouton
+  « Ouvrir le PDF du pack » (fonction stats, action pack_pdf, lien de 1 h) et « Voir le site comme un client » :
+  action offrir { email, formule, retirer? } qui ajoute dans achats_pack une ligne session_id « offert-<uuid> »
+  (ref pack-<compte>, montant manquant pour atteindre la formule). Sert à William (compte élève) et aux testeurs ;
+  n'apparaît pas dans les ventes (lues chez Stripe). « Retirer l'accès offert » efface les lignes offert-*.
 - Historique : le pack avait fusionné alertes et aide à la demande de place (25 novembre 2026, même prix 14,99 €) :
   1. le guide PDF ; 2. les démarches des départements (dans le compte) et la demande de place préparée
   (démarche inconnue : William écrit à la DDT et envoie un modèle de demande écrite dans le délai) : l'acheteur remplit « Préparer ma demande de place » dans

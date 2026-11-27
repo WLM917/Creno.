@@ -12,6 +12,9 @@
 //   traiter { code, quoi, id, decision } -> publier des tarifs, marquer un pro / un loueur / un message comme traité
 //   ddt_enregistrer { code, departement, fiche } -> ajoute ou modifie la démarche d'un département (réservée au pack)
 //   ddt_supprimer   { code, departement }        -> supprime la démarche d'un département
+//   pack_pdf        { code }                     -> lien (1 h) vers le PDF du pack, pour William sans rien payer
+//   offrir          { code, email, formule, retirer? } -> donne (ou retire) à un compte la formule « pack » ou « ddt »
+//                                                   sans paiement : ligne « offert-... » dans achats_pack
 //
 // Vie privée : on ne garde jamais l'adresse IP. L'empreinte est calculée à partir de l'IP, du navigateur,
 // du jour et d'une phrase secrète : elle change chaque jour et ne permet pas de suivre quelqu'un.
@@ -375,6 +378,62 @@ async function ddtSupprimer(body: Record<string, unknown>) {
   return reply(200, { ok: true });
 }
 
+// ---------------------------------------------------------------- accès de créateur (PDF et formules offertes)
+const EMAIL_OK = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+async function packPdf(body: Record<string, unknown>) {
+  if (!await codeOk(body)) return reply(403, { erreur: "Code incorrect." });
+  const fichier = env("PACK_FICHIER", "pack-candidat-libre.pdf");
+  const sign = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/pack/${encodeURIComponent(fichier)}`, {
+    method: "POST", headers: authHeaders(), body: JSON.stringify({ expiresIn: 3600 }),
+  });
+  if (!sign.ok) {
+    console.error("Stockage", sign.status, await sign.text());
+    return reply(503, { erreur: `Le PDF « ${fichier} » n'est pas dans l'espace de stockage « pack » de Supabase.` });
+  }
+  const { signedURL } = await sign.json();
+  return reply(200, { ok: true, url: `${SUPABASE_URL}/storage/v1${signedURL}` });
+}
+
+// Les comptes sont dans Supabase Auth : on les parcourt pour retrouver celui qui a cet e-mail.
+async function compteParEmail(email: string): Promise<Record<string, any> | null> {
+  for (let page = 1; page <= 25; page++) {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/admin/users?page=${page}&per_page=200`, { headers: authHeaders() });
+    if (!r.ok) throw new Error(`Comptes : ${r.status} ${await r.text()}`);
+    const j = await r.json();
+    const users = (j.users ?? []) as Record<string, any>[];
+    const u = users.find((x) => String(x.email ?? "").toLowerCase() === email);
+    if (u) return u;
+    if (users.length < 200) return null;
+  }
+  return null;
+}
+
+async function offrir(body: Record<string, unknown>) {
+  if (!await codeOk(body)) return reply(403, { erreur: "Code incorrect." });
+  const email = String(body.email ?? "").trim().toLowerCase();
+  if (!EMAIL_OK.test(email)) return reply(400, { erreur: "Écris l'e-mail du compte." });
+  const u = await compteParEmail(email);
+  if (!u) return reply(404, { erreur: "Aucun compte avec cet e-mail. Crée-le d'abord sur le site (icône en haut à droite), en compte élève." });
+  const ref = `pack-${u.id}`;
+  const type = String(u.user_metadata?.type ?? "eleve") === "pro" ? "pro" : "eleve";
+  if (body.retirer === true) {
+    await db(`achats_pack?ref=eq.${ref}&session_id=like.offert-*`, { method: "DELETE" });
+    return reply(200, { ok: true, retire: true, type });
+  }
+  const formule = body.formule === "pack" ? "pack" : "ddt";
+  const cible = formule === "ddt" ? (Number(env("PACK_DDT_MONTANT_CENTIMES", "2499")) || 2499)
+    : (Number(env("PACK_MONTANT_CENTIMES", "1499")) || 1499);
+  const { data } = await db(`achats_pack?ref=eq.${ref}&select=montant`);
+  const total = ((data ?? []) as { montant: number }[]).reduce((t, l) => t + n(l.montant), 0);
+  if (total >= cible) return reply(200, { ok: true, deja: true, formule, type });
+  await db("achats_pack", {
+    method: "POST", headers: { Prefer: "return=minimal" },
+    body: JSON.stringify({ session_id: `offert-${crypto.randomUUID()}`, ref, montant: cible - total }),
+  });
+  return reply(200, { ok: true, formule, type });
+}
+
 // ---------------------------------------------------------------- point d'entrée
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
@@ -394,6 +453,8 @@ Deno.serve(async (req) => {
       case "traiter": return await traiter(body);
       case "ddt_enregistrer": return await ddtEnregistrer(body);
       case "ddt_supprimer": return await ddtSupprimer(body);
+      case "pack_pdf": return await packPdf(body);
+      case "offrir": return await offrir(body);
       default: return reply(400, { erreur: "Action inconnue." });
     }
   } catch (e) {
